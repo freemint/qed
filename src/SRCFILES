@@ -15,8 +15,11 @@ HEADER = \
 	./file.h \
 	./find.h \
 	./global.h \
+	./highlite.h \
+	./hl.h \
 	./icon.h \
 	./kurzel.h \
+	./lists.h \
 	./makro.h \
 	./memory.h \
 	./menu.h \
@@ -55,6 +58,8 @@ COBJS = \
 	./file.c \
 	./find.c \
 	./global.c \
+	./highlite.c \
+	./hl.c \
 	./icon.c \
 	./kurzel.c \
 	./main.c \

@@ -24,6 +24,7 @@ extern OBJECT	*umlautkonv;
 extern OBJECT	*fehler;
 extern OBJECT 	*globalop;
 extern OBJECT 	*localop;
+extern OBJECT  *syntaxop;
 extern OBJECT 	*muster;
 extern OBJECT	*autosave;
 extern OBJECT	*klammer;

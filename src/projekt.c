@@ -944,7 +944,7 @@ bool add_to_projekt (short link, char *name, bool draw)
 			else
 				lauf= get_line(&t_ptr->text,i-1);
 			new = new_col(name,(short)strlen(name));
-			col_insert(lauf,new);
+			col_insert(&t_ptr->text, lauf,new);
 			t_ptr->text.lines++;
 			window->doc.h++;
 			if (draw)

@@ -17,7 +17,6 @@ bool 	se_activ;				/* haben wir Kontakt zur Shell? */
 bool	se_autosave,
 		se_autosearch;
 
-
 /* lokale Variablem **********************************************************/
 typedef struct _separm
 {
@@ -395,6 +394,7 @@ void handle_se(short *msg)
 					if (debug_level & DBG_SE)
 */
 						debug("SE_CLOSE von %d, Datei: %s, Flag: %d\n", msg[1], datei, msg[5]);
+
 					close_edit(datei, msg[5]);
 				}
 			}

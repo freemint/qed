@@ -14,6 +14,9 @@ extern bool			se_activ;
 extern bool			se_autosave;
 extern bool			se_autosearch;
 
+/* Heiko */
+extern bool se_ignoreclose;
+
 extern void	setup_semenu	(void);
 /*
  * Setzt das Shell-MenÅ 

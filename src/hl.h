@@ -1,0 +1,18 @@
+void hl_init( void );
+void hl_insert( RINGP rp, ZEILEP zp );
+void hl_insert_block( RINGP rp, ZEILEP first, ZEILEP last );
+void hl_remove( RINGP rp, ZEILEP zp );
+void hl_remove_block( RINGP rp, ZEILEP first, ZEILEP last );
+void hl_update( TEXTP t_ptr );
+void hl_update_block( RINGP rp, ZEILEP first, ZEILEP last );
+void hl_update_text( TEXTP t_ptr );
+void hl_update_zeile( RINGP rp, ZEILEP z_ptr );
+void hl_update_all( void );
+void hl_init_text( TEXTP t_ptr );
+void hl_free( TEXTP tp );
+HL_LINE hl_get_zeile( ZEILEP z );
+bool hl_read_syn(void);
+bool hl_write_syn(void);
+void hl_change_text_type( TEXTP t_ptr, char *extension );
+void hl_disable(void);
+void hl_enable(void);

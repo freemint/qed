@@ -1,7 +1,7 @@
 #ifndef _qed_types_h_
 #define _qed_types_h_
 
-
+#include "highlite.h"   /* highlight types */
 #define SETSIZE	32							/* Gr”že eines Sets in Longs */
 #define SETMAX		(SETSIZE*32 - 1)		/* Maximale Elemente eines Sets */
 
@@ -65,6 +65,7 @@ typedef struct _zeile
 {
 	struct _zeile 	*vorg;
 	struct _zeile 	*nachf;
+	HL_LINEHANDLE  hl_handle; /* Syntax-Highlighting-Cache */
 	char				info;
 	short				len;					/* L„nge in Bytes */
 	bool				is_longest;
@@ -79,6 +80,7 @@ typedef struct
 	long  			lines;
 	LINEENDING		ending;				/* Zeilenende */
 	unsigned short	max_line_len;		/* Maximale Zeilenl„nge */
+	HL_HANDLE hl_anchor;   /* Syntax-Highlighting-Cache */
 } RING, *RINGP;
 
 

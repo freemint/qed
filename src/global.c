@@ -3,8 +3,10 @@
 #include <support.h>
 #include <time.h>
 #include <unistd.h>
+#include <gemx.h>
 
 #include "global.h"
+#include "hl.h"
 #include "makro.h"
 #include "options.h"
 #include "rsc.h"
@@ -28,7 +30,9 @@ long		desire_y, undo_y;
 short		font_id, font_pts, 
 			font_wcell, font_hcell,
 			min_ascii, max_ascii;
-bool		font_prop;
+
+bool		font_prop, font_vector;
+short font_left_italicoffset, font_right_italicoffset;
 
 short		debug_level;
 
@@ -179,17 +183,119 @@ short snote(short def, short undo, short index, char *val)
 /* Verschiedenes																				*/
 /***************************************************************************/
 
+/* Konfigurationspfad (QED.CFG, QED.SYN etc.) */
+void get_config_path(PATH cfg_path)
+{
+	bool	found = FALSE;
+	PATH	env;
+	
+	if (path_from_env("QED", cfg_path))			/* 1. $QED */
+		found = path_exists(cfg_path);
+
+	if (!gl_debug)
+	if (!found && path_from_env("HOME", env))	/* 2. $HOME */
+	{
+		strcpy(cfg_path, env);
+		found = path_exists(cfg_path);
+		if (!found)										/* 2a. $HOME/defaults */
+		{
+			strcpy(cfg_path, env);
+			strcat(cfg_path, "defaults\\");
+			found = path_exists(cfg_path);
+		}		
+	}
+
+	if (!found && gl_appdir[0] != EOS)			/* 3. Startverzeichnis */
+	{
+		strcpy(cfg_path, gl_appdir);
+		found = file_exists(cfg_path);
+	}
+
+	if (!found)			/* 4. aktuelles Verzeichnis */
+		get_path(cfg_path, 0);
+
+/*
+debug("cfg_path: %s (%d)\n", cfg_path, found);
+*/
+}
+
+
+/* Konfigurationsdatei; returns TRUE wenn gefunden,
+ * filename enth„lt in diesem Fall den kompletten Pfad
+ */
+bool get_config_file(PATH filename)
+{
+	bool	found = FALSE;
+	PATH	env, p_for_save = "";
+	PATH	cfg_path;
+	
+	if (path_from_env("QED", cfg_path))			/* 1. $QED */
+	{
+		strcat(cfg_path, filename);
+		strcpy(p_for_save, cfg_path);
+		found = file_exists(cfg_path);
+	}
+
+	if (!gl_debug)
+	if (!found && path_from_env("HOME", env))	/* 2. $HOME */
+	{
+		bool	h = FALSE;
+		
+		strcpy(cfg_path, env);
+		strcat(cfg_path, filename);
+		if (p_for_save[0] == EOS)
+		{
+			h = TRUE;
+			strcpy(p_for_save, cfg_path);
+		}
+		found = file_exists(cfg_path);
+		if (!found)										/* 2a. $HOME/defaults */
+		{
+			strcpy(cfg_path, env);
+			strcat(cfg_path, "defaults\\");
+			if (path_exists(cfg_path))
+			{
+				strcat(cfg_path, filename);
+				if (p_for_save[0] == EOS || h)
+					strcpy(p_for_save, cfg_path);
+				found = file_exists(cfg_path);
+			}
+		}		
+	}
+
+	if (!found && gl_appdir[0] != EOS)			/* 3. Startverzeichnis */
+	{
+		strcpy(cfg_path, gl_appdir);
+		strcat(cfg_path, filename);
+		if (p_for_save[0] == EOS)
+			strcpy(p_for_save, cfg_path);
+		found = file_exists(cfg_path);
+	}
+
+	if (!found && file_exists(filename))			/* 4. aktuelles Verzeichnis */
+	{
+		get_path(cfg_path, 0);
+		strcat(cfg_path, filename);
+		if (p_for_save[0] == EOS)
+			strcpy(p_for_save, cfg_path);
+		found = TRUE;
+	}
+
+	if (!found)
+		strcpy(cfg_path, p_for_save);
+
+	strcpy(filename, cfg_path);
+	
+	return found;
+}
+
+
+
 void file_name(char *fullname, char *filename, bool withoutExt)
 {
 	split_filename(fullname, NULL, filename);
 	if (withoutExt)
-	{
-		char	*p;
-
-		p = strrchr(filename, '.');
-		if (p != NULL)
-			*p = EOS;
-	}
+		split_extension(filename, filename, NULL);
 }
 
 /*****************************************************************************/
@@ -332,9 +438,50 @@ bool is_bin_name(char *filename)
 }
 
 /***************************************************************************/
+
+/* Ein ziemlicher Hack... Abfragen, ob ein Font ein Vektorfont ist */
+static bool font_is_vector(short idx)
+{
+	short workout[57];
+	short fs_handle = open_vwork(workout);
+	short f_anz = workout[10];
+	char fontname[33];
+	bool ret;
+	short *nvdicookie;
+	short di, fonttype;
+	
+	if (gl_gdos)
+	{
+		f_anz += vst_load_fonts(fs_handle, 0);
+		if (getcookie("NVDI", (long *) &nvdicookie)
+		&&  *nvdicookie > 0x300)
+			while (f_anz)
+			{
+				if (vqt_ext_name(fs_handle, f_anz--, fontname, &fonttype, &di ) == idx)
+				{
+					ret = (fonttype & 1) ? FALSE : TRUE;
+					break;
+				}
+			}		
+		else
+			while (f_anz)
+			{
+				if (vqt_name(fs_handle, f_anz--, fontname) == idx)
+				{
+					ret = fontname[ 32 ] ? TRUE : FALSE;
+					break;
+				}
+			}
+	}
+	if (gl_gdos)
+		vst_unload_fonts(fs_handle, 0);
+	v_clsvwk(fs_handle);
+	return ret;
+}
+
 void font_change(void)
 {
-	short	ret, w1, w2, d, d1[5], d2[3];
+	short ret, w1, w2, d, d1[5], effects[3];
 
 	/* *_cell werden NUR hier ver„ndert */
 	vst_font(vdi_handle, font_id);
@@ -345,9 +492,17 @@ void font_change(void)
 	vqt_width(vdi_handle, 'i', &w2, &ret, &ret);
 	font_prop = (w1 != w2);
 
-	vqt_fontinfo(vdi_handle, &min_ascii, &max_ascii, d1, &d, d2);
+	vst_effects(vdi_handle, HL_ITALIC);
+	vqt_fontinfo(vdi_handle, &min_ascii, &max_ascii, d1, &d, effects);
+	vst_effects(vdi_handle, TXT_NORMAL);
 	if (min_ascii <= 0)
 		min_ascii = 1;
+
+	font_vector = font_is_vector(font_id);
+	font_right_italicoffset = effects[ 2 ];
+	font_left_italicoffset = effects[ 1 ];
+	
+	
 
 	/* Alle Fenster updaten */
 	do_all_window(CLASS_ALL, do_font_change);

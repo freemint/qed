@@ -5,6 +5,7 @@
 
 #include "global.h"
 #include "aktion.h"
+#include "ausgabe.h"
 #include "comm.h"
 #include "edit.h"
 #include "find.h"
@@ -17,6 +18,7 @@
 #include "text.h"
 #include "window.h"
 #include "file.h"
+#include "hl.h"
 
 
 static PATH	last_path; 						/* letzter Pfad der Dateiauswahl */
@@ -36,12 +38,16 @@ void open_error(char *filename, short error)
 		snote(1, 0, READERR, datei);
 }
 
+
+
 short load(TEXTP t_ptr, bool verbose)
 {
 	short	antw;
 	bool	null_byte;
 	
 	antw = load_datei(t_ptr->filename, &t_ptr->text, verbose, &null_byte);
+	
+	
 	t_ptr->cursor_line = t_ptr->text.head.nachf;
 	t_ptr->readonly = file_readonly(t_ptr->filename);
 	if (null_byte)
@@ -49,12 +55,12 @@ short load(TEXTP t_ptr, bool verbose)
 	if (antw == 0)
 	{
 		t_ptr->file_date_time = file_time(t_ptr->filename,NULL,NULL);
+		hl_init_text( t_ptr );
 	}
 	else
 		t_ptr->file_date_time = -1L;
 	return(antw);
 }
-
 
 short load_from_fd(short fd, char *name, RINGP t, bool verbose, bool *null_byte, long size)
 {
@@ -240,7 +246,7 @@ short load_from_fd(short fd, char *name, RINGP t, bool verbose, bool *null_byte,
 		{
 			start = next;
 			NEXT(next);
-			free_col(start);
+			free_col(t,start);
 		}
 		graf_mouse(ARROW, NULL);
 		note(1, 0, NOMEMORY);

@@ -8,6 +8,7 @@
 #include "rsc.h"
 #include "set.h"
 #include "block.h"
+#include "hl.h"
 
 /* lokale Prototypen *******************************************************/
 static void	block_demark	(TEXTP t_ptr);
@@ -504,6 +505,7 @@ void blk_right(TEXTP t_ptr)
 				*str++ = c;
 			if (y==t_ptr->z1)
 				t_ptr->p1 = lauf;
+			hl_update_zeile( &t_ptr->text, lauf );
 			if (y==ende)
 			{
 				t_ptr->p2 = lauf;
@@ -565,6 +567,7 @@ void blk_left(TEXTP t_ptr)
 				if (y == ende)
 					t_ptr->p2 = lauf;
 			}
+			hl_update_zeile( &t_ptr->text, lauf );
 			if (y == ende)
 				break;
 			NEXT(lauf);
@@ -687,6 +690,7 @@ void blk_upplow(TEXTP t_ptr, short type)
 			y++;
 		}
 		t_ptr->moved++;
+		hl_update_block( &t_ptr->text, t_ptr->p1, t_ptr->p2 );
 		make_chg(t_ptr->link, POS_CHANGE, 0);
 		make_chg(t_ptr->link, TOTAL_CHANGE, t_ptr->z1);
 	}
@@ -791,12 +795,16 @@ static bool block_delete(TEXTP t_ptr, RINGP t)
 		INSERT(&b, 0, len, TEXT(b_anf_col)+t_ptr->x1);
 		REALLOC(&b_anf_col, t_ptr->x1, -len);
 		t_ptr->cursor_line = b_anf_col;
+		hl_update( t_ptr );
 	}
 	else
 	{
-		col_split(&b_end_col,t_ptr->x2);
+		col_split(&t_ptr->text, &b_end_col,t_ptr->x2);
 		NEXT(b_end_col);
-		col_split(&b_anf_col,t_ptr->x1);
+		col_split(&t_ptr->text, &b_anf_col,t_ptr->x1);
+
+		hl_remove_block( &t_ptr->text, b_anf_col->nachf, b_end_col->vorg );
+
 
 		/* Block ausschneiden */
 		FIRST(t) = b_anf_col->nachf;
@@ -808,7 +816,7 @@ static bool block_delete(TEXTP t_ptr, RINGP t)
 		/* Kette wieder schliežen */
 		b_anf_col->nachf = b_end_col;
 		b_end_col->vorg = b_anf_col;
-		col_concate(&b_anf_col);
+		col_concate(&t_ptr->text,&b_anf_col);
 		t_ptr->cursor_line = b_anf_col;
 	}
 #if 0
@@ -838,6 +846,8 @@ Problem: Wenn ein Block markiert war, muž eventuell gescrollt werden
 	t->ending = t_ptr->text.ending;
 	t->max_line_len = t_ptr->text.max_line_len;
 	t_ptr->max_line = NULL;
+	hl_update_zeile( &t_ptr->text, t_ptr->cursor_line->vorg );
+	hl_update( t_ptr );
 	return TRUE;
 }
 
@@ -871,13 +881,13 @@ void block_copy(TEXTP t_ptr, RINGP t)
 			new = new_col(TEXT(lauf), lauf->len);
 			if (IS_ABSATZ(lauf)) 
 				new->info |= ABSATZ;
-			col_insert(a->vorg,new);
+			col_insert(NULL,a->vorg,new);
 			t->lines++;
 			NEXT(lauf);
 		}
 		new = new_col(TEXT(lauf),t_ptr->x2);			/* letzte Zeile teilweise */
 		new->info |= ABSATZ;
-		col_insert(a->vorg,new);
+		col_insert(NULL,a->vorg,new);
 		t->lines++;
 	}
 	t->ending = t_ptr->text.ending;
@@ -905,6 +915,7 @@ static bool block_einsetzen(TEXTP t_ptr, RINGP in)
 	}
 
 	init_textring(&t);
+	t.hl_anchor = t_ptr->text.hl_anchor;
 	doppeln(in, &t);
 	a = FIRST(&t);
 	b = LAST(&t);
@@ -938,21 +949,25 @@ Problem: Wenn ein Block markiert war, muž eventuell gescrollt werden
 		INSERT(&col, t_ptr->xpos, a->len, TEXT(a));
 		undo_end_x += t_ptr->xpos;
 		kill_textring(&t);
+		t_ptr->cursor_line = get_line(&t_ptr->text,undo_end_y);
+		hl_update( t_ptr );
 	}
 	else
 	{
-		col_split(&col,t_ptr->xpos);					/* Textzeile splitten   */
+		hl_remove( &t_ptr->text, col );
+		col_split(NULL, &col,t_ptr->xpos);					/* Textzeile splitten   */
 
 		col->nachf->vorg = b;							/* Block einfgen unten */
 		b->nachf = col->nachf;
-		col_concate(&b);									/* Untere letzte Zeile	*/
+		col_concate(NULL,&b);									/* Untere letzte Zeile	*/
 
 		col->nachf = a;									/* Block einfgen oben */
 		a->vorg = col;
-		col_concate(&col);
+		col_concate(NULL, &col);
+		hl_insert_block( &t_ptr->text, col, b );
+		t_ptr->cursor_line = get_line(&t_ptr->text,undo_end_y);
 	}
 	/* Cursor hinter Einfgung */
-	t_ptr->cursor_line = get_line(&t_ptr->text,undo_end_y);
 	t_ptr->ypos = undo_end_y;
 	t_ptr->xpos = undo_end_x;
 	t_ptr->moved++;

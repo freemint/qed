@@ -22,6 +22,7 @@
 #include "text.h"
 #include "umbruch.h"
 #include "window.h"
+#include "hl.h"
 
 /****** VARIABLES ************************************************************/
 
@@ -89,7 +90,10 @@ bool prepare_quit(void)
 		}
 	}
 	if ((!save_opt) != (!shift_pressed()))
+	{
 		option_save();
+		hl_write_syn();
+	}
 	i = anz;
 	while ((--i)>=0)
 	{
@@ -669,6 +673,10 @@ void handle_menu(short title, short item, bool ctrl)
 			case MLOCALOP:
 				set_local_options();
 				break;
+				
+			case MSYNTAXOP:
+				set_syntax_options();
+				break;
 
 			case MAUTOSAVE :
 				set_autosave_options();
@@ -692,6 +700,7 @@ void handle_menu(short title, short item, bool ctrl)
 
 			case MSOPTION:
 				option_save();
+				hl_write_syn();
  				break;
 
 /* Shell */

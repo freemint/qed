@@ -27,6 +27,8 @@
 
 #define TIMER_INTERVALL	500L		/* Pollzeit fÅr Timerevent */
 
+#define MAX_TABWIDTH 99         /* Max. Tabweite */
+
 
 /****** global Variablen ******************************************************/
 
@@ -43,7 +45,9 @@ extern long		desire_y, undo_y;
 extern short		font_id, font_pts, 
 					font_wcell, font_hcell,
 					min_ascii, max_ascii;
-extern bool		font_prop;
+					
+extern bool font_prop, font_vector;
+extern short font_left_italicoffset, font_right_italicoffset;
 
 /****** Functions ************************************************************/
 
@@ -67,6 +71,8 @@ extern bool		shift_pressed		(void);
 extern void		get_datum			(char *date);
 extern long		file_time			(char *filename, char *date, char *time);
 extern long		file_size			(char *filename);
+extern void   get_config_path( PATH cfg_path );
+extern bool   get_config_file( PATH filename );
 extern void		file_name			(char *fullname, char *filename, bool withoutExt);
 extern bool		file_readonly		(char *filename);
 extern bool		is_bin_name			(char *filename);

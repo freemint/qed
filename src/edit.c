@@ -8,10 +8,12 @@
 #include "clipbrd.h"
 #include "comm.h"
 #include "dd.h"
-#include "event.h"
+#include "edit.h"
 #include "error.h"
+#include "event.h"
 #include "file.h"
 #include "find.h"
+#include "hl.h"
 #include "icon.h"
 #include "kurzel.h"
 #include "makro.h"
@@ -29,7 +31,6 @@
 #include "text.h"
 #include "umbruch.h"
 #include "window.h"
-#include "edit.h"
 
 /* Exportierte Variablen ***************************************************/
 short	edit_type;
@@ -96,7 +97,7 @@ static short col_lz2tab(ZEILEP col, char *t, short tab_size)
 	tabH = tab_size;
 	lz = 0;
 	len = 0;
-	for (i=col->len; (--i)>=0; )
+	for (i=col->len; (--i)>=0;)
 	{
 		c = *str++;
 		if (c==' ')
@@ -166,7 +167,7 @@ static short col_tab2lz(ZEILEP col, char *t, short tab_size)
 
 	str = TEXT(col);
 	tabH = tab_size;
-	for (i = col->len,len = 0; (--i) >= 0 && (len < (MAX_LINE_LEN+1)); )
+	for (i = col->len,len = 0; (--i) >= 0 && (len < (MAX_LINE_LEN+1));)
 	{
 		c = *str++;
 		if (c == '\t')
@@ -263,6 +264,7 @@ static void make_undo(TEXTP t_ptr)
 		if (undo == COL_ANDERS)
 		{
 			do_undo_col(t_ptr,undo);
+			hl_update(t_ptr);
 			restore_edit();
 		}
 		else
@@ -530,13 +532,11 @@ static bool delete_edit(short icon, TEXTP t_ptr)
 /* Fenster angeclickt																		*/
 /***************************************************************************/
 
-/* Ermittelt aus einer Mauspos (mx,my) die zugeh”rige Position im Text */
-static void get_pos(WINDOWP window, short mx, short my, short *xpos, long *ypos)
+/* Ermittelt aus einer Mauspos (my) die zugeh”rige y-Position im Text */
+static long get_ypos(WINDOWP window, short my)
 {
 	TEXTP		t_ptr = get_text(window->handle);
 	long		y;
-	short		x;
-	ZEILEP	col;
 	
 	y = (my - window->work.g_y);
 	if (y < 0)
@@ -548,7 +548,17 @@ static void get_pos(WINDOWP window, short mx, short my, short *xpos, long *ypos)
 	else if (y < 0)
 		y = 0;
 
-	col = get_line(&t_ptr->text, y);
+	return y;
+}
+
+/* Ermittelt aus einer Mauspos (mx) die zugeh”rige x-Position im Text */
+static short get_xpos(WINDOWP window, long ypos, short mx)
+{
+	TEXTP		t_ptr = get_text(window->handle);
+	short		x;
+	ZEILEP	col;
+
+	col = get_line(&t_ptr->text, ypos);
 
 	if (font_prop)
 	{
@@ -569,7 +579,7 @@ static void get_pos(WINDOWP window, short mx, short my, short *xpos, long *ypos)
 			if (x == xl)
 				break;
 			t_ptr->xpos = x;
-			i = cursor_xpos(t_ptr, t_ptr->xpos);
+			i = cursor_xpos(t_ptr, t_ptr->xpos, NULL);
 			if (i > x_soll)
 				e = x;			/* in linker H„lfte */
 			else
@@ -580,7 +590,7 @@ static void get_pos(WINDOWP window, short mx, short my, short *xpos, long *ypos)
 		for (x = s; x <= e; x++)
 		{
 			t_ptr->xpos = x;
-			i = cursor_xpos(t_ptr, t_ptr->xpos);
+			i = cursor_xpos(t_ptr, t_ptr->xpos, NULL);
 			if (i > x_soll) 
 				break;
 		}
@@ -604,26 +614,21 @@ static void get_pos(WINDOWP window, short mx, short my, short *xpos, long *ypos)
 
 		x = inter_pos(x, col, t_ptr->loc_opt->tab, t_ptr->loc_opt->tabsize);
 	}
-	
-	if (xpos != NULL)
-		*xpos = x;
-	if (ypos != NULL)
-		*ypos = y;
+
+	return x;	
 }
 
 static void set_cursor(WINDOWP window, short mx, short my)
 {
 	TEXTP 	t_ptr = get_text(window->handle);
-	short		x;
 	long		y;
 	ZEILEP	col;
 
-	get_pos(window, mx, my, &x, &y);
+	y = get_ypos(window, my);
 	col = get_line(&t_ptr->text, y);
-
-	t_ptr->xpos = x;
 	t_ptr->ypos = y;
 	t_ptr->cursor_line = col;
+	t_ptr->xpos = get_xpos(window, y, mx);
 
 	y -= window->doc.y;
 	if (y > 0)
@@ -648,7 +653,8 @@ static bool click_in_blk(WINDOWP window, short x, short y)
 	if (!t_ptr->block)
 		return FALSE;
 
-	get_pos(window, x, y, &col, &line);
+	line = get_ypos(window,y);
+	col = get_xpos(window, line, x);
 
 	if (line == t_ptr->z1 && line == t_ptr->z2)			/* nur eine Zeile */
 	{
@@ -757,30 +763,9 @@ static void wi_click(WINDOWP window, short m_x, short m_y, short bstate, short k
 				r = window->work;
 				if (t_ptr->z1 == t_ptr->z2)	/* Spezialfall: nur eine Zeile */
 				{
-					if (font_prop)
-					{
-						extern short line_to_str(char *str, short anz);	/* ausgabe.c */
-
-						char	str[MAX_LINE_LEN+1];
-						short	pxy[8];
-											
-						strcpy(str, TEXT(t_ptr->cursor_line));
-						
-						str[t_ptr->x2] = EOS;
-						line_to_str(str, (short)strlen(str));
-						vqt_extent(vdi_handle, str, pxy);
-						x = r.g_x + pxy[2] - pxy[0];
-
-						str[t_ptr->x1] = EOS;
-						line_to_str(str, (short)strlen(str));
-						vqt_extent(vdi_handle, str, pxy);
-						w = r.g_x + (pxy[2] - pxy[0] - x);
-					}
-					else
-					{
-						x = r.g_x + t_ptr->x1 * font_wcell;
-						w = r.g_x + t_ptr->x2 * font_wcell - x;
-					}
+					x = cursor_xpos(t_ptr, t_ptr->x1, NULL);
+					w = cursor_xpos(t_ptr, t_ptr->x2, NULL) - x;
+					x += r.g_x;
 				}
 				else
 				{
@@ -1465,8 +1450,9 @@ abandon:	strcpy(name, t_ptr->filename);
 							/* OLGA informieren */
 							do_olga(OLGA_RENAME, t_ptr->filename, name);
 							do_olga(OLGA_UPDATE, name, NULL);
-
 							set_text_name(t_ptr, name, FALSE);
+							hl_init_text(t_ptr);
+								
 							chg_edit_name(icon);
 							t_ptr->moved = 0;
 							t_ptr->file_date_time = file_time(name,NULL,NULL);
@@ -1544,19 +1530,22 @@ abandon:	strcpy(name, t_ptr->filename);
 				make_chg(t_ptr->link, POS_CHANGE, 0);		/* '*' in Titel */
 			}
 			graf_mouse(ARROW, NULL);
+			hl_update_text(t_ptr);
 			restore_edit();
 			erg = 1;
 			break;
 		case DO_TAB2LZ :
 			t_ptr->blk_mark_mode = FALSE;
 			blk_demark(t_ptr);
-			tab2lz(t_ptr);
+			tab2lz(t_ptr);			
+			hl_update_text(t_ptr);
 			erg = 1;
 			break;
 		case DO_LZ2TAB :
 			t_ptr->blk_mark_mode = FALSE;
 			blk_demark(t_ptr);
 			lz2tab(t_ptr);
+			hl_update_text(t_ptr);
 			erg = 1;
 			break;
 		case DO_ADD 	:
@@ -1573,7 +1562,7 @@ abandon:	strcpy(name, t_ptr->filename);
 
 					init_textring(&temp_ring);
 					col = new_col(name, (short)strlen(name));
-					col_insert(&(temp_ring.head), col);
+					col_insert(&temp_ring,&(temp_ring.head), col);
 					blk_paste(t_ptr, &temp_ring);
 					restore_edit();
 					kill_textring(&temp_ring);
@@ -1640,17 +1629,23 @@ abandon:	strcpy(name, t_ptr->filename);
 			erg = 1;
 			break;
 		case DO_ZEICHTAB:
-			if (ascii_wert != -1 )
+			if (ascii_wert != -1)
+			{
 				char_insert(t_ptr, ascii_wert);
+				hl_update(t_ptr);
+			}
 			restore_edit();
 			erg = 1;
 			break;
 		case DO_UMLAUT:
 			change_umlaute(t_ptr);
+			hl_update_text(t_ptr);
+			restore_edit();
 			erg = 1;
 			break;
 		case DO_SWAPCHAR:
 			char_swap(t_ptr);
+			hl_update(t_ptr);
 			restore_edit();
 			break;
 		case DO_AUTOSAVE:
@@ -1725,7 +1720,7 @@ static bool e_icon_drag(short icon, short source)
 						
 					init_textring(&temp_ring);
 					col = new_col(drag_filename, (short)strlen(drag_filename));
-					col_insert(&(temp_ring.head), col);
+					col_insert(&temp_ring,&(temp_ring.head), col);
 					if (drag_data_size > 1)
 					{
 						/* mehr als ein ARGS -> Zeilenvorschub */
@@ -1780,7 +1775,7 @@ debug("hier ist edit.DragDrop_DATA!!!\n");
 						strncpy(zeile, p1, delta);
 						zeile[delta] = EOS;
 						col = new_col(zeile, (short)strlen(zeile));
-						col_insert(lauf, col);
+						col_insert(&temp_ring,lauf, col);
 						NEXT(lauf);
 						p1 = p2 + 2;						/* \r\n berspringen */
 						p2 = strchr(p1, '\r');
@@ -1791,7 +1786,7 @@ debug("hier ist edit.DragDrop_DATA!!!\n");
 				else											/* nur eine Zeile ohne \r\n */
 				{
 					col = new_col(drag_data, (short)strlen(drag_data));
-					col_insert(lauf, col);
+					col_insert(&temp_ring,lauf, col);
 				}
 				blk_paste(t_ptr, &temp_ring);
 				restore_edit();
@@ -1888,7 +1883,7 @@ void make_chg (short link, short change, long ypos)
 
 	if (change==TOTAL_CHANGE)
 	{
-		for (i=chg_anz; (--i)>=0; )			/* unntzte Žnderung */
+		for (i=chg_anz; (--i)>=0; )			/* unntze Žnderung */
 			if (chg[i].link==link)
 			{
 				if (chg[i].c==LINE_CHANGE && chg[i].y>=ypos)
@@ -1897,18 +1892,19 @@ void make_chg (short link, short change, long ypos)
 					chg[i].c = NOP_CHANGE;
 				else if (chg[i].c==SCROLL_UP && chg[i].y>=ypos)
 					chg[i].c = NOP_CHANGE;
-				else if (chg[i].c==TOTAL_CHANGE && chg[i].y>=ypos)
+				else if (chg[i].c==TOTAL_CHANGE)
 				{
-					chg[i].y = ypos;
-					break;
+					if (chg[i].y>=ypos)
+						chg[i].y = ypos;
+					return;
 				}
 			}
 	}
 	if (change==LINE_CHANGE)
-	{
+	{	
 		for (i=chg_anz; (--i)>=0; )			/* gleiche Žnderung */
 			if (chg[i].link==link && chg[i].c==change && chg[i].y==ypos)
-				return;
+				return;			
 	}
 	if (change==POS_CHANGE)
 	{
@@ -1949,7 +1945,7 @@ void pos_korr(WINDOWP window, TEXTP t_ptr)
 			arrow_window(window, WA_DNLINE, y_new-window->w_height/2);
 	}
 
-	x_new = cursor_xpos(t_ptr, t_ptr->xpos) - (short) window->doc.x * font_wcell;
+	x_new = cursor_xpos(t_ptr, t_ptr->xpos, NULL) - (short) window->doc.x * font_wcell;
 	if (x_new < 0)
 		arrow_window(window, WA_LFLINE, -(x_new/font_wcell) + window->w_width/2);
 	else if (x_new >= window->work.g_w)
@@ -2215,6 +2211,8 @@ static short crt_new_text(char *filename, bool bin)
 		t_ptr->text.max_line_len = MAX_LINE_LEN;
 
 	set_text_name(t_ptr, name, namenlos);
+
+
 	setincl(used_info, win->handle);
 
 	set_wtitle(win, name);

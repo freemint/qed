@@ -16,6 +16,7 @@
 #include "umbruch.h"
 #include "window.h"
 #include "find.h"
+#include "hl.h"
 
 extern void	menu_help(short title, short item);
 
@@ -669,6 +670,7 @@ short start_replace(TEXTP t_ptr)
 		ptr = REALLOC(&start, text_x, delta);
 		memcpy(ptr, replace_txt, rpl_len);
 		t_ptr->cursor_line = start;
+		hl_update( t_ptr );
 		if (loc_r_modus != RP_ALL)
 		{
 			make_chg(t_ptr->link,LINE_CHANGE,t_ptr->ypos);

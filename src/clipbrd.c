@@ -225,7 +225,7 @@ void clip_add_text(RINGP r)
 	LAST(r)->nachf = &clip_text.tail;
 	LAST(&clip_text) = LAST(r);
 	clip_text.lines += r->lines;
-	col_concate(&col);
+	col_concate(r, &col);
 	clip_text.lines--;
 	clip_dirty = TRUE;
 }

@@ -26,15 +26,15 @@
 
 
 extern ZEILEP 	new_col			(char *str, short l);
-extern void		free_col			(ZEILEP col);
-extern ZEILEP	col_insert		(ZEILEP wo, ZEILEP was);
+extern void		free_col			(RINGP t, ZEILEP col);
+extern ZEILEP	col_insert		(RINGP t, ZEILEP wo, ZEILEP was);
 extern void		col_append		(RINGP t, ZEILEP was);
 extern void		col_delete		(RINGP t, ZEILEP was);
 
-extern void		col_concate		(ZEILEP *wo);
-extern void		col_split		(ZEILEP *col,short pos);
-extern short	col_offset		(ZEILEP col);
-extern short	col_einrucken	(ZEILEP *col);
+extern void		col_concate		(RINGP t, ZEILEP *wo);
+extern void		col_split		(RINGP t, ZEILEP *col,short pos);
+extern short	col_offset		(RINGP t, ZEILEP col);
+extern short	col_einrucken	(RINGP t, ZEILEP *col);
 
 extern void		INSERT			(ZEILEP *a, short pos, short delta, char *str);
 extern char		*REALLOC			(ZEILEP *a, short pos, short delta);

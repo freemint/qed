@@ -10,6 +10,8 @@
 #include "window.h"
 #include "umbruch.h"
 
+#include "hl.h"
+
 /* Muessen am Anfang jeden Umbruchs gesetzt werden */
 static bool	tab;
 static short		tab_size, lineal_len;
@@ -106,13 +108,13 @@ void make_absatz(TEXTP t_ptr)
 		}
 }
 
-static short long_brk(ZEILEP col)
+static short long_brk(RINGP rp, ZEILEP col)
 /* Zeile ist zu lang. Wo soll sie abgebrochen werden (mind. ein Wort) */
 {
 	short	off, pos;
 	char	c, *str;
 
-	off = col_offset(col);
+	off = col_offset(rp, col);
 	pos = inter_pos(lineal_len,col,tab,tab_size);
 	str = TEXT(col)+pos;
 	pos--;
@@ -156,14 +158,14 @@ static short long_brk(ZEILEP col)
 	return pos;
 }
 
-static short short_brk(ZEILEP col, short len)
+static short short_brk(RINGP rp, ZEILEP col, short len)
 /* Einer Zeile fehlen Zeichen, sie ist jetzt im Bild len lang */
 /* Wo soll der Nachfolger (col) hochgezogen werden (mind. ein Wort) */
 {
 	char	*str, c;
 	short	pos, merk_pos;
 
-	pos = col_offset(col);
+	pos = col_offset(rp,col);
 	str = TEXT(col)+pos;
 	merk_pos = -1;
 	if (!tab)
@@ -219,7 +221,7 @@ static bool too_long(TEXTP t_ptr, ZEILEP col, long y)
 	weiter = FALSE;
 	while (bild_len(col,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize)>lineal_len)							/* Zeile zu lang */
 	{
-		i = long_brk(col);										/* wo abbrechen */
+		i = long_brk(&t_ptr->text,col);										/* wo abbrechen */
 		if (i==0)
 		{
 			weiter = FALSE;
@@ -231,11 +233,12 @@ static bool too_long(TEXTP t_ptr, ZEILEP col, long y)
 		{
 			ZEILEP help;
 
-			col_split(&col,i);
+			col_split(&t_ptr->text,&col,i);
 			t_ptr->text.lines++;
 			if (t_ptr->ypos>y) t_ptr->ypos++;
 			help = col->nachf;
-			off = col_einrucken(&help);
+			off = col_einrucken(&t_ptr->text, &help);
+			hl_update_zeile( &t_ptr->text, help );
 			if (t_ptr->ypos==y && t_ptr->xpos>i)			/* Cursor umbrechen */
 			{
 				t_ptr->ypos++;
@@ -247,9 +250,11 @@ static bool too_long(TEXTP t_ptr, ZEILEP col, long y)
 		{
 			ZEILEP help = col->nachf;
 
-			off = col_offset(help);
+			off = col_offset(&t_ptr->text,help);
 			INSERT(&help,off,len,TEXT(col)+i);				/* Next verl„ngern */
 			REALLOC(&col,i,-len);								/* Zeile krzen */
+			hl_update_zeile( &t_ptr->text, col );
+			hl_update_zeile( &t_ptr->text, help );
 			if (t_ptr->ypos==y+1 && t_ptr->xpos>off)		/* Cursor verschieben */
 			{
 				t_ptr->xpos += len;
@@ -282,9 +287,9 @@ static bool too_int(TEXTP t_ptr, ZEILEP col, long y)
 	while (bild_len(col,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize)<lineal_len && !(IS_ABSATZ(col)) && col->nachf->len > 0)
 	{
 		next_col = col->nachf;
-		len = short_brk(next_col,bild_len(col,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize));
+		len = short_brk(&t_ptr->text,next_col,bild_len(col,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize));
 		if (len==0) break;										/* nichts zu machen */
-		off = col_offset(next_col);
+		off = col_offset(&t_ptr->text,next_col);
 		if (len==next_col->len)									/* ganze Zeile hochziehen */
 		{
 			if (t_ptr->ypos==y+1)								/* Cursor hochziehen */
@@ -294,7 +299,7 @@ static bool too_int(TEXTP t_ptr, ZEILEP col, long y)
 			}
 			if (t_ptr->ypos>y+1) t_ptr->ypos--;
 			REALLOC(&next_col,0,-off);
-			col_concate(&col);
+			col_concate(&t_ptr->text,&col);
 			t_ptr->text.lines--;									/* gleiche Zeile nochmal */
 		}
 		else															/* teilweise hochziehen */
@@ -312,6 +317,8 @@ static bool too_int(TEXTP t_ptr, ZEILEP col, long y)
 			}
 			INSERT(&col,col->len,len,TEXT(next_col)+off);/* Zeile verl„ngern */
 			REALLOC(&next_col,off,-len);						/* Zeile verkrzen */
+			hl_update_zeile( &t_ptr->text, col );
+			hl_update_zeile( &t_ptr->text, next_col );
 			col = next_col;										/* n„chste Zeile weiter */
 			y++;
 		}

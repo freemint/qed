@@ -72,28 +72,29 @@
 #define MOFONT           101 /* STRING in Baum MENUTREE */
 #define MGLOBALO         102 /* STRING in Baum MENUTREE */
 #define MLOCALOP         103 /* STRING in Baum MENUTREE */
-#define MAUTOSAVE        104 /* STRING in Baum MENUTREE */
-#define MKLAMMER         105 /* STRING in Baum MENUTREE */
-#define MPRINTER         106 /* STRING in Baum MENUTREE */
-#define MPROJEKT         108 /* STRING in Baum MENUTREE */
-#define MTAKEPRJ         109 /* STRING in Baum MENUTREE */
-#define MSOPTION         111 /* STRING in Baum MENUTREE */
-#define MSOPT            113 /* STRING in Baum MENUTREE */
-#define MSQUIT           114 /* STRING in Baum MENUTREE */
-#define MSMAKEFILE       116 /* STRING in Baum MENUTREE */
-#define MSCOMP           118 /* STRING in Baum MENUTREE */
-#define MSMAKE           119 /* STRING in Baum MENUTREE */
-#define MSMAKEALL        120 /* STRING in Baum MENUTREE */
-#define MSLINK           121 /* STRING in Baum MENUTREE */
-#define MSEXEC           122 /* STRING in Baum MENUTREE */
-#define MSMAKEEXEC       123 /* STRING in Baum MENUTREE */
-#define MSSHELL          124 /* STRING in Baum MENUTREE */
+#define MSYNTAXOP        104 /* STRING in Baum MENUTREE */
+#define MAUTOSAVE        105 /* STRING in Baum MENUTREE */
+#define MKLAMMER         106 /* STRING in Baum MENUTREE */
+#define MPRINTER         107 /* STRING in Baum MENUTREE */
+#define MPROJEKT         109 /* STRING in Baum MENUTREE */
+#define MTAKEPRJ         110 /* STRING in Baum MENUTREE */
+#define MSOPTION         112 /* STRING in Baum MENUTREE */
+#define MSOPT            114 /* STRING in Baum MENUTREE */
+#define MSQUIT           115 /* STRING in Baum MENUTREE */
+#define MSMAKEFILE       117 /* STRING in Baum MENUTREE */
+#define MSCOMP           119 /* STRING in Baum MENUTREE */
+#define MSMAKE           120 /* STRING in Baum MENUTREE */
+#define MSMAKEALL        121 /* STRING in Baum MENUTREE */
+#define MSLINK           122 /* STRING in Baum MENUTREE */
+#define MSEXEC           123 /* STRING in Baum MENUTREE */
+#define MSMAKEEXEC       124 /* STRING in Baum MENUTREE */
+#define MSSHELL          125 /* STRING in Baum MENUTREE */
 
 #define ABOUT            2   /* Formular/Dialog */
-#define AVERSION         5   /* TEXT in Baum ABOUT */
-#define ADATUM           7   /* TEXT in Baum ABOUT */
-#define AINFO            8   /* BUTTON in Baum ABOUT */
-#define AOK              9   /* BUTTON in Baum ABOUT */
+#define AVERSION         11  /* TEXT in Baum ABOUT */
+#define ADATUM           12  /* TEXT in Baum ABOUT */
+#define AINFO            14  /* BUTTON in Baum ABOUT */
+#define AOK              15  /* BUTTON in Baum ABOUT */
 
 #define ABOUT2           3   /* Formular/Dialog */
 #define AMINT            4   /* TEXT in Baum ABOUT2 */
@@ -202,17 +203,17 @@
 #define GRAUS            7   /* BUTTON in Baum POS */
 
 #define MARKEN           13  /* Formular/Dialog */
-#define MRKOK            2   /* BUTTON in Baum MARKEN */
-#define MRK1             3   /* BUTTON in Baum MARKEN */
+#define MRK1             2   /* BUTTON in Baum MARKEN */
+#define MRKTXT1          3   /* FTEXT in Baum MARKEN */
 #define MRK2             4   /* BUTTON in Baum MARKEN */
-#define MRK3             5   /* BUTTON in Baum MARKEN */
-#define MRK4             6   /* BUTTON in Baum MARKEN */
-#define MRK5             7   /* BUTTON in Baum MARKEN */
-#define MRKTXT1          8   /* FTEXT in Baum MARKEN */
-#define MRKTXT2          9   /* FTEXT in Baum MARKEN */
-#define MRKTXT3          10  /* FTEXT in Baum MARKEN */
-#define MRKTXT4          11  /* FTEXT in Baum MARKEN */
-#define MRKTXT5          12  /* FTEXT in Baum MARKEN */
+#define MRKTXT2          5   /* FTEXT in Baum MARKEN */
+#define MRK3             6   /* BUTTON in Baum MARKEN */
+#define MRKTXT3          7   /* FTEXT in Baum MARKEN */
+#define MRK4             8   /* BUTTON in Baum MARKEN */
+#define MRKTXT4          9   /* FTEXT in Baum MARKEN */
+#define MRK5             10  /* BUTTON in Baum MARKEN */
+#define MRKTXT5          11  /* FTEXT in Baum MARKEN */
+#define MRKOK            12  /* BUTTON in Baum MARKEN */
 #define MRKRAUS          13  /* BUTTON in Baum MARKEN */
 
 #define FUNKTION         14  /* Formular/Dialog */
@@ -254,18 +255,19 @@
 #define GOKLAMMER        20  /* BUTTON in Baum GLOBALOP */
 #define GOTRANS          22  /* FTEXT in Baum GLOBALOP */
 #define GOFCSTR          24  /* STRING in Baum GLOBALOP */
-#define GOFCOL           25  /* BOX in Baum GLOBALOP */
-#define GOFCPOP          26  /* BOXTEXT in Baum GLOBALOP */
-#define GOBCSTR          27  /* STRING in Baum GLOBALOP */
-#define GOBCOL           28  /* BOX in Baum GLOBALOP */
-#define GOBCPOP          29  /* BOXTEXT in Baum GLOBALOP */
-#define GOHELPSEL        31  /* BUTTON in Baum GLOBALOP */
-#define GOHELPNAME       32  /* STRING in Baum GLOBALOP */
-#define GOAVWIN          34  /* BUTTON in Baum GLOBALOP */
-#define GOAVKEY          35  /* BUTTON in Baum GLOBALOP */
-#define GOOK             36  /* BUTTON in Baum GLOBALOP */
-#define GOABBR           37  /* BUTTON in Baum GLOBALOP */
-#define GOHELP           38  /* BOXTEXT in Baum GLOBALOP */
+#define GOBCSTR          25  /* STRING in Baum GLOBALOP */
+#define GOFCOL           26  /* BOX in Baum GLOBALOP */
+#define GOBCOL           27  /* BOX in Baum GLOBALOP */
+#define GOBLOCKFCOL      28  /* BOX in Baum GLOBALOP */
+#define GOBLOCKBCOL      29  /* BOX in Baum GLOBALOP */
+#define GOSYNTAX         32  /* BUTTON in Baum GLOBALOP */
+#define GOHELPSEL        34  /* BUTTON in Baum GLOBALOP */
+#define GOHELPNAME       35  /* STRING in Baum GLOBALOP */
+#define GOAVWIN          37  /* BUTTON in Baum GLOBALOP */
+#define GOAVKEY          38  /* BUTTON in Baum GLOBALOP */
+#define GOHELP           39  /* BOXTEXT in Baum GLOBALOP */
+#define GOOK             40  /* BUTTON in Baum GLOBALOP */
+#define GOABBR           41  /* BUTTON in Baum GLOBALOP */
 
 #define LOCALOP          19  /* Formular/Dialog */
 #define OTYPESTR         2   /* STRING in Baum LOCALOP */
@@ -350,24 +352,24 @@
 #define AESC             7   /* TEXT in Baum AKTION */
 
 #define POPUPS           27  /* Formular/Dialog */
-#define FUNCPOP          1   /* BOX in Baum POPUPS */
-#define POPF1            2   /* STRING in Baum POPUPS */
-#define DICHTEPOP        22  /* BOX in Baum POPUPS */
-#define DICHTEPICA       23  /* STRING in Baum POPUPS */
-#define DICHTEELITE      24  /* STRING in Baum POPUPS */
-#define DICHTECOND       25  /* STRING in Baum POPUPS */
-#define UMLAUTPOP1       26  /* BOX in Baum POPUPS */
-#define UPFROMST         27  /* STRING in Baum POPUPS */
-#define UMLAUTPOP2       31  /* BOX in Baum POPUPS */
-#define UPTOST           32  /* STRING in Baum POPUPS */
-#define COLORPOP         39  /* BOX in Baum POPUPS */
-#define CPWHITE          56  /* STRING in Baum POPUPS */
-#define DRAGPOP          72  /* BOX in Baum POPUPS */
-#define DPALL            74  /* STRING in Baum POPUPS */
-#define DPPATH           75  /* STRING in Baum POPUPS */
-#define DPNAME           76  /* STRING in Baum POPUPS */
-#define DPRELPATH        77  /* STRING in Baum POPUPS */
-#define DPINHALT         79  /* STRING in Baum POPUPS */
+#define COLORPOP         1   /* BOX in Baum POPUPS */
+#define CPWHITE          18  /* STRING in Baum POPUPS */
+#define FUNCPOP          34  /* BOX in Baum POPUPS */
+#define POPF1            35  /* STRING in Baum POPUPS */
+#define DICHTEPOP        55  /* BOX in Baum POPUPS */
+#define DICHTEPICA       56  /* STRING in Baum POPUPS */
+#define DICHTEELITE      57  /* STRING in Baum POPUPS */
+#define DICHTECOND       58  /* STRING in Baum POPUPS */
+#define DRAGPOP          59  /* BOX in Baum POPUPS */
+#define DPALL            61  /* STRING in Baum POPUPS */
+#define DPPATH           62  /* STRING in Baum POPUPS */
+#define DPNAME           63  /* STRING in Baum POPUPS */
+#define DPRELPATH        64  /* STRING in Baum POPUPS */
+#define DPINHALT         66  /* STRING in Baum POPUPS */
+#define UMLAUTPOP2       67  /* BOX in Baum POPUPS */
+#define UPTOST           68  /* STRING in Baum POPUPS */
+#define UMLAUTPOP1       75  /* BOX in Baum POPUPS */
+#define UPFROMST         76  /* STRING in Baum POPUPS */
 
 #define STRINGS          28  /* Formular/Dialog */
 #define MRECSTR          1   /* STRING in Baum STRINGS */
@@ -397,36 +399,52 @@
 #define HYPANORDSTR      25  /* STRING in Baum STRINGS */
 #define LOADSTR          26  /* STRING in Baum STRINGS */
 #define INSNAMESTR       27  /* STRING in Baum STRINGS */
-#define SAVESTR          28  /* STRING in Baum STRINGS */
-#define DEFPRJ2STR       29  /* STRING in Baum STRINGS */
-#define PRINTSTR         30  /* STRING in Baum STRINGS */
-#define FINDHPSTR        31  /* STRING in Baum STRINGS */
-#define UMLAUTSTR        32  /* STRING in Baum STRINGS */
-#define FINDMKSTR        33  /* STRING in Baum STRINGS */
-#define SEARCHGDOS       34  /* STRING in Baum STRINGS */
-#define TREIBERSTR       35  /* STRING in Baum STRINGS */
-#define ERRORSTR         36  /* STRING in Baum STRINGS */
-#define FINDKURZELSTR    37  /* STRING in Baum STRINGS */
-#define REPLACESTR       38  /* STRING in Baum STRINGS */
-#define FINDGDSTR        39  /* STRING in Baum STRINGS */
-#define UMBRUCHSTR       40  /* STRING in Baum STRINGS */
-#define SAVEBLKSTR       41  /* STRING in Baum STRINGS */
-#define SKRITSTR         42  /* STRING in Baum STRINGS */
-#define SAVEASSTR        43  /* STRING in Baum STRINGS */
-#define NULLBYTESTR      44  /* STRING in Baum STRINGS */
-#define SAVEPRJSTR       45  /* STRING in Baum STRINGS */
-#define BHEADSTR         46  /* STRING in Baum STRINGS */
-#define SELPATHSTR       47  /* STRING in Baum STRINGS */
-#define HEADSTR          48  /* STRING in Baum STRINGS */
-#define FFSTR1           49  /* STRING in Baum STRINGS */
-#define FFSTR2           50  /* STRING in Baum STRINGS */
-#define CHAGESTR         51  /* STRING in Baum STRINGS */
+#define CHAGESTR         28  /* STRING in Baum STRINGS */
+#define SAVESTR          29  /* STRING in Baum STRINGS */
+#define DEFPRJ2STR       30  /* STRING in Baum STRINGS */
+#define PRINTSTR         31  /* STRING in Baum STRINGS */
+#define FINDHPSTR        32  /* STRING in Baum STRINGS */
+#define UMLAUTSTR        33  /* STRING in Baum STRINGS */
+#define FINDMKSTR        34  /* STRING in Baum STRINGS */
+#define SEARCHGDOS       35  /* STRING in Baum STRINGS */
+#define TREIBERSTR       36  /* STRING in Baum STRINGS */
+#define ERRORSTR         37  /* STRING in Baum STRINGS */
+#define FINDKURZELSTR    38  /* STRING in Baum STRINGS */
+#define REPLACESTR       39  /* STRING in Baum STRINGS */
+#define FINDGDSTR        40  /* STRING in Baum STRINGS */
+#define UMBRUCHSTR       41  /* STRING in Baum STRINGS */
+#define SAVEBLKSTR       42  /* STRING in Baum STRINGS */
+#define SKRITSTR         43  /* STRING in Baum STRINGS */
+#define SAVEASSTR        44  /* STRING in Baum STRINGS */
+#define NULLBYTESTR      45  /* STRING in Baum STRINGS */
+#define SAVEPRJSTR       46  /* STRING in Baum STRINGS */
+#define BHEADSTR         47  /* STRING in Baum STRINGS */
+#define SELPATHSTR       48  /* STRING in Baum STRINGS */
+#define HEADSTR          49  /* STRING in Baum STRINGS */
+#define FFSTR1           50  /* STRING in Baum STRINGS */
+#define FFSTR2           51  /* STRING in Baum STRINGS */
 
 #define WINICON          29  /* Formular/Dialog */
 #define WIBOX            0   /* BOX in Baum WINICON */
 #define WIBILD           1   /* IMAGE in Baum WINICON */
 
 #define PRN_ICON         30  /* Formular/Dialog */
+
+#define SYNTAXOP         31  /* Formular/Dialog */
+#define SYOTXT           2   /* BOXTEXT in Baum SYNTAXOP */
+#define SYOACTIVE        3   /* BUTTON in Baum SYNTAXOP */
+#define SYORULEFRAME     4   /* BUTTON in Baum SYNTAXOP */
+#define SYORULE          5   /* BOXTEXT in Baum SYNTAXOP */
+#define SYOBOLD          6   /* BUTTON in Baum SYNTAXOP */
+#define SYOITALIC        7   /* BUTTON in Baum SYNTAXOP */
+#define SYOLIGHT         8   /* BUTTON in Baum SYNTAXOP */
+#define SYOSELCOLORTXT   9   /* STRING in Baum SYNTAXOP */
+#define SYOSELCOLOR      10  /* BOX in Baum SYNTAXOP */
+#define SYOCOLOR         11  /* BOX in Baum SYNTAXOP */
+#define SYOCOLORTXT      12  /* STRING in Baum SYNTAXOP */
+#define SYOHELP          13  /* BOXTEXT in Baum SYNTAXOP */
+#define SYOOK            14  /* BUTTON in Baum SYNTAXOP */
+#define SYOCANCEL        15  /* BUTTON in Baum SYNTAXOP */
 
 #define NOWINDOW         0   /* Alert String */
 
@@ -503,3 +521,13 @@
 #define KLAMMERERR       36  /* Alert String */
 
 #define WFOWNERR         37  /* Alert String */
+
+#define SYN_TOFROM       38  /* Alert String */
+
+#define SYN_MIXED        39  /* Alert String */
+
+#define SYN_SYNTAX       40  /* Alert String */
+
+#define SYN_WRONGVAL     41  /* Alert String */
+
+#define SYN_MEM          42  /* Alert String */

@@ -4,6 +4,7 @@
 
 extern char	__Ident_gnulib[];
 extern char	__Ident_gem[];
+extern char	__Ident_cflib[];
 
 /*
  * exportierte Variablen
@@ -27,6 +28,7 @@ OBJECT	*umlautkonv;
 OBJECT	*fehler;
 OBJECT 	*globalop;
 OBJECT 	*localop;
+OBJECT  *syntaxop;
 OBJECT 	*muster;
 OBJECT	*autosave;
 OBJECT	*klammer;
@@ -124,8 +126,18 @@ bool init_resource(void)
 
 		rsrc_gaddr(R_TREE, GLOBALOP,	&globalop);
 		fix_dial(globalop);
+		fix_colorpopobj( globalop, GOFCOL, 0 ); /* Farbe wird in options.c jedesmal neu gesetzt */
+		fix_colorpopobj( globalop, GOBCOL, 0 );
+		fix_colorpopobj( globalop, GOBLOCKFCOL, 0 );
+		fix_colorpopobj( globalop, GOBLOCKBCOL, 0 );
+		
 		rsrc_gaddr(R_TREE, LOCALOP,	&localop);
 		fix_dial(localop);
+		rsrc_gaddr(R_TREE, SYNTAXOP,	&syntaxop);
+		fix_dial(syntaxop);
+		fix_colorpopobj( syntaxop, SYOCOLOR, 0 ); /* Farbe wird in options.c jedesmal neu gesetzt */
+		fix_colorpopobj( syntaxop, SYOSELCOLOR, 0 );
+
 		rsrc_gaddr(R_TREE, MUSTER,		&muster);
 		fix_dial(muster);
 		rsrc_gaddr(R_TREE, AUTOSAVE,  &autosave);
@@ -161,7 +173,7 @@ bool init_resource(void)
 		set_string(about2, AMINT, str);
 		get_patchlev(__Ident_gem, str);
 		set_string(about2, AGEM, str);
-		/* FIXME get_patchlev(__Ident_cflib, str); */
+		get_patchlev(__Ident_cflib, str);
 		set_string(about2, ACF, str);
 
 #if 0

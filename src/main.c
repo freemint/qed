@@ -1,5 +1,3 @@
-#undef PREDEF_DEBUG_LEVEL 
-
 #include <ctype.h>
 #include <signal.h>
 #include <support.h>
@@ -27,6 +25,8 @@
 #include "umbruch.h"
 #include "version.h"
 #include "window.h"
+#include "hl.h"
+
 
 void CDECL handle_term(int sig)
 {
@@ -90,6 +90,11 @@ static bool init_all(short argc, char *argv[])
 	option_load(&arglist);
 	if (debug_level & DBG_INIT)
 		debug("option_load done.\n");
+
+	hl_init();
+	hl_read_syn();
+	if (debug_level & DBG_INIT)
+		debug("hl_read_syn done.\n");
 
 	font_change();
 	color_change();
@@ -169,7 +174,7 @@ static bool init_all(short argc, char *argv[])
 	delete_poslist(&arglist);
 	if (debug_level & DBG_ARG)
 		debug("arglist done.\n");
-
+	
 	return TRUE;
 }
 
@@ -177,6 +182,10 @@ int main(short argc, char *argv[])
 {
 	short	i, d;
 	char	menu_str[20];
+
+#ifdef PREDEF_DEBUG_LEVEL
+	debug_level = PREDEF_DEBUG_LEVEL;
+#endif
 
 	Pdomain(1);
 	if ((argc > 1) && (strncmp(argv[1], "--debug", 7) == 0))
@@ -188,24 +197,31 @@ int main(short argc, char *argv[])
 	else
 		debug_level = 0;
 
-#ifdef PREDEF_DEBUG_LEVEL
-	debug_level = PREDEF_DEBUG_LEVEL;
-#endif
 
 	if (debug_level)
 	{
 		extern short __mint;
-
+/* added by Heiko */
+#ifdef DEBUG_LOGFILE
+	debug_init("qed",Datei,DEBUG_LOGFILE );
+#else
 		if (__mint)		/* gl_mint wird erst vin init_app() gesetzt! */
 			debug_init("qed", Con, NULL);
 		else
 			debug_init("qed", TCon, NULL);
-/*		debug_init(Datei, "i:\\qed.log");*/
+#endif
+
 	}
+
+/*
+debug_level = 1;
+debug_init("qed", Datei, "e:\\qed.log");
+*/
 
 	nkc_init();
 	init_app(NULL);
-
+  init_colorpop( 8 );
+  
 	debug("Debug-Level: %d\n", debug_level);
 
 	if (debug_level & DBG_ARG)
@@ -259,6 +275,8 @@ int main(short argc, char *argv[])
 		main_loop();
 		if (debug_level & DBG_INIT)
 			debug("event loop leaved.\n");
+
+  	exit_colorpop();
 
 		term_printer();
 		if (debug_level & DBG_INIT)

@@ -51,7 +51,7 @@ static void	go_to_marke	(short nr);
 
 static short  load_kurzel	(void);
 static void clr_kurzel	(void);
-static short  add_kurzel	(ZEILEP col);
+static short  add_kurzel	(RINGP rp, ZEILEP col);
 
 /***************************************************************************/
 
@@ -315,7 +315,7 @@ void do_kurzel(TEXTP t_ptr, bool online)
 
 /* return 1 : kein Speicher mehr => abbruch */
 /*        0 : alles ok                      */
-short add_kurzel(ZEILEP col)
+short add_kurzel(RINGP rp, ZEILEP col)
 {
 	short		len, i;
 	char		*str, buffer[MAX_LINE_LEN+1], *start;
@@ -373,7 +373,7 @@ short add_kurzel(ZEILEP col)
 	{
 		while (!IS_TAIL(c) && strcmp(KRZ_TXT(c),buffer+1)>0)
 			NEXT(c);
-		col_insert(c->vorg,new_col(buffer,len));
+		col_insert(rp, c->vorg,new_col(buffer,len));
 		kurz.lines++;
 	}
 	if (online)
@@ -385,7 +385,7 @@ short add_kurzel(ZEILEP col)
 		{
 			while (!IS_TAIL(c) && strcmp(KRZ_TXT(c),buffer+1)>0)
 				NEXT(c);
-			col_insert(c->vorg,new_col(buffer,len));
+			col_insert(rp, c->vorg,new_col(buffer,len));
 			auto_kurz.lines++;
 		}
 	}
@@ -413,7 +413,7 @@ short load_kurzel(void)
 			clr_kurzel();							/* alte Krzel l”schen */
 			while ((--anz)>=0)
 			{
-				if (add_kurzel(lauf)) 
+				if (add_kurzel(&t, lauf)) 
 					break;
 				NEXT(lauf);
 			}

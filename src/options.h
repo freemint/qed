@@ -16,13 +16,16 @@ extern void		set_autosave_options(void);
 extern bool	clip_on_disk, wind_cycle, f_to_desk,
 				save_opt, overwrite, blinking_cursor, ctrl_mark_mode,
 				olga_autostart, emu_klammer;
+extern bool syntax_active;
 extern short	transfer_size, bin_line_len;
 extern short	fg_color, bg_color;
+extern short fg_block_color, bg_block_color;
 extern PATH	helpprog;
 #define BIN_ANZ	10
 extern char	bin_extension[BIN_ANZ][MUSTER_LEN+1];
 
 extern void		set_global_options	(void);
+extern void		set_syntax_options	(void);
 
 /*
  * Klammerpaare

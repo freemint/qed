@@ -122,7 +122,7 @@ static void insert_sort(RINGP r, ZEILEP ins)
 			VORG(lauf);
 	
 	col = new_col(TEXT(ins), ins->len);
-	col_insert(lauf, col);
+	col_insert(r,lauf, col);
 	r->lines++;
 }
 

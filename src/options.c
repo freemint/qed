@@ -1,21 +1,24 @@
 #include <support.h>
 
 #include "global.h"
-#include "av.h"
 #include "ausgabe.h"
+#include "av.h"
 #include "clipbrd.h"
 #include "edit.h"
 #include "error.h"
 #include "file.h"
 #include "find.h"
+#include "highlite.h"
+#include "hl.h"
 #include "icon.h"
 #include "kurzel.h"
 #include "makro.h"
 #include "memory.h"
+#include "olga.h"
+#include "options.h"
 #include "poslist.h"
 #include "printer.h"
 #include "projekt.h"
-#include "olga.h"
 #include "rsc.h"
 #include "se.h"
 #include "set.h"
@@ -23,7 +26,6 @@
 #include "version.h"
 #include "window.h"
 #include "winlist.h"
-#include "options.h"
 
 extern void	menu_help(short title, short item);
 
@@ -77,8 +79,10 @@ void set_autosave_options(void)
  * Globale Optionen
 */
 bool	clip_on_disk, wind_cycle, f_to_desk;
+bool syntax_active;
 short	transfer_size, bin_line_len;
 short	fg_color, bg_color;
+short fg_block_color, bg_block_color;
 bool	save_opt, overwrite, blinking_cursor, ctrl_mark_mode, olga_autostart,
 		emu_klammer;
 PATH	helpprog;
@@ -110,7 +114,7 @@ static void set_popcolor(short s_obj, short d_obj)
 void set_global_options(void)
 {
 	short	antw, i;
-	bool	old_cycle, new_cycle, new_fg, new_bg;
+	bool	old_cycle, new_cycle, new_fg, new_bg, new_block_fg, new_block_bg;
 	bool	close = FALSE;
 	char	n[23] = "";
 	MDIAL	*dial;
@@ -132,6 +136,8 @@ void set_global_options(void)
 
 	set_short(globalop, GOTRANS, transfer_size);
 
+	set_state(globalop, GOSYNTAX, OS_SELECTED, syntax_active);
+
 	if (helpprog[0] != EOS)
 		make_shortpath(helpprog, n, 22);
 	else
@@ -143,14 +149,14 @@ void set_global_options(void)
 	for (i = 4; i < BIN_ANZ; i++)
 		set_string(globalop, i - 4 + GOBEXT1, bin_extension[i]);
 
-	get_string(popups, fg_color + CPWHITE, n);
-	set_string(globalop, GOFCPOP, n);
-	set_popcolor(fg_color + CPWHITE - 16, GOFCOL);
-	get_string(popups, bg_color + CPWHITE, n);
-	set_string(globalop, GOBCPOP, n);
-	set_popcolor(bg_color + CPWHITE - 16, GOBCOL);
+	set_popobjcolor(globalop, GOFCOL, fg_color);
+	set_popobjcolor(globalop, GOBCOL, bg_color);
+	set_popobjcolor(globalop, GOBLOCKFCOL, fg_block_color);
+	set_popobjcolor(globalop, GOBLOCKBCOL, bg_block_color);
 	new_fg = fg_color;
 	new_bg = bg_color;
+	new_block_fg = fg_block_color;
+	new_block_bg = bg_block_color;
 
 	dial = open_mdial(globalop, GOTRANS);
 	if (dial != NULL)
@@ -174,31 +180,37 @@ void set_global_options(void)
 					break;
 		
 				case GOFCSTR :
-				case GOFCPOP :
-					if (antw == GOFCPOP)
-						i = handle_popup(globalop, GOFCPOP, popups, COLORPOP, POP_OPEN);
+				case GOFCOL :
+					if (antw == GOFCOL)
+						i = handle_colorpop(globalop, GOFCOL, POP_OPEN, 8, FALSE);
 					else
-						i = handle_popup(globalop, GOFCPOP, popups, COLORPOP, POP_CYCLE);
-					if (i > 0)
-					{
-						set_popcolor(i - 16, GOFCOL);
-						redraw_mdobj(dial, GOFCOL);
-						new_fg = i - CPWHITE;
-					}
+						i = handle_colorpop(globalop, GOFCOL, POP_CYCLE, 8, FALSE);
+					if (i > -1)
+						new_fg = i;
+
 					break;
 
 				case GOBCSTR :
-				case GOBCPOP :
-					if (antw == GOBCPOP)
-						i = handle_popup(globalop, GOBCPOP, popups, COLORPOP, POP_OPEN);
+				case GOBCOL :
+					if (antw == GOBCOL)
+						i = handle_colorpop(globalop, GOBCOL, POP_OPEN, 8, FALSE);
 					else
-						i = handle_popup(globalop, GOBCPOP, popups, COLORPOP, POP_CYCLE);
-					if (i > 0)
-					{
-						set_popcolor(i - 16, GOBCOL);
-						redraw_mdobj(dial, GOBCOL);
-						new_bg = i - CPWHITE;
-					}
+						i = handle_colorpop(globalop, GOBCOL, POP_CYCLE, 8, FALSE);
+					if (i > -1)
+						new_bg = i;
+					break;
+
+				case GOBLOCKFCOL :
+					i = handle_colorpop(globalop, GOBLOCKFCOL, POP_OPEN, 8, FALSE);
+					if (i > -1)
+						new_block_fg = i;
+
+					break;
+
+				case GOBLOCKBCOL :
+					i = handle_colorpop(globalop, GOBLOCKBCOL, POP_OPEN, 8, FALSE);
+					if (i > -1)
+						new_block_bg = i;
 					break;
 
 				default:
@@ -227,6 +239,17 @@ void set_global_options(void)
 			if (transfer_size == 0)
 				transfer_size = 1;
 	
+			if( syntax_active && !get_state(globalop, GOSYNTAX, OS_SELECTED))
+			{
+				hl_disable();
+				syntax_active = FALSE;
+			}
+			else if( !syntax_active && get_state(globalop, GOSYNTAX, OS_SELECTED))
+			{
+				syntax_active = TRUE;
+				hl_enable();
+			}
+
 			new_cycle = get_state(globalop, GOAVWIN, OS_SELECTED);
 			if (old_cycle && !new_cycle)						/* war an, nun aus */
 			{
@@ -254,6 +277,12 @@ void set_global_options(void)
 			{
 				fg_color = new_fg;
 				bg_color = new_bg;
+				color_change();
+			}
+			if (new_block_fg != fg_block_color || new_block_bg != bg_block_color) 
+			{
+				fg_block_color = new_block_fg;
+				bg_block_color = new_block_bg;
 				color_change();
 			}
 			
@@ -554,6 +583,234 @@ void set_local_options(void)
 	}
 }
 
+/* Syntax-Optionen */
+static bool build_txtname_popup(int txtidx, POPUP *pop)
+{
+	char *name;
+	int idx = 0;
+	int count = 0;
+	char str[256];
+	bool ret = FALSE;
+	
+	while (Hl_EnumTxtNames(NULL, &count));
+
+	if (Hl_EnumTxtNames(&name, &idx))
+	{
+		strcpy(str, " ");
+		strncpy(str+1, name, syntaxop[SYOTXT].ob_spec.tedinfo->te_txtlen - 2);
+		if (create_popup(pop, count, syntaxop[SYOTXT].ob_spec.tedinfo->te_txtlen , str))
+		{
+			ret = TRUE;
+			while (Hl_EnumTxtNames(&name, &idx))
+			{
+				strcpy(str, " ");
+				strncpy(str+1, name, syntaxop[SYOTXT].ob_spec.tedinfo->te_txtlen - 2);
+				append_popup(pop, str);
+			}
+		}
+	}
+	if (Hl_EnumTxtNames(&name, &txtidx))
+	{
+		strcpy(str, " ");
+		strncpy(str+1, name, syntaxop[SYOTXT].ob_spec.tedinfo->te_txtlen - 2);
+		set_string(syntaxop, SYOTXT, str);
+	}
+	return ret;
+}
+
+static void disable_syntax_settings(bool disableit)
+{
+	set_string(syntaxop, SYORULE, "");
+	set_state(syntaxop, SYORULE, OS_DISABLED, disableit);
+	set_state(syntaxop, SYOBOLD, OS_DISABLED, disableit);
+	set_state(syntaxop, SYOLIGHT, OS_DISABLED, disableit);
+	set_state(syntaxop, SYOITALIC, OS_DISABLED, disableit);
+	set_state(syntaxop, SYOCOLOR, OS_DISABLED, disableit);
+	set_state(syntaxop, SYOSELCOLOR, OS_DISABLED, disableit);
+	set_state(syntaxop, SYOCOLORTXT, OS_DISABLED, disableit);
+	set_state(syntaxop, SYOSELCOLORTXT, OS_DISABLED, disableit);
+	if (disableit)
+	{
+		set_popobjcolor(syntaxop, SYOCOLOR, 1);
+		set_popobjcolor(syntaxop, SYOSELCOLOR, 1);
+	}
+}
+
+static void get_syntax_settings(int txtidx, int idx)
+{
+	char str[256];
+	HL_RULEINFO ri;
+	
+	if (!Hl_EnumRules(txtidx, &ri, &idx)) /* idx wird zerst”rt */
+	{
+		disable_syntax_settings(TRUE);
+		return;
+	}
+	disable_syntax_settings(FALSE);
+	
+	strcpy(str, " ");
+	strncpy(str+1, ri.name, syntaxop[SYORULE].ob_spec.tedinfo->te_txtlen - 2);
+	set_string(syntaxop, SYORULE, str);
+	set_state(syntaxop, SYOBOLD, OS_SELECTED, ri.attribs & HL_BOLD);
+	set_state(syntaxop, SYOLIGHT, OS_SELECTED, ri.attribs & HL_LIGHT);
+	set_state(syntaxop, SYOITALIC, OS_SELECTED, ri.attribs & HL_ITALIC);
+	set_popobjcolor(syntaxop, SYOCOLOR, (ri.attribs & HL_COLOR) ? (short) ri.color : -2);
+	set_popobjcolor(syntaxop, SYOSELCOLOR, (ri.attribs & HL_SELCOLOR) ? (short) ri.selcolor : -2);
+
+	set_state(syntaxop, SYOACTIVE, OS_SELECTED, Hl_IsActive(txtidx));
+	
+}
+
+void store_syntax_settings(short txtidx, short idx)
+{
+	HL_RULEINFO ri;
+	if (syntaxop[SYOBOLD].ob_state & OS_DISABLED)
+		return;
+	ri.attribs =   ((syntaxop[SYOBOLD].ob_state & OS_SELECTED) ? HL_BOLD : 0)
+	             | ((syntaxop[SYOLIGHT].ob_state & OS_SELECTED) ? HL_LIGHT : 0)
+	             | ((syntaxop[SYOITALIC].ob_state & OS_SELECTED) ? HL_ITALIC : 0)
+	             | ((get_popobjcolor(syntaxop, SYOCOLOR) != -2) ? HL_COLOR : 0)
+	             | ((get_popobjcolor(syntaxop, SYOSELCOLOR) != -2) ? HL_SELCOLOR : 0);
+	ri.color = get_popobjcolor(syntaxop, SYOCOLOR);
+	ri.selcolor = get_popobjcolor(syntaxop, SYOSELCOLOR);
+	Hl_ChangeRule(txtidx, idx, &ri);
+	Hl_SetActive(txtidx, syntaxop[SYOACTIVE].ob_state & OS_SELECTED);
+}
+
+
+
+static bool build_rule_popup(int txtidx, POPUP *pop)
+{
+	int idx = 0;
+	int count = 0;
+	char str[256];
+	HL_RULEINFO ri;
+	bool ret = FALSE;
+	
+	while (Hl_EnumRules(txtidx, NULL, &count));
+
+	if (Hl_EnumRules(txtidx, &ri, &idx))
+	{
+		strcpy(str, " ");
+		strncpy(str+1, ri.name, syntaxop[SYORULE].ob_spec.tedinfo->te_txtlen - 2);
+		if (create_popup(pop, count, syntaxop[SYORULE].ob_spec.tedinfo->te_txtlen , str))
+		{
+			ret = TRUE;
+			while (Hl_EnumRules(txtidx, &ri, &idx))
+			{
+				strcpy(str, " ");
+				strncpy(str+1, ri.name, syntaxop[SYORULE].ob_spec.tedinfo->te_txtlen - 2);
+				append_popup(pop, str);
+			}
+		}
+	}
+	return ret;
+}
+
+void set_syntax_options(void)
+{
+	short	antw, y;
+	bool	close = FALSE;
+	WINDOWP window;
+	MDIAL	*dial;
+	POPUP   txtnames, rules;
+	int     act_txttype = 0, act_rule = 0;
+	bool    saved = Hl_SaveSettings();
+
+	window = winlist_top();
+	if ((window != NULL) && (window->class == CLASS_EDIT))
+	{
+		TEXTP t_ptr = get_text(window->handle);
+		PATH extension;
+		split_extension(t_ptr->filename, NULL, extension);
+		if ((act_txttype = Hl_TxtIndexByTxttype(extension)) == -1)
+			act_txttype = 0;
+	}
+	
+	if (!build_txtname_popup(act_txttype, &txtnames))
+	{
+		set_string(syntaxop, SYOTXT, "");
+		set_state(syntaxop, SYOTXT, OS_DISABLED, TRUE);
+		set_state(syntaxop, SYOACTIVE, OS_DISABLED, TRUE);
+	}
+	build_rule_popup(act_txttype, &rules);
+	get_syntax_settings(act_txttype, 0);
+	
+	dial = open_mdial(syntaxop, GOTRANS);
+	if (dial != NULL)
+	{
+		while (!close)
+		{
+			antw = do_mdial(dial) & 0x7fff;
+			switch (antw)
+			{
+				case SYOHELP:
+					menu_help(TOPTIONS, MSYNTAXOP);
+					break;
+					
+				case SYOTXT:
+					y = handle_popup(syntaxop, SYOTXT, txtnames.tree, 0, POP_OPEN) - 1;
+					if (y == -1)
+						break;
+					store_syntax_settings(act_txttype, act_rule);
+					act_txttype = y;
+					act_rule = 0;
+					free_popup(&rules);
+					build_rule_popup(act_txttype, &rules);
+					get_syntax_settings(act_txttype, 0);
+					redraw_mdobj(dial, SYORULE);
+					redraw_mdobj(dial, SYORULEFRAME);
+					redraw_mdobj(dial, SYOACTIVE);
+					break;
+
+				case SYORULE:
+					y = handle_popup(syntaxop, SYORULE, rules.tree, 0, POP_OPEN) - 1;
+					if (y == -1)
+						break;
+					store_syntax_settings(act_txttype, act_rule);
+					act_rule = y;
+					get_syntax_settings(act_txttype, act_rule);
+					redraw_mdobj(dial, SYORULEFRAME);
+					break;
+
+				case SYOCOLOR:
+					handle_colorpop(syntaxop, SYOCOLOR, POP_OPEN, 8, TRUE);
+					break;
+				
+				case SYOSELCOLOR:
+					handle_colorpop(syntaxop, SYOSELCOLOR, POP_OPEN, 8, TRUE);
+					break;
+				
+				case SYOOK:
+					store_syntax_settings(act_txttype, act_rule);
+					if (saved)
+						Hl_DeleteSaveSettings();
+					hl_update_all();
+					close = TRUE;
+					break;
+
+				case SYOCANCEL:
+					if (saved)
+						Hl_RestoreSettings();
+					close = TRUE;
+					break;
+										
+				default:
+					close = TRUE;
+					break;
+
+			}
+			if (!close)
+			{
+				set_state(syntaxop, antw, OS_SELECTED, FALSE);
+				redraw_mdobj(dial, antw);
+			}
+		}
+		set_state(syntaxop, antw, OS_SELECTED, FALSE);
+		close_mdial(dial);
+		free_popup(&txtnames);
+	}
+}
 
 /*
  * Defaulteinstellungen
@@ -590,7 +847,8 @@ void init_default_var(void)
 	clip_on_disk = TRUE;
 	overwrite  = FALSE;
 	transfer_size = 100;
-
+	syntax_active = TRUE;
+	
 	c = getenv("STGUIDE");
 	if (c != NULL)
 		strcpy(helpprog, c);
@@ -658,6 +916,8 @@ void init_default_var(void)
 
 	fg_color = G_BLACK;
 	bg_color = G_WHITE;
+	fg_block_color = bg_color;
+	bg_block_color = fg_color;
 	
 	olga_autostart = FALSE;
 	emu_klammer = FALSE;
@@ -677,68 +937,10 @@ static short			muster_nr = 1;
 
 static bool get_cfg_path(void)
 {
-	bool	found = FALSE;
-	PATH	env, p_for_save = "";
-	
-	if (path_from_env("QED", cfg_path))			/* 1. $QED */
-	{
-		strcat(cfg_path, CFGNAME);
-		strcpy(p_for_save, cfg_path);
-		found = file_exists(cfg_path);
-	}
-
-	if (!gl_debug)
-	if (!found && path_from_env("HOME", env))	/* 2. $HOME */
-	{
-		bool	h = FALSE;
-		
-		strcpy(cfg_path, env);
-		strcat(cfg_path, CFGNAME);
-		if (p_for_save[0] == EOS)
-		{
-			h = TRUE;
-			strcpy(p_for_save, cfg_path);
-		}
-		found = file_exists(cfg_path);
-		if (!found)										/* 2a. $HOME/defaults */
-		{
-			strcpy(cfg_path, env);
-			strcat(cfg_path, "defaults\\");
-			if (path_exists(cfg_path))
-			{
-				strcat(cfg_path, CFGNAME);
-				if (p_for_save[0] == EOS || h)
-					strcpy(p_for_save, cfg_path);
-				found = file_exists(cfg_path);
-			}
-		}		
-	}
-
-	if (!found && gl_appdir[0] != EOS)			/* 3. Startverzeichnis */
-	{
-		strcpy(cfg_path, gl_appdir);
-		strcat(cfg_path, CFGNAME);
-		if (p_for_save[0] == EOS)
-			strcpy(p_for_save, cfg_path);
-		found = file_exists(cfg_path);
-	}
-
-	if (!found && file_exists(CFGNAME))			/* 4. aktuelles Verzeichnis */
-	{
-		get_path(cfg_path, 0);
-		strcat(cfg_path, CFGNAME);
-		if (p_for_save[0] == EOS)
-			strcpy(p_for_save, cfg_path);
-		found = TRUE;
-	}
-
-	if (!found)
-		strcpy(cfg_path, p_for_save);
-
+	bool found;
+	strcpy(cfg_path, CFGNAME);
+	found = get_config_file(cfg_path);
 	sprintf(dsp_name, "%04d%04d.qed", gl_desk.g_x + gl_desk.g_w, gl_desk.g_y + gl_desk.g_h);
-/*
-debug("cfg_path: %s (%d)\n", cfg_path, found);
-*/
 	return found;
 }
 
@@ -850,8 +1052,14 @@ static void parse_line(POSENTRY **arglist, char *zeile)
 		/* Globales */
 		else if (strcmp(var, "GlobalAutosaveCfg") == 0)
 			read_cfg_bool(buffer, &save_opt);
+		else if (strcmp(var, "GlobalFgColor") == 0)
+			fg_color = atoi(buffer);
 		else if (strcmp(var, "GlobalBgColor") == 0)
 			bg_color = atoi(buffer);
+		else if (strcmp(var, "GlobalBlockFgColor") == 0)
+			fg_block_color = atoi(buffer);
+		else if (strcmp(var, "GlobalBlockBgColor") == 0)
+			bg_block_color = atoi(buffer);
 		else if (strcmp(var, "GlobalBinLineLen") == 0)
 			bin_line_len = atoi(buffer);
 		else if (strcmp(var, "GlobalBlinkCursor") == 0)
@@ -860,8 +1068,6 @@ static void parse_line(POSENTRY **arglist, char *zeile)
 			read_cfg_bool(buffer, &ctrl_mark_mode);
 		else if (strcmp(var, "GlobalEmuKlammer") == 0)
 			read_cfg_bool(buffer, &emu_klammer);
-		else if (strcmp(var, "GlobalFgColor") == 0)
-			fg_color = atoi(buffer);
 		else if (strcmp(var, "GlobalFtoDesk") == 0)
 			read_cfg_bool(buffer, &f_to_desk);
 		else if (strcmp(var, "GlobalGEMClip") == 0)
@@ -874,6 +1080,8 @@ static void parse_line(POSENTRY **arglist, char *zeile)
 			transfer_size = atoi(buffer);
 		else if (strcmp(var, "GlobalWindCycle") == 0)
 			read_cfg_bool(buffer, &wind_cycle);
+		else if (strcmp(var, "GlobalSyntaxActive") == 0)
+			read_cfg_bool(buffer, &syntax_active);
 
 		/* Hilfe-Programm */
 		else if (strcmp(var, "HelpProgram") == 0)
@@ -1133,6 +1341,8 @@ void option_load(POSENTRY **list)
 			{
 				fg_color = G_BLACK;
 				bg_color = G_WHITE;
+				fg_block_color = bg_color;
+				bg_block_color = fg_color;
 			}
 			set_drawmode();
 			
@@ -1251,6 +1461,7 @@ void option_save(void)
 		write_cfg_bool("GlobalOverwrite", overwrite);
 		write_cfg_int ("GlobalTransSize", transfer_size);
 		write_cfg_bool("GlobalWindCycle", wind_cycle);
+		write_cfg_bool("GlobalSyntaxActive", syntax_active);
 	
 		/* Hilfeprogramm */
 		write_cfg_str("HelpProgram", helpprog);
@@ -1350,6 +1561,8 @@ void option_save(void)
 			/* Farb-Infos */
 			write_cfg_int("GlobalBgColor", bg_color);
 			write_cfg_int("GlobalFgColor", fg_color);
+			write_cfg_int("GlobalBlockBgColor", bg_block_color);
+			write_cfg_int("GlobalBlockFgColor", fg_block_color);
 
 			/* geladene Dateien */
 			do_all_text(save_open_text);

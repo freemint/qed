@@ -6,6 +6,7 @@
 #include "rsc.h"
 #include "set.h"
 #include "text.h"
+#include "hl.h"
 
 /*
  * Verwaltung der Texte als einfach verkettete Liste
@@ -29,6 +30,9 @@ static void nullen(TEXTP t_ptr)
 	t_ptr->filesys = NO_CASE;
 	t_ptr->asave = 0;
 	t_ptr->max_line = NULL;
+	t_ptr->text.hl_anchor = NULL;
+	t_ptr->text.head.hl_handle = NULL;
+	t_ptr->text.tail.hl_handle = NULL;
 }
 
 void clear_text(TEXTP t_ptr)
@@ -77,6 +81,8 @@ void destruct_text(TEXTP t_ptr)
 {
 	TEXTP p;
 
+/* Heiko */
+	hl_free( t_ptr );
 	/* Wurzel? */
 	if (t_ptr == text_list)
 		text_list = text_list->next;

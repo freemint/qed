@@ -32,7 +32,7 @@ static short			dhst_id = -1;
 bool send_msg(short id)
 {
 	short	ret;
-	
+
 	msgbuff[1] = gl_apid;
 	msgbuff[2] = 0;
 	ret = appl_write(id, (short) sizeof(msgbuff), msgbuff);
@@ -79,7 +79,7 @@ void send_dhst(char *filename)
 		}
 		split_filename(filename, NULL, dhst->docname);
 		strcpy(dhst->docpath, filename);
-		
+
 		msgbuff[0] = DHST_ADD;
 		*(DHSTINFO **)(msgbuff + 3) = dhst;
 		msgbuff[5] = 0;

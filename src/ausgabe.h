@@ -18,7 +18,7 @@ extern void		head_out			(WINDOWP window, TEXTP t_ptr);
 extern void		line_out			(WINDOWP window, TEXTP t_ptr, short wy);
 extern void		bild_out			(WINDOWP window, TEXTP t_ptr);
 extern void		bild_blkout		(WINDOWP window, TEXTP t_ptr, long z1, long z2);
-extern short		cursor_xpos		(TEXTP t_ptr, short pos);
+extern short		cursor_xpos		(TEXTP t_ptr, short pos, bool *cursor_italic );
 extern void		cursor			(WINDOWP window, TEXTP t_ptr);
 
 extern void 	set_drawmode	(void);

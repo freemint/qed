@@ -1,15 +1,17 @@
 #include "global.h"
 #include "qed.h"
 #include "memory.h"
+/* Heiko */
+#include "hl.h"
 
 #undef MAGIC
 #define MAGIC			0xFED1
-#define MAX_ANZ		261 /* 132 */	/* 67 */	
+#define MAX_ANZ		 262 /*261*/ /* 132 */	/* 67 */ 	
 #define BLOCK_SIZE	(MAX_ANZ*4)
 #define BLOCKANZ		50 /* 100 */  /* 200 */			/* Fr einen malloc */
 #define MEMSIZE		((long)BLOCK_SIZE*BLOCKANZ)	/* fr einen malloc */
 
-#define MEM_SIZE(x)	(((x)+2+3)&(~3))						/* 2 Bytes drauf fr den Kopf */
+#define MEM_SIZE(x)	(((x)+2+3)&(~3))						/* 2 Bytes drauf fr den Kopf und auf long glattmachen */
 #define MEM_ADD(x,d)	(BLOCK*)((char*)(x)+(d))
 #define MEM_SUB(x,d)	(BLOCK*)((char*)(x)-(d))
 
@@ -293,19 +295,20 @@ ZEILEP new_col(char *str, short l)
 		a->len = l;
 		a->exp_len = -1;
 		a->is_longest = FALSE;
+		a->hl_handle = NULL;
 		memcpy(TEXT(a), str, l);
 		TEXT(a)[l] = EOS;
 	}
 	return(a);
 }
 
-void free_col(ZEILEP col)
+void free_col(RINGP rp, ZEILEP col)
 {
 	FREE(col);
 }
 
 /* Zeile nach WO einfgen	  */
-ZEILEP col_insert(ZEILEP wo, ZEILEP was)
+ZEILEP col_insert(RINGP rp, ZEILEP wo, ZEILEP was)
 {
 	ZEILEP help;
 
@@ -314,6 +317,9 @@ ZEILEP col_insert(ZEILEP wo, ZEILEP was)
 	was->nachf = help;
 	was->vorg = wo;
 	wo->nachf = was;
+	
+	if( rp )
+		hl_insert( rp, was );
 	return was;
 }
 
@@ -328,17 +334,19 @@ void col_append(RINGP t, ZEILEP was)
 	help->nachf = was;
 	t->tail.vorg = was;
 	t->lines++;
+	hl_insert( t, was );
 }
 
 void col_delete(RINGP t, ZEILEP was)
 {
+	hl_remove( t, was );
 	was->vorg->nachf = was->nachf;
 	was->nachf->vorg = was->vorg;
 	FREE(was);
 	t->lines--;
 }
 
-void col_concate(ZEILEP *wo)
+void col_concate(RINGP rp, ZEILEP *wo)
 {
 	ZEILEP		help, col;
 	bool	absatz;
@@ -351,6 +359,11 @@ void col_concate(ZEILEP *wo)
 		INSERT(&col, col->len, help->len, TEXT(help));
 		help->nachf->vorg = col;
 		col->nachf = help->nachf;
+		if( rp )
+		{
+			hl_remove( rp, help );
+			hl_update_zeile( rp, col );
+		}
 		FREE(help);
 		if (absatz)
 			col->info |= ABSATZ;
@@ -362,12 +375,14 @@ void col_concate(ZEILEP *wo)
 	{
 		col->vorg->nachf = help;
 		help->vorg = col->vorg;
+		if( rp )
+			hl_remove( rp, col );
 		FREE(col);
 		*wo = help;
 	}
 }
 
-void col_split(ZEILEP *col,short pos)
+void col_split(RINGP rp, ZEILEP *col,short pos)
 {
 	ZEILEP	new,help;
 	short		anz;
@@ -381,21 +396,24 @@ void col_split(ZEILEP *col,short pos)
 	if (pos==0)
 	{
 		new = new_col("",0);
-		col_insert(help->vorg,new);
+		col_insert(rp, help->vorg,new);
 		*col = new;
 	}
 	else if (pos<help->len)
 	{
+		hl_remove( rp, help );
 		anz = help->len-pos;
 		new = new_col(TEXT(help)+pos, anz);
-		col_insert (help, new);
+		col_insert (NULL, help, new);
 		REALLOC(&help,pos,-anz);
+		hl_insert( rp, help );
+		hl_insert( rp, new );
 		*col = help;
 	}
 	else
 	{
 		new = new_col("",0);
-		col_insert(help,new);
+		col_insert(rp, help,new);
 	}
 	if (absatz) 
 		(*col)->nachf->info |= ABSATZ;
@@ -408,7 +426,7 @@ void col_split(ZEILEP *col,short pos)
 /* 
  * Wieviel WhiteSpace-Zeichen stehen am Anfang der Zeile?
 */
-short col_offset(ZEILEP col)
+short col_offset(RINGP rp, ZEILEP col)
 {
 	short	pos;
 	char c, *str;
@@ -424,7 +442,7 @@ short col_offset(ZEILEP col)
 	return pos;
 }
 
-short col_einrucken(ZEILEP *col)
+short col_einrucken(RINGP rp, ZEILEP *col)
 {
 	ZEILEP	vor_col;
 	short		length;
@@ -432,7 +450,7 @@ short col_einrucken(ZEILEP *col)
 	vor_col = (*col)->vorg;
 	if (!IS_HEAD(vor_col))
 	{
-		length = col_offset(vor_col);
+		length = col_offset(rp, vor_col);
 		if ((*col)->len + length > MAX_LINE_LEN)
 		{
 			inote(1, 0, TOOLONG, MAX_LINE_LEN);
@@ -488,6 +506,7 @@ void init_textring(RINGP r)
 	r->lines = 1;
 	r->ending = lns_tos;
 	r->max_line_len = MAX_LINE_LEN;
+	r->hl_anchor = NULL;
 }
 
 long textring_bytes(RINGP r)
@@ -567,7 +586,7 @@ bool doppeln(RINGP old, RINGP new)
 	{
 		neu = new_col(TEXT(lauf),lauf->len);
 		neu->info = lauf->info;						/* ABSATZ mit kopieren */
-		col_insert(a->vorg,neu);
+		col_insert(NULL, a->vorg,neu);
 		NEXT(lauf);
 		lines++;
 		if (!ist_mem_frei())

@@ -15,6 +15,8 @@
 #include "umbruch.h"
 #include "window.h"
 #include "tasten.h"
+/* Heiko */
+#include "hl.h"
 
 /* Modi fr deselect_block() */
 #define UP		1
@@ -324,13 +326,16 @@ void char_cr(TEXTP t_ptr) 				/* -> kurzel.c */
 	if (t_ptr->block)
 		blk_delete(t_ptr);
 	t_ptr->moved++;
-	col_split(&t_ptr->cursor_line,t_ptr->xpos);
+	col_split(&t_ptr->text, &t_ptr->cursor_line,t_ptr->xpos);
 	t_ptr->cursor_line->info |= ABSATZ;
 	t_ptr->text.lines++;
 	NEXT(t_ptr->cursor_line);
 	t_ptr->ypos++;
 	if (t_ptr->loc_opt->einruecken)
-		t_ptr->xpos = col_einrucken(&t_ptr->cursor_line);
+	{
+		t_ptr->xpos = col_einrucken(&t_ptr->text,&t_ptr->cursor_line);
+		hl_update( t_ptr );
+	}
 	else
 		t_ptr->xpos = 0;
 
@@ -474,7 +479,7 @@ static void char_delete(TEXTP t_ptr)
 		}
 		clr_undo();
 		t_ptr->moved++;
-		col_concate(&t_ptr->cursor_line);
+		col_concate(&t_ptr->text,&t_ptr->cursor_line);
 		t_ptr->text.lines--;
 		make_chg(t_ptr->link,SCROLL_UP,t_ptr->ypos+1);
 		make_chg(t_ptr->link,LINE_CHANGE,t_ptr->ypos);
@@ -870,6 +875,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					t_ptr->up_down = FALSE;
 					if (!blk_mark_brace(t_ptr))
 						blk_mark_word(t_ptr);
+					hl_update( t_ptr );
 					break;
 				case NK_DEL :
 					if (!t_ptr->block)
@@ -879,6 +885,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 						t_ptr->up_down = FALSE;
 						do_icon(t_ptr->link, DO_CUT);
 					}
+					hl_update( t_ptr );
 					break;
 				case NK_INS:
 					if (!t_ptr->block)
@@ -888,6 +895,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 						t_ptr->up_down = FALSE;
 						do_icon(t_ptr->link, DO_PASTE);
 					}
+					hl_update( t_ptr );
 					break;
 				case NK_CLRHOME:
 					if (!t_ptr->block)
@@ -946,6 +954,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					if (!t_ptr->block)
 						pos_korr(window, t_ptr);
 					tabulator(t_ptr);
+					hl_update( t_ptr );
 					break;
 				case NK_RET:
 				case (NK_ENTER|NKF_NUM) :
@@ -1028,6 +1037,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 						blk_delete(t_ptr);
 					else
 						char_bs(t_ptr);
+					hl_update( t_ptr );
 					break;
 				case NK_DEL:
 					if (!t_ptr->block)
@@ -1038,6 +1048,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 						blk_delete(t_ptr);
 					else
 						char_delete(t_ptr);
+					hl_update( t_ptr );
 					break;
 				case NK_M_PGUP:				/* Mac: page up -> shift-up */
 					if (!t_ptr->block)
@@ -1087,6 +1098,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 			char_insert(t_ptr, ascii_code);
 			if (krz_loaded)
 				do_kurzel(t_ptr, TRUE);
+			hl_update( t_ptr );
 		}
 		else
 			return FALSE;
