@@ -19,12 +19,12 @@ extern void	setup_semenu	(void);
  * Setzt das Shell-Men 
 */
 
-extern void	handle_se		(int *msg);
+extern void	handle_se		(short *msg);
 /* 
  * Wertet die von der Shell kommenden Messages aus 
 */
 
-extern void	handle_es		(int menuitem);
+extern void	handle_es		(short menuitem);
 /* 
  * Wertet die im men ausgew„hlten Aktionen aus und schickt sie der Shell 
 */

@@ -7,17 +7,21 @@
 
 typedef unsigned long	SET[SETSIZE];			/* Menge */
 
-/*
- * Dateinamen, Pfade, Dateiauswahl 
-*/
 #define MAX_PATH_LEN	256
 typedef char PATH[MAX_PATH_LEN];
 
 #define MAX_NAME_LEN	64
 typedef char FILENAME[MAX_NAME_LEN];
 
-/* AufzÑhlnungtypen */
-typedef enum {tos, unix, apple, binmode} LINEENDING;
+#ifdef __PUREC__
+#define CDECL cdecl
+#else
+#define CDECL
+#endif
+
+#define EOS '\0'
+
+typedef enum {lns_tos, lns_unix, lns_apple, lns_binmode} LINEENDING;
 
 typedef enum {Atari, Latin, Mac, PC, LaTeX, HTML, ASCII} UMLAUTENCODING;
 
@@ -40,12 +44,12 @@ typedef struct
 {
 	char			muster[MUSTER_LEN + 1];	/* Datei-Maske */
 	bool			tab;
-	int			tabsize;
+	short			tabsize;
 	bool			einruecken;
 	bool			umbrechen;
 	bool			format_by_load;
 	bool  		format_by_paste;
-	int			lineal_len;
+	short			lineal_len;
 	char			umbruch_str[35];
 	SET			umbruch_set;
 	bool			backup;
@@ -62,9 +66,9 @@ typedef struct _zeile
 	struct _zeile 	*vorg;
 	struct _zeile 	*nachf;
 	char				info;
-	int				len;					/* LÑnge in Bytes */
+	short				len;					/* LÑnge in Bytes */
 	bool				is_longest;
-	int				exp_len;				/* expandierte LÑnge */
+	short				exp_len;				/* expandierte LÑnge */
 } ZEILE, *ZEILEP;
 
 
@@ -81,16 +85,16 @@ typedef struct
 typedef struct _text
 {
 	struct _text 	*next;
-	int				link;					/* Fensterhandle */
+	short				link;					/* Fensterhandle */
 	RING				text;					/* Der Text */
 	long				file_date_time;	/* Datei-Datum und Zeit */
 	ZEILEP			cursor_line;      /* zeigt auf aktuellen Textzeile */
-	int				xpos;            	/* x-Position des Cursors im Text */
+	short				xpos;            	/* x-Position des Cursors im Text */
 	long				ypos;					/* y-Position des Cursors im Text */
 	long				moved;				/* Text wurde seit letztem Sichern verÑndert */
 	ZEILEP			p1,p2;				/* Zeiger fÅr Block */
 	long				z1,z2;				/* ZeilenNr. fÅr p1 und p2 */
-	int				x1,x2;				/* X-Pos fÅr Block-Anfang und Ende */
+	short				x1,x2;				/* X-Pos fÅr Block-Anfang und Ende */
 	bool				cursor;				/* Cursor anzeigen */
 	bool				block;				/* Es gibt einen Block */
 	bool				blink;				/* Cursor ist gerade wg. Blinken aus */
@@ -98,10 +102,10 @@ typedef struct _text
 	bool				up_down;				/* War letzte Operation Up oder Down */
 	bool				blk_mark_mode;		/* Block wird durch Cursor aufgezogen */
 	bool				readonly;			/* Datei auf Disk schreibgeschÅtzt */
-	int				desire_x;			/* FÅr UP und DOWN in [TASTEN] */
+	short				desire_x;			/* FÅr UP und DOWN in [TASTEN] */
 	char				info_str[256];		/* Text, der im Fenster-Info ausgegeben wird */
 	PATH				filename;			/* Name der Datei */
-	int				filesys;				/* Ergebnis von fs_case_sens(filename) */
+	short				filesys;				/* Ergebnis von fs_case_sens(filename) */
 	bool				namenlos;			/* Datei hat noch keinen Name */
 	LOCOPTP			loc_opt;				/* Zeiger auf lokalen Optionen */
 	long				asave;				/* letzter Autosave (min) */
@@ -114,27 +118,27 @@ typedef void (*TEXT_DOFUNC)(TEXTP t_ptr);
 typedef struct _window
 {
 	struct _window	*next;
-	int				class;				/* Klasse des Fensters */
-	int				init;					/* Nummer des Fensters fÅr die Konfig */
-	int				handle;				/* Handle fÅr Fenster */
-	int				kind;					/* Art des Fensters */
-	int				flags;				/* Flags des Fensters */
+	short				class;				/* Klasse des Fensters */
+	short				init;					/* Nummer des Fensters fÅr die Konfig */
+	short				handle;				/* Handle fÅr Fenster */
+	short				kind;					/* Art des Fensters */
+	short				flags;				/* Flags des Fensters */
 	LRECT				doc;					/* Position und Grîûe des Dokumentes */
-	int				xfac;					/* X-Factor des Dokumentes */
-	int				yfac;					/* Y-Factor des Dokumentes */
-	int				w_width;				/* Fensterbreite in Einheiten */
-	int				w_height;			/* Fensterhîhe in Einheiten */
+	short				xfac;					/* X-Factor des Dokumentes */
+	short				yfac;					/* Y-Factor des Dokumentes */
+	short				w_width;				/* Fensterbreite in Einheiten */
+	short				w_height;			/* Fensterhîhe in Einheiten */
 	GRECT				work;					/* Arbeitsbereich */
 	char				title[WINSTRLEN];	/* Titel des Fensters (mit ' ' und '*') */
 	char				info[WINSTRLEN];	/* Infozeile des Fensters */
-	int				icon_x, icon_y;	/* Position des Icons */
+	short				icon_x, icon_y;	/* Position des Icons */
 	GRECT				old_size;			/* Absolute Grîûe vor dem Iconify */
 
 	void				(*draw)			(struct _window *window, GRECT *d);
-	void				(*snap)			(struct _window *window, GRECT *new, int mode);
-	void				(*click)			(struct _window *window, int m_x, int m_y, int bstate, int kstate, int breturn);
+	void				(*snap)			(struct _window *window, GRECT *new, short mode);
+	void				(*click)			(struct _window *window, short m_x, short m_y, short bstate, short kstate, short breturn);
 	void				(*unclick)		(struct _window *window);
-	bool				(*key)			(struct _window *window, int kstate, int kreturn);
+	bool				(*key)			(struct _window *window, short kstate, short kreturn);
 	void				(*top)			(struct _window *window);
 	void				(*ontop)			(struct _window *window);
 	void				(*untop)			(struct _window *window);
@@ -159,7 +163,7 @@ typedef struct _posentry
 	struct _posentry	*next;
 	PATH					filename;
 	long					zeile;
-	int					spalte;
+	short					spalte;
 } POSENTRY;
 
 #endif

@@ -10,7 +10,7 @@
 #define	CMD_KRIT	1
 #define	CMD_SORT	2
 
-static int		last_cmd = CMD_NONE,
+static short		last_cmd = CMD_NONE,
 					start_x = 0, end_x = 0;		/* Kriterium */
 static long		start_z = 0, end_z = 0;		/* Bereich */
 static ZEILEP	p1, p2;
@@ -43,7 +43,7 @@ static char	sort_tab[] =
 };
 
 
-static int qed_strncmp(char *s1, char *s2, int n, bool grkl)
+static short qed_strncmp(char *s1, char *s2, short n, bool grkl)
 {
 	register char	c1, c2;
 	register long	count;
@@ -81,9 +81,9 @@ static int qed_strncmp(char *s1, char *s2, int n, bool grkl)
 }
 
 
-static int laufcmp(ZEILEP l1, ZEILEP l2)
+static short laufcmp(ZEILEP l1, ZEILEP l2)
 {
-	int	n;
+	short	n;
 	
 	if (start_x == 0 && end_x == 0)			/* ganze Zeilen vergleichen */
 	{
@@ -168,7 +168,7 @@ void sort_block(TEXTP t_ptr)
 	if ((t_ptr->z2 > t_ptr->z1 + 1) || (last_cmd == CMD_KRIT))
 	{
 		RING	r;
-		int	antw;
+		short	antw;
 		char	str[26];
 
 		if (last_cmd == CMD_KRIT)
@@ -185,9 +185,9 @@ void sort_block(TEXTP t_ptr)
 			p2 = t_ptr->p2;
 		}
 		
-		set_state(sort, BSUP, SELECTED, !sort_down);
-		set_state(sort, BSDOWN, SELECTED, sort_down);
-		set_state(sort, BSGRKL, SELECTED, sort_grkl);
+		set_state(sort, BSUP, OS_SELECTED, !sort_down);
+		set_state(sort, BSDOWN, OS_SELECTED, sort_down);
+		set_state(sort, BSGRKL, OS_SELECTED, sort_grkl);
 
 		sprintf(str, rsc_string(SZEILESTR), start_z, end_z);
 		str[24] = EOS;
@@ -213,11 +213,11 @@ void sort_block(TEXTP t_ptr)
 				clear_sort();
 				break;
 		}
-		set_state(sort, antw, SELECTED, FALSE);
+		set_state(sort, antw, OS_SELECTED, FALSE);
 		if (last_cmd == CMD_SORT)
 		{
-			sort_down = get_state(sort, BSDOWN, SELECTED);
-			sort_grkl = get_state(sort, BSGRKL, SELECTED);
+			sort_down = get_state(sort, BSDOWN, OS_SELECTED);
+			sort_grkl = get_state(sort, BSGRKL, OS_SELECTED);
 
 			do_sort(t_ptr, &r);
 			
@@ -241,9 +241,9 @@ void sort_block(TEXTP t_ptr)
 
 /* --------------------------------------------------------------------------- */
 #if 0
-static int line_cmp(char *z1, int l1, char *z2, int l2)
+static short line_cmp(char *z1, short l1, char *z2, short l2)
 {
-	int 	l = -1;
+	short 	l = -1;
 	bool	quit = FALSE;
 	
 	if (l1 != l2)
@@ -275,7 +275,7 @@ static int line_cmp(char *z1, int l1, char *z2, int l2)
 	return l;
 }
 
-static void mark_diff(TEXTP t_ptr, int z, int s)
+static void mark_diff(TEXTP t_ptr, short z, short s)
 {
 	t_ptr->xpos = s;
 	if (z >= t_ptr->text.lines - 1)
@@ -302,7 +302,7 @@ void compare(TEXTP t1, TEXTP t2)
 	{
 		ZEILEP	lauf1, lauf2;
 		bool		quit = FALSE;
-		int		l, z1, z2;
+		short		l, z1, z2;
 
 		blk_demark(t1);
 		blk_demark(t2);

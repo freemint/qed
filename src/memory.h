@@ -25,19 +25,19 @@
 #define IS_OVERLEN(x)	((x->info&OVERLEN)!=0)
 
 
-extern ZEILEP 	new_col			(char *str, int l);
+extern ZEILEP 	new_col			(char *str, short l);
 extern void		free_col			(ZEILEP col);
 extern ZEILEP	col_insert		(ZEILEP wo, ZEILEP was);
 extern void		col_append		(RINGP t, ZEILEP was);
 extern void		col_delete		(RINGP t, ZEILEP was);
 
 extern void		col_concate		(ZEILEP *wo);
-extern void		col_split		(ZEILEP *col,int pos);
-extern int	col_offset		(ZEILEP col);
-extern int	col_einrucken	(ZEILEP *col);
+extern void		col_split		(ZEILEP *col,short pos);
+extern short	col_offset		(ZEILEP col);
+extern short	col_einrucken	(ZEILEP *col);
 
-extern void		INSERT			(ZEILEP *a, int pos, int delta, char *str);
-extern char		*REALLOC			(ZEILEP *a, int pos, int delta);
+extern void		INSERT			(ZEILEP *a, short pos, short delta, char *str);
+extern char		*REALLOC			(ZEILEP *a, short pos, short delta);
 extern ZEILEP 	get_line			(RINGP r, long y);
 
 extern void		init_textring	(RINGP r);

@@ -17,13 +17,13 @@
 #include "window.h"
 #include "find.h"
 
-extern void	menu_help(int title, int item);
+extern void	menu_help(short title, short item);
 
 /* exportierte Variablen ***************************************************/
 
 bool					s_grkl, s_quant, s_wort, s_vorw, s_global, s_round,
 						ff_rekursiv;
-int					r_modus, rp_box_x, rp_box_y;
+short					r_modus, rp_box_x, rp_box_y;
 char					r_str[HIST_LEN+1], s_str[HIST_LEN+1],
 						s_history[HIST_ANZ][HIST_LEN+1],
 						r_history[HIST_ANZ][HIST_LEN+1],
@@ -40,7 +40,7 @@ UMLAUTENCODING 	umlaut_from, umlaut_to;
 #define M_TENDE		2
 
 static ZEILEP 	start;
-static int		text_len, text_x,
+static short		text_len, text_x,
 					last_op = -1;
 static long		text_y;
 static SET		wort_set;
@@ -48,20 +48,20 @@ static SET		wort_set;
 /* Variablen, die ber set_suchmode gesetzt werden */
 /* !!! muessen bei match gesichet werden !!! */
 static bool		quantor, vorw, grkl, wort, modus, round, line_start;
-static int		muster_len;
+static short		muster_len;
 static char 	muster_txt[HIST_LEN+1];
 static char 	replace_txt[HIST_LEN+1];
 static SET		group[SETANZ];
-static int		setanz;
-static int		delta[256];
+static short		setanz;
+static short		delta[256];
 
 /* lokale Prototypen *****************************************************/
 static bool	build_popup (char h[HIST_ANZ][HIST_LEN+1], POPUP *pop);
-static int	hist_popup	(char h[HIST_ANZ][HIST_LEN+1], OBJECT *tree, int obj_pos, int obj_text);
+static short	hist_popup	(char h[HIST_ANZ][HIST_LEN+1], OBJECT *tree, short obj_pos, short obj_text);
 
 /*=======================================================================*/
 
-static void init_suche(TEXTP t_ptr, int modus)
+static void init_suche(TEXTP t_ptr, short modus)
 {
 	if (modus == M_CURSOR)
 	{
@@ -127,8 +127,8 @@ static void init_suche(TEXTP t_ptr, int modus)
 	setcpy(wort_set,t_ptr->loc_opt->wort_set);
 }
 
-static int suche1(ZEILEP col, int x, int str_len, int *such_len,
-						char*(*call)(char*,int,char*,int*))
+static short suche1(ZEILEP col, short x, short str_len, short *such_len,
+						char*(*call)(char*,short,char*,short*))
 /* vorw */
 {
 	char *ptr, *str, *str2;
@@ -138,7 +138,7 @@ static int suche1(ZEILEP col, int x, int str_len, int *such_len,
 		if (x>0 && line_start)									/* Muster am Anfang finden */
 			return -1;
 		if (x+str_len<col->len && muster_len>=2 &&
-			 muster_txt[muster_len-2]=='[' && muster_txt[muster_len-1]==0xFC)
+			 muster_txt[muster_len-2]=='[' && ((unsigned char)muster_txt[muster_len-1])==0xFC)
 			return -1;
 	}
 	ptr = TEXT(col);
@@ -151,20 +151,20 @@ static int suche1(ZEILEP col, int x, int str_len, int *such_len,
 				 !(str2[*such_len]==EOS || !setin(wort_set,str2[*such_len])))
 		{
 			str2++;
-			str_len -= (int)(str2 - str);
+			str_len -= (short)(str2 - str);
 			str = str2;
 			str2 = (*call)(str, str_len, muster_txt, such_len);
 			if (str2==NULL) return -1;
 		}
 	}
-	return (int)(str2 - ptr);
+	return (short)(str2 - ptr);
 }
 
-static int suche2(ZEILEP col, int x, int str_len, int *such_len,
-						char*(*call)(char*,int,char*,int*))
+static short suche2(ZEILEP col, short x, short str_len, short *such_len,
+						char*(*call)(char*,short,char*,short*))
 /* rauf */
 {
-	int	x2, merk;
+	short	x2, merk;
 
 	merk = 0;
 	while (TRUE)
@@ -178,11 +178,11 @@ static int suche2(ZEILEP col, int x, int str_len, int *such_len,
 	return merk-1;
 }
 
-static char *STRSTR(char *str_anf, int str_len, char *mstr_anf, int *found_len)
+static char *STRSTR(char *str_anf, short str_len, char *mstr_anf, short *found_len)
 /* Suche ohne Quantoren */
 {
 	char *mstr, *str;
-	int	i, mstr_len = muster_len;
+	short	i, mstr_len = muster_len;
 
 	*found_len = mstr_len;
 	str_anf += mstr_len;
@@ -211,11 +211,11 @@ static char *STRSTR(char *str_anf, int str_len, char *mstr_anf, int *found_len)
 	return(NULL);
 }
 
-static char *STRSTR1(char *str_anf, int str_len, char *mstr_anf, int *found_len)
+static char *STRSTR1(char *str_anf, short str_len, char *mstr_anf, short *found_len)
 /* Suche ohne Quantoren (Gross/Klein) */
 {
 	char *mstr, *str, s;
-	int	i, mstr_len = muster_len;
+	short	i, mstr_len = muster_len;
 
 	*found_len = mstr_len;
 	str_anf += mstr_len;
@@ -256,11 +256,11 @@ static char *STRSTR1(char *str_anf, int str_len, char *mstr_anf, int *found_len)
 	return(NULL);
 }
 
-static char *STRSTR2(char *str_anf, int str_len, char *mstr_anf, int *found_len)
+static char *STRSTR2(char *str_anf, short str_len, char *mstr_anf, short *found_len)
 /* Suche mit Quantoren (rekursiv) */
 {
 	char *str, *mstr, m, s;
-	int	len, anz;
+	short	len, anz;
 
 	if (line_start)										/* Muster am Anfang finden */
 		anz = 1;
@@ -277,7 +277,7 @@ static char *STRSTR2(char *str_anf, int str_len, char *mstr_anf, int *found_len)
 			s = *str;
 			if (m==EOS) 									/* Muster komplett gefunden */
 			{
-				*found_len = (int)(str - str_anf);
+				*found_len = (short)(str - str_anf);
 				return str_anf;
 			}
 			if (len==0)
@@ -292,7 +292,7 @@ static char *STRSTR2(char *str_anf, int str_len, char *mstr_anf, int *found_len)
 				line_start = save;
 				if (str==NULL)
 					return NULL;
-				*found_len += (int)(str - str_anf);
+				*found_len += (short)(str - str_anf);
 				return str_anf;
 			}
 			if (!grkl)
@@ -308,24 +308,24 @@ static char *STRSTR2(char *str_anf, int str_len, char *mstr_anf, int *found_len)
 			if (m=='[')
 			{
 				m = *mstr++;								/* nach '[' folgt ein Infozeichen */
-				if (m==0xFF)							/* echtes '[' */
+				if (((unsigned char)m)==0xFF)							/* echtes '[' */
 				{
 					if (s!='[') break;
 				}
-				else if (m==0xFE) 							/* Wortende (letztes in Muster) */
+				else if (((unsigned char)m)==0xFE) 							/* Wortende (letztes in Muster) */
 				{
 					if (len==0 || !setin(wort_set,s))
 					{
-						*found_len = (int)(str - str_anf);
+						*found_len = (short)(str - str_anf);
 						return str_anf;
 					}
 					break;
 				}
-				else if (m==0xFC) 						/* Zeilenende */
+				else if (((unsigned char)m)==0xFC) 						/* Zeilenende */
 				{
 					if (len==0)
 					{
-						*found_len = (int)(str - str_anf);
+						*found_len = (short)(str - str_anf);
 						return str_anf;
 					}
 					break;
@@ -351,12 +351,12 @@ static char *STRSTR2(char *str_anf, int str_len, char *mstr_anf, int *found_len)
 /* raus : start, text_x, text_len, text_y */
 /* -1:Abbruch, 0:nichts gefunden 1:gefunden */
 
-static int suchen2(int *such_len)
+static short suchen2(short *such_len)
 {
-	char*	(*call)	(char*,int,char*,int*);
+	char*	(*call)	(char*,short,char*,short*);
 	long	y;
 	ZEILEP lauf;
-	int	step, x;
+	short	step, x;
 
 	x = text_x;
 	y = text_y;
@@ -422,14 +422,14 @@ static int suchen2(int *such_len)
 /* raus : start, text_x, text_len, text_y */
 /* -1:Abbruch, 0:nichts gefunden 1:gefunden */
 
-static int suchen(TEXTP t_ptr, int *such_len)
+static short suchen(TEXTP t_ptr, short *such_len)
 {
-	int	erg;
+	short	erg;
 
 	erg = suchen2(such_len);
 	if (erg==0 && round)
 	{
-		int	m;
+		short	m;
 
 		Bconout(2, 7);
 		if (vorw)
@@ -535,13 +535,13 @@ static void set_suchmode(char *Muster, char *Replace, bool Grkl, bool Quantor,
 		}
 		*d = EOS;
 		strcpy((char *)muster_txt, help);
-		muster_len = (int) strlen(muster_txt);
+		muster_len = (short) strlen(muster_txt);
 	}
 	else
 	{
-		int i,j;
+		short i,j;
 
-		muster_len = (int) strlen(muster_txt);
+		muster_len = (short) strlen(muster_txt);
 		for (i=0; i<256; i++) 
 			delta[i] = muster_len;
 		j = muster_len-1;
@@ -559,9 +559,9 @@ static void set_suchmode(char *Muster, char *Replace, bool Grkl, bool Quantor,
 			modus = M_CURSOR;
 }
 
-int start_find(TEXTP t_ptr, bool quiet)
+short start_find(TEXTP t_ptr, bool quiet)
 {
-	int	len, erg;
+	short	len, erg;
 
 	last_op = 1;
 	graf_mouse(HOURGLASS, NULL);
@@ -583,16 +583,16 @@ int start_find(TEXTP t_ptr, bool quiet)
 	return erg;
 }
 
-int start_replace(TEXTP t_ptr)
+short start_replace(TEXTP t_ptr)
 {
 	char 	*ptr;
-	int	delta, erg, loc_r_modus, d,
+	short	delta, erg, loc_r_modus, d,
 			such_len, rpl_len;
 	long	anz;
 
 	last_op = 2;
 	graf_mouse(HOURGLASS, NULL);
-	rpl_len	= (int) strlen(replace_txt);
+	rpl_len	= (short) strlen(replace_txt);
 	anz = 0L;
 	init_suche(t_ptr, modus);
 
@@ -626,7 +626,7 @@ int start_replace(TEXTP t_ptr)
 			restore_edit();
 			if (loc_r_modus == RP_OPT)
 			{
-				int antw;
+				short antw;
 
 				blk_mark(t_ptr,0);
 				t_ptr->xpos = text_x+such_len;
@@ -719,9 +719,9 @@ int start_replace(TEXTP t_ptr)
 	return erg;
 }
 
-int do_next(TEXTP t_ptr)
+short do_next(TEXTP t_ptr)
 {
-	int	erg;
+	short	erg;
 	bool	vorw;
 
 	vorw = (shift_pressed()) ? (!s_vorw) : s_vorw;
@@ -757,10 +757,10 @@ void find_selection(TEXTP t_ptr)
 }
 
 
-bool filematch(char *str, char *m, int fs_typ)
+bool filematch(char *str, char *m, short fs_typ)
 {
 	char 	*where, muster[HIST_LEN+1];
-	int		i;
+	short		i;
 	bool	gk = FALSE, old_flg[2];
 
 	if ((str[0] == EOS) || (m[0] == EOS))
@@ -781,7 +781,7 @@ bool filematch(char *str, char *m, int fs_typ)
 
 	sprintf(muster, "^%s$", m);
 	set_suchmode(muster, "", gk, TRUE, TRUE, FALSE, FALSE, FALSE);
-	where = STRSTR2((char*)str, (int) strlen(str), muster_txt, &i);
+	where = STRSTR2((char*)str, (short) strlen(str), muster_txt, &i);
 
 	/* 
 	 * Fr den Fall, das ein Projekt durchsucht wird, wird filematch() fr
@@ -798,7 +798,7 @@ bool filematch(char *str, char *m, int fs_typ)
 
 static void insert_history(char h[HIST_ANZ][HIST_LEN+1], char *str)
 {
-	int	i,j;
+	short	i,j;
 	char	old_history[HIST_ANZ][HIST_LEN+1];
 
 	/* alte History merken */
@@ -821,7 +821,7 @@ static void insert_history(char h[HIST_ANZ][HIST_LEN+1], char *str)
 static bool build_popup(char h[HIST_ANZ][HIST_LEN+1], POPUP *pop)
 {
 	char	str[HIST_LEN + 1];
-	int	i;
+	short	i;
 
 	pop->tree = NULL;			/* init */
 
@@ -845,7 +845,7 @@ static bool build_popup(char h[HIST_ANZ][HIST_LEN+1], POPUP *pop)
 }
 
 
-static int circle_popup(char h[HIST_ANZ][HIST_LEN+1], void *dial, OBJECT* tree, int text_obj, int pos)
+static short circle_popup(char h[HIST_ANZ][HIST_LEN+1], void *dial, OBJECT* tree, short text_obj, short pos)
 {
 	if ((pos + 1 < HIST_ANZ) && (h[pos + 1][0] != EOS))
 		pos++;
@@ -863,9 +863,9 @@ static int circle_popup(char h[HIST_ANZ][HIST_LEN+1], void *dial, OBJECT* tree, 
  *					1: Suchen
  *					2: Ersetzen
 */
-int replace_dial(void)
+short replace_dial(void)
 {
-	int	antw, d, r_cycle, s_cycle;
+	short	antw, d, r_cycle, s_cycle;
 	bool	im_kreis, s_p_v, r_p_v;			/* *_popup_valid */
 	bool	close = FALSE;
 	MDIAL	*dial;
@@ -875,27 +875,27 @@ int replace_dial(void)
 	/* Klemmbrett sichern, damit die Dialog das aktuelle haben */
 	save_clip();
 
-	set_state(replace, RPGLOBAL, SELECTED, s_global);
-	set_state(replace, RPCURSOR, SELECTED, !s_global);
-	set_state(replace, RPROUND, SELECTED, s_round);
+	set_state(replace, RPGLOBAL, OS_SELECTED, s_global);
+	set_state(replace, RPCURSOR, OS_SELECTED, !s_global);
+	set_state(replace, RPROUND, OS_SELECTED, s_round);
 
 	set_string(replace, RPTEXT1, s_str);
 	set_string(replace, RPTEXT2, r_str);
-	set_state(replace, RPGRKL, SELECTED, s_grkl);
-	set_state(replace, RPWILD, SELECTED, s_quant);
-	set_state(replace, RPWORT, SELECTED, s_wort);
-	set_state(replace, RPVORW, SELECTED, s_vorw);
-	set_state(replace, RPRUCKW, SELECTED, !s_vorw);
-	set_state(replace, RPFIRST, SELECTED, r_modus==RP_FIRST);
-	set_state(replace, RPALL, SELECTED, r_modus==RP_ALL);
-	set_state(replace, RPOPTION, SELECTED, r_modus==RP_OPT);
+	set_state(replace, RPGRKL, OS_SELECTED, s_grkl);
+	set_state(replace, RPWILD, OS_SELECTED, s_quant);
+	set_state(replace, RPWORT, OS_SELECTED, s_wort);
+	set_state(replace, RPVORW, OS_SELECTED, s_vorw);
+	set_state(replace, RPRUCKW, OS_SELECTED, !s_vorw);
+	set_state(replace, RPFIRST, OS_SELECTED, r_modus==RP_FIRST);
+	set_state(replace, RPALL, OS_SELECTED, r_modus==RP_ALL);
+	set_state(replace, RPOPTION, OS_SELECTED, r_modus==RP_OPT);
 
 	s_p_v = build_popup(s_history, &s_pop);
 	r_p_v = build_popup(r_history, &r_pop);
 
 	/* Popups ggf. abschalten */
-	set_state(replace, RPSHIST, DISABLED, !s_p_v);
-	set_state(replace, RPEHIST, DISABLED, !r_p_v);
+	set_state(replace, RPSHIST, OS_DISABLED, !s_p_v);
+	set_state(replace, RPEHIST, OS_DISABLED, !r_p_v);
 
 	s_cycle = 0;
 	r_cycle = 0;
@@ -945,7 +945,7 @@ int replace_dial(void)
 		
 				case RPHELP :
 					menu_help(TSEARCH, MFIND);
-					set_state(replace, antw, SELECTED, FALSE);
+					set_state(replace, antw, OS_SELECTED, FALSE);
 					redraw_mdobj(dial, antw);
 					break;
 		
@@ -955,7 +955,7 @@ int replace_dial(void)
 			}
 		}
 		close_mdial(dial);
-		set_state(replace, antw, SELECTED, FALSE);
+		set_state(replace, antw, OS_SELECTED, FALSE);
 		if (antw == RPOK || antw == RPERSATZ)
 		{
 			get_string(replace, RPTEXT1, s_str);
@@ -965,16 +965,16 @@ int replace_dial(void)
 				note(1, 0, RPSAME);
 				return 0;
 			}
-			s_grkl	= get_state(replace,RPGRKL, SELECTED);
-			s_quant	= get_state(replace,RPWILD, SELECTED);
-			s_wort	= get_state(replace,RPWORT, SELECTED);
-			s_vorw = get_state(replace,RPVORW, SELECTED);
-			s_global = get_state(replace,RPGLOBAL, SELECTED);
-			s_round	= get_state(replace,RPROUND, SELECTED);
+			s_grkl	= get_state(replace,RPGRKL, OS_SELECTED);
+			s_quant	= get_state(replace,RPWILD, OS_SELECTED);
+			s_wort	= get_state(replace,RPWORT, OS_SELECTED);
+			s_vorw = get_state(replace,RPVORW, OS_SELECTED);
+			s_global = get_state(replace,RPGLOBAL, OS_SELECTED);
+			s_round	= get_state(replace,RPROUND, OS_SELECTED);
 	
-			if (get_state(replace, RPFIRST, SELECTED))
+			if (get_state(replace, RPFIRST, OS_SELECTED))
 				r_modus = RP_FIRST;
-			else if (get_state(replace, RPALL, SELECTED))
+			else if (get_state(replace, RPALL, OS_SELECTED))
 				r_modus = RP_ALL;
 			else
 				r_modus = RP_OPT;
@@ -1003,7 +1003,7 @@ bool findfile_dial(char *ff_path, bool in_prj)
 {
 	PATH	new_path = "", str = "";
 	char 	s[HIST_LEN+1];
-	int	antw, cycle, d;
+	short	antw, cycle, d;
 	bool	close = FALSE, p_v;
 	MDIAL	*dial;
 	POPUP	pop;
@@ -1013,17 +1013,17 @@ bool findfile_dial(char *ff_path, bool in_prj)
 	if (in_prj)							/* Suche im Projekt */
 	{
 		set_string(find_obj, FFTITLE, rsc_string(FFSTR2));
-		set_state(find_obj, FFSELP, DISABLED, TRUE);
-		set_state(find_obj, FFREK, DISABLED, TRUE);
-		set_state(find_obj, FFREK, SELECTED, FALSE);
+		set_state(find_obj, FFSELP, OS_DISABLED, TRUE);
+		set_state(find_obj, FFREK, OS_DISABLED, TRUE);
+		set_state(find_obj, FFREK, OS_SELECTED, FALSE);
 		make_shortpath(ff_path, str, 50);
 	}	
 	else									/* Suche nach Dateien */
 	{
 		set_string(find_obj, FFTITLE, rsc_string(FFSTR1));
-		set_state(find_obj, FFSELP, DISABLED, FALSE);
-		set_state(find_obj, FFREK, DISABLED, FALSE);
-		set_state(find_obj, FFREK, SELECTED, ff_rekursiv);
+		set_state(find_obj, FFSELP, OS_DISABLED, FALSE);
+		set_state(find_obj, FFREK, OS_DISABLED, FALSE);
+		set_state(find_obj, FFREK, OS_SELECTED, ff_rekursiv);
 		strcpy(new_path, ff_path);
 		if (ff_path[0] != EOS)
 			make_shortpath(ff_path, str, 50);
@@ -1031,14 +1031,14 @@ bool findfile_dial(char *ff_path, bool in_prj)
 	set_string(find_obj, FFPATH, str);
 	set_string(find_obj, FFMASK, ff_mask);
 	set_string(find_obj, FFTEXT, s_str);
-	set_state(find_obj, FFGRKL, SELECTED, s_grkl);
-	set_state(find_obj, FFWILD, SELECTED, s_quant);
-	set_state(find_obj, FFWORT, SELECTED, s_wort);
+	set_state(find_obj, FFGRKL, OS_SELECTED, s_grkl);
+	set_state(find_obj, FFWILD, OS_SELECTED, s_quant);
+	set_state(find_obj, FFWORT, OS_SELECTED, s_wort);
 
 	p_v =	build_popup(s_history, &pop);
 
 	/* Popup ggf. abschalten */
-	set_state(find_obj, FFHIST, DISABLED, !p_v);
+	set_state(find_obj, FFHIST, OS_DISABLED, !p_v);
 
 	cycle = 0;
 
@@ -1084,20 +1084,20 @@ bool findfile_dial(char *ff_path, bool in_prj)
 			}
 			if (!close)
 			{
-				set_state(find_obj, antw, SELECTED, FALSE);
+				set_state(find_obj, antw, OS_SELECTED, FALSE);
 				redraw_mdobj(dial, antw);
 			}
 		}
 		close_mdial(dial);
-		set_state(find_obj, antw, SELECTED, FALSE);
+		set_state(find_obj, antw, OS_SELECTED, FALSE);
 		if (antw == FFOK)
 		{
 			get_string(find_obj, FFTEXT, s_str);
 			get_string(find_obj, FFMASK, ff_mask);
-			ff_rekursiv = get_state(find_obj, FFREK, SELECTED);
-			s_grkl	= get_state(find_obj, FFGRKL, SELECTED);
-			s_quant	= get_state(find_obj, FFWILD, SELECTED);
-			s_wort	= get_state(find_obj, FFWORT, SELECTED);
+			ff_rekursiv = get_state(find_obj, FFREK, OS_SELECTED);
+			s_grkl	= get_state(find_obj, FFGRKL, OS_SELECTED);
+			s_quant	= get_state(find_obj, FFWILD, OS_SELECTED);
+			s_wort	= get_state(find_obj, FFWORT, OS_SELECTED);
 			if (!in_prj)
 				strcpy(ff_path, new_path);
 			if (s_str[0] != EOS)
@@ -1134,7 +1134,7 @@ static char umlaute[8][7] =
 void change_umlaute(TEXTP t_ptr)
 {
 	ZEILEP	lauf;
-	int		x, update;
+	short		x, update;
 	long		l;
 	bool		cont = TRUE;
 	bool		changed = FALSE;
@@ -1156,14 +1156,14 @@ void change_umlaute(TEXTP t_ptr)
 		{
 			if (lauf->len > 0)
 			{
-				int	u, xpos, len;
+				short	u, xpos, len;
 				char	c;
 					
 				xpos = 0;
 				while (xpos < lauf->len)
 				{
 					c = TEXT(lauf)[xpos];
-					if (c > 127)
+					if (((unsigned char)c) > 127)
 					{
 						for (u = 0; u <= 7; u++)
 							if (c == umlaute[umlaut_from][u])
@@ -1206,7 +1206,7 @@ void change_umlaute(TEXTP t_ptr)
 									strcpy(new, "szlig;");
 								else
 									new[0] = umlaute[umlaut_to][u];
-								len = (int)strlen(new);
+								len = (short)strlen(new);
 								if (lauf->len + len <= MAX_LINE_LEN)
 								{
 									TEXT(lauf)[xpos] = '&';
@@ -1254,7 +1254,7 @@ void change_umlaute(TEXTP t_ptr)
 bool umlaut_dial(void)
 {
 	bool	ret = FALSE, close = FALSE;
-	int	antw, new_from, new_to, d;
+	short	antw, new_from, new_to, d;
 	MDIAL	*dial;
 	char	str[30];
 		
@@ -1310,7 +1310,7 @@ bool umlaut_dial(void)
 					break;
 			}
 		}
-		set_state(umlautkonv, antw, SELECTED, FALSE);
+		set_state(umlautkonv, antw, OS_SELECTED, FALSE);
 		close_mdial(dial);
 		if (antw == UKSTART)
 		{

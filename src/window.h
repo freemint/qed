@@ -77,14 +77,14 @@ extern bool			all_iconified;	/* sind wir komplett iconified?? */
  * Funktionen
 */
 
-extern int 		num_openwin			(int class);
-extern WINDOWP get_window			(int handle);
-extern void 	do_all_window		(int class, WIN_DOFUNC func);
+extern short 		num_openwin			(short class);
+extern WINDOWP get_window			(short handle);
+extern void 	do_all_window		(short class, WIN_DOFUNC func);
 extern WINDOWP winlist_top			(void);
 extern void 	get_realtop			(void);
 extern WINDOWP real_top				(void);
-extern bool 	rc_first				(int wh, GRECT *b, GRECT *r);
-extern bool 	rc_next				(int wh, GRECT *r);
+extern bool 	rc_first				(short wh, GRECT *b, GRECT *r);
+extern bool 	rc_next				(short wh, GRECT *r);
 extern void 	clr_area 			(GRECT *area);
 extern bool 	free_for_draw		(WINDOWP w);
 extern void 	redraw_window		(WINDOWP w, GRECT *area);
@@ -99,24 +99,24 @@ extern void 	ontop_window		(WINDOWP w);
 extern void 	untop_window		(WINDOWP w);
 extern void 	top_window			(WINDOWP w);
 extern void 	cycle_window		(void);
-extern void 	bottom_window		(WINDOWP w, int which);
-extern void		shade_window		(WINDOWP w, int mode);
-extern void 	scroll_vertical	(GRECT *area, int delta);
-extern void 	arrow_window		(WINDOWP w, int arrow, long amount);
-extern void 	h_slider				(WINDOWP w, int new_value);
-extern void 	v_slider				(WINDOWP w, int new_value);
-extern void 	set_sliders			(WINDOWP w, int which, int mode);
+extern void 	bottom_window		(WINDOWP w, short which);
+extern void		shade_window		(WINDOWP w, short mode);
+extern void 	scroll_vertical	(GRECT *area, short delta);
+extern void 	arrow_window		(WINDOWP w, short arrow, long amount);
+extern void 	h_slider				(WINDOWP w, short new_value);
+extern void 	v_slider				(WINDOWP w, short new_value);
+extern void 	set_sliders			(WINDOWP w, short which, short mode);
 extern void 	set_wtitle			(WINDOWP w, char *filename);
 extern void 	set_winfo			(WINDOWP w, char *info);
 extern void 	change_window 		(WINDOWP w, char *filename, bool changed);
-extern WINDOWP create_window		(int kind, int class, WIN_CRTFUNC crt);
+extern WINDOWP create_window		(short kind, short class, WIN_CRTFUNC crt);
 extern bool 	open_window			(WINDOWP w);
 extern void 	close_window		(WINDOWP w);
 extern void 	do_font_change		(WINDOWP w);
-extern void 	click_window		(WINDOWP w, int m_x, int m_y, int bstate, int kstate, int breturn);
+extern void 	click_window		(WINDOWP w, short m_x, short m_y, short bstate, short kstate, short breturn);
 extern void 	unclick_window 	(void);
-extern bool		key_window			(WINDOWP w, int kstate, int kreturn);
-extern void		arrange_window		(int mode);
+extern bool		key_window			(WINDOWP w, short kstate, short kreturn);
+extern void		arrange_window		(short mode);
 
 extern void 	init_window			(void);
 extern void		term_window			(void);

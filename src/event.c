@@ -47,29 +47,29 @@ bool	abort_prog = FALSE;		/* Falls TRUE -> sofort Ende */
 
 typedef struct
 {
-	int	which;
-	int	msg[8];
-	int	m_x;
-	int	m_y;
-	int	bstate;
-	int	kstate;
-	int	kreturn;
-	int	breturn;
+	short	which;
+	short	msg[8];
+	short	m_x;
+	short	m_y;
+	short	bstate;
+	short	kstate;
+	short	kreturn;
+	short	breturn;
 } EVENT;
 
 /****** VARIABLES ************************************************************/
 
 static EVENT	msg_queue[MAX_EVENT];
-static int		msg_head = 0,
+static short		msg_head = 0,
 					msg_tail = 0;
-static int		old_mx = 0,
+static short		old_mx = 0,
 					old_my = 0; 	/* Immer die letzte Mausposition */
 static bool		menu_ctrl;
 
 /****** FUNCTIONS ************************************************************/
 
-static void handle_keybd	(int kstate, int kreturn);
-static void handle_button	(int m_x, int m_y, int bstate, int kstate, int breturn);
+static void handle_keybd	(short kstate, short kreturn);
+static void handle_button	(short m_x, short m_y, short bstate, short kstate, short breturn);
 
 /*****************************************************************************/
 
@@ -80,7 +80,7 @@ static bool is_event(void)
 
 static bool full_event(void)
 {
-	int next;
+	short next;
 
 	next = msg_head+1;
 	if (next == MAX_EVENT)
@@ -90,7 +90,7 @@ static bool full_event(void)
 
 static void add_event(EVENT *event)
 {
-	int next;
+	short next;
 
 	if (event->which == MU_KEYBD && is_event())		/* Tastatur-Repeat? */
 	{
@@ -129,7 +129,7 @@ static bool get_event(EVENT *event)
 static bool idle(void)
 {
 	EVENT ev;
-	int	events;
+	short	events;
 
 	if (full_event())
 		return FALSE;
@@ -161,7 +161,7 @@ static bool idle(void)
 bool check_for_abbruch(void)
 {
 	EVENT ev;
-	int	events;
+	short	events;
 
 	if (full_event())
 		events = MU_KEYBD | MU_TIMER;
@@ -197,7 +197,7 @@ bool check_for_abbruch(void)
 
 static void next_action(EVENT *ev)
 {
-	int	events;
+	short	events;
 
 again:
 	if (get_event(ev))									/* Event aus der Schlange */
@@ -248,7 +248,7 @@ again:
 /* Ereignis-Verarbeitung																										 */
 /*****************************************************************************/
 
-static void handle_keybd(int kstate, int kreturn)
+static void handle_keybd(short kstate, short kreturn)
 {
 	WINDOWP window;
 
@@ -300,9 +300,9 @@ static void handle_keybd(int kstate, int kreturn)
 }
 
 /*****************************************************************************/
-static void handle_button(int m_x, int m_y, int bstate, int kstate, int breturn)
+static void handle_button(short m_x, short m_y, short bstate, short kstate, short breturn)
 {
-	int		wh;
+	short		wh;
 	WINDOWP	window;
 
 	if (!all_iconified)
@@ -316,7 +316,7 @@ static void handle_button(int m_x, int m_y, int bstate, int kstate, int breturn)
 }
 
 /*****************************************************************************/
-static bool str_to_key(char *str, int *kstate, int *kreturn)
+static bool str_to_key(char *str, short *kstate, short *kreturn)
 {
 	char	c, sign, *s1, *s2;
 	bool	erg = FALSE;
@@ -353,19 +353,19 @@ static bool str_to_key(char *str, int *kstate, int *kreturn)
 	return erg;
 }
 
-void handle_msg(int *msg)
+void handle_msg(short *msg)
 {
 	WINDOWP	window;
 
 	wake_mouse();
 	window= get_window(msg[3]);			/* Zugeh”riges Fenster */
 
-	switch (msg[0])							/* Art der Nachricht */
+	switch ((unsigned short)msg[0])							/* Art der Nachricht */
 	{
 		case MN_SELECTED:
 			if (makro_rec)						/* Makro wird Tastendruck vorgegaukelt */
 			{
-				int	kstate, kreturn;
+				short	kstate, kreturn;
 				char	str[50];
 				
 				get_string(menu, msg[4], str);
@@ -504,7 +504,7 @@ void handle_msg(int *msg)
 			if (debug_level)
 			{
 				char	str[12];
-				int	d, i, id;
+				short	d, i, id;
 	
 				if ((appl_xgetinfo(4, &d, &d, &i, &d)) && (i == 1))	/* gibts appl_search? */
 				{
@@ -605,7 +605,7 @@ void main_loop(void)
 		end_undo_seq();
 		if (abort_prog)
 		{
-			int	msg[] = {0,0,0,0,0,0,0,0};
+			short	msg[] = {0,0,0,0,0,0,0,0};
 
 			msg[0] = AP_TERM;
 			msg[1] = gl_apid;

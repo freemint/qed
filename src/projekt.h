@@ -1,12 +1,12 @@
 #ifndef _qed_projekt_h_
 #define _qed_projekt_h_
 
-extern int	prj_type;
+extern short	prj_type;
 extern PATH	def_prj_path;
 
-extern int	load_projekt	(char *filename);
-extern bool	add_to_projekt	(int link, char *name, bool draw);
-extern int	new_projekt		(void);
+extern short	load_projekt	(char *filename);
+extern bool	add_to_projekt	(short link, char *name, bool draw);
+extern short	new_projekt		(void);
 
 extern void	find_on_disk	(void);
 

@@ -28,12 +28,12 @@
 #include "version.h"
 #include "window.h"
 
-void cdecl handle_term(int sig)
+void CDECL handle_term(int sig)
 {
 	abort_prog = TRUE;
 }
 
-static bool init_all(int argc, char *argv[])
+static bool init_all(short argc, char *argv[])
 {
 	POSENTRY	*arglist = NULL;
 
@@ -104,7 +104,7 @@ static bool init_all(int argc, char *argv[])
 	
 	if (argc > 1)
 	{
-		int		i, x, l;
+		short		i, x, l;
 		long		y;
 		PATH		str;
 		bool		in_quote = FALSE;
@@ -125,7 +125,7 @@ static bool init_all(int argc, char *argv[])
 			{
 				strcat(str, " ");
 				strcat(str, argv[i]);
-				l = (int)strlen(str);
+				l = (short)strlen(str);
 				if (str[l-1] == '\'')			/* letztens Namesteil gefunden */
 				{
 					str[l-1] = EOS;				/* ' am Ende l”schen */
@@ -173,9 +173,9 @@ static bool init_all(int argc, char *argv[])
 	return TRUE;
 }
 
-void main(int argc, char *argv[])
+int main(short argc, char *argv[])
 {
-	int	i, d;
+	short	i, d;
 	char	menu_str[20];
 
 	Pdomain(1);
@@ -194,7 +194,7 @@ void main(int argc, char *argv[])
 
 	if (debug_level)
 	{
-		extern int __mint;
+		extern short __mint;
 
 		if (__mint)		/* gl_mint wird erst vin init_app() gesetzt! */
 			debug_init("qed", Con, NULL);
@@ -210,7 +210,7 @@ void main(int argc, char *argv[])
 
 	if (debug_level & DBG_ARG)
 	{
-		int	i;
+		short	i;
 	
 		debug("argc=  %d\n", argc);
 		for (i = 0; i < argc; i++)
@@ -282,4 +282,5 @@ void main(int argc, char *argv[])
 		debug("term_global done.\n");
 
 	exit_app(return_code);
+	return return_code;
 }

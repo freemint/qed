@@ -5,10 +5,6 @@
 #include <macros.h>
 #include <mintbind.h>
 
-#ifndef __MINT__
-#error qed benîtigt ab Version 4 die MiNT-Lib!!
-#endif
-
 #include "types.h"
 
 
@@ -34,17 +30,17 @@
 
 /****** global Variablen ******************************************************/
 
-extern int		fill_color;			/* aktuell eingestellte FÅllfarbe */
+extern short		fill_color;			/* aktuell eingestellte FÅllfarbe */
 
 extern bool		quick_close;		/* Sichern der Texte ohne Nachfrage */
-extern int		vdi_handle;			/* Virtuelles Workstation Handle */
+extern short		vdi_handle;			/* Virtuelles Workstation Handle */
 
 extern bool		done;					/* Ende gewÑhlt ? */
 
-extern int		desire_x, return_code;
+extern short		desire_x, return_code;
 extern long		desire_y, undo_y;
 
-extern int		font_id, font_pts, 
+extern short		font_id, font_pts, 
 					font_wcell, font_hcell,
 					min_ascii, max_ascii;
 extern bool		font_prop;
@@ -57,14 +53,14 @@ extern void		wake_mouse				(void);
 
 extern void		print_headline		(char *str);
 
-extern bool		inside				(int x, int y, GRECT *r);
+extern bool		inside				(short x, short y, GRECT *r);
 
 extern bool		get_clip				(GRECT *size);
 extern void		set_clip				(bool	 flag, GRECT *size);
 
-extern int		note					(int def, int undo, int index);
-extern int		inote					(int def, int undo, int index, int val);
-extern int		snote					(int def, int undo, int index, char *val);
+extern short		note					(short def, short undo, short index);
+extern short		inote					(short def, short undo, short index, short val);
+extern short		snote					(short def, short undo, short index, char *val);
 
 extern bool		shift_pressed		(void);
 
@@ -92,6 +88,6 @@ extern void		term_global			(void);
 #define DBG_SE		32			/* SE-Protokoll */
 #define DBG_OL		64			/* OLGA */
 
-extern int	debug_level;
+extern short	debug_level;
 
 #endif

@@ -32,8 +32,8 @@
 
 typedef struct
 {
-	int	len;
-	int	pos;
+	short	len;
+	short	pos;
 } TABLEENTRY;
 
 
@@ -43,7 +43,7 @@ typedef struct
 static TABLEENTRY	seq_table[MAX_SEQUENCE + 1],
 				 		trans_table[MAXTRANSLATIONS + 1];
 static char 		*cfg_ptr;
-static int			prn_hdl,
+static short			prn_hdl,
 						char_pos, 					/* Position des Zeichens in der aktuellen Zeile */
 						nr_spaces,					/* Anzahl Leerzeichen */
 						nlq_set,						/* [0..2] */
@@ -59,7 +59,7 @@ static char			cfg_name[256];
 */
 static void init_tables(void)						/* Tabellen initialisieren */
 {
-	int	i;
+	short	i;
 
 	for (i = 0; i <= MAX_SEQUENCE; i++)
 		seq_table[i].len = 0;
@@ -80,9 +80,9 @@ static bool out(char ch)
 }
 
 
-static bool print_seq(int which)
+static bool print_seq(short which)
 {
-	int		i;
+	short		i;
 	bool	ok;
 
 	for (i = seq_table[which].pos; i <= seq_table[which].pos + seq_table[which].len - 1; i++)
@@ -95,7 +95,7 @@ static bool print_seq(int which)
 }
 
 
-static bool print(int entry, bool set)		/* Ausgabe der angew„hlten Steuersequenz */
+static bool print(short entry, bool set)		/* Ausgabe der angew„hlten Steuersequenz */
 {
 	if (!set)
 		entry++;
@@ -105,7 +105,7 @@ static bool print(int entry, bool set)		/* Ausgabe der angew„hlten Steuersequenz
 
 static bool write_char(char ch)
 {
-	int		i;
+	short		i;
 	bool	ok;
 
 	if (trans_table[ch].len > 0)
@@ -129,16 +129,16 @@ static bool write_char(char ch)
 
 static bool set_head(void)							/*  Druckkopf neu positionieren */
 {
-	int		i, len, pos;
+	short		i, len, pos;
 	bool	ok;
 
 	len = seq_table[VERTPOS].len;
 	pos = seq_table[VERTPOS].pos;
 	for (i = pos; i <= pos + len - 1; i++)
 	{
-		if (cfg_ptr[i] == 0x80)
+		if (((unsigned char)cfg_ptr[i]) == 0x80)
 			ok = out((char_pos * 60 / prop_size) % 256);
-		else if (cfg_ptr[i] == 0x81)
+		else if (((unsigned char)cfg_ptr[i]) == 0x81)
 			ok = out((char_pos * 60 / prop_size) / 256);
 		else
 			ok = out(cfg_ptr[i]);
@@ -156,7 +156,7 @@ static bool set_head(void)							/*  Druckkopf neu positionieren */
 bool wp_load_cfgfile(char *name)
 {
 	long	length, err;
-	int	f, i, j, Pos, Len;
+	short	f, i, j, Pos, Len;
 
 	if ((strcmp(name, cfg_name) == 0) && config_read)	/* Config bereits geladen */
 		return TRUE;
@@ -169,14 +169,14 @@ bool wp_load_cfgfile(char *name)
 	err = Fopen(name, 0);
 	if (err < 0)
 		return FALSE;
-	f = (int)err;
+	f = (short)err;
 
 	if (cfg_ptr != NULL)
 		Mfree(cfg_ptr);
 
 	length = Fseek(0, f, 2);						/* ganz ans Ende */
 
-	cfg_ptr = Malloc(length);
+	cfg_ptr = (char*)Malloc(length);
 	if (cfg_ptr == NULL)
 	{
 		Fclose(f);
@@ -244,9 +244,9 @@ bool wp_load_cfgfile(char *name)
 }
 
 
-void wp_get_prnname(char *Printername, int max_len)
+void wp_get_prnname(char *Printername, short max_len)
 {
-	int	i;
+	short	i;
 
 	if (cfg_ptr != NULL)
 	{
@@ -298,7 +298,7 @@ bool wp_send_exit(void)
 }
 
 
-bool wp_set_mode(int mode)
+bool wp_set_mode(short mode)
 {
 	bool	ok = TRUE;
 
@@ -320,7 +320,7 @@ bool wp_formfeed(void)
 }
 
 
-void wp_set_tabsize(int tab)
+void wp_set_tabsize(short tab)
 {
 	tab_size = tab;
 }
@@ -338,7 +338,7 @@ bool wp_write_ln(void)
 
 bool wp_write(char ch)
 {
-	int		i;
+	short		i;
 	bool	ok;
 
 	if ((ch == TAB) || (ch == ' '))
@@ -382,7 +382,7 @@ bool wp_write(char ch)
 
 bool wp_write_string(char *Str)
 {
-	int		i;
+	short		i;
 	bool	ok = TRUE;
 
 	i = 0;
@@ -410,7 +410,7 @@ bool wp_open(char *name)
 			err = Fcreate(name, 0);
 		else if (err > 0)
 		{
-			prn_hdl = (int) err;
+			prn_hdl = (short) err;
 			Fseek(0, prn_hdl, 2);
 		}
 	}

@@ -27,7 +27,7 @@ typedef struct
 	char	name[MNAME_LEN+1];
 	PATH	file;
 	long	y;
-	int	x;
+	short	x;
 }MARKE, *MARKEP;
 
 #define KRZ_LEN(col)	(TEXT(col)[0])
@@ -47,17 +47,17 @@ static MARKE	Marken[MARKEN_ANZ];
 static PATH		krz_name;	/* Name der aktuellen Krzeldatei, oder leer */
 
 /***************************************************************************/
-static void	go_to_marke	(int nr);
+static void	go_to_marke	(short nr);
 
-static int  load_kurzel	(void);
+static short  load_kurzel	(void);
 static void clr_kurzel	(void);
-static int  add_kurzel	(ZEILEP col);
+static short  add_kurzel	(ZEILEP col);
 
 /***************************************************************************/
 
 bool goto_line_dial (void)
 {
-	int	antw;
+	short	antw;
 	char	s[12];
 
 	set_string(pos, GZEILE, "");
@@ -84,11 +84,11 @@ bool goto_line_dial (void)
 /* Verwaltung der Marken																	*/
 /***************************************************************************/
 
-void del_marke(int nr)
+void del_marke(short nr)
 {
 	MARKEP	m;
 	char		*str;
-	int		len;
+	short		len;
 
 	if (nr >= 0 && nr < MARKEN_ANZ)
 	{
@@ -102,7 +102,7 @@ void del_marke(int nr)
 	}
 }
 
-void set_marke(int nr, char *name, PATH file, long y, int x)
+void set_marke(short nr, char *name, PATH file, long y, short x)
 {
 	MARKEP	m;
 
@@ -118,7 +118,7 @@ void set_marke(int nr, char *name, PATH file, long y, int x)
 	}
 }
 
-bool get_marke(int nr, char *name, PATH file, long *y, int *x)
+bool get_marke(short nr, char *name, PATH file, long *y, short *x)
 {
 	file[0] = EOS;
 	if (nr >= 0 && nr < MARKEN_ANZ)
@@ -137,7 +137,7 @@ bool get_marke(int nr, char *name, PATH file, long *y, int *x)
 
 void init_marken(void)
 {
-	int		i;
+	short		i;
 	MARKEP	m;
 
 	for (i = MARKEN_ANZ, m = Marken; (--i)>=0; m++)
@@ -149,12 +149,12 @@ void init_marken(void)
 	init_textring(&auto_kurz);
 }
 
-void goto_marke(int nr)
+void goto_marke(short nr)
 {
 	PATH	file;
 	char	name[12];
 	long	y;
-	int	x, icon;
+	short	x, icon;
 
 	if (shift_pressed())
 		del_marke(nr);
@@ -176,15 +176,15 @@ void goto_marke(int nr)
 
 void config_marken(TEXTP t_ptr)
 {
-	int	antw;
+	short	antw;
 	PATH	file;
 	char	name[14];
 	long	y;
-	int	x, i;
+	short	x, i;
 
-	set_state(marken, MRK1, SELECTED, TRUE);
+	set_state(marken, MRK1, OS_SELECTED, TRUE);
 	for (i = 1; i < MARKEN_ANZ; i++)
-		set_state(marken, MRK1+i, SELECTED, FALSE);
+		set_state(marken, MRK1+i, OS_SELECTED, FALSE);
 	for (i=0; i < MARKEN_ANZ; i++)
 	{
 		get_marke(i, name, file, &y, &x);
@@ -194,7 +194,7 @@ void config_marken(TEXTP t_ptr)
 	if (antw == MRKOK)
 	{
 		for (i = 0; i < MARKEN_ANZ; i++)
-			if (get_state(marken, MRK1 + i, SELECTED))
+			if (get_state(marken, MRK1 + i, OS_SELECTED))
 				break;
 		get_string(marken, MRKTXT1+i, name);
 		if (name[0] == EOS)
@@ -220,7 +220,7 @@ void clr_kurzel(void)
 void do_kurzel(TEXTP t_ptr, bool online)
 {
 	bool		set_pos, save_insert;
-	int		xw, i, len;
+	short		xw, i, len;
 	char		*str, buffer[KRZ_MAX_LEN+1];
 	ZEILEP	col;
 	RINGP		k;
@@ -315,9 +315,9 @@ void do_kurzel(TEXTP t_ptr, bool online)
 
 /* return 1 : kein Speicher mehr => abbruch */
 /*        0 : alles ok                      */
-int add_kurzel(ZEILEP col)
+short add_kurzel(ZEILEP col)
 {
-	int		len, i;
+	short		len, i;
 	char		*str, buffer[MAX_LINE_LEN+1], *start;
 	ZEILEP	c;
 	bool		online;
@@ -362,7 +362,7 @@ int add_kurzel(ZEILEP col)
 		len--;
 	}
 	buffer[i] = EOS;										/* abschliessen */
-	len = (int) strlen(start);
+	len = (short) strlen(start);
 	memcpy(buffer + KRZ_MAX_LEN + 2, start, len);
 	len += (KRZ_MAX_LEN+2);
 
@@ -392,12 +392,12 @@ int add_kurzel(ZEILEP col)
 	return(0);
 }
 
-int load_kurzel(void)
+short load_kurzel(void)
 {
 	long		anz;
 	RING		t;
 	ZEILEP	lauf;
-	int		erg;
+	short		erg;
 
 	if (krz_name[0] == EOS)
 		return 0;

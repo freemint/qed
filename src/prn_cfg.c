@@ -10,7 +10,7 @@
 /*
  * aus cflib
 */
-extern void handle_mdial_msg(int *msg);
+extern void handle_mdial_msg(short *msg);
 
 /*
  * globale Variablen
@@ -20,9 +20,9 @@ PRN_CFG	*prn;
 /*
  * lokales
 */
-static int	gdos_device = 21;			/* Dev-Nummer 21 .. 30 */
+static short	gdos_device = 21;			/* Dev-Nummer 21 .. 30 */
 static char	gdos_name[80] = "";		/* Dev-Name */
-static int	fnt_anz;
+static short	fnt_anz;
 static bool	wp_config_read = FALSE;
 
 #define CFGNAME	"pdlg.qed"			/* Name der Settings-Datei */
@@ -30,15 +30,15 @@ static bool	wp_config_read = FALSE;
 /* --------------------------------------------------------------------------- */
 bool open_printer(void)
 {
-	int	work_out[57];
-	int	i, p_xy[4];
+	short	work_out[57];
+	short	i, p_xy[4];
 	bool	ret = FALSE;
 	
 	if (prn->use_pdlg)
 		prn->handle = v_opnprn(gl_phys_handle, prn->pdlg, work_out);
 	else
 	{
-		int	work_in[16];
+		short	work_in[16];
 
 		work_in[0] = gdos_device;
 		for (i=1; i < 10; i++)
@@ -72,9 +72,9 @@ void close_printer(void)
 }
 
 
-static void get_fontname(int id, char *name)
+static void get_fontname(short id, char *name)
 {
-	int	d;
+	short	d;
 	
 	if (open_printer())
 	{
@@ -91,7 +91,7 @@ static void get_fontname(int id, char *name)
 static bool sel_font(PRN_CFG *cfg)
 {
 	bool	ok = FALSE;
-	int	n_id, n_pts;
+	short	n_id, n_pts;
 	
 	n_id = cfg->font_id;
 	n_pts = cfg->font_pts;
@@ -117,10 +117,10 @@ static bool sel_font(PRN_CFG *cfg)
 /*
  * Callbacks fr Sub-Dialog
 */
-long cdecl init_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
+long CDECL init_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
 {
 	OBJECT	*tree;
-	int		offset;
+	short		offset;
 	PRN_CFG	*cfg;
 	char		tmp[40];
 	
@@ -128,28 +128,28 @@ long cdecl init_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
 	tree = sub_dialog->tree;
 	offset = sub_dialog->index_offset;
 
-	set_int(tree, PS_GFPTS + offset, cfg->font_pts);
+	set_short(tree, PS_GFPTS + offset, cfg->font_pts);
 	get_fontname(cfg->font_id, tmp);
 	set_string(tree, PS_GFNAME + offset, tmp);
 
-	set_state(tree, PS_ALL + offset, DISABLED, !cfg->ausdruck);
-	set_state(tree, PS_BLOCK + offset, DISABLED, (!cfg->ausdruck || !cfg->block));
+	set_state(tree, PS_ALL + offset, OS_DISABLED, !cfg->ausdruck);
+	set_state(tree, PS_BLOCK + offset, OS_DISABLED, (!cfg->ausdruck || !cfg->block));
 
-	set_state(tree, PS_ALL + offset, SELECTED, !cfg->block);
-	set_state(tree, PS_BLOCK + offset, SELECTED, cfg->block);
+	set_state(tree, PS_ALL + offset, OS_SELECTED, !cfg->block);
+	set_state(tree, PS_BLOCK + offset, OS_SELECTED, cfg->block);
 	
-	set_state(tree, PS_ZNUM + offset, SELECTED, cfg->num_zeilen);
-	set_state(tree, PS_SNUM + offset, SELECTED, cfg->num_seiten);
+	set_state(tree, PS_ZNUM + offset, OS_SELECTED, cfg->num_zeilen);
+	set_state(tree, PS_SNUM + offset, OS_SELECTED, cfg->num_seiten);
 	
-	set_int(tree, PS_RANDLEN + offset, cfg->rand_len);
+	set_short(tree, PS_RANDLEN + offset, cfg->rand_len);
 
 	return 1;
 }
 
-long cdecl do_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog, short exit_obj)
+long CDECL do_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog, short exit_obj)
 {
 	OBJECT	*tree;
-	int		offset;
+	short		offset;
 	PRN_CFG	*cfg;
 	
 	cfg = (PRN_CFG *)sub_dialog->private1;
@@ -162,13 +162,13 @@ long cdecl do_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog, short exit_o
 			{
 				char	tmp[40];
 				
-				set_int(tree, PS_GFPTS + offset, cfg->font_pts);
+				set_short(tree, PS_GFPTS + offset, cfg->font_pts);
 				get_fontname(cfg->font_id, tmp);
 				set_string(tree, PS_GFNAME + offset, tmp);
 				redraw_obj(tree, PS_GFPTS + offset);
 				redraw_obj(tree, PS_GFNAME + offset);
 			}
-			set_state(tree, exit_obj, SELECTED, FALSE);
+			set_state(tree, exit_obj, OS_SELECTED, FALSE);
 			redraw_obj(tree, exit_obj);
 			break;
 
@@ -178,10 +178,10 @@ long cdecl do_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog, short exit_o
 	return 1;
 }
 
-long cdecl reset_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
+long CDECL reset_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
 {
 	OBJECT	*tree;
-	int		offset;
+	short		offset;
 	PRN_CFG	*cfg;
 	
 	cfg = (PRN_CFG *)sub_dialog->private1;
@@ -189,11 +189,11 @@ long cdecl reset_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
 	offset = sub_dialog->index_offset;
 	
 	if (cfg->ausdruck)
-		cfg->block = get_state(tree, PS_BLOCK + offset, SELECTED);
+		cfg->block = get_state(tree, PS_BLOCK + offset, OS_SELECTED);
 
-	cfg->num_zeilen = get_state(tree, PS_ZNUM + offset, SELECTED);
-	cfg->num_seiten = get_state(tree, PS_SNUM + offset, SELECTED);
-	cfg->rand_len = get_int(tree, PS_RANDLEN + offset);
+	cfg->num_zeilen = get_state(tree, PS_ZNUM + offset, OS_SELECTED);
+	cfg->num_seiten = get_state(tree, PS_SNUM + offset, OS_SELECTED);
+	cfg->rand_len = get_short(tree, PS_RANDLEN + offset);
 
 	return 1;
 }
@@ -203,7 +203,7 @@ static bool pdlg_dial(PRN_CFG *cfg)
 {
 	PRN_DIALOG		*prn_dialog;
 	PRN_SETTINGS	*new;
-	int				d, button, ret, handle;
+	short				d, button, ret, handle;
 	EVNT				ev;
 	OBJECT			*tree;
 	
@@ -243,11 +243,11 @@ static bool pdlg_dial(PRN_CFG *cfg)
 		{
 			ev.mwhich = (short)evnt_multi(MU_KEYBD|MU_MESAG|MU_BUTTON, 2, 1, 1, 
 												0, 0, 0, 0, 0,	0, 0, 0, 0, 0,
-												(int*)ev.msg, 0, 
-												(int*)&ev.mx, (int*)&ev.my, 
-												(int*)&ev.mbutton, 
-												(int*)&ev.kstate,	(int*)&ev.key, 
-												(int*)&ev.mclicks);
+												(short*)ev.msg, 0, 
+												(short*)&ev.mx, (short*)&ev.my, 
+												(short*)&ev.mbutton, 
+												(short*)&ev.kstate,	(short*)&ev.key, 
+												(short*)&ev.mclicks);
 			if (ev.mwhich & MU_MESAG)
 			{
 				switch (ev.msg[0])
@@ -257,7 +257,7 @@ static bool pdlg_dial(PRN_CFG *cfg)
 					case WM_SIZED:
 						if (ev.msg[3] != handle)	/* fr fremdes Fenster */
 						{
-							handle_mdial_msg((int *)ev.msg);
+							handle_mdial_msg((short *)ev.msg);
 						}
 						break;
 	
@@ -307,11 +307,11 @@ static bool pdlg_dial(PRN_CFG *cfg)
  * qed-Dialog
 */
 
-static void get_devinfo(int handle, int device, char *devname)
+static void get_devinfo(short handle, short device, char *devname)
 {
 	if (gl_nvdi >= 0x300)
 	{
-		int	d;
+		short	d;
 		char	s[80];
 
 		vq_devinfo(handle, device, &d, s, devname);
@@ -324,9 +324,9 @@ static bool get_gdos_device(void)
 {
 	if (gdos_device == 0 || gdos_name[0] == EOS)
 	{
-		int	work_in[16];
-		int	work_out[57];
-		int	i, handle;
+		short	work_in[16];
+		short	work_out[57];
+		short	i, handle;
 		
 		for (i=1; i < 10; i++)
 			work_in[i] = 1;
@@ -354,7 +354,7 @@ static bool get_gdos_device(void)
 static bool qed_cfg_dial(PRN_CFG *cfg)
 {
 	char		tmp[33];
-	int		antw, i;
+	short		antw, i;
 	bool		close = FALSE;
 	PATH		str = "";
 	MDIAL		*dial;
@@ -380,31 +380,31 @@ static bool qed_cfg_dial(PRN_CFG *cfg)
 	else
 		strcpy(tmp, rsc_string(NODEVSTR));
 
-	set_state(printer, DNLQ, DISABLED, !wp_config_read);
-	set_state(printer, DDICHTE, DISABLED, !wp_config_read);
-	set_state(printer, DDICHTESTR, DISABLED, !wp_config_read);
+	set_state(printer, DNLQ, OS_DISABLED, !wp_config_read);
+	set_state(printer, DDICHTE, OS_DISABLED, !wp_config_read);
+	set_state(printer, DDICHTESTR, OS_DISABLED, !wp_config_read);
 
-	set_state(printer, DNLQ, SELECTED, cfg->wp_nlq);
+	set_state(printer, DNLQ, OS_SELECTED, cfg->wp_nlq);
 	set_string(printer, DTREIBNAME, tmp);
-	set_int(printer, DPLENGTH, cfg->wp_s_len);
-	set_int(printer, DPWIDTH, cfg->wp_z_len);
+	set_short(printer, DPLENGTH, cfg->wp_s_len);
+	set_short(printer, DPWIDTH, cfg->wp_z_len);
 
 	/* GDOS */
 	if (gl_gdos && get_gdos_device())
 	{
 		set_string(printer, DDEVICE, gdos_name);
-		set_state(printer, DDEVICE, DISABLED, FALSE);
-		set_state(printer, DFONTSEL, DISABLED, FALSE);
+		set_state(printer, DDEVICE, OS_DISABLED, FALSE);
+		set_state(printer, DFONTSEL, OS_DISABLED, FALSE);
 
-		set_int(printer, DPTS, cfg->font_pts);
+		set_short(printer, DPTS, cfg->font_pts);
 		get_fontname(cfg->font_id, tmp);
 		set_string(printer, DFONT, tmp);
 	}
 	else
 	{
 		set_string(printer, DDEVICE, rsc_string(NODEVSTR));
-		set_state(printer, DDEVICE, DISABLED, TRUE);
-		set_state(printer, DFONTSEL, DISABLED, TRUE);
+		set_state(printer, DDEVICE, OS_DISABLED, TRUE);
+		set_state(printer, DFONTSEL, OS_DISABLED, TRUE);
 		set_string(printer, DFONT, "--");
 		set_string(printer, DPTS, "--");
 	}
@@ -420,7 +420,7 @@ static bool qed_cfg_dial(PRN_CFG *cfg)
 				case DFONTSEL:
 					if (sel_font(cfg))
 					{
-						set_int(printer, DPTS, cfg->font_pts);
+						set_short(printer, DPTS, cfg->font_pts);
 						get_fontname(cfg->font_id, tmp);
 						set_string(printer, DFONT, tmp);
 					}
@@ -436,14 +436,14 @@ static bool qed_cfg_dial(PRN_CFG *cfg)
 							strcpy(str, rsc_string(NODEVSTR));
 						set_string(printer, DTREIBNAME, str);
 						redraw_mdobj(dial, DTREIBNAME);
-						set_state(printer, DNLQ, DISABLED, !wp_config_read);
+						set_state(printer, DNLQ, OS_DISABLED, !wp_config_read);
 						redraw_mdobj(dial, DNLQ);
-						set_state(printer, DDICHTE, DISABLED, !wp_config_read);
+						set_state(printer, DDICHTE, OS_DISABLED, !wp_config_read);
 						redraw_mdobj(dial, DDICHTE);
-						set_state(printer, DDICHTESTR, DISABLED, !wp_config_read);
+						set_state(printer, DDICHTESTR, OS_DISABLED, !wp_config_read);
 						redraw_mdobj(dial, DDICHTESTR);
 					}
-					set_state(printer, antw, SELECTED, FALSE);
+					set_state(printer, antw, OS_SELECTED, FALSE);
 					break;
 		
 				case DDICHTESTR :
@@ -460,24 +460,24 @@ static bool qed_cfg_dial(PRN_CFG *cfg)
 					close = TRUE;
 					break;
 			}
-			set_state(printer, antw, SELECTED, FALSE);
+			set_state(printer, antw, OS_SELECTED, FALSE);
 			if (!close)
 				redraw_mdobj(dial, antw);
 
 		}
 		close_mdial(dial);
-		set_state(printer, antw, SELECTED, FALSE);
+		set_state(printer, antw, OS_SELECTED, FALSE);
 		if (antw == DOK2)
 		{
-			cfg->wp_s_len = get_int(printer, DPLENGTH);
+			cfg->wp_s_len = get_short(printer, DPLENGTH);
 			if (!cfg->wp_s_len)
 				cfg->wp_s_len = 65;
 	
-			cfg->wp_z_len = get_int(printer, DPWIDTH);
+			cfg->wp_z_len = get_short(printer, DPWIDTH);
 			if (!cfg->wp_z_len)
 				cfg->wp_z_len = 80;
 	
-			cfg->wp_nlq = get_state(printer, DNLQ, SELECTED);
+			cfg->wp_nlq = get_state(printer, DNLQ, OS_SELECTED);
 			return TRUE;
 		}
 	}
@@ -486,7 +486,7 @@ static bool qed_cfg_dial(PRN_CFG *cfg)
 
 static bool qed_start_dial(PRN_CFG *cfg)
 {
-	int	antw;
+	short	antw;
 	bool	start = FALSE;
 	
 	if (!wp_config_read && prn->wp_treiber[0] != EOS)
@@ -496,36 +496,36 @@ static bool qed_start_dial(PRN_CFG *cfg)
 		get_gdos_device();
 
 	/* Allgemeine Parameter */
-	set_state(print, DZNUM, SELECTED, prn->num_zeilen);
-	set_state(print, DSNUM, SELECTED, prn->num_seiten);
-	set_state(print, DFEED, SELECTED, prn->vorschub);
-	set_state(print, DCHECK, SELECTED, prn->pruef_prn);
-	set_state(print, DALL, SELECTED, !prn->block);
-	set_state(print, DBLOCK, DISABLED, !prn->block);
-	set_state(print, DBLOCK, SELECTED, prn->block);
-	set_int(print, DRANDLEN, prn->rand_len);
+	set_state(print, DZNUM, OS_SELECTED, prn->num_zeilen);
+	set_state(print, DSNUM, OS_SELECTED, prn->num_seiten);
+	set_state(print, DFEED, OS_SELECTED, prn->vorschub);
+	set_state(print, DCHECK, OS_SELECTED, prn->pruef_prn);
+	set_state(print, DALL, OS_SELECTED, !prn->block);
+	set_state(print, DBLOCK, OS_DISABLED, !prn->block);
+	set_state(print, DBLOCK, OS_SELECTED, prn->block);
+	set_short(print, DRANDLEN, prn->rand_len);
 
-	set_state(print, DGEMDOS, SELECTED, !prn->use_gdos);
-	set_state(print, DGDOS, SELECTED, prn->use_gdos);
+	set_state(print, DGEMDOS, OS_SELECTED, !prn->use_gdos);
+	set_state(print, DGDOS, OS_SELECTED, prn->use_gdos);
 
-	set_state(print, DGDOS, DISABLED, (gdos_device == 0));
-	set_state(print, DGDOS, SELECTED, ((gdos_device != 0) && (prn->use_gdos || !wp_config_read)));
+	set_state(print, DGDOS, OS_DISABLED, (gdos_device == 0));
+	set_state(print, DGDOS, OS_SELECTED, ((gdos_device != 0) && (prn->use_gdos || !wp_config_read)));
 
-	set_state(print, DGEMDOS, DISABLED, !wp_config_read);
-	set_state(print, DGEMDOS, SELECTED, (wp_config_read && !prn->use_gdos));
+	set_state(print, DGEMDOS, OS_DISABLED, !wp_config_read);
+	set_state(print, DGEMDOS, OS_SELECTED, (wp_config_read && !prn->use_gdos));
 
-	set_state(print, DPRINT, DISABLED, (!wp_config_read && (gdos_device == 0)));
+	set_state(print, DPRINT, OS_DISABLED, (!wp_config_read && (gdos_device == 0)));
 	
 	antw = simple_mdial(print, DRANDLEN) & 0x7fff;
 	if ((antw == DOK1) || (antw == DPRINT))
 	{
-		prn->block = get_state(print, DBLOCK, SELECTED);
-		prn->use_gdos = get_state(print, DGDOS, SELECTED);
-		prn->num_zeilen = get_state(print, DZNUM, SELECTED);
-		prn->num_seiten = get_state(print, DSNUM, SELECTED);
-		prn->vorschub = get_state(print, DFEED, SELECTED);
-		prn->pruef_prn = get_state(print, DCHECK, SELECTED);
-		prn->rand_len = get_int(print, DRANDLEN);
+		prn->block = get_state(print, DBLOCK, OS_SELECTED);
+		prn->use_gdos = get_state(print, DGDOS, OS_SELECTED);
+		prn->num_zeilen = get_state(print, DZNUM, OS_SELECTED);
+		prn->num_seiten = get_state(print, DSNUM, OS_SELECTED);
+		prn->vorschub = get_state(print, DFEED, OS_SELECTED);
+		prn->pruef_prn = get_state(print, DCHECK, OS_SELECTED);
+		prn->rand_len = get_short(print, DRANDLEN);
 
 		start = (antw == DPRINT);
 	}
@@ -698,7 +698,7 @@ void init_printer(void)
 	prn = malloc(sizeof(PRN_CFG));
 	if (prn)
 	{
-		int	d, i;
+		short	d, i;
 
 		memset(prn, 0, sizeof(PRN_CFG));
 		prn->wp_s_len = 65;

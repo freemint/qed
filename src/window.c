@@ -42,15 +42,15 @@ bool		all_iconified;
  * lokale Variablen
 */
 static GRECT	border;
-static int		top_handle;
+static short		top_handle;
 
 /*
  * Anzahl der offenen Fenster einer Klasse ermitteln.
 */
-int num_openwin(int class)
+short num_openwin(short class)
 {
 	WINDOWP	p = used_list;
-	int		anz = 0;
+	short		anz = 0;
 
 	while (p)
 	{
@@ -64,7 +64,7 @@ int num_openwin(int class)
 /*
  * Listenelement zu AES-Fensterhandle suchen.
 */
-WINDOWP get_window(int handle)
+WINDOWP get_window(short handle)
 {
 	WINDOWP	p = used_list;
 
@@ -80,7 +80,7 @@ WINDOWP get_window(int handle)
 /*
  * Funktion auf bestimmte Fensterklasse anwenden.
 */
-void do_all_window(int class, WIN_DOFUNC func)
+void do_all_window(short class, WIN_DOFUNC func)
 {
 	WINDOWP	p = used_list;
 
@@ -108,7 +108,7 @@ WINDOWP winlist_top(void)			/* ehemals top() */
 */
 void get_realtop(void)
 {
-	int	d;
+	short	d;
 
 	wind_get(0, WF_TOP, &top_handle, &d, &d, &d);
 }
@@ -130,7 +130,7 @@ WINDOWP real_top(void)
 /*
  * Fenster auf Bytegrenze einrasten.
 */
-static void snap_window(WINDOWP w, GRECT *new, int mode)
+static void snap_window(WINDOWP w, GRECT *new, short mode)
 {
 	if (mode & WORK_SIZED)
 	{
@@ -145,7 +145,7 @@ static void snap_window(WINDOWP w, GRECT *new, int mode)
 /*
  * Fenster an Bildschirm anpassen.
 */
-static void get_work(WINDOWP w, GRECT *new, int mode)
+static void get_work(WINDOWP w, GRECT *new, short mode)
 {
 	if (mode & WORK_SIZED)
 	{
@@ -195,7 +195,7 @@ static void get_work(WINDOWP w, GRECT *new, int mode)
 /*
  * Rechteckliste
 */
-bool rc_first(int wh, GRECT *b, GRECT *r)
+bool rc_first(short wh, GRECT *b, GRECT *r)
 {
 	border = *b;
 	if (!rc_intersect(&gl_desk, &border))					/* mit Bildschirm schneiden */
@@ -210,7 +210,7 @@ bool rc_first(int wh, GRECT *b, GRECT *r)
 	return FALSE;
 }
 
-bool rc_next(int wh, GRECT *r)
+bool rc_next(short wh, GRECT *r)
 {
 	wind_get_grect(wh, WF_NEXTXYWH, r);
 	while (r->g_w && r->g_h)
@@ -227,13 +227,13 @@ bool rc_next(int wh, GRECT *r)
 */
 void clr_area (GRECT *area)
 {
-	int	xy[4];
+	short	xy[4];
 
 	grect_to_array(area, xy);								/* Bereich setzen */
-	if (fill_color!=WHITE)
+	if (fill_color!=G_WHITE)
 	{
-		vsf_color(vdi_handle,WHITE);
-		fill_color = WHITE;
+		vsf_color(vdi_handle,G_WHITE);
+		fill_color = G_WHITE;
 	}
 	vr_recfl(vdi_handle, xy);								/* Bereich l”schen */
 }
@@ -474,7 +474,7 @@ void move_window(WINDOWP w, GRECT *new)
 	{
 		if (w->flags & WI_ICONIFIED)
 		{
-			int	x, y, d;
+			short	x, y, d;
 
 			/* Icon anpassen */
 			wind_set_grect(w->handle, WF_CURRXYWH, (GRECT*)new);
@@ -562,7 +562,7 @@ void cycle_window(void)
 /*
  * Stellt Fenster nach hinten.
 */
-void bottom_window(WINDOWP w, int which)
+void bottom_window(WINDOWP w, short which)
 {
 	if (w == NULL || !(w->flags & WI_OPEN) && !(w->flags & WI_ICONIFIED))
 		return;
@@ -579,7 +579,7 @@ void bottom_window(WINDOWP w, int which)
 	move_to_end(w);
 
 	get_realtop();					/* qed ber das neue top-Fenster informieren */
-	memset(msgbuff, 0, (int) sizeof(msgbuff));
+	memset(msgbuff, 0, (short) sizeof(msgbuff));
 	msgbuff[0] = WM_TOPPED;
 	msgbuff[3] = top_handle;
 	send_msg(gl_apid);
@@ -589,7 +589,7 @@ void bottom_window(WINDOWP w, int which)
  * Fenster-Shading (Reduktion auf Titel)
  * Winx 2.3, MagiC 5.2, N.AES 1.1.7
 */
-void shade_window(WINDOWP w, int mode)
+void shade_window(WINDOWP w, short mode)
 {
 	if (w == NULL)
 		return;
@@ -615,10 +615,10 @@ void shade_window(WINDOWP w, int mode)
 /*
  * Scrollt den Inhalt des Fensters.
 */
-static void scroll_window(WINDOWP w, int dir, long delta)
+static void scroll_window(WINDOWP w, short dir, long delta)
 {
 	MFDB		s, d;
-	int		xy[8];
+	short		xy[8];
 	GRECT		r;
 	bool	draw;
 
@@ -656,36 +656,36 @@ static void scroll_window(WINDOWP w, int dir, long delta)
 		{
 			if (delta > 0)								/* Links Scrolling */
 			{
-				xy[0] += (int) delta;
-				xy[6] -= (int) delta;
+				xy[0] += (short) delta;
+				xy[6] -= (short) delta;
 
-				r.g_x += r.g_w - (int)delta;	/* Rechter Bereich nicht gescrollt, */
-				r.g_w  = (int)delta;				/* muž neu gezeichnet werden */
+				r.g_x += r.g_w - (short)delta;	/* Rechter Bereich nicht gescrollt, */
+				r.g_w  = (short)delta;				/* muž neu gezeichnet werden */
 			}
 			else											/* Rechts Scrolling */
 			{
-				xy[2] += (int)delta;
-				xy[4] -= (int)delta;
+				xy[2] += (short)delta;
+				xy[4] -= (short)delta;
 
-				r.g_w = (int)(-delta);			/* Linken Bereich noch neu zeichnen */
+				r.g_w = (short)(-delta);			/* Linken Bereich noch neu zeichnen */
 			}
 		}
 		else												/* Vertikales Scrolling */
 		{
 			if (delta > 0)								/* Aufw„rts Scrolling */
 			{
-				xy[1] += (int)delta;				/* Werte fr vro_cpyfm */
-				xy[7] -= (int)delta;
+				xy[1] += (short)delta;				/* Werte fr vro_cpyfm */
+				xy[7] -= (short)delta;
 
-				r.g_y += r.g_h - (int)delta;	/* Unterer Bereich nicht gescrollt, */
-				r.g_h  = (int) delta;				/* muž neu gezeichnet werden */
+				r.g_y += r.g_h - (short)delta;	/* Unterer Bereich nicht gescrollt, */
+				r.g_h  = (short) delta;				/* muž neu gezeichnet werden */
 			}
 			else											/* Abw„rts Scrolling */
 			{
-				xy[3] += (int)delta;				/* Werte fr vro_cpyfm */
-				xy[5] -= (int)delta;
+				xy[3] += (short)delta;				/* Werte fr vro_cpyfm */
+				xy[5] -= (short)delta;
 
-				r.g_h = (int)(-delta);			/* Oberen Bereich noch neu zeichnen */
+				r.g_h = (short)(-delta);			/* Oberen Bereich noch neu zeichnen */
 			}
 		}
 		s.fd_addr = d.fd_addr = NULL;				/* Erzwinge Bildschirmadresse */
@@ -699,10 +699,10 @@ static void scroll_window(WINDOWP w, int dir, long delta)
 		redraw_window(w, &r);						/* Fenster zeichnen */
 }
 
-void scroll_vertical(GRECT *area, int delta)
+void scroll_vertical(GRECT *area, short delta)
 {
 	MFDB	s, d;
-	int	xy[8];
+	short	xy[8];
 
 	grect_to_array(area, xy);
 	xy[4] = xy[0];
@@ -717,7 +717,7 @@ void scroll_vertical(GRECT *area, int delta)
 /*
  * Auswertung der Scroll-Pfeile.
 */
-static void do_arrow(WINDOWP w, int dir, long delta)
+static void do_arrow(WINDOWP w, short dir, long delta)
 {
 	if (delta)
 	{
@@ -733,9 +733,9 @@ static void do_arrow(WINDOWP w, int dir, long delta)
 	}
 }
 
-void arrow_window (WINDOWP w, int arrow, long amount)
+void arrow_window (WINDOWP w, short arrow, long amount)
 {
-	int 	ww, wh, dir;
+	short 	ww, wh, dir;
 	long 	oldpos, newpos, max_slide;
 
 	if (w != NULL)
@@ -794,7 +794,7 @@ void arrow_window (WINDOWP w, int arrow, long amount)
 /*
  * Auswertung des horizontalen Sliders.
 */
-void h_slider(WINDOWP w, int new_value)
+void h_slider(WINDOWP w, short new_value)
 {
 	long	oldpos, newpos, max_slide;
 
@@ -816,7 +816,7 @@ void h_slider(WINDOWP w, int new_value)
 /*
  * Auswertung des vertikalen Sliders.
 */
-void v_slider(WINDOWP w, int new_value)
+void v_slider(WINDOWP w, short new_value)
 {
 	long	oldpos, newpos, max_slide;
 
@@ -838,10 +838,10 @@ void v_slider(WINDOWP w, int new_value)
 /*
  * Slieder einstellen.
 */
-void set_sliders(WINDOWP w, int which, int mode)
+void set_sliders(WINDOWP w, short which, short mode)
 {
-	int	d;
-	int	size, newval, oldval;
+	short	d;
+	short	size, newval, oldval;
 	long	max_doc;
 
 	if (w->flags & WI_OPEN)
@@ -856,7 +856,7 @@ void set_sliders(WINDOWP w, int which, int mode)
 				if (max_doc <= 0)			/* Fenster zu grož oder passend */
 					newval = 0;
 				else
-					newval = (int)((1000L * w->doc.x) / max_doc);
+					newval = (short)((1000L * w->doc.x) / max_doc);
 
 				wind_get (w->handle, WF_HSLIDE, &oldval, &d, &d, &d);
 				if (newval != oldval)
@@ -867,7 +867,7 @@ void set_sliders(WINDOWP w, int which, int mode)
 				if (w->doc.w <= size)	/* Fenster zu grož oder passend */
 					newval = 1000;
 				else
-					newval = (int)((1000L * size) / w->doc.w);
+					newval = (short)((1000L * size) / w->doc.w);
 
 				wind_get(w->handle, WF_HSLSIZE, &oldval, &d, &d, &d);
 				if (newval != oldval)
@@ -884,7 +884,7 @@ void set_sliders(WINDOWP w, int which, int mode)
 				if (max_doc <= 0)			/* Fenster zu grož oder passend */
 					newval = 0;
 				else
-					newval = (int)((1000L * w->doc.y) / max_doc);
+					newval = (short)((1000L * w->doc.y) / max_doc);
 				wind_get(w->handle, WF_VSLIDE, &oldval, &d, &d, &d);
 				if (newval != oldval)
 					wind_set(w->handle, WF_VSLIDE, newval, 0, 0, 0);
@@ -894,7 +894,7 @@ void set_sliders(WINDOWP w, int which, int mode)
 				if (w->doc.h <= size)	/* Fenster zu grož oder passend */
 					newval = 1000;
 				else
-					newval = (int)((1000L * size) / w->doc.h);
+					newval = (short)((1000L * size) / w->doc.h);
 				wind_get (w->handle, WF_VSLSIZE, &oldval, &d, &d, &d);
 				if (newval != oldval)
 					wind_set(w->handle, WF_VSLSIZE, newval, 0, 0, 0);
@@ -950,10 +950,10 @@ void change_window(WINDOWP w, char *filename, bool changed)
 /*
  * Neues Fenster anfordern.
 */
-WINDOWP create_window(int kind, int class, WIN_CRTFUNC crt)
+WINDOWP create_window(short kind, short class, WIN_CRTFUNC crt)
 {
 	WINDOWP	w;
-	int		wh;
+	short		wh;
 
 	w = get_new_window(class);
 	if (w)
@@ -1061,7 +1061,7 @@ void do_font_change(WINDOWP w)
 /*
  * Auswertung von Mausklicks.
 */
-void click_window(WINDOWP w, int m_x, int m_y, int bstate, int kstate, int breturn)
+void click_window(WINDOWP w, short m_x, short m_y, short bstate, short kstate, short breturn)
 {
 	if (w != NULL && !(w->flags & WI_ICONIFIED))
 	{
@@ -1086,7 +1086,7 @@ void unclick_window (void)
 /*
  * Auswertung von Tastaturdaten.
 */
-bool key_window(WINDOWP w, int kstate, int kreturn)
+bool key_window(WINDOWP w, short kstate, short kreturn)
 {
 	if (w->key != NULL && !(w->flags & WI_ICONIFIED) && !(w->flags & WI_SHADED))
 		return ((*w->key)(w, kstate, kreturn));
@@ -1096,9 +1096,9 @@ bool key_window(WINDOWP w, int kstate, int kreturn)
 /*
  * Fenster anordnen. Funktion kommt aus den 7Up 2.3 Quellen.
 */
-void arrange_window(int mode)
+void arrange_window(short mode)
 {
-	int		count, xstep, ystep, k, diff;
+	short		count, xstep, ystep, k, diff;
 	GRECT		rect;
 	WINDOWP	p = used_list;
 

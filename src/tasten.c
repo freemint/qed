@@ -49,7 +49,7 @@ static void word_delete(TEXTP t_ptr);
 static void word_bs(TEXTP t_ptr);
 
 static char	alt_str[3];
-static int	alt_cnt = -1;
+static short	alt_cnt = -1;
 
 static bool pos_move(TEXTP t_ptr, long delta)
 {
@@ -78,7 +78,7 @@ static bool pos_move(TEXTP t_ptr, long delta)
 		long rest = t_ptr->text.lines-t_ptr->ypos-1;
 
 		if (rest==0) return FALSE;
-		if (delta>rest) delta = (int)rest;
+		if (delta>rest) delta = (short)rest;
 		t_ptr->ypos += delta;
 		while (--delta>=0)	NEXT(lauf);
 		t_ptr->cursor_line = lauf;
@@ -193,7 +193,7 @@ static void line_end(TEXTP t_ptr)
 
 static void word_left(TEXTP t_ptr)
 {
-	int	xw;
+	short	xw;
 	long	yw;
 	char *str;
 	ZEILEP lauf;
@@ -232,7 +232,7 @@ static void word_left(TEXTP t_ptr)
 
 static void word_right(TEXTP t_ptr)
 {
-	int	xw;
+	short	xw;
 	long	yw;
 	char *str;
 	ZEILEP lauf;
@@ -354,7 +354,7 @@ void char_insert(TEXTP t_ptr, char c)
 	t_ptr->up_down = FALSE;
 
 	/* Null nur in Bin„r erlaubt! */
-	if (c == 0 && t_ptr->text.ending != binmode)
+	if (c == 0 && t_ptr->text.ending != lns_binmode)
 	{
 		Bconout(2, 7);
 		return;
@@ -394,7 +394,7 @@ static void tabulator(TEXTP t_ptr)
 		char_insert(t_ptr, '\t');
 	else
 	{
-		int xw, tabsize = t_ptr->loc_opt->tabsize;
+		short xw, tabsize = t_ptr->loc_opt->tabsize;
 
 		xw = bild_pos(t_ptr->xpos,t_ptr->cursor_line,t_ptr->loc_opt->tab,tabsize);
 		xw = tabsize-(xw%tabsize);
@@ -406,7 +406,7 @@ static void tabulator(TEXTP t_ptr)
 void char_swap(TEXTP t_ptr)		/* -> menu.c */
 {
 	char 	c;
-	int	x;
+	short	x;
 
 	x = t_ptr->xpos;
 	if (x > 0 && x < t_ptr->cursor_line->len)
@@ -489,7 +489,7 @@ static void char_delete(TEXTP t_ptr)
 static void word_bs(TEXTP t_ptr)
 /* L”schen wortweise nach links */
 {
-	int		xpos = t_ptr->xpos - 1;
+	short		xpos = t_ptr->xpos - 1;
 	bool	in_word = FALSE;
 
 	t_ptr->blk_mark_mode = FALSE;
@@ -519,7 +519,7 @@ static void word_bs(TEXTP t_ptr)
 static void word_delete(TEXTP t_ptr)
 /* L”schen bis zum n„chsten Wortanfang */
 {
-	int xpos = t_ptr->xpos;
+	short xpos = t_ptr->xpos;
 	bool	in_word = FALSE;
 
 	t_ptr->blk_mark_mode = FALSE;
@@ -585,7 +585,7 @@ static void unset_block(TEXTP t_ptr)
 }
 
 /* Deselektiert Block und stellt Cursor entsprechend <dir> */
-static void deselect_block(TEXTP t_ptr, int dir)
+static void deselect_block(TEXTP t_ptr, short dir)
 {
 	switch (dir)
 	{
@@ -615,10 +615,10 @@ static void deselect_block(TEXTP t_ptr, int dir)
 }
 
 
-bool edit_key(TEXTP t_ptr, WINDOWP window, int kstate, int kreturn)
+bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 {
-	int	nkey;
-	int	ascii_code;
+	short	nkey;
+	short	ascii_code;
 	bool	shift, ctrl, alt;
 	
 	/* Key konvertieren */	
@@ -908,7 +908,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, int kstate, int kreturn)
 		else if (alt)												/* alle Alt-Codes */
 		{
 			char	c;
-			int	i;
+			short	i;
 			
 			c = (char)nkey;
 			if ((nkey & NKF_NUM) && c >= '0' && c <= '9')

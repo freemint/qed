@@ -1,5 +1,5 @@
 #include <stdarg.h>
-#include <stat.h>
+#include <sys/stat.h>
 #include <support.h>
 #include <time.h>
 #include <unistd.h>
@@ -15,22 +15,22 @@
 /*
  * exportierte Variablen
  */
-int		fill_color;			/* aktuell eingestellte Fllfarbe */
+short		fill_color;			/* aktuell eingestellte Fllfarbe */
 
 bool		quick_close;		/* Sichern der Texte ohne Nachfrage */
-int		vdi_handle;			/* Virtuelles Workstation Handle */
+short		vdi_handle;			/* Virtuelles Workstation Handle */
 
 bool		done;					/* Ende gew„hlt ? */
 
-int		desire_x, return_code;
+short		desire_x, return_code;
 long		desire_y, undo_y;
 
-int		font_id, font_pts, 
+short		font_id, font_pts, 
 			font_wcell, font_hcell,
 			min_ascii, max_ascii;
 bool		font_prop;
 
-int		debug_level;
+short		debug_level;
 
 /****** lokale Variablen *****************************************************/
 
@@ -79,8 +79,8 @@ void print_headline(char *str)
 			menu_bar(menu, 1);
 		else
 		{
-			int 	d;
-			int	pxy[8];
+			short 	d;
+			short	pxy[8];
 			
 			get_clip(&c);
 			set_clip(FALSE, NULL);
@@ -100,7 +100,7 @@ void print_headline(char *str)
 /*****************************************************************************/
 bool shift_pressed(void)
 {
-	int	d, kstate;
+	short	d, kstate;
 
 	if (makro_play)
 		kstate = makro_shift;
@@ -110,7 +110,7 @@ bool shift_pressed(void)
 }
 
 /*****************************************************************************/
-bool inside (int x, int y, GRECT *r)
+bool inside (short x, short y, GRECT *r)
 {
 	return (x >= r->g_x && y >= r->g_y && x < r->g_x + r->g_w && y < r->g_y + r->g_h);
 }
@@ -124,7 +124,7 @@ bool get_clip (GRECT *size)
 
 void set_clip (bool clipflag, GRECT *size)
 {
-	int	xy[4];
+	short	xy[4];
 
 	if (!clip_flag && !clipflag) 
 		return;										/* Es ist aus und bleibt aus */
@@ -148,18 +148,18 @@ void set_clip (bool clipflag, GRECT *size)
 
 /*****************************************************************************/
 
-static int do_note(int def, int undo, char *s)
+static short do_note(short def, short undo, char *s)
 {
 	wake_mouse();
 	return do_walert(def, undo, s, " qed ");
 }
 
-int note(int def, int undo, int index)
+short note(short def, short undo, short index)
 {
 	return do_note(def, undo, (char *)alertmsg[index]);
 }
 
-int inote(int def, int undo, int index, int val)
+short inote(short def, short undo, short index, short val)
 {
 	char	buf[128];
 	
@@ -167,7 +167,7 @@ int inote(int def, int undo, int index, int val)
 	return do_note(def, undo, buf);
 }
 
-int snote(int def, int undo, int index, char *val)
+short snote(short def, short undo, short index, char *val)
 {
 	char	buf[128];
 	
@@ -198,7 +198,7 @@ static void make_date(struct tm *stime, char *date)
 {
 	if (date != NULL)
 	{
-		switch ((unsigned int)_idt & 0xF00)			/* Reihenfolge im Datum */
+		switch ((unsigned short)_idt & 0xF00)			/* Reihenfolge im Datum */
 		{
 			case 0x000:  /* MM/DD/YYYY */
 				strftime(date, 11, "%m/%d/%Y", stime);
@@ -270,7 +270,7 @@ bool file_readonly (char *filename)
 	
 	if (stat(filename, &s) == 0)
 	{
-		int	uid, gid;
+		short	uid, gid;
 
 		uid = getuid();
 		gid = getgid();
@@ -305,7 +305,7 @@ bool path_from_env(char *env, char *path)
 		strcpy(path, p);
 		ret = make_normalpath(path);
 /*
-		i = (int)strlen(path);
+		i = (short)strlen(path);
 		if (p[i-1] != '\\')
 			strcat(path, "\\");
 */
@@ -317,7 +317,7 @@ bool path_from_env(char *env, char *path)
 bool is_bin_name(char *filename)
 {
 	char	*p;
-	int	i;
+	short	i;
 	
 	p = strrchr(filename, '.');
 	if (p != NULL)
@@ -334,7 +334,7 @@ bool is_bin_name(char *filename)
 /***************************************************************************/
 void font_change(void)
 {
-	int	ret, w1, w2, d, d1[5], d2[3];
+	short	ret, w1, w2, d, d1[5], d2[3];
 
 	/* *_cell werden NUR hier ver„ndert */
 	vst_font(vdi_handle, font_id);
@@ -355,7 +355,7 @@ void font_change(void)
 
 void select_font(void)
 {
-	int	n_id, n_pts;
+	short	n_id, n_pts;
 	bool	ok = FALSE;
 
 	n_id = font_id;
@@ -376,8 +376,8 @@ void select_font(void)
 /***************************************************************************/
 void init_global (void)
 {
-	int	work_out[57];
-	int	ret, f_anz;
+	short	work_out[57];
+	short	ret, f_anz;
 
 	done = FALSE;
 	clip_flag = TRUE;

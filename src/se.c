@@ -21,17 +21,17 @@ bool	se_autosave,
 /* lokale Variablem **********************************************************/
 typedef struct _separm
 {
-	int	id;
-	int	shellCmd;
-	int	editCmd;
-	int	se_version;
+	short	id;
+	short	shellCmd;
+	short	editCmd;
+	short	se_version;
 	char	prog_name[25];
 } SEPARMS;
 
 static SEPARMS	shell_parm,
 					edit_parm;
-static int		aktiv;				/* Nummer der aktiven Shell (0..SHELLANZ - 1) */
-static int		menu_len;
+static short		aktiv;				/* Nummer der aktiven Shell (0..SHELLANZ - 1) */
+static short		menu_len;
 static long		timer;				/* wird hochgez„hlt */
 static bool		wait_for_answer;	/* TRUE, wenn auf SE_OK/_ACK gewartet wird */
 static char		org_menu[8][25];
@@ -42,7 +42,7 @@ static char		org_menu[8][25];
 /* lokale Prototypen */
 static void	send_ok(void);
 static void	send_ack(bool ok);
-static void	send_cmd(int cmd, int bit);
+static void	send_cmd(short cmd, short bit);
 static void	send_esquit(void);
 
 
@@ -67,8 +67,8 @@ static void set_titel(char *titel)
 	strcat(str, titel);
 	strcat(str, " ");
 	menu_bar(menu, 0);
-	menu[2].ob_width = menu_len + (int)strlen(str) * sys_wbox;
-	menu[TSHELL].ob_width = (int)strlen(str) * sys_wbox;
+	menu[2].ob_width = menu_len + (short)strlen(str) * sys_wbox;
+	menu[TSHELL].ob_width = (short)strlen(str) * sys_wbox;
 	strcpy(menu[TSHELL].ob_spec.free_string, str);
 	menu_bar(menu, 1);
 	update_menu();
@@ -76,7 +76,7 @@ static void set_titel(char *titel)
 
 void setup_semenu(void)
 {
-	int	i;
+	short	i;
 
 	if (se_activ)
 	{
@@ -101,7 +101,7 @@ void setup_semenu(void)
 
 static void reset_shell_menu(void)
 {
-	int	i;
+	short	i;
 
 	set_titel("Shell");
 	menu_text(menu, MSMAKEFILE, org_menu[0]);
@@ -152,7 +152,7 @@ static void	send_ok(void)
 	{
 		if (debug_level & DBG_SE)
 			debug("sendOK -> %d\n", shell_parm.id);
-		memset(msgbuff, 0, (int)sizeof(msgbuff));
+		memset(msgbuff, 0, (short)sizeof(msgbuff));
 		msgbuff[0] = ES_OK;
 		msgbuff[1] = edit_parm.id;
 		msgbuff[3] = edit_parm.shellCmd;
@@ -170,7 +170,7 @@ static void	send_ack(bool ok)
 	{
 		if (debug_level & DBG_SE)
 			debug("sendAck -> %d\n", shell_parm.id);
-		memset(msgbuff, 0, (int)sizeof(msgbuff));
+		memset(msgbuff, 0, (short)sizeof(msgbuff));
 		msgbuff[0] = ES_ACK;
 		msgbuff[1] = edit_parm.id;
 		msgbuff[3] = ok;
@@ -179,11 +179,11 @@ static void	send_ack(bool ok)
 }
 
 
-void handle_se(int *msg)
+void handle_se(short *msg)
 {
 	PATH 			datei, fehler;
 	char			str[9], *p, *p2;
-	int			icon, i, d, x;
+	short			icon, i, d, x;
 	long			y;
 	ERRINFO		*error;
 	SEMENUINFO	*pmenu;
@@ -218,7 +218,7 @@ void handle_se(int *msg)
 			else
 			if ((appl_xgetinfo(4, &d, &d, &i, &d)) && (i == 1))	/* gibts appl_search? */
 			{
-				int	type, id;
+				short	type, id;
 
 				i = appl_search( 0, str, &type, &id);
 				while (i != 0)
@@ -448,7 +448,7 @@ static void	send_esquit(void)
 {
 	if (debug_level & DBG_SE)
 		debug("sendESQUIT -> %d\n", shell_parm.id);
-	memset(msgbuff, 0, (int)sizeof(msgbuff));
+	memset(msgbuff, 0, (short)sizeof(msgbuff));
 	msgbuff[0] = ES_QUIT;
 	msgbuff[1] = edit_parm.id;
 	(void) send_msg(shell_parm.id);
@@ -456,11 +456,11 @@ static void	send_esquit(void)
 }
 
 
-static void	send_esinit(int app)
+static void	send_esinit(short app)
 {
 	if (debug_level & DBG_SE)
 		debug("sendESINIT -> %d\n", app);
-	memset(msgbuff, 0, (int)sizeof(msgbuff));
+	memset(msgbuff, 0, (short)sizeof(msgbuff));
 	msgbuff[0] = ES_INIT;
 	msgbuff[1] = edit_parm.id;
 	msgbuff[3] = edit_parm.shellCmd;
@@ -470,9 +470,9 @@ static void	send_esinit(int app)
 }
 
 
-static void	send_esshlctrl(int flag)
+static void	send_esshlctrl(short flag)
 {
-	memset(msgbuff, 0, (int)sizeof(msgbuff));
+	memset(msgbuff, 0, (short)sizeof(msgbuff));
 	msgbuff[0] = ES_SHLCTRL;
 	msgbuff[1] = edit_parm.id;
 	if (global_str1[0] != EOS)
@@ -484,11 +484,11 @@ static void	send_esshlctrl(int flag)
 }
 
 
-static void	send_cmd(int cmd, int bit)
+static void	send_cmd(short cmd, short bit)
 {
 	if (shell_parm.editCmd & bit)
 	{
-		memset(msgbuff, 0, (int)sizeof(msgbuff));
+		memset(msgbuff, 0, (short)sizeof(msgbuff));
 		msgbuff[0] = cmd;
 		msgbuff[1] = edit_parm.id;
 		if (global_str1[0] != EOS)
@@ -506,7 +506,7 @@ static void	send_cmd(int cmd, int bit)
 	}
 }
 
-static void get_filename(int icon)
+static void get_filename(short icon)
 {
 	TEXTP 	t_ptr;
 
@@ -521,7 +521,7 @@ static void get_filename(int icon)
 
 static bool such_shell(void)
 {
-	int	i, j;
+	short	i, j;
 	char	name[9];
 
 	for (i = 0; i < SHELLANZ - 1; i++)
@@ -529,7 +529,7 @@ static bool such_shell(void)
 		strcpy(name, se_shells[i].name);
 		if (name[0])
 		{
-			for (j = (int) strlen(name); j < 8; j++)
+			for (j = (short) strlen(name); j < 8; j++)
 				strcat(name, " ");
 			j = appl_find(name);
 			if (j > 0)
@@ -546,7 +546,7 @@ static bool such_shell(void)
 
 static void se_options(void)
 {
-	int	i, antw;
+	short	i, antw;
 	char	tmp[30];
 
 	if (se_activ)
@@ -560,11 +560,11 @@ static void se_options(void)
 	for (i = 0; i < SHELLANZ - 1; i++)
 		set_string(seoptions, SENAME1 + i, se_shells[i].name);
 
-	set_state(seoptions, SESAVE, SELECTED, se_autosave);
-	set_state(seoptions, SESEARCH, SELECTED, se_autosearch);
+	set_state(seoptions, SESAVE, OS_SELECTED, se_autosave);
+	set_state(seoptions, SESEARCH, OS_SELECTED, se_autosearch);
 
-	set_flag(seoptions, SEOK, DEFAULT, se_activ);
-	set_flag(seoptions, SESUCH, DEFAULT, !se_activ);
+	set_flag(seoptions, SEOK, OF_DEFAULT, se_activ);
+	set_flag(seoptions, SESUCH, OF_DEFAULT, !se_activ);
 	
 	antw = simple_mdial(seoptions, SENAME1) & 0x7fff;
 	if ((antw == SEOK) || (antw == SESUCH))
@@ -575,8 +575,8 @@ static void se_options(void)
 			str_toupper(se_shells[i].name);
 		}
 
-		se_autosave = get_state(seoptions, SESAVE, SELECTED);
-		se_autosearch = get_state(seoptions, SESEARCH, SELECTED);
+		se_autosave = get_state(seoptions, SESAVE, OS_SELECTED);
+		se_autosearch = get_state(seoptions, SESEARCH, OS_SELECTED);
 
 		if (antw == SESUCH)
 		{
@@ -609,10 +609,10 @@ static void do_sesave(WINDOWP window)
 	}
 }
 
-void handle_es(int item)
+void handle_es(short item)
 {
 	WINDOWP	window;
-	int		top_icon = -1;
+	short		top_icon = -1;
 	
 	if (item == MSOPT)
 		se_options();
@@ -702,7 +702,7 @@ void handle_es(int item)
 
 void	init_se(void)
 {
-	int	i;
+	short	i;
 
 	se_activ = FALSE;
 	menu_len = menu[2].ob_width - menu[TSHELL].ob_width;

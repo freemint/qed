@@ -12,11 +12,11 @@
 
 /* Muessen am Anfang jeden Umbruchs gesetzt werden */
 static bool	tab;
-static int		tab_size, lineal_len;
+static short		tab_size, lineal_len;
 static SET		umbruch_set;
 
 static bool Absatz		(ZEILEP col);
-static bool too_short	(TEXTP t_ptr, ZEILEP col, long y);
+static bool too_int	(TEXTP t_ptr, ZEILEP col, long y);
 static bool too_long 	(TEXTP t_ptr, ZEILEP col, long y);
 
 void save_absatz(TEXTP t_ptr)
@@ -24,7 +24,7 @@ void save_absatz(TEXTP t_ptr)
 /* und im Absatz hinzugefgt							*/
 {
 	bool		action = FALSE;
-	int		i;
+	short		i;
 	char		c;
 	ZEILEP	lauf;
 
@@ -75,7 +75,7 @@ static bool Absatz(ZEILEP col)
 /* TRUE : Die Zeile ist die letzte Zeile eines Absatz */
 /* FALSE : sonst													*/
 {
-	int	col_len = col->len;
+	short	col_len = col->len;
 	char	c = TEXT(col)[col_len-1];
 
 	return (col_len==0 || IS_LAST(col) || !setin(umbruch_set,c));
@@ -106,10 +106,10 @@ void make_absatz(TEXTP t_ptr)
 		}
 }
 
-static int long_brk(ZEILEP col)
+static short long_brk(ZEILEP col)
 /* Zeile ist zu lang. Wo soll sie abgebrochen werden (mind. ein Wort) */
 {
-	int	off, pos;
+	short	off, pos;
 	char	c, *str;
 
 	off = col_offset(col);
@@ -156,12 +156,12 @@ static int long_brk(ZEILEP col)
 	return pos;
 }
 
-static int short_brk(ZEILEP col, int len)
+static short short_brk(ZEILEP col, short len)
 /* Einer Zeile fehlen Zeichen, sie ist jetzt im Bild len lang */
 /* Wo soll der Nachfolger (col) hochgezogen werden (mind. ein Wort) */
 {
 	char	*str, c;
-	int	pos, merk_pos;
+	short	pos, merk_pos;
 
 	pos = col_offset(col);
 	str = TEXT(col)+pos;
@@ -181,7 +181,7 @@ static int short_brk(ZEILEP col, int len)
 	}
 	else
 	{
-		int tabH;
+		short tabH;
 
 		tabH = tab_size-(len%tab_size);
 		while (TRUE)
@@ -212,7 +212,7 @@ static int short_brk(ZEILEP col, int len)
 /* !!! cursor_line muž hinterher entsprechend ypos gesetzt werden !!! */
 static bool too_long(TEXTP t_ptr, ZEILEP col, long y)
 {
-	int	i, len, off;
+	short	i, len, off;
 	bool	absatz, weiter, changed;
 
 	changed = FALSE;
@@ -265,14 +265,14 @@ static bool too_long(TEXTP t_ptr, ZEILEP col, long y)
 		y++;
 		changed = TRUE;
 	}
-	if (weiter) too_short(t_ptr,col,y);						/* n„chste Zeile zu kurz? */
+	if (weiter) too_int(t_ptr,col,y);						/* n„chste Zeile zu kurz? */
 	return (changed);
 }
 
 /* !!! cursor_line muž hinterher entsprechend ypos gesetzt werden !!! */
-static bool too_short(TEXTP t_ptr, ZEILEP col, long y)
+static bool too_int(TEXTP t_ptr, ZEILEP col, long y)
 {
-	int	len, off;
+	short	len, off;
 	ZEILEP	next_col;
 	bool	changed;
 
@@ -337,7 +337,7 @@ void umbruch(TEXTP t_ptr)
 		make_chg(t_ptr->link,TOTAL_CHANGE,y);
 		clr_undo();
 	}
-	else if (too_short(t_ptr, t_ptr->cursor_line, t_ptr->ypos))
+	else if (too_int(t_ptr, t_ptr->cursor_line, t_ptr->ypos))
 	{
 		t_ptr->cursor_line = get_line(&t_ptr->text,t_ptr->ypos);
 		t_ptr->moved++;
@@ -383,7 +383,7 @@ void format(TEXTP t_ptr)
 	{
 		if (!too_long(t_ptr, lauf->nachf,y))
 		{
-			if (too_short(t_ptr, lauf->nachf,y))
+			if (too_int(t_ptr, lauf->nachf,y))
 				change = TRUE;
 		}
 		else
@@ -427,7 +427,7 @@ void total_format(TEXTP t_ptr)
 		{
 			if (!too_long(t_ptr, lauf->nachf,y))
 			{
-				if (too_short(t_ptr, lauf->nachf,y))
+				if (too_int(t_ptr, lauf->nachf,y))
 					change = TRUE;
 			}
 			else

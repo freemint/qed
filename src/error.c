@@ -11,7 +11,7 @@
 #include "window.h"
 #include "error.h"
 
-extern void	menu_help(int title, int item);
+extern void	menu_help(short title, short item);
 
 /*
  * Exportierte Variablen:
@@ -34,22 +34,22 @@ typedef struct
 } TOKENELEM, *TEP;
 
 static TOKENELEM	token_list[MAX_TOKEN];
-static int			token_anzahl;
+static short			token_anzahl;
 static PATH			error_name;					/* Dateiname des Errorfiles */
 
 /* das Ergebnis */
 static PATH	dateiname;
 static char	fehlertext[MAX_ERRLEN];
 static long	fehlerzeile;
-static int	fehlerspalte;
-static int	err_anz = 0;
+static short	fehlerspalte;
+static short	err_anz = 0;
 
 
 
 static void init_parser(char *muster)
 {
 	char	tmp[2] = " ";
-	int	i;
+	short	i;
 	TOKEN last_token;
 
 	strcpy(dateiname, "");
@@ -65,7 +65,7 @@ static void init_parser(char *muster)
 		strcpy(token_list[i].text, "");
 	}
 
-	for (i = 0; i < (int)strlen(muster); i++)
+	for (i = 0; i < (short)strlen(muster); i++)
 	{
 		switch (muster[i])
 		{
@@ -106,14 +106,14 @@ static void init_parser(char *muster)
 }
 
 
-static bool	readin_text(char *zeile, int *pos, char *text)
+static bool	readin_text(char *zeile, short *pos, char *text)
 {
-	int	len = (int)strlen(text),
+	short	len = (short)strlen(text),
 			i;
 	char	tmp[10];
 
 	i = *pos;
-	while ( (i < (int)strlen(zeile)) && (i < (len + *pos)))
+	while ( (i < (short)strlen(zeile)) && (i < (len + *pos)))
 	{
 		tmp[i - *pos] = zeile[i];
 		i++;
@@ -128,16 +128,16 @@ static bool	readin_text(char *zeile, int *pos, char *text)
 		return FALSE;
 }
 
-static bool	readin_name(char *zeile, int *pos)
+static bool	readin_name(char *zeile, short *pos)
 {
 	SET	valid_char;
 	PATH	tmp;
-	int	i;
+	short	i;
 
 	strcpy(tmp,"-+._~\\/A-Za-z0-9");				/* Zul„ssige Zeichen fr Dateinamen */
 	str2set(tmp, valid_char);
 	i = *pos;
-	while ( 	(i < (int)strlen(zeile)) && 	/* Sonderbehandlung fr ':', nur im Pfad erlaubt! */
+	while ( 	(i < (short)strlen(zeile)) && 	/* Sonderbehandlung fr ':', nur im Pfad erlaubt! */
 				((setin(valid_char, zeile[i])) ||
 				 (zeile[i] == ':' && (zeile[i+1] == '\\') || zeile[i+1] == '/')))
 	{
@@ -167,13 +167,13 @@ static bool	readin_name(char *zeile, int *pos)
 		return FALSE;
 }
 
-static bool	readin_zeile(char *zeile, int *pos)
+static bool	readin_zeile(char *zeile, short *pos)
 {
-	int	i;
+	short	i;
 	char	tmp[10];
 
 	i= *pos;
-	while ( (i < (int)strlen(zeile)) && (isdigit(zeile[i])) )
+	while ( (i < (short)strlen(zeile)) && (isdigit(zeile[i])) )
 	{
 		tmp[i - *pos] = zeile[i];
 		i++;
@@ -189,13 +189,13 @@ static bool	readin_zeile(char *zeile, int *pos)
 		return FALSE;
 }
 
-static bool	readin_spalte(char *zeile, int *pos)
+static bool	readin_spalte(char *zeile, short *pos)
 {
-	int	i;
+	short	i;
 	char	tmp[10];
 
 	i= *pos;
-	while ( (i < (int)strlen(zeile)) && (isdigit(zeile[i])) )
+	while ( (i < (short)strlen(zeile)) && (isdigit(zeile[i])) )
 	{
 		tmp[i - *pos] = zeile[i];
 		i++;
@@ -211,14 +211,14 @@ static bool	readin_spalte(char *zeile, int *pos)
 		return FALSE;
 }
 
-static bool	readin_fehler(char *zeile, int *pos)
+static bool	readin_fehler(char *zeile, short *pos)
 {
-	int	i, j;
+	short	i, j;
 	char	tmp[MAX_ERRLEN];
 
 	i = *pos;
 	j = 0;
-	while ( (i < (int)strlen(zeile)) && (j < sizeof(tmp)) )
+	while ( (i < (short)strlen(zeile)) && (j < sizeof(tmp)) )
 	{
 		tmp[i - *pos] = zeile[i];
 		i++;
@@ -237,7 +237,7 @@ static bool	readin_fehler(char *zeile, int *pos)
 
 static bool	parse_line(char *zeile)
 {
-	int	i, z_pos = 0;
+	short	i, z_pos = 0;
 	bool	ok = FALSE;
 
 	for (i = 0; i <= token_anzahl; i++)
@@ -269,7 +269,7 @@ static bool	parse_line(char *zeile)
 
 void	handle_error(TEXTP t_ptr)
 {
-	int	icon, i;
+	short	icon, i;
 	char	str[256];
 
 	if (last_errtext != NULL && t_ptr != last_errtext)
@@ -329,7 +329,7 @@ void	handle_error(TEXTP t_ptr)
  */
 void	fehler_box(void)
 {
-	int	antw, i;
+	short	antw, i;
 	char	str[40];
 	MDIAL	*dial;
 	bool	close = FALSE;
@@ -347,7 +347,7 @@ void	fehler_box(void)
 			{
 				case FEHLHELP :
 					menu_help(TSPEZIAL, MFEHLER);
-					set_state(fehler, antw, SELECTED, FALSE);
+					set_state(fehler, antw, OS_SELECTED, FALSE);
 					redraw_mdobj(dial, antw);
 					break;
 				default:
@@ -356,7 +356,7 @@ void	fehler_box(void)
 			}
 		}
 		close_mdial(dial);
-		set_state(fehler, antw, SELECTED, FALSE);
+		set_state(fehler, antw, OS_SELECTED, FALSE);
 		if (antw == FEHLOK)
 		{
 			err_anz = 0;

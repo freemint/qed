@@ -19,8 +19,8 @@ extern void close_printer	(void);
 /*
  * lokales 
 */
-static int	prn_y, line_height;
-static int	channel;
+static short	prn_y, line_height;
+static short	channel;
 
 /* --------------------------------------------------------------------------- */
 static bool prn_ready (void)
@@ -36,7 +36,7 @@ static bool prn_ready (void)
 	}
 }
 
-static bool prn_check (int wait_time)
+static bool prn_check (short wait_time)
 {
 	/* Schnittstelle nur bei !WDIALOG prfen */
 	if (!prn->use_pdlg && prn->pruef_prn)
@@ -82,7 +82,7 @@ static void plot_nl(void)
 
 static void plot_line(char *s)		/* Zeile mit Vorschub */
 {
-	int	l;
+	short	l;
 	
 	if (prn->use_gdos)
 	{
@@ -91,7 +91,7 @@ static void plot_line(char *s)		/* Zeile mit Vorschub */
 	}
 	else
 	{
-		l = (int)strlen(s);
+		l = (short)strlen(s);
 		if (l > prn->wp_z_len)			/* Clipping */
 			s[prn->wp_z_len] = EOS;
 		wp_write_string(s);
@@ -100,9 +100,9 @@ static void plot_line(char *s)		/* Zeile mit Vorschub */
 }
 
 /* --------------------------------------------------------------------------- */
-static void expand_line(char *buffer, char *line, bool tab, int tab_size)
+static void expand_line(char *buffer, char *line, bool tab, short tab_size)
 {
-	int	tabH;
+	short	tabH;
 	char	*p;
 	
 	tabH = 0;
@@ -135,7 +135,7 @@ static void expand_line(char *buffer, char *line, bool tab, int tab_size)
 /* --------------------------------------------------------------------------- */
 static void drucken(char *name, RINGP t, TEXTP t_ptr)
 {
-	int		seite, lzeile, zeilen_pro_seite, update;
+	short		seite, lzeile, zeilen_pro_seite, update;
 	char		datum[11], *buffer = NULL, str[80];
 	long		zeile, buf_len;
 	ZEILEP	lauf;
@@ -145,7 +145,7 @@ static void drucken(char *name, RINGP t, TEXTP t_ptr)
 
 	if (prn->use_gdos)
 	{
-		int	p_xy[8], d, eff[3];
+		short	p_xy[8], d, eff[3];
 
 		if (!open_printer())
 			return;

@@ -8,30 +8,30 @@
 
 typedef struct
 {
-	void	(*exist)	(int obj_nr, SET actions);
-	bool	(*test)	(int obj_nr, int action);
-	int	(*edit)	(int obj_nr, int action);
-	bool	(*drag)	(int obj_nr, int dest_obj);
+	void	(*exist)	(short obj_nr, SET actions);
+	bool	(*test)	(short obj_nr, short action);
+	short	(*edit)	(short obj_nr, short action);
+	bool	(*drag)	(short obj_nr, short dest_obj);
 } ICON_TYPE;
 
 typedef ICON_TYPE *TYPEP;
 
 typedef struct
 {
-	int	icon;
-	int	type_id;
+	short	icon;
+	short	type_id;
 } ICON_TO_TYPE;
 typedef ICON_TO_TYPE *I2T;
 
 static ICON_TYPE		icon[MAX_TYPE_ANZ];
 static ICON_TO_TYPE	i2t[MAX_ICON_ANZ];
-static int				type_anz = 0;
+static short				type_anz = 0;
 
 /* ============================================================== */
 
-static TYPEP search_type(int obj_nr)
+static TYPEP search_type(short obj_nr)
 {
-	int	i;
+	short	i;
 	I2T	ic;
 
 	obj_nr &= (~SUB_ICON);
@@ -41,10 +41,10 @@ static TYPEP search_type(int obj_nr)
 	return(NULL);
 }
 
-int all_icons(int *c)
+short all_icons(short *c)
 {
 	I2T	ic;
-	int	i, anz;
+	short	i, anz;
 
 	ic = i2t;
 	for (i=MAX_ICON_ANZ, anz=0; (--i)>=0; ic++)
@@ -59,7 +59,7 @@ int all_icons(int *c)
 /* <0 : Fehler bei der Ausfhrung	*/
 /*	=0 : Nicht m”glich					*/
 /* >0 : Erfolgreich ausgefhrt		*/
-int do_icon(int icon, int action)
+short do_icon(short icon, short action)
 {
 	TYPEP	t;
 
@@ -69,10 +69,10 @@ int do_icon(int icon, int action)
 	return 0;
 }
 
-void do_all_icon(int type_id, int action)
+void do_all_icon(short type_id, short action)
 {
 	I2T	ic;
-	int	i;
+	short	i;
 
 	ic = i2t;
 	for (i=MAX_ICON_ANZ; (--i)>=0; ic++)
@@ -82,7 +82,7 @@ void do_all_icon(int type_id, int action)
 		}
 }
 
-bool icon_test(int icon, int action)
+bool icon_test(short icon, short action)
 {
 	TYPEP	t;
 
@@ -92,7 +92,7 @@ bool icon_test(int icon, int action)
 	return FALSE;
 }
 
-int icon_edit(int icon, int action)
+short icon_edit(short icon, short action)
 {
 	TYPEP	t;
 
@@ -102,7 +102,7 @@ int icon_edit(int icon, int action)
 	return 0;
 }
 
-void icon_exist(int icon, SET actions)
+void icon_exist(short icon, SET actions)
 {
 	TYPEP	t;
 
@@ -112,7 +112,7 @@ void icon_exist(int icon, SET actions)
 	else (t->exist)(icon,actions);
 }
 
-bool icon_drag(int dest_obj, int src_obj)
+bool icon_drag(short dest_obj, short src_obj)
 {
 	TYPEP	t;
 
@@ -121,10 +121,10 @@ bool icon_drag(int dest_obj, int src_obj)
 	return((t->drag)(dest_obj,src_obj));
 }
 
-int decl_icon_type(bool(*test)(int,int),
-						 int(*edit)(int,int),
-						 void(*exist)(int,SET),
-						 bool(*drag)(int,int))
+short decl_icon_type(bool(*test)(short,short),
+						 short(*edit)(short,short),
+						 void(*exist)(short,SET),
+						 bool(*drag)(short,short))
 {
 	TYPEP	t;
 
@@ -139,9 +139,9 @@ int decl_icon_type(bool(*test)(int,int),
 	return (type_anz-1);
 }
 
-bool add_icon(int type_id, int obj_nr)
+bool add_icon(short type_id, short obj_nr)
 {
-	int	i;
+	short	i;
 	I2T	ic;
 
 	ic = i2t;
@@ -155,10 +155,10 @@ bool add_icon(int type_id, int obj_nr)
 	return FALSE;
 }
 
-void del_icon(int obj_nr)
+void del_icon(short obj_nr)
 {
 	I2T	ic;
-	int	i;
+	short	i;
 
 	ic = i2t;
 	for (i=MAX_ICON_ANZ; (--i)>=0; ic++)
@@ -170,10 +170,10 @@ void del_icon(int obj_nr)
 	inote(1, 0, FATALERR, 1);
 }
 
-int icon_anz(int type_id)
+short icon_anz(short type_id)
 {
 	I2T	ic;
-	int	i, anz;
+	short	i, anz;
 
 	anz = 0;
 	ic = i2t;
@@ -185,7 +185,7 @@ int icon_anz(int type_id)
 
 void init_icon(void)
 {
-	int	i;
+	short	i;
 	I2T	ic = i2t;
 
 	for (i=MAX_ICON_ANZ; (--i)>=0; ic++)

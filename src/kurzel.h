@@ -6,13 +6,13 @@ extern bool 	goto_line_dial (void);
 /* Marken */
 #define MARKEN_ANZ	5
 
-extern void 	set_marke		(int nr, char *name, PATH file, long y, int x);
-extern bool 	get_marke		(int nr, char *name, PATH file, long *y, int *x);
+extern void 	set_marke		(short nr, char *name, PATH file, long y, short x);
+extern bool 	get_marke		(short nr, char *name, PATH file, long *y, short *x);
 
 extern void 	init_marken		(void);
-extern void 	goto_marke		(int nr);
+extern void 	goto_marke		(short nr);
 extern void 	config_marken	(TEXTP t_ptr);
-extern void		del_marke 		(int nr);
+extern void		del_marke 		(short nr);
 
 /* KÅrzel */
 #define KURZEL_MAX	8		/* max. Anzahl der konfi. KÅrzeldateien */

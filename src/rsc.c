@@ -161,7 +161,7 @@ bool init_resource(void)
 		set_string(about2, AMINT, str);
 		get_patchlev(__Ident_gem, str);
 		set_string(about2, AGEM, str);
-		get_patchlev(__Ident_cflib, str);
+		/* FIXME get_patchlev(__Ident_cflib, str); */
 		set_string(about2, ACF, str);
 
 #if 0

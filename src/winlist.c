@@ -25,7 +25,7 @@
 WINDOWP	used_list;
 
 static WINDOWP	free_list;
-static int		init_count;
+static short		init_count;
 
 #if 0
 void dump_winlist(void)
@@ -54,7 +54,7 @@ void dump_winlist(void)
 /*
  * free_list: Neues Element in die Liste einh„ngen.
 */
-static WINDOWP new_list_elem(int class)
+static WINDOWP new_list_elem(short class)
 {
 	WINDOWP	new, p;
 
@@ -234,7 +234,7 @@ void move_to_end (WINDOWP w)
 /*
  * Abmessungen eines Fensters aus der Konfig in die Liste einh„ngen
 */
-void add_winlist(int class, GRECT *r)
+void add_winlist(short class, GRECT *r)
 {
 	WINDOWP	w;
 
@@ -246,7 +246,7 @@ void add_winlist(int class, GRECT *r)
 /*
  * Fensterparameter sichern.
 */
-static WINDOWP search_init(WINDOWP list, int init)
+static WINDOWP search_init(WINDOWP list, short init)
 {
 	WINDOWP	p = list;
 	
@@ -261,7 +261,7 @@ static WINDOWP search_init(WINDOWP list, int init)
 
 void save_winlist(FILE *fd)
 {
-	int		i;
+	short		i;
 	WINDOWP	p;
 		
 	i = 0;
@@ -280,7 +280,7 @@ void save_winlist(FILE *fd)
 /*
  * Freies Fenster einer Klasse suchen, ggf. neu anlegen.
 */
-WINDOWP get_new_window(int class)
+WINDOWP get_new_window(short class)
 {
 	WINDOWP	p;
 	

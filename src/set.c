@@ -5,9 +5,9 @@ static char bits[] = {128, 64, 32, 16, 8, 4, 2, 1};
 
 /*****************************************************************************/
 
-int setfree(SET set)
+short setfree(SET set)
 {
-	int	i;
+	short	i;
 	unsigned long help, h;
 
 	h = 0xFFFFFFFFL;
@@ -27,9 +27,9 @@ int setfree(SET set)
 
 /*****************************************************************************/
 
-int setmax(SET set)
+short setmax(SET set)
 {
-	int	i;
+	short	i;
 	unsigned long help;
 
 	for (i = SETSIZE; (--i) >= 0; )
@@ -44,9 +44,9 @@ int setmax(SET set)
 
 /*****************************************************************************/
 
-int setmin(SET set)
+short setmin(SET set)
 {
-	int	i;
+	short	i;
 	unsigned long help, h;
 
 	for (i=0; i<SETMAX; i+=32)
@@ -66,7 +66,7 @@ int setmin(SET set)
 
 void setcpy (SET set1, SET set2)
 {
-	memcpy(set1, set2, SETSIZE * (int) sizeof(unsigned long));
+	memcpy(set1, set2, SETSIZE * (short) sizeof(unsigned long));
 }
 
 /*****************************************************************************/
@@ -76,7 +76,7 @@ void setcpy (SET set1, SET set2)
 
 void setall (SET set)
 {
-	int i;
+	short i;
 
 	i = SETSIZE/2;
 	while ((--i)>=0)
@@ -90,7 +90,7 @@ void setall (SET set)
 
 void setclr (SET set)
 {
-	int i;
+	short i;
 
 	i = SETSIZE/2;
 	while ((--i)>=0)
@@ -104,7 +104,7 @@ void setclr (SET set)
 
 void setnot (SET set)
 {
-	int i;
+	short i;
 
 	i = SETSIZE/2;
 	while ((--i)>=0)
@@ -118,7 +118,7 @@ void setnot (SET set)
 
 void setand (SET set1, SET set2)
 {
-	int i;
+	short i;
 
 	i = SETSIZE/2;
 	while ((--i)>=0)
@@ -132,7 +132,7 @@ void setand (SET set1, SET set2)
 
 void setor (SET set1, SET set2)
 {
-	int i;
+	short i;
 
 	i = SETSIZE/2;
 	while ((--i)>=0)
@@ -146,7 +146,7 @@ void setor (SET set1, SET set2)
 
 void setxor (SET set1, SET set2)
 {
-	int i;
+	short i;
 
 	i = SETSIZE/2;
 	while ((--i)>=0)
@@ -158,7 +158,7 @@ void setxor (SET set1, SET set2)
 
 /*****************************************************************************/
 
-void setincl (SET set, int elt)
+void setincl (SET set, short elt)
 {
 	if (elt>=0 && elt<=SETMAX)
 		*((char*)set+(elt>>3)) |= bits[elt&7];
@@ -166,7 +166,7 @@ void setincl (SET set, int elt)
 
 /*****************************************************************************/
 
-void setexcl (SET set, int elt)
+void setexcl (SET set, short elt)
 {
 	if (elt>=0 && elt<=SETMAX)
 		*((char*)set+(elt>>3)) &= ~bits[elt&7];
@@ -174,7 +174,7 @@ void setexcl (SET set, int elt)
 
 /*****************************************************************************/
 
-void setchg (SET set, int elt)
+void setchg (SET set, short elt)
 {
 	if (elt>=0 && elt<=SETMAX)
 		*((char*)set+(elt>>3)) ^= bits[elt&7];
@@ -182,7 +182,7 @@ void setchg (SET set, int elt)
 
 /*****************************************************************************/
 
-bool setin (SET set, int elt)
+bool setin (SET set, short elt)
 {
 	if (elt>=0 && elt<=SETMAX)
 		return ((*((char*)set+(elt>>3)) & bits[elt&7]) ? TRUE : FALSE);
@@ -194,7 +194,7 @@ bool setin (SET set, int elt)
 
 bool setcmp (SET set1, SET set2)
 {
-	int i;
+	short i;
 
 	if (set2==NULL)
 		for (i=0; i<SETSIZE && *set1++==0; i++);
@@ -205,9 +205,9 @@ bool setcmp (SET set1, SET set2)
 
 /*****************************************************************************/
 
-int setcard (SET set)
+short setcard (SET set)
 {
-	int i, card, max;
+	short i, card, max;
 
 	max = setmax(set);
 	for (i=setmin(set), card=0; i<=max; i++)
@@ -220,7 +220,7 @@ int setcard (SET set)
 
 void str2set (char *str, SET set)
 {
-	int	i;
+	short	i;
 
 	setclr(set);
 	i = 0;

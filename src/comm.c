@@ -20,22 +20,22 @@ typedef struct
 /* exportierte Variablen *****************************************************/
 char	*global_str1,
 		*global_str2;
-int	msgbuff[8]; 			/* Buffer, den send_msg verschickt */
+short	msgbuff[8]; 			/* Buffer, den send_msg verschickt */
 
 
 /* lokale Variablen **********************************************************/
 static DHSTINFO	*dhst = NULL;
-static int			dhst_id = -1;
+static short			dhst_id = -1;
 
 /*****************************************************************************/
 
-bool send_msg(int id)
+bool send_msg(short id)
 {
-	int	ret;
+	short	ret;
 	
 	msgbuff[1] = gl_apid;
 	msgbuff[2] = 0;
-	ret = appl_write(id, (int) sizeof(msgbuff), msgbuff);
+	ret = appl_write(id, (short) sizeof(msgbuff), msgbuff);
 	return (ret > 0);
 }
 
@@ -44,7 +44,7 @@ void send_clip_change(void)
 {
 	if ((av_shell_id >= 0) && (av_shell_status & 512))	/* Desktop informieren */
 	{
-		memset(msgbuff, 0, (int)sizeof(msgbuff));
+		memset(msgbuff, 0, (short)sizeof(msgbuff));
 		msgbuff[0] = AV_PATH_UPDATE;
 		strcpy(global_str1, clip_dir);
 		*(char **) (msgbuff + 3) = global_str1;
@@ -60,7 +60,7 @@ void send_dhst(char *filename)
 		long	l;
 
 		if (getcookie("DHST", &l))
-			dhst_id = (int)l;
+			dhst_id = (short)l;
 		else
 			dhst_id = 0;
 	}

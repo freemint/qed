@@ -11,14 +11,14 @@
 
 /* lokale Prototypen *******************************************************/
 static void	block_demark	(TEXTP t_ptr);
-static bool	tab_ok			(ZEILEP a, bool tab, int tabsize);
+static bool	tab_ok			(ZEILEP a, bool tab, short tabsize);
 static void	block_setzen	(TEXTP t_ptr);
 static bool	block_delete	(TEXTP t_ptr, RINGP t);
 static bool	block_einsetzen(TEXTP t_ptr, RINGP t);
 
 /* lokale Variablen ********************************************************/
 
-static int	undo_anf_x, undo_end_x;
+static short	undo_anf_x, undo_end_x;
 static long	undo_anf_y, undo_end_y;
 static RING	trash_text;
 static bool	trash_init = FALSE;
@@ -65,7 +65,7 @@ void blk_mark_all(TEXTP t_ptr)
 
 void blk_mark_word(TEXTP t_ptr)		/* Wort unter dem Cursor markieren */
 {
-	int	pos,len;
+	short	pos,len;
 	char	*str;
 
 	pos = t_ptr->xpos;
@@ -100,7 +100,7 @@ void blk_mark_word(TEXTP t_ptr)		/* Wort unter dem Cursor markieren */
 static void search_forw(TEXTP t_ptr, char b_1, char b_2)	/* Klammersuche vorw„rts */
 {
 	ZEILEP	lauf;
-	int		x, level = 0, i;
+	short		x, level = 0, i;
 	long		y;
 	bool	found = FALSE;
 	
@@ -150,7 +150,7 @@ static void search_forw(TEXTP t_ptr, char b_1, char b_2)	/* Klammersuche vorw„rt
 static void search_backw(TEXTP t_ptr, char b_1, char b_2)	/* Klammersuche rckw. */
 {
 	ZEILEP	lauf;
-	int		x, level = 0, i;
+	short		x, level = 0, i;
 	long		y;
 	bool	found = FALSE;
 	
@@ -194,7 +194,7 @@ bool blk_mark_brace(TEXTP t_ptr)
 {
 	bool	found = FALSE;
 	char		c, *p;
-	int		index;
+	short		index;
 		
 	if (t_ptr->xpos < t_ptr->cursor_line->len)
 	{
@@ -202,7 +202,7 @@ bool blk_mark_brace(TEXTP t_ptr)
 		p = strchr(klammer_auf, c);
 		if (p)
 		{
-			index = (int)(p - klammer_auf);
+			index = (short)(p - klammer_auf);
 			blk_mark(t_ptr, 0);
 			search_forw(t_ptr, klammer_auf[index], klammer_zu[index]);
 			blk_mark(t_ptr, 1);
@@ -211,7 +211,7 @@ bool blk_mark_brace(TEXTP t_ptr)
 		p = strchr(klammer_zu, c);
 		if (!found && p)
 		{
-			index = (int)(p - klammer_zu);
+			index = (short)(p - klammer_zu);
 			/*
 			 * der Cursor steht auf der Klammer, muž aber dahinter stehen, damit 
 			 * sie auch selektiert wird!
@@ -228,7 +228,7 @@ bool blk_mark_brace(TEXTP t_ptr)
 }
 
 
-void get_blk_mark(TEXTP t_ptr, long *y, int *x)
+void get_blk_mark(TEXTP t_ptr, long *y, short *x)
 {
 	if (t_ptr->block_dir)	/* nach links */
 	{
@@ -242,7 +242,7 @@ void get_blk_mark(TEXTP t_ptr, long *y, int *x)
 	}
 }
 
-void blk_mark(TEXTP t_ptr, int marke)
+void blk_mark(TEXTP t_ptr, short marke)
 /* Blockstart und -ende setzen	*/
 /* marke : 0 und 1					*/
 {
@@ -332,7 +332,7 @@ void line_copy(TEXTP t_ptr)
 /* Kopiert aktuelle Zeile auf das Clipboard */
 {
 	ZEILEP	col = t_ptr->cursor_line;
-	int	old_x;
+	short	old_x;
 
 	old_x = t_ptr->xpos;
 	t_ptr->xpos = 0;
@@ -407,7 +407,7 @@ void blk_cut(TEXTP t_ptr)
 	add_undo(BLK_CUT);
 }
 
-void blk_undo(TEXTP t_ptr, int undo)
+void blk_undo(TEXTP t_ptr, short undo)
 {
 	RING	t;
 
@@ -468,7 +468,7 @@ void blk_right(TEXTP t_ptr)
 	ende = t_ptr->z2;
 	if (y < ende)
 	{
-		int  anz, i;
+		short  anz, i;
 		char	c, *str;
 
 		if (shift_pressed())		/* mit Shift: nur ein ' ' */
@@ -523,7 +523,7 @@ void blk_left(TEXTP t_ptr)
 	ZEILEP 	lauf;
 	long		y, ende;
 	bool	t = t_ptr->loc_opt->tab;
-	int		ts = t_ptr->loc_opt->tabsize;
+	short		ts = t_ptr->loc_opt->tabsize;
 
 	if (!t_ptr->block)
 		return;
@@ -532,7 +532,7 @@ void blk_left(TEXTP t_ptr)
 	ende = t_ptr->z2;
 	if (y < ende)
 	{
-		int anz;
+		short anz;
 
 		if (shift_pressed())
 		{
@@ -634,7 +634,7 @@ void strcap (char *line, SET wort_set)
 	}
 }
 
-void blk_upplow(TEXTP t_ptr, int type)
+void blk_upplow(TEXTP t_ptr, short type)
 {
 	ZEILEP	lauf;
 	long	y, ende;
@@ -700,9 +700,9 @@ static void block_demark(TEXTP t_ptr)
 	t_ptr->cursor = TRUE;
 }
 
-static bool tab_ok(ZEILEP a, bool tab, int tabsize)
+static bool tab_ok(ZEILEP a, bool tab, short tabsize)
 {
-	int 	anz;
+	short 	anz;
 	char *str;
 
 	if (tab)
@@ -733,7 +733,7 @@ static void block_setzen(TEXTP t_ptr)
 	{
 		ZEILEP col;
 		long	l;
-		int	i;
+		short	i;
 
 		t_ptr->block_dir ^= TRUE;
 		i = t_ptr->x1;
@@ -748,7 +748,7 @@ static void block_setzen(TEXTP t_ptr)
 	}
 	else if (t_ptr->z1 == t_ptr->z2 && t_ptr->x1 > t_ptr->x2)
 	{
-		int xw;
+		short xw;
 
 		t_ptr->block_dir ^= TRUE;
 		xw = t_ptr->x1;
@@ -783,7 +783,7 @@ static bool block_delete(TEXTP t_ptr, RINGP t)
 	lines = t_ptr->z2-t_ptr->z1+1;
 	if (lines==1)							/* ganz ohne Zeilenumbruch */
 	{
-		int len = t_ptr->x2-t_ptr->x1;
+		short len = t_ptr->x2-t_ptr->x1;
 		ZEILEP	b;
 
 		init_textring(t);
@@ -979,7 +979,7 @@ void	block_info(TEXTP t_ptr)
 
 	set_long(blockinfo, BLOBYTES, textring_bytes(&t));	/* Gr”že in Bytes */
 
-	if (t_ptr->text.ending != binmode)
+	if (t_ptr->text.ending != lns_binmode)
 		set_long(blockinfo, BLOZEILE, t.lines);
 	else
 		set_string(blockinfo, BLOZEILE, "--");		/* Bin„r: keine Zeilen */

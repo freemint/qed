@@ -1,0 +1,8 @@
+#
+# use global definitions
+#
+include $(top_srcdir)/../CONFIGVARS
+
+#
+# private definitions
+#

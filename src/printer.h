@@ -3,9 +3,9 @@
 
 typedef struct
 {
-	int	wp_mode;
-	int	wp_s_len;
-	int	wp_z_len;
+	short	wp_mode;
+	short	wp_s_len;
+	short	wp_z_len;
 	PATH	wp_treiber;
 	bool	wp_nlq;
 	bool	vorschub;
@@ -13,12 +13,12 @@ typedef struct
 
 	bool	use_gdos;
 	bool	use_pdlg;
-	int	font_id;
-	int	font_pts;	
+	short	font_id;
+	short	font_pts;	
 
 	bool	num_zeilen;
 	bool	num_seiten;
-	int	rand_len;
+	short	rand_len;
 
 	void	*pdlg;		/* PRN_SETTINGS */
 	
@@ -26,8 +26,8 @@ typedef struct
 	bool	pdlg_avail;
 	bool	ausdruck;	/* FALSE: normale Konfig, TRUE: vor Ausdruck */
 	bool	block;		/* Bei start=TRUE: Block oder alles */
-	int	handle;		/* VDI/GEMDOS-Handle */
-	int	height;		/* H”he der Druckseite */
+	short	handle;		/* VDI/GEMDOS-Handle */
+	short	height;		/* H”he der Druckseite */
 } PRN_CFG;
 
 

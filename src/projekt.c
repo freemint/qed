@@ -1,7 +1,7 @@
 #include <dirent.h>
 #include <keycodes.h>
 #include <support.h>
-#include <stat.h>
+#include <sys/stat.h>
 #include <time.h>
 
 #include "global.h"
@@ -29,7 +29,7 @@
 
 
 /* exprortierte Variablen **************************************************/
-int		prj_type;
+short		prj_type;
 PATH		def_prj_path;
 
 /****** DEFINES ************************************************************/
@@ -48,32 +48,32 @@ typedef struct			/* fr Dreaddir */
 } DIRENTRY;
 
 /****** VAR ****************************************************************/
-static int	do_find_icon;
+static short	do_find_icon;
 static PATH	df_path;
-static int	def_icon;						/* Icon fr Defaultprojekt */
+static short	def_icon;						/* Icon fr Defaultprojekt */
 
 /****** FUNCTIONS **********************************************************/
 
-static void	p_icon_exist		(int icon, SET actions);
-static bool	p_icon_test			(int icon, int action);
-static int	p_icon_edit			(int icon, int action);
-static bool	p_icon_drag			(int icon, int source);
-static void	draw_line			(WINDOWP window, int line);
+static void	p_icon_exist		(short icon, SET actions);
+static bool	p_icon_test			(short icon, short action);
+static short	p_icon_edit			(short icon, short action);
+static bool	p_icon_drag			(short icon, short source);
+static void	draw_line			(WINDOWP window, short line);
 static void	wi_draw				(WINDOWP window, GRECT *d);
-static void	wi_click 			(WINDOWP window, int m_x, int m_y, int bstate, int kstate, int breturn);
+static void	wi_click 			(WINDOWP window, short m_x, short m_y, short bstate, short kstate, short breturn);
 static void	wi_unclick			(WINDOWP window);
-static bool	wi_key				(WINDOWP window, int kstate, int kreturn);
-static void	wi_snap				(WINDOWP window, GRECT *new, int mode);
+static bool	wi_key				(WINDOWP window, short kstate, short kreturn);
+static void	wi_snap				(WINDOWP window, GRECT *new, short mode);
 static void	wi_iconify			(WINDOWP window);
 static void	wi_uniconify		(WINDOWP window);
-static bool	find_files			(char *pfad, bool rekursiv, char *df_muster, int icon, int tmp_icon);
-static void	get_prj_line		(int link, int line, char *str);
-static int	del_from_projekt	(int link, int line);
-static bool	open_prj 			(int icon);
-static void	destruct 			(int icon);
+static bool	find_files			(char *pfad, bool rekursiv, char *df_muster, short icon, short tmp_icon);
+static void	get_prj_line		(short link, short line, char *str);
+static short	del_from_projekt	(short link, short line);
+static bool	open_prj 			(short icon);
+static void	destruct 			(short icon);
 static void	crt_prj				(WINDOWP window);
-static int	crt_new_prj			(char *filename);
-static void	info_projekt		(int icon);
+static short	crt_new_prj			(char *filename);
+static void	info_projekt		(short icon);
 static void	select_def_prj 	(void);
 
 /*****************************************************************************/
@@ -82,11 +82,11 @@ static void	select_def_prj 	(void);
  * do_for_prj()
  *	bei DO_OPEN, DO_DELETE und Info-Scan -> Aktion auf Projekt selbst
 */
-static void do_for_prj(int icon, SET s, int (*do_it)(int,int), bool verbose)
+static void do_for_prj(short icon, SET s, short (*do_it)(short,short), bool verbose)
 {
 	TEXTP 	t_ptr, t_ptr2;
 	ZEILEP 	lauf;
-	int		min, i, anz, soll, erg;
+	short		min, i, anz, soll, erg;
 	PATH		name, prj;
 	FILENAME file;
 	char		*p;
@@ -166,11 +166,11 @@ static void do_for_prj(int icon, SET s, int (*do_it)(int,int), bool verbose)
 /*
  * bei Sub-Info und Find -> Aktion auf Element(e) des Projekts
 */
-static bool do_find(int icon);
+static bool do_find(short icon);
 
-static void do_for_prj2(int icon, SET s, int aktion, bool verbose)
+static void do_for_prj2(short icon, SET s, short aktion, bool verbose)
 {
-	int		i, t_icon, anz, soll, antw;
+	short		i, t_icon, anz, soll, antw;
 	TEXTP 	t_ptr, t_ptr2;
 	PATH		name, prj;
 	FILENAME file;
@@ -259,10 +259,10 @@ static void do_for_prj2(int icon, SET s, int aktion, bool verbose)
 		end_aktion();
 }
 
-static bool delete_prj(int icon)
+static bool delete_prj(short icon)
 {
 	TEXTP 	t_ptr = get_text(icon);
-	int		antw;
+	short		antw;
 	FILENAME name;
 
 	if (t_ptr->moved!=0)
@@ -288,7 +288,7 @@ static bool delete_prj(int icon)
 	return (TRUE);
 }
 
-static void chg_prj_name(int icon)
+static void chg_prj_name(short icon)
 {
 	WINDOWP 		window;
 	FILENAME 	name;
@@ -303,7 +303,7 @@ static void chg_prj_name(int icon)
 /* Operation vorhanden ?																	*/
 /***************************************************************************/
 
-static void p_icon_exist(int icon, SET actions)
+static void p_icon_exist(short icon, SET actions)
 {
 	setclr(actions);
 	if (icon & SUB_ICON)
@@ -349,7 +349,7 @@ static void p_icon_exist(int icon, SET actions)
 /* Operation testen																			*/
 /***************************************************************************/
 
-static bool p_icon_test(int icon, int action)
+static bool p_icon_test(short icon, short action)
 {
 	bool	erg;
 
@@ -430,10 +430,10 @@ static bool p_icon_test(int icon, int action)
 			case DO_AUTOSAVE :
 				if (as_prj && t_ptr->moved)
 				{
-					int	btn;
+					short	btn;
 					long	min;
 
-					min = (int)((time(NULL) - t_ptr->asave) / 60L);
+					min = (short)((time(NULL) - t_ptr->asave) / 60L);
 					if (min >= as_prj_min)
 					{
 						if (as_prj_ask)				/* Nachfrage ? */
@@ -475,10 +475,10 @@ static bool p_icon_test(int icon, int action)
 /* Operation durchfhren																	*/
 /***************************************************************************/
 
-static int do_open(int prj_icon, int i)
+static short do_open(short prj_icon, short i)
 {
 	PATH	name;
-	int	icon;
+	short	icon;
 	bool	prj;
 
 	get_prj_line(prj_icon, i, name);
@@ -497,9 +497,9 @@ static int do_open(int prj_icon, int i)
 	}
 }
 
-static bool do_find(int icon)
+static bool do_find(short icon)
 {
-	int	erg = 0;
+	short	erg = 0;
 	TEXTP t_ptr = get_text(icon);
 
 	erg = start_find(t_ptr,TRUE);
@@ -508,10 +508,10 @@ static bool do_find(int icon)
 	return (erg != -1);
 }
 
-static int p_icon_edit(int icon, int action)
+static short p_icon_edit(short icon, short action)
 {
 	PATH	name;
-	int	erg;
+	short	erg;
 
 	erg = 0;
 	if (icon & SUB_ICON)
@@ -546,7 +546,7 @@ static int p_icon_edit(int icon, int action)
 	{
 		TEXTP 	t_ptr = get_text(icon);
 		WINDOWP 	window = get_window(icon);
-		int		i;
+		short		i;
 		SET		help;
 		FILENAME file;
 		PATH		h;
@@ -569,7 +569,7 @@ static int p_icon_edit(int icon, int action)
 				if (!ist_leer(&t_ptr->text))
 				{
 					sel_window = window;
-					for (i = (int) t_ptr->text.lines; (--i)>=0; )
+					for (i = (short) t_ptr->text.lines; (--i)>=0; )
 						setincl(sel_objs,i);
 					redraw_window(window,&window->work);
 				}
@@ -587,7 +587,7 @@ static int p_icon_edit(int icon, int action)
 				break;
 			case DO_FIND	:
 				setclr(help);
-				for (i = (int) t_ptr->text.lines; (--i)>=0; )
+				for (i = (short) t_ptr->text.lines; (--i)>=0; )
 					setincl(help,i);
 				do_find_icon = crt_new_prj("");
 				if (do_find_icon < 0)
@@ -628,12 +628,12 @@ static int p_icon_edit(int icon, int action)
 					t_ptr = get_text(icon);
 					if (t_ptr!=NULL)
 					{
-						i = (int) (desire_y - window->doc.y);
+						i = (short) (desire_y - window->doc.y);
 						arrow_window(window,WA_DNLINE,i);
 						restore_edit();
 						open_prj(icon);
 
-						memset(msgbuff, 0, (int) sizeof(msgbuff));
+						memset(msgbuff, 0, (short) sizeof(msgbuff));
 						msgbuff[0] = WM_TOPPED;
 						msgbuff[3] = window->handle;
 						send_msg(gl_apid);
@@ -722,7 +722,7 @@ static int p_icon_edit(int icon, int action)
 /* Ein Icon wurde auf ein Projekt-Icon geschoben									*/
 /***************************************************************************/
 
-static bool p_icon_drag(int icon, int source)
+static bool p_icon_drag(short icon, short source)
 {
 	WINDOWP 	window = get_window(icon);
 	bool	erg = FALSE;
@@ -775,12 +775,12 @@ static bool p_icon_drag(int icon, int source)
 /*
  * Dateien fr Projekt suchen.
  */
-static bool find_files(char *pfad, bool rekursiv, char *df_muster, int icon, int tmp_icon)
+static bool find_files(char *pfad, bool rekursiv, char *df_muster, short icon, short tmp_icon)
 {
 	TEXTP t_ptr;
 	char 	*ptr;
 	bool	raus;
-	int	t_icon;
+	short	t_icon;
 	PATH	suchPfad;
 	DIR	*dh;
 
@@ -854,7 +854,7 @@ static bool find_files(char *pfad, bool rekursiv, char *df_muster, int icon, int
 
 /***************************************************************************/
 
-static void get_prj_line(int link, int line, char *str)
+static void get_prj_line(short link, short line, char *str)
 {
 	TEXTP 	t_ptr = get_text(link);
 	ZEILEP	lauf;
@@ -868,7 +868,7 @@ static void get_prj_line(int link, int line, char *str)
 
 /***************************************************************************/
 
-static int del_from_projekt (int link, int line)
+static short del_from_projekt (short link, short line)
 {
 	TEXTP 	t_ptr = get_text(link);
 	ZEILEP	lauf;
@@ -902,9 +902,9 @@ static int del_from_projekt (int link, int line)
 	return 1;
 }
 
-bool add_to_projekt (int link, char *name, bool draw)
+bool add_to_projekt (short link, char *name, bool draw)
 {
-	int		erg, i;
+	short		erg, i;
 	TEXTP 	t_ptr = get_text(link);
 	PATH		file;
 
@@ -933,7 +933,7 @@ bool add_to_projekt (int link, char *name, bool draw)
 
 		if (ist_leer(&t_ptr->text))
 		{
-			INSERT(&FIRST(&t_ptr->text),0,(int)strlen(name),name);
+			INSERT(&FIRST(&t_ptr->text),0,(short)strlen(name),name);
 			window->doc.h++;
 		}
 		else
@@ -944,7 +944,7 @@ bool add_to_projekt (int link, char *name, bool draw)
 				lauf = &t_ptr->text.head;
 			else
 				lauf= get_line(&t_ptr->text,i-1);
-			new = new_col(name,(int)strlen(name));
+			new = new_col(name,(short)strlen(name));
 			col_insert(lauf,new);
 			t_ptr->text.lines++;
 			window->doc.h++;
@@ -964,12 +964,12 @@ bool add_to_projekt (int link, char *name, bool draw)
 	return FALSE;
 }
 
-int load_projekt(char *name)
+short load_projekt(char *name)
 /* return: <=0 wurde nicht geladen */
 /* 		  0	weitere Texte versuchen sinnvoll */
 /* 		  <0	weiter Texte versuchen nicht sinnvoll */
 {
-	int		err, icon;
+	short		err, icon;
 	WINDOWP 	window;
 	FILENAME datei;
 	PATH		path;
@@ -1061,7 +1061,7 @@ int load_projekt(char *name)
 	return icon;
 }
 
-static void destruct(int icon)
+static void destruct(short icon)
 {
 	TEXTP 	t_ptr = get_text(icon);
 	WINDOWP 	window = get_window(icon);
@@ -1076,9 +1076,9 @@ static void destruct(int icon)
 /* Anlegen eines neuen Projekts															*/
 /***************************************************************************/
 
-int new_projekt(void)
+short new_projekt(void)
 {
-	int	icon;
+	short	icon;
 
 	icon = crt_new_prj("");
 	if (icon < 0)
@@ -1095,7 +1095,7 @@ int new_projekt(void)
 	return icon;
 }
 
-int crt_new_prj(char *filename)
+short crt_new_prj(char *filename)
 {
 	WINDOWP	win;
 	bool		namenlos;
@@ -1147,7 +1147,7 @@ int crt_new_prj(char *filename)
 /***************************************************************************/
 static void crt_prj(WINDOWP window)
 {
-	int	initw, inith;
+	short	initw, inith;
 
 	if (window->work.g_w == 0 || window->work.g_h == 0)
 	{
@@ -1179,7 +1179,7 @@ static void crt_prj(WINDOWP window)
 /***************************************************************************/
 /* ™ffnen des Objekts																		*/
 /***************************************************************************/
-static bool open_prj (int icon)
+static bool open_prj (short icon)
 {
 	bool	ok = TRUE;
 	WINDOWP 	window = get_window(icon);
@@ -1197,7 +1197,7 @@ static bool open_prj (int icon)
 
 /***************************************************************************/
 
-static void draw_line (WINDOWP window, int line)
+static void draw_line (WINDOWP window, short line)
 {
 	TEXTP t_ptr;
 	GRECT	r;
@@ -1205,7 +1205,7 @@ static void draw_line (WINDOWP window, int line)
 	t_ptr = get_text(window->handle);
 	if (line >= t_ptr->text.lines) 
 		return;
-	line -= (int)window->doc.y;
+	line -= (short)window->doc.y;
 	if (line < 0) 
 		return;
 	if (line>=window->w_height) return;
@@ -1220,17 +1220,17 @@ static void wi_draw (WINDOWP window, GRECT *d)
 {
 	ZEILEP lauf;
 	TEXTP t_ptr;
-	int	line, y, x, i, link;
+	short	line, y, x, i, link;
 	PATH	name, str;
 
 	set_clip(TRUE,d);
-	line = (int)window->doc.y;
+	line = (short)window->doc.y;
 	y = window->work.g_y;
 	x = window->work.g_x;
 	i = window->w_height;
 	if (d->g_y > y)
 	{
-		int anz;
+		short anz;
 
 		anz = (d->g_y - y) / font_hcell;
 		line += anz;
@@ -1239,7 +1239,7 @@ static void wi_draw (WINDOWP window, GRECT *d)
 	}
 	if (d->g_y + d->g_h < window->work.g_y + window->work.g_h)
 	{
-		int anz;
+		short anz;
 
 		anz = ((window->work.g_y + window->work.g_h)-(d->g_y + d->g_h)) / font_hcell;
 		i -= anz;
@@ -1276,9 +1276,9 @@ static void wi_draw (WINDOWP window, GRECT *d)
 }
 
 /***************************************************************************/
-int drag_box(int x, int y, int w, int h, int *m_x, int *m_y, int *bstate, int *kstate)
+short drag_box(short x, short y, short w, short h, short *m_x, short *m_y, short *bstate, short *kstate)
 {
-	int	wh, d;
+	short	wh, d;
 	
 	graf_mouse(FLAT_HAND, NULL);
 	graf_dragbox(w, h, x, y, gl_desk.g_x, gl_desk.g_y, gl_desk.g_w, gl_desk.g_h, &d, &d);
@@ -1288,9 +1288,9 @@ int drag_box(int x, int y, int w, int h, int *m_x, int *m_y, int *bstate, int *k
 	return wh;
 }
 
-static void	wi_click (WINDOWP window, int m_x, int m_y, int bstate, int kstate, int breturn)
+static void	wi_click (WINDOWP window, short m_x, short m_y, short bstate, short kstate, short breturn)
 {
-	int		y;
+	short		y;
 	GRECT		*s = &window->work;
 	PATH		str;
 	SET		new_obj;
@@ -1305,7 +1305,7 @@ static void	wi_click (WINDOWP window, int m_x, int m_y, int bstate, int kstate, 
 		unclick_window();
 	set_winfo(window,"");
 
-	y = (int)(window->doc.y) + (m_y - s->g_y) / font_hcell;
+	y = (short)(window->doc.y) + (m_y - s->g_y) / font_hcell;
 	get_prj_line(window->handle, y, str);
 	if (str[0] == EOS)
 		return;
@@ -1353,7 +1353,7 @@ static void	wi_click (WINDOWP window, int m_x, int m_y, int bstate, int kstate, 
 	if (breturn == 1 && (bstate & 1))				/* Zieh-Operation */
 	{
 		GRECT		first;
-		int		num_objs, i, obj;
+		short		num_objs, i, obj;
 		WINDOWP	qed_win;
 
 		graf_mkstate(&m_x, &m_y, &bstate, &kstate);
@@ -1365,7 +1365,7 @@ static void	wi_click (WINDOWP window, int m_x, int m_y, int bstate, int kstate, 
 		num_objs = 0;
 		for (i = 0; i < window->w_height; i++)
 		{
-			if (setin(new_obj, i + (int)window->doc.y))
+			if (setin(new_obj, i + (short)window->doc.y))
 			{
 				if (num_objs == 0)		/* Abmessungen des ersten merken */
 				{
@@ -1385,9 +1385,9 @@ static void	wi_click (WINDOWP window, int m_x, int m_y, int bstate, int kstate, 
 			{
 				drag_data_size = num_objs;
 				for (i = 0; i < window->w_height; i++)
-					if (setin(new_obj, i + (int)window->doc.y))
+					if (setin(new_obj, i + (short)window->doc.y))
 					{
-						get_prj_line(window->handle, i + (int)window->doc.y, drag_filename);
+						get_prj_line(window->handle, i + (short)window->doc.y, drag_filename);
 						if (drag_filename[0] == EOS)
 							break;
 						if ((kstate & K_ALT) || (qed_win->class == CLASS_PROJEKT))
@@ -1428,9 +1428,9 @@ static void	wi_click (WINDOWP window, int m_x, int m_y, int bstate, int kstate, 
 				{
 					for (i=0; i<window->w_height; i++)
 					{
-						if (setin(new_obj, i + (int)window->doc.y))
+						if (setin(new_obj, i + (short)window->doc.y))
 						{
-							get_prj_line(window->handle, i + (int)window->doc.y, drag_filename);
+							get_prj_line(window->handle, i + (short)window->doc.y, drag_filename);
 							if (drag_filename[0] != EOS)
 							{
 								if (num_objs > 1)
@@ -1475,7 +1475,7 @@ static void	wi_click (WINDOWP window, int m_x, int m_y, int bstate, int kstate, 
 static void wi_unclick (WINDOWP window)
 {
 	SET	help;
-	int	i, max;
+	short	i, max;
 
 	setcpy(help,sel_objs);
 	setclr(sel_objs);
@@ -1488,14 +1488,14 @@ static void wi_unclick (WINDOWP window)
 
 /***************************************************************************/
 
-static void sel_line(WINDOWP window, int line)
+static void sel_line(WINDOWP window, short line)
 {
 	if (sel_window!=NULL)
 		unclick_window();
 	sel_window = window;
 	setincl(sel_objs,line);
 	draw_line(window,line);
-	line -= (int) window->doc.y;
+	line -= (short) window->doc.y;
 	if (line<0)
 		arrow_window(window,WA_UPLINE,-line);
 	else
@@ -1509,7 +1509,7 @@ static void sel_line(WINDOWP window, int line)
 
 static void shift_up(WINDOWP window)
 {
-	int	i;
+	short	i;
 
 	if (window->doc.h == 0)
 		return;
@@ -1524,12 +1524,12 @@ static void shift_up(WINDOWP window)
 		sel_line(window,i);
 	}
 	else
-		sel_line(window, (int)window->doc.h-1);
+		sel_line(window, (short)window->doc.h-1);
 }
 
 static void shift_down(WINDOWP window)
 {
-	int	i;
+	short	i;
 
 	if (window->doc.h == 0)
 		return ;
@@ -1540,18 +1540,18 @@ static void shift_down(WINDOWP window)
 			return ;
 		i += window->w_height;
 		if (i >= window->doc.h)
-			i = (int) window->doc.h - 1;
+			i = (short) window->doc.h - 1;
 		sel_line(window,i);
 	}
 	else
 		sel_line(window,0);
 }
 
-static bool	wi_key(WINDOWP window, int kstate, int kreturn)
+static bool	wi_key(WINDOWP window, short kstate, short kreturn)
 {
 	bool	erg;
-	int	nkey, i;
-	int	ascii_code;
+	short	nkey, i;
+	short	ascii_code;
 	bool	shift, ctrl, alt;
 	
 	/* Key konvertieren */	
@@ -1575,7 +1575,7 @@ static bool	wi_key(WINDOWP window, int kstate, int kreturn)
 		{
 			case NK_CLRHOME :
 				v_slider(window, 1000);
-				sel_line(window, (int)window->doc.h - 1);
+				sel_line(window, (short)window->doc.h - 1);
 				erg = TRUE;
 				break;
 			case NK_UP	:
@@ -1620,7 +1620,7 @@ static bool	wi_key(WINDOWP window, int kstate, int kreturn)
 					sel_line(window,i);
 				}
 				else
-					sel_line(window, (int)window->doc.h - 1);
+					sel_line(window, (short)window->doc.h - 1);
 				erg = TRUE;
 				break;
 			case NK_DOWN:
@@ -1633,7 +1633,7 @@ static bool	wi_key(WINDOWP window, int kstate, int kreturn)
 						break;
 					i++;
 					if (i >= window->doc.h)
-						i = (int) window->doc.h-1;
+						i = (short) window->doc.h-1;
 					sel_line(window,i);
 				}
 				else
@@ -1653,7 +1653,7 @@ static bool	wi_key(WINDOWP window, int kstate, int kreturn)
 				break;
 			case NK_M_END:					/* Mac: end -> shift-home */
 				v_slider(window, 1000);
-				sel_line(window, (int)window->doc.h - 1);
+				sel_line(window, (short)window->doc.h - 1);
 				erg = TRUE;
 				break;
 			case NK_DEL :
@@ -1676,7 +1676,7 @@ static bool	wi_key(WINDOWP window, int kstate, int kreturn)
 	}
 	else
 	{
-		int		l;
+		short		l;
 		FILENAME name;
 		PATH		str, info;
 		char		asc;
@@ -1687,7 +1687,7 @@ static bool	wi_key(WINDOWP window, int kstate, int kreturn)
 */
 		asc =ascii_code;
 		strcpy(info, window->info);
-		l = (int)strlen(info);
+		l = (short)strlen(info);
 		info[l++] = asc;
 		info[l] = EOS;
 		i = 0;
@@ -1715,9 +1715,9 @@ static bool	wi_key(WINDOWP window, int kstate, int kreturn)
 
 /***************************************************************************/
 
-static void	wi_snap(WINDOWP window, GRECT *new, int mode)
+static void	wi_snap(WINDOWP window, GRECT *new, short mode)
 {
-	int w, ex, pxy[8];
+	short w, ex, pxy[8];
 
 	/* zun„chst Platz fr min. 1+Filename+1 im Fenster */
 	vqt_extent(vdi_handle, "x", pxy);
@@ -1764,9 +1764,9 @@ static void wi_uniconify(WINDOWP window)
 /***************************************************************************/
 
 static long 	i_len, i_bytes;
-static int		i_anz, i_icon;
+static short		i_anz, i_icon;
 	
-static int count(int icon, int i)
+static short count(short icon, short i)
 {
 	PATH	name;
 
@@ -1784,7 +1784,7 @@ static int count(int icon, int i)
 	else
 	{
 		long	b,l;
-		int	antw;
+		short	antw;
 
 		antw = infoload(name,&b,&l);
 		i_bytes += b;
@@ -1793,24 +1793,24 @@ static int count(int icon, int i)
 	}
 }
 
-static void info_projekt(int icon)
+static void info_projekt(short icon)
 {
 	char 	str[32], date[11];
 	TEXTP t_ptr = get_text(icon);
-	int	r_anz, i, antw;
+	short	r_anz, i, antw;
 	SET	all;
 	bool	close = FALSE;
 	MDIAL	*dial;
 	
-	set_state(prjinfo, IPRJSCAN, DISABLED, FALSE);
+	set_state(prjinfo, IPRJSCAN, OS_DISABLED, FALSE);
 	i_icon = icon;
 	make_shortpath(t_ptr->filename, str, 30);
 	set_string(prjinfo, PRJNAME, str); 		/* Name mit Pfad */
 	if (ist_leer(&t_ptr->text))
 		r_anz = 0;
 	else
-		r_anz = (int)t_ptr->text.lines;
-	set_int(prjinfo, PRJFILES, r_anz);		/* Dateien-Anzahl */
+		r_anz = (short)t_ptr->text.lines;
+	set_short(prjinfo, PRJFILES, r_anz);		/* Dateien-Anzahl */
 	set_string(prjinfo, PRJLEN , "??"); 	/* L„nge in Bytes unbekannt */
 	set_string(prjinfo, PRJZEILE , "??");	/* L„nge in Zeilen unbekannt */
 	if (t_ptr->namenlos)
@@ -1835,7 +1835,7 @@ static void info_projekt(int icon)
 					if (ist_leer(&t_ptr->text))
 						r_anz = 0;
 					else
-						r_anz = (int) t_ptr->text.lines;
+						r_anz = (short) t_ptr->text.lines;
 					i_anz = 0;
 					i_bytes = 0;
 					i_len = 0;
@@ -1854,8 +1854,8 @@ static void info_projekt(int icon)
 						str[0] = EOS;
 					set_string (prjinfo, PRJZEILE , str);		/* L„nge in Zeilen */
 					if (r_anz == i_anz)								/* alle durchlaufen */
-						set_state(prjinfo, IPRJSCAN, DISABLED, TRUE);
-					set_state(prjinfo, IPRJSCAN, SELECTED, FALSE);
+						set_state(prjinfo, IPRJSCAN, OS_DISABLED, TRUE);
+					set_state(prjinfo, IPRJSCAN, OS_SELECTED, FALSE);
 					redraw_mdobj(dial, 0);
 					break;
 		
@@ -1864,7 +1864,7 @@ static void info_projekt(int icon)
 					break;
 			}
 		}
-		set_state(prjinfo, antw, SELECTED, FALSE);
+		set_state(prjinfo, antw, OS_SELECTED, FALSE);
 		close_mdial(dial);
 	}
 }
@@ -1942,7 +1942,7 @@ void set_def_prj(void)
 
 void find_on_disk(void)
 {
-	int	icon;
+	short	icon;
 	TEXTP	t_ptr;
 	
 	icon = crt_new_prj("");

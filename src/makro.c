@@ -28,27 +28,27 @@ bool	makro_shift;
 /*******************************************************************************/
 typedef struct 
 {
-	int		mode;
-	int		len;
-	int		key;			/* F1 .. F20 */
+	short		mode;
+	short		len;
+	short		key;			/* F1 .. F20 */
 	char		name[10];
 	union
 	{
-		unsigned int	tasten[MAKRO_DEF_LEN];
+		unsigned short	tasten[MAKRO_DEF_LEN];
 		RING				text;
 	} daten;
 } MAKRO;
 
 /* lokale Variablen ************************************************************/
-static unsigned int	makro_puffer[MAKRO_PLAY_LEN],
+static unsigned short	makro_puffer[MAKRO_PLAY_LEN],
 							*makro_ptr, *makro_end;
 static MAKRO			makro_list[MAKRO_ANZ],
 							*makro_rec_ptr,
 							*makro_play_ptr;
-static int				makro_play_counter;
+static short				makro_play_counter;
 
 
-bool from_makro(int *kstate, int *kreturn)
+bool from_makro(short *kstate, short *kreturn)
 {
 	if (makro_play)								/* Macro abspielen */
 	{
@@ -75,12 +75,12 @@ retry:
 	return FALSE;
 }
 
-void to_makro(int kstate, int kreturn)
+void to_makro(short kstate, short kreturn)
 {
 	if (makro_rec && !makro_play)				/* Zeichen erfassen */
 														/* wenn echtes Zeichen */
 	{
-		int pos = makro_rec_ptr->len;
+		short pos = makro_rec_ptr->len;
 		
 		if (pos < MAKRO_DEF_LEN)
 		{
@@ -92,9 +92,9 @@ void to_makro(int kstate, int kreturn)
 	}
 }
 
-void start_blk_rec(char *name, int key, RINGP r)
+void start_blk_rec(char *name, short key, RINGP r)
 {
-	int	new, i;
+	short	new, i;
 	MAKRO	*m;
 
 	new = -1;
@@ -127,7 +127,7 @@ void start_blk_rec(char *name, int key, RINGP r)
 
 void start_rec(void)
 {
-	int	new, i;
+	short	new, i;
 	MAKRO	*m;
 
 	if (makro_rec_ptr!=NULL)
@@ -163,7 +163,7 @@ void start_rec(void)
 
 void end_rec(bool one_more)
 {
-	int len = makro_rec_ptr->len;
+	short len = makro_rec_ptr->len;
 
 	makro_rec = FALSE;
 	if (len>1)
@@ -179,9 +179,9 @@ void end_rec(bool one_more)
 }
 
 
-bool start_play(int key, int anz)
+bool start_play(short key, short anz)
 {
-	int	i;
+	short	i;
 	MAKRO	*m;
 	bool	ret = FALSE;
 
@@ -211,7 +211,7 @@ bool start_play(int key, int anz)
 	{
 		if (!makro_play)							/* Neues M. starten */
 		{
-			memcpy(makro_puffer, m->daten.tasten, m->len * (int) sizeof(unsigned int));
+			memcpy(makro_puffer, m->daten.tasten, m->len * (short) sizeof(unsigned short));
 			makro_end = makro_puffer+m->len;
 			makro_ptr = makro_puffer;
 			makro_play = TRUE;
@@ -222,14 +222,14 @@ bool start_play(int key, int anz)
 		}
 		else											/* Makro ruft Makro auf */
 		{
-			int len_old = (int) (makro_end - makro_ptr);
-			int len_new = m->len;
+			short len_old = (short) (makro_end - makro_ptr);
+			short len_new = m->len;
 			if (len_old+len_new < MAKRO_PLAY_LEN)
 			{
 				/* Alten Rest nach hinten verschieben */
-				memmove(&makro_puffer[len_new],makro_ptr, len_old * (int) sizeof(unsigned int));
+				memmove(&makro_puffer[len_new],makro_ptr, len_old * (short) sizeof(unsigned short));
 				/* Neues Makro einfgen */
-				memcpy(makro_puffer,m->daten.tasten,m->len * (int) sizeof(unsigned int));
+				memcpy(makro_puffer,m->daten.tasten,m->len * (short) sizeof(unsigned short));
 				makro_end = makro_puffer+(len_old+len_new);
 				makro_ptr = makro_puffer;
 				ret = TRUE;
@@ -263,10 +263,10 @@ void end_play(void)
 	}
 }
 
-void del_makro(int key)
+void del_makro(short key)
 {
 	MAKRO	*m;
-	int	i;
+	short	i;
 
 	m = makro_list;
 	for (i = 0; i < MAKRO_ANZ; i++,m++)
@@ -293,7 +293,7 @@ void del_makro(int key)
 void set_makro_str(char *ptr)
 {
 	char		*p;
-	int		i, l;
+	short		i, l;
 		
 	if (*ptr == '"')
 	{
@@ -311,7 +311,7 @@ void set_makro_str(char *ptr)
 			
 			p = strchr(ptr, ',');
 			*p = EOS;
-			makro_list[i].key = (int)strtol(ptr, NULL, 16);
+			makro_list[i].key = (short)strtol(ptr, NULL, 16);
 			makro_list[i].mode = TASTEN;
 	
 			ptr = p + 1;
@@ -321,7 +321,7 @@ void set_makro_str(char *ptr)
 				p = strchr(ptr, ',');
 				if (p)
 					*p = EOS;
-				makro_list[i].daten.tasten[l] = (int)strtol(ptr, NULL, 16);
+				makro_list[i].daten.tasten[l] = (short)strtol(ptr, NULL, 16);
 				l++;
 				if (p == NULL)
 					ptr = NULL;
@@ -337,10 +337,10 @@ void set_makro_str(char *ptr)
 /*
  * Puffer in Makro-String fr CFG wandeln.
 */
-bool get_makro_str(int nr, char *ptr)
+bool get_makro_str(short nr, char *ptr)
 {
 	char	s[5];
-	int	j;
+	short	j;
 
 	if (makro_list[nr].mode == TASTEN)
 	{
@@ -358,7 +358,7 @@ bool get_makro_str(int nr, char *ptr)
 
 void init_makro(void)
 {
-	int	i;
+	short	i;
 
 	makro_play = makro_rec = FALSE;
 	for (i = 0; i < MAKRO_ANZ; i++)
@@ -372,7 +372,7 @@ void init_makro(void)
 /* Dialog ******************************************************************/
 /***************************************************************************/
 
-static void makro_on_key(char *name, int key)
+static void makro_on_key(char *name, short key)
 {
 	MAKRO	*m;
 
@@ -387,9 +387,9 @@ static void makro_on_key(char *name, int key)
 }
 
 
-static void get_makro_name(int scan, char *name)
+static void get_makro_name(short scan, char *name)
 {
-	int	i;
+	short	i;
 	MAKRO	*m;
 
 	*name = EOS;
@@ -403,7 +403,7 @@ static void get_makro_name(int scan, char *name)
 }
 
 
-static void show_makro(int nr, MDIAL *mdial)
+static void show_makro(short nr, MDIAL *mdial)
 {
 	char	name[9];
 
@@ -413,7 +413,7 @@ static void show_makro(int nr, MDIAL *mdial)
 		get_makro_name(0x5400 + ((nr - 10) * 0x100), name);
 
 	set_string(funktionstasten, FNNAME, name);
-	set_state(funktionstasten, FNDELETE, DISABLED, (name[0] == EOS));
+	set_state(funktionstasten, FNDELETE, OS_DISABLED, (name[0] == EOS));
 	if (mdial != NULL)
 	{
 		redraw_mdobj(mdial, FNNAME);
@@ -423,15 +423,15 @@ static void show_makro(int nr, MDIAL *mdial)
 
 void makro_dial(void)
 {
-	int	antw;
+	short	antw;
 	char	name[9];
 	MDIAL	*dial;
 	bool	close = FALSE;
-	int	y, makro_nr = 0;
+	short	y, makro_nr = 0;
 		
 	save_clip();
 
-	set_state(funktionstasten, FNBLOCK, DISABLED, ist_leer(&clip_text));
+	set_state(funktionstasten, FNBLOCK, OS_DISABLED, ist_leer(&clip_text));
 	set_string(funktionstasten, FNKEY, " F1");
 	show_makro(makro_nr, NULL);
 
@@ -461,7 +461,7 @@ void makro_dial(void)
 						del_makro(0x3B00 + (makro_nr * 0x100));
 					else
 						del_makro(0x5400 + ((makro_nr - 10) * 0x100));
-					set_state(funktionstasten, antw, SELECTED, FALSE);
+					set_state(funktionstasten, antw, OS_SELECTED, FALSE);
 					show_makro(makro_nr, dial);
 					break;
 		
@@ -470,7 +470,7 @@ void makro_dial(void)
 					get_string(funktionstasten, FNNAME, name);
 					if (*name == EOS)
 					{
-						set_state(funktionstasten, antw, SELECTED, FALSE);
+						set_state(funktionstasten, antw, OS_SELECTED, FALSE);
 						note(1, 0, MKNAME);
 						redraw_mdobj(dial, 0);
 					}
@@ -484,7 +484,7 @@ void makro_dial(void)
 			}
 		}
 		close_mdial(dial);
-		set_state(funktionstasten, antw, SELECTED, FALSE);
+		set_state(funktionstasten, antw, OS_SELECTED, FALSE);
 		if (antw == FNRECORD)
 		{
 			if (makro_nr < 10)

@@ -37,7 +37,7 @@ void clear_text(TEXTP t_ptr)
 	nullen(t_ptr);
 }
 
-TEXTP new_text(int link)
+TEXTP new_text(short link)
 {
 	TEXTP new, p;
 
@@ -95,7 +95,7 @@ void destruct_text(TEXTP t_ptr)
 	t_ptr = NULL;
 }
 
-TEXTP get_text(int icon)
+TEXTP get_text(short icon)
 {
 	TEXTP	p;
 
@@ -123,9 +123,9 @@ void do_all_text(TEXT_DOFUNC func)
 	}
 }
 
-static LOCOPTP get_locopt(char *filename, int fs)
+static LOCOPTP get_locopt(char *filename, short fs)
 {
-	int	i;
+	short	i;
 	char	m[MUSTER_LEN + 3];
 	
 	for (i = 2; i < LOCAL_ANZ; i++)
@@ -156,7 +156,7 @@ void set_text_name(TEXTP t_ptr, char *filename, bool namenlos)
 
 	if (namenlos)
 		t_ptr->loc_opt = &local_options[0];
-	else if (t_ptr->text.ending == binmode)
+	else if (t_ptr->text.ending == lns_binmode)
 		t_ptr->loc_opt = &local_options[1];
 	else
 		t_ptr->loc_opt = get_locopt(filename, t_ptr->filesys);
@@ -169,7 +169,7 @@ void update_loc_opt(void)
 	t_ptr = text_list;
 	while (t_ptr != NULL)	
 	{
-		if (t_ptr->text.ending == binmode)
+		if (t_ptr->text.ending == lns_binmode)
 			t_ptr->loc_opt = &local_options[1];
 		else
 		{
@@ -186,7 +186,7 @@ void update_loc_opt(void)
 bool strip_endings(TEXTP t_ptr)
 {
 	ZEILEP	lauf;
-	int		i;
+	short		i;
 	char		c;
 
 	lauf = FIRST(&t_ptr->text);
@@ -212,10 +212,10 @@ bool strip_endings(TEXTP t_ptr)
 /*
  * L„ngste Zeile suchen
 */
-int get_longestline(TEXTP t_ptr)
+short get_longestline(TEXTP t_ptr)
 {
 	ZEILEP	lauf;
-	int		len;
+	short		len;
 	
 	if (t_ptr->max_line != NULL)
 	{
@@ -256,9 +256,9 @@ int get_longestline(TEXTP t_ptr)
 	return t_ptr->max_line->exp_len;
 }
 
-int text_still_loaded(char *name)
+short text_still_loaded(char *name)
 {
-	int	j, i = -1;
+	short	j, i = -1;
 	TEXTP	t_ptr;
 
 	t_ptr = text_list;

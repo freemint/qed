@@ -25,7 +25,7 @@
 #include "winlist.h"
 #include "options.h"
 
-extern void	menu_help(int title, int item);
+extern void	menu_help(short title, short item);
 
 static char	buffer[MAX_LINE_LEN];
 
@@ -35,38 +35,38 @@ static char	buffer[MAX_LINE_LEN];
 */
 bool	as_text, as_prj;
 bool	as_text_ask, as_prj_ask;
-int	as_text_min, as_prj_min;
+short	as_text_min, as_prj_min;
 
 void set_autosave_options(void)
 {
-	int	antw;
+	short	antw;
 
-	set_state(autosave, ASTEXT, SELECTED, as_text);
-	set_int(autosave, ASTMIN, as_text_min);
-	set_state(autosave, ASTASK, SELECTED, as_text_ask);
+	set_state(autosave, ASTEXT, OS_SELECTED, as_text);
+	set_short(autosave, ASTMIN, as_text_min);
+	set_state(autosave, ASTASK, OS_SELECTED, as_text_ask);
 
-	set_state(autosave, ASPROJ, SELECTED, as_prj);
-	set_int(autosave, ASPMIN, as_prj_min);
-	set_state(autosave, ASPASK, SELECTED, as_prj_ask);
+	set_state(autosave, ASPROJ, OS_SELECTED, as_prj);
+	set_short(autosave, ASPMIN, as_prj_min);
+	set_state(autosave, ASPASK, OS_SELECTED, as_prj_ask);
 
 	antw = simple_mdial(autosave, ASTMIN) & 0x7fff;
 	if (antw == ASOK)
 	{
-		as_text = get_state(autosave, ASTEXT, SELECTED);
-		as_text_min = get_int(autosave, ASTMIN);
+		as_text = get_state(autosave, ASTEXT, OS_SELECTED);
+		as_text_min = get_short(autosave, ASTMIN);
 		if (as_text_min == 0)
 			as_text = FALSE;
 		if (as_text_min > 59)
 			as_text_min = 59;
-		as_text_ask = get_state(autosave, ASTASK, SELECTED);
+		as_text_ask = get_state(autosave, ASTASK, OS_SELECTED);
 
-		as_prj = get_state(autosave, ASPROJ, SELECTED);
-		as_prj_min = get_int(autosave, ASPMIN);
+		as_prj = get_state(autosave, ASPROJ, OS_SELECTED);
+		as_prj_min = get_short(autosave, ASPMIN);
 		if (as_prj_min == 0)
 			as_prj = FALSE;
 		if (as_prj_min > 59)
 			as_prj_min = 59;
-		as_prj_ask = get_state(autosave, ASPASK, SELECTED);
+		as_prj_ask = get_state(autosave, ASPASK, OS_SELECTED);
 
 		do_all_icon(ALL_TYPES, DO_AUTOSAVE);
 	}
@@ -77,8 +77,8 @@ void set_autosave_options(void)
  * Globale Optionen
 */
 bool	clip_on_disk, wind_cycle, f_to_desk;
-int	transfer_size, bin_line_len;
-int	fg_color, bg_color;
+short	transfer_size, bin_line_len;
+short	fg_color, bg_color;
 bool	save_opt, overwrite, blinking_cursor, ctrl_mark_mode, olga_autostart,
 		emu_klammer;
 PATH	helpprog;
@@ -94,10 +94,10 @@ static void do_avclose(WINDOWP window)
 	send_avwinclose(window->handle);
 }
 
-static void set_popcolor(int s_obj, int d_obj)
+static void set_popcolor(short s_obj, short d_obj)
 {
 	OBSPEC	spec;
-	int		color;
+	short		color;
 					
 	spec.index = get_obspec(popups, s_obj);
 	color = spec.obspec.interiorcol;			/* neue Farbe holen */
@@ -109,7 +109,7 @@ static void set_popcolor(int s_obj, int d_obj)
 
 void set_global_options(void)
 {
-	int	antw, i;
+	short	antw, i;
 	bool	old_cycle, new_cycle, new_fg, new_bg;
 	bool	close = FALSE;
 	char	n[23] = "";
@@ -117,20 +117,20 @@ void set_global_options(void)
 	PATH	new_helpprog;
 	
 	old_cycle = wind_cycle;
-	set_state(globalop, GOASAVE, SELECTED, save_opt);
-	set_state(globalop, GOCLIP, DISABLED, (clip_dir[0] == EOS));
-	set_state(globalop, GOCLIP, SELECTED, clip_on_disk);
-	set_state(globalop, GOBLINK, SELECTED, blinking_cursor);
-	set_state(globalop, GOCTRL, SELECTED, ctrl_mark_mode);
-	set_state(globalop, GOAVWIN, SELECTED, wind_cycle);
-	set_state(globalop, GOAVKEY, SELECTED, f_to_desk);
-	set_state(globalop, GOOLGA, SELECTED, olga_autostart);
-	set_state(globalop, GOKLAMMER, SELECTED, emu_klammer);
+	set_state(globalop, GOASAVE, OS_SELECTED, save_opt);
+	set_state(globalop, GOCLIP, OS_DISABLED, (clip_dir[0] == EOS));
+	set_state(globalop, GOCLIP, OS_SELECTED, clip_on_disk);
+	set_state(globalop, GOBLINK, OS_SELECTED, blinking_cursor);
+	set_state(globalop, GOCTRL, OS_SELECTED, ctrl_mark_mode);
+	set_state(globalop, GOAVWIN, OS_SELECTED, wind_cycle);
+	set_state(globalop, GOAVKEY, OS_SELECTED, f_to_desk);
+	set_state(globalop, GOOLGA, OS_SELECTED, olga_autostart);
+	set_state(globalop, GOKLAMMER, OS_SELECTED, emu_klammer);
 
-	set_state(globalop, GOWDIAL, DISABLED, !prn->pdlg_avail);
-	set_state(globalop, GOWDIAL, SELECTED, prn->use_pdlg);
+	set_state(globalop, GOWDIAL, OS_DISABLED, !prn->pdlg_avail);
+	set_state(globalop, GOWDIAL, OS_SELECTED, prn->use_pdlg);
 
-	set_int(globalop, GOTRANS, transfer_size);
+	set_short(globalop, GOTRANS, transfer_size);
 
 	if (helpprog[0] != EOS)
 		make_shortpath(helpprog, n, 22);
@@ -139,7 +139,7 @@ void set_global_options(void)
 	set_string(globalop, GOHELPNAME, n);
 	strcpy(new_helpprog, helpprog);
 
-	set_int(globalop, GOBLEN, bin_line_len);
+	set_short(globalop, GOBLEN, bin_line_len);
 	for (i = 4; i < BIN_ANZ; i++)
 		set_string(globalop, i - 4 + GOBEXT1, bin_extension[i]);
 
@@ -207,27 +207,27 @@ void set_global_options(void)
 			}
 			if (!close)
 			{
-				set_state(globalop, antw, SELECTED, FALSE);
+				set_state(globalop, antw, OS_SELECTED, FALSE);
 				redraw_mdobj(dial, antw);
 			}
 		}
-		set_state(globalop, antw, SELECTED, FALSE);
+		set_state(globalop, antw, OS_SELECTED, FALSE);
 		close_mdial(dial);
 		if (antw == GOOK)
 		{
-			save_opt = get_state(globalop, GOASAVE, SELECTED);
+			save_opt = get_state(globalop, GOASAVE, OS_SELECTED);
 			if (clip_dir[0] != EOS)
-				clip_on_disk = get_state(globalop, GOCLIP, SELECTED);
-			blinking_cursor = get_state(globalop, GOBLINK, SELECTED);
-			ctrl_mark_mode = get_state(globalop, GOCTRL, SELECTED);
-			prn->use_pdlg = get_state(globalop, GOWDIAL, SELECTED);
-			olga_autostart = get_state(globalop, GOOLGA, SELECTED);
-			emu_klammer = get_state(globalop, GOKLAMMER, SELECTED);
-			transfer_size = get_int(globalop, GOTRANS);
+				clip_on_disk = get_state(globalop, GOCLIP, OS_SELECTED);
+			blinking_cursor = get_state(globalop, GOBLINK, OS_SELECTED);
+			ctrl_mark_mode = get_state(globalop, GOCTRL, OS_SELECTED);
+			prn->use_pdlg = get_state(globalop, GOWDIAL, OS_SELECTED);
+			olga_autostart = get_state(globalop, GOOLGA, OS_SELECTED);
+			emu_klammer = get_state(globalop, GOKLAMMER, OS_SELECTED);
+			transfer_size = get_short(globalop, GOTRANS);
 			if (transfer_size == 0)
 				transfer_size = 1;
 	
-			new_cycle = get_state(globalop, GOAVWIN, SELECTED);
+			new_cycle = get_state(globalop, GOAVWIN, OS_SELECTED);
 			if (old_cycle && !new_cycle)						/* war an, nun aus */
 			{
 				do_all_window(CLASS_ALL, do_avclose);
@@ -238,9 +238,9 @@ void set_global_options(void)
 				wind_cycle = new_cycle;
 				do_all_window(CLASS_ALL, do_avopen);
 			}
-			f_to_desk = get_state(globalop, GOAVKEY, SELECTED);
+			f_to_desk = get_state(globalop, GOAVKEY, OS_SELECTED);
 	
-			bin_line_len = get_int(globalop, GOBLEN);
+			bin_line_len = get_short(globalop, GOBLEN);
 			if (bin_line_len < 1) 
 				bin_line_len = 1;
 			if (bin_line_len > MAX_LINE_LEN) 
@@ -271,7 +271,7 @@ char	klammer_auf[11],
 
 void set_klammer_options(void)
 {
-	int	antw;
+	short	antw;
 	char	s1[11], s2[11];
 	
 	set_string(klammer, KPAUF, klammer_auf);
@@ -298,7 +298,7 @@ void set_klammer_options(void)
 */
 LOCOPT	local_options[LOCAL_ANZ];
 
-static int 	active_local_option;
+static short 	active_local_option;
 static bool	krz_changed = FALSE;
 
 static void null_locopt(LOCOPT *lo)
@@ -334,23 +334,23 @@ static void option_fill(void)
 	strcat(str, lo->muster);
 	set_string(localop, OTYPE, str);
 
-	set_state(localop, OTAB, SELECTED, lo->tab);
-	set_int(localop, OTABSIZE, lo->tabsize);
-	set_state(localop, OEINRUCK, SELECTED, lo->einruecken);
+	set_state(localop, OTAB, OS_SELECTED, lo->tab);
+	set_short(localop, OTABSIZE, lo->tabsize);
+	set_state(localop, OEINRUCK, OS_SELECTED, lo->einruecken);
 	set_string(localop, OWORT, lo->wort_str);
-	set_state(localop, OUMBRUCH, SELECTED, lo->umbrechen);
-	set_state(localop, OFORMLOAD, SELECTED, lo->format_by_load);
-	set_state(localop, OFORMPASTE, SELECTED, lo->format_by_paste);
+	set_state(localop, OUMBRUCH, OS_SELECTED, lo->umbrechen);
+	set_state(localop, OFORMLOAD, OS_SELECTED, lo->format_by_load);
+	set_state(localop, OFORMPASTE, OS_SELECTED, lo->format_by_paste);
 	set_string(localop, OUMBTEXT, lo->umbruch_str);
-	set_state(localop, OBACKUP, SELECTED, lo->backup);
+	set_state(localop, OBACKUP, OS_SELECTED, lo->backup);
 	set_string(localop, OEXT, lo->backup_ext);
-	set_int(localop, OLINEAL, lo->lineal_len);
+	set_short(localop, OLINEAL, lo->lineal_len);
 	if (lo->kurzel[0] != EOS)
 		file_name(lo->kurzel, str, FALSE);
 	else
 		strcpy(str, rsc_string(KURZELSTR));
 	set_string(localop, OKURZELNAME, str);
-	set_state(localop, OSHOWEND, SELECTED, lo->show_end);
+	set_state(localop, OSHOWEND, OS_SELECTED, lo->show_end);
 }
 
 static void option_get(void)
@@ -358,30 +358,30 @@ static void option_get(void)
 	LOCOPTP	lo;
 
 	lo = &local_options[active_local_option];
-	lo->tab = get_state(localop, OTAB, SELECTED);
-	lo->tabsize = get_int(localop, OTABSIZE);
+	lo->tab = get_state(localop, OTAB, OS_SELECTED);
+	lo->tabsize = get_short(localop, OTABSIZE);
 	if (lo->tabsize < 1 || lo->tabsize > 50)
 		lo->tabsize = 3;
-	lo->umbrechen = get_state(localop, OUMBRUCH, SELECTED);
-	lo->einruecken = get_state(localop, OEINRUCK, SELECTED);
+	lo->umbrechen = get_state(localop, OUMBRUCH, OS_SELECTED);
+	lo->einruecken = get_state(localop, OEINRUCK, OS_SELECTED);
 	get_string(localop, OUMBTEXT, lo->umbruch_str);
 	str2set(lo->umbruch_str,lo->umbruch_set);
-	lo->format_by_load = get_state(localop, OFORMLOAD, SELECTED);
-	lo->format_by_paste = get_state(localop, OFORMPASTE, SELECTED);
-	lo->backup = get_state(localop, OBACKUP, SELECTED);
+	lo->format_by_load = get_state(localop, OFORMLOAD, OS_SELECTED);
+	lo->format_by_paste = get_state(localop, OFORMPASTE, OS_SELECTED);
+	lo->backup = get_state(localop, OBACKUP, OS_SELECTED);
 	get_string(localop, OEXT, lo->backup_ext);
-	lo->lineal_len = get_int(localop, OLINEAL);
+	lo->lineal_len = get_short(localop, OLINEAL);
 	if (lo->lineal_len < 3 || lo->lineal_len > MAX_LINE_LEN) 
 		lo->lineal_len = 65;
 	get_string(localop, OWORT, lo->wort_str);
 	str2set(lo->wort_str,lo->wort_set);
-	lo->show_end = get_state(localop, OSHOWEND, SELECTED);
+	lo->show_end = get_state(localop, OSHOWEND, OS_SELECTED);
 }
 
 
 static void config_muster(void)
 {
-	int	i, antw;
+	short	i, antw;
 	char 	str[MUSTER_LEN+1];
 
 	for (i = MFIRST; i <= MLAST; i++)
@@ -409,7 +409,7 @@ static void config_muster(void)
 static bool build_popup(POPUP *pop)
 {
 	char	str[MUSTER_LEN + 4];
-	int	i;
+	short	i;
 
 	strcpy(str, " ");
 	strcat(str, local_options[0].muster);			/* * */
@@ -440,7 +440,7 @@ static bool build_popup(POPUP *pop)
 
 void set_local_options(void)
 {
-	int		antw, y;
+	short		antw, y;
 	WINDOWP 	window;
 	PATH		save_name;
 	POPUP		pop;
@@ -455,7 +455,7 @@ void set_local_options(void)
 	{
 		TEXTP t_ptr = get_text(window->handle);
 
-		active_local_option = (int)(t_ptr->loc_opt - local_options);
+		active_local_option = (short)(t_ptr->loc_opt - local_options);
 	}
 
 	option_fill();
@@ -530,11 +530,11 @@ void set_local_options(void)
 			}
 			if (!close)
 			{
-				set_state(localop, antw, SELECTED, FALSE);
+				set_state(localop, antw, OS_SELECTED, FALSE);
 				redraw_mdobj(dial, antw);
 			}
 		}
-		set_state(localop, antw, SELECTED, FALSE);
+		set_state(localop, antw, OS_SELECTED, FALSE);
 		close_mdial(dial);
 		free_popup(&pop);
 
@@ -560,7 +560,7 @@ void set_local_options(void)
 */
 void init_default_var(void)
 {
-	int 		i;
+	short 		i;
 	char		*c;
 
 	font_id = 1;
@@ -656,8 +656,8 @@ void init_default_var(void)
 	strcpy(klammer_auf, "({[<\"\'");
 	strcpy(klammer_zu, ")}]>\"\'");
 
-	fg_color = BLACK;
-	bg_color = WHITE;
+	fg_color = G_BLACK;
+	bg_color = G_WHITE;
 	
 	olga_autostart = FALSE;
 	emu_klammer = FALSE;
@@ -673,7 +673,7 @@ static PATH			cfg_path = "";
 static FILENAME	dsp_name;			/* Name der Display-Datei */
 static FILE			*fd;
 static LOCOPTP		lo = NULL;
-static int			muster_nr = 1;
+static short			muster_nr = 1;
 
 static bool get_cfg_path(void)
 {
@@ -760,11 +760,11 @@ void read_cfg_str(char *str, char *val)
 		return;
 	else
 	{
-		int	len, i, j;
+		short	len, i, j;
 		
 		if (str[0] == '"')
 		{
-			len = (int)strlen(str);
+			len = (short)strlen(str);
 			j = 0;
 			i = 1;
 			while ((str[i] != '\"') && (i < len))
@@ -782,7 +782,7 @@ void read_cfg_str(char *str, char *val)
 static void parse_line(POSENTRY **arglist, char *zeile)
 {
 	char	var[30], *p, tmp[80];
-	int	x, i, d;
+	short	x, i, d;
 	long	y;
 	PATH	filename;
 					
@@ -1035,7 +1035,7 @@ static void parse_line(POSENTRY **arglist, char *zeile)
 		/* Fensterposition */
 		else if (strcmp(var, "Window") == 0)
 		{
-			int	class;
+			short	class;
 			GRECT	size;
 			
 			sscanf(buffer, "%d %d %d %d %d", &class, &size.g_x, &size.g_y,
@@ -1071,10 +1071,10 @@ void option_load(POSENTRY **list)
 	if (fd != NULL)
 	{
 		/* 1. Zeile auf ID checken */
-		fgets(buffer, (int)sizeof(buffer), fd);
+		fgets(buffer, (short)sizeof(buffer), fd);
 		if (strncmp(buffer, "ID=qed", 6) == 0)
 		{
-			while (fgets(buffer, (int)sizeof(buffer), fd) != NULL)
+			while (fgets(buffer, (short)sizeof(buffer), fd) != NULL)
 			{
 				if (buffer[strlen(buffer) - 1] == '\n')
 					buffer[strlen(buffer) - 1] = EOS;
@@ -1098,10 +1098,10 @@ void option_load(POSENTRY **list)
 		if (fd != NULL)
 		{
 			/* 1. Zeile auf ID checken */
-			fgets(buffer, (int)sizeof(buffer), fd);
+			fgets(buffer, (short)sizeof(buffer), fd);
 			if (strncmp(buffer, "ID=qed display configuration", 28) == 0)
 			{
-				while (fgets(buffer, (int)sizeof(buffer), fd) != NULL)
+				while (fgets(buffer, (short)sizeof(buffer), fd) != NULL)
 				{
 					if (buffer[strlen(buffer) - 1] == '\n')
 						buffer[strlen(buffer) - 1] = EOS;
@@ -1121,8 +1121,8 @@ void option_load(POSENTRY **list)
 			
 			if (gl_planes == 1)
 			{
-				fg_color = BLACK;
-				bg_color = WHITE;
+				fg_color = G_BLACK;
+				bg_color = G_WHITE;
 			}
 			set_drawmode();
 			
@@ -1140,10 +1140,10 @@ void write_cfg_str(char *var, char *value)
 {
 	if (strchr(value, '\"') != NULL)	/* " in value fhrt zu \" in der Datei */
 	{
-		int	len, i;
+		short	len, i;
 
 		fprintf(fd, "%s=\"", var);
-		len = (int)strlen(value);
+		len = (short)strlen(value);
 		for (i = 0; i < len; i++)
 		{
 			if (value[i] == '\"')
@@ -1156,7 +1156,7 @@ void write_cfg_str(char *var, char *value)
 		fprintf(fd, "%s=\"%s\"\n", var, value);
 }
 
-void write_cfg_int(char *var, int value)
+void write_cfg_int(char *var, short value)
 {
 	fprintf(fd, "%s=%d\n", var, value);
 }
@@ -1195,7 +1195,7 @@ static void save_open_text(TEXTP t_ptr)
 
 void option_save(void)
 {
-	int		i, x;
+	short		i, x;
 	long		y;
 	char		tmp[50];
 	LOCOPTP	lo;

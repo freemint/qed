@@ -6,9 +6,9 @@
 */
 extern char		*global_str1,
 					*global_str2;
-extern int		msgbuff[8]; 			/* Buffer, den send_msg verschickt */
+extern short		msgbuff[8]; 			/* Buffer, den send_msg verschickt */
 
-extern bool		send_msg			(int id);
+extern bool		send_msg			(short id);
 /*
  * Verschickt den globalen Messagebuffer.
  * msgbuff[1] und msgbuff[2] werden gesetzt (gl_apid bzw. 0)

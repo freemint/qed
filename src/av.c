@@ -8,7 +8,7 @@
 #include "window.h"
 
 /* exportierte Variablen *****************************************************/
-int	av_shell_id = -1,				/* ID des Desktops */
+short	av_shell_id = -1,				/* ID des Desktops */
 		av_shell_status = 0;			/* Welche AV_* kann Desktop */
 
 /* lokale Variablen **********************************************************/
@@ -25,7 +25,7 @@ int	av_shell_id = -1,				/* ID des Desktops */
 */
 static bool make_name(char *longname, char *shortname, bool must_stg)
 {
-	int	len, i;
+	short	len, i;
 	char	*p;
 
 	if (longname[0] == EOS)
@@ -40,7 +40,7 @@ static bool make_name(char *longname, char *shortname, bool must_stg)
 		str_toupper(shortname);
 		p = strrchr(shortname, '.');				/* Extension abschneiden */
 		*p = '\0';
-		len = (int) strlen(shortname);
+		len = (short) strlen(shortname);
 		for (i = len; i < 8; i++)
 			strcat(shortname, " ");
 		if (must_stg && (strcmp(shortname, "ST-GUIDE") != 0))
@@ -58,9 +58,9 @@ static bool make_name(char *longname, char *shortname, bool must_stg)
  * Liefert die app_id des bergebenen Programmes zurck. Falls es noch
  * nicht l„uft, wird es mit arg gestartet.
 */
-static int get_id(char* name, char *path, char *arg, bool *started)
+static short get_id(char* name, char *path, char *arg, bool *started)
 {
-	int		ret = -1;
+	short		ret = -1;
 	char		*p, help[128] = "";
 	bool	s = FALSE;
 
@@ -106,11 +106,11 @@ static int get_id(char* name, char *path, char *arg, bool *started)
 	return ret;
 }
 
-static void send_help(int id, char *str)
+static void send_help(short id, char *str)
 {
 	if (debug_level & DBG_AV)
 		debug("send_help: '%s' to %d\n", str, id);
-	memset(msgbuff, 0, (int)sizeof(msgbuff));
+	memset(msgbuff, 0, (short)sizeof(msgbuff));
 	msgbuff[0] = AC_HELP;
 	msgbuff[1] = gl_apid;
 	strcpy(global_str1, str);
@@ -120,7 +120,7 @@ static void send_help(int id, char *str)
 
 bool call_help(char *str)
 {
-	int		help_id;
+	short		help_id;
 	FILENAME	name;
 
 	wake_mouse();
@@ -138,7 +138,7 @@ bool call_help(char *str)
 
 bool call_hyp(char *data)
 {
-	int		stg_id;
+	short		stg_id;
 	char 		help[80];
 	FILENAME name;
 	bool		started;
@@ -168,7 +168,7 @@ bool call_hyp(char *data)
 static void get_my_name(char *my_name)
 {
 	char	str[12];
-	int	d, i, id;
+	short	d, i, id;
 
 	if ((appl_xgetinfo(4, &d, &d, &i, &d)) && (i == 1))	/* gibts appl_search? */
 	{
@@ -183,7 +183,7 @@ static void get_my_name(char *my_name)
 	if (i != 0)
 	{
 		strcpy(my_name, str);
-		for (i = (int)strlen(my_name); i < 8; i++)
+		for (i = (short)strlen(my_name); i < 8; i++)
 			strcat(my_name, " ");
 	}
 	else
@@ -200,7 +200,7 @@ static void send_avprot(void)
 {
 	if (av_shell_id >= 0)
 	{
-		memset(msgbuff, 0, (int)sizeof(msgbuff));
+		memset(msgbuff, 0, (short)sizeof(msgbuff));
 		msgbuff[0] = AV_PROTOKOLL;
 		msgbuff[1] = gl_apid;
 		msgbuff[3] = (2|16);		/* VA_START, Quoting */
@@ -216,7 +216,7 @@ static void send_avexit(void)
 {
 	if ((av_shell_id >= 0) && (av_shell_status & 1024))
 	{
-		memset(msgbuff, 0, (int)sizeof(msgbuff));
+		memset(msgbuff, 0, (short)sizeof(msgbuff));
 		msgbuff[0] = AV_EXIT;
 		msgbuff[1] = gl_apid;
 		msgbuff[3] = gl_apid;
@@ -226,14 +226,14 @@ static void send_avexit(void)
 	}
 }
 
-bool send_avkey(int ks, int kr)
+bool send_avkey(short ks, short kr)
 {
 	bool	b = FALSE;
 
 	if ((av_shell_id >= 0) && (av_shell_status & 1))
 	{
 		wake_mouse();
-		memset(msgbuff, 0, (int)sizeof(msgbuff));
+		memset(msgbuff, 0, (short)sizeof(msgbuff));
 		msgbuff[0] = AV_SENDKEY;
 		msgbuff[1] = gl_apid;
 		msgbuff[3] = ks;
@@ -245,11 +245,11 @@ bool send_avkey(int ks, int kr)
 	return b;
 }
 
-void send_avwinopen(int handle)
+void send_avwinopen(short handle)
 {
 	if ((av_shell_id >= 0) && (wind_cycle))	/* Fensterwechsel global */
 	{
-		memset(msgbuff, 0, (int)sizeof(msgbuff));
+		memset(msgbuff, 0, (short)sizeof(msgbuff));
 		msgbuff[0] = AV_ACCWINDOPEN;
 		msgbuff[1] = gl_apid;
 		msgbuff[3] = handle;
@@ -259,11 +259,11 @@ void send_avwinopen(int handle)
 	}
 }
 
-void send_avwinclose(int handle)
+void send_avwinclose(short handle)
 {
 	if ((av_shell_id >= 0) && (wind_cycle))	/* Fensterwechsel global */
 	{
-		memset(msgbuff, 0, (int)sizeof(msgbuff));
+		memset(msgbuff, 0, (short)sizeof(msgbuff));
 		msgbuff[0] = AV_ACCWINDCLOSED;
 		msgbuff[1] = gl_apid;
 		msgbuff[3] = handle;
@@ -273,14 +273,14 @@ void send_avwinclose(int handle)
 	}
 }
 
-void send_avdrag(int wh, int m_x, int m_y, int kstate, int data_type)
+void send_avdrag(short wh, short m_x, short m_y, short kstate, short data_type)
 {
 	if ((av_shell_id >= 0) && (av_shell_status & 512))
 	{
-		int	app, d;
+		short	app, d;
 		
 		wind_get(wh, WF_OWNER, &app, &d, &d, &d);
-		memset(msgbuff, 0, (int)sizeof(msgbuff));
+		memset(msgbuff, 0, (short)sizeof(msgbuff));
 		msgbuff[0] = AV_DRAG_ON_WINDOW;
 		msgbuff[1] = gl_apid;
 		msgbuff[3] = m_x;
@@ -311,13 +311,13 @@ void send_avdrag(int wh, int m_x, int m_y, int kstate, int data_type)
 	}
 }
 
-int check_avobj(int x, int y)
+short check_avobj(short x, short y)
 {
-	int	ret = 0;
+	short	ret = 0;
 		
 	if (av_shell_id >= 0)
 	{
-		memset(msgbuff, 0, (int)sizeof(msgbuff));
+		memset(msgbuff, 0, (short)sizeof(msgbuff));
 		msgbuff[0] = AV_WHAT_IZIT;
 		msgbuff[3] = x;
 		msgbuff[4] = y;
@@ -334,9 +334,9 @@ int check_avobj(int x, int y)
 	return ret;
 }
 
-static void send_avstarted(int id, int m3, int m4)
+static void send_avstarted(short id, short m3, short m4)
 {
-	memset(msgbuff, 0, (int)sizeof(msgbuff));
+	memset(msgbuff, 0, (short)sizeof(msgbuff));
 	msgbuff[0] = AV_STARTED;
 	msgbuff[3] = m3;
 	msgbuff[4] = m4;
@@ -351,11 +351,11 @@ static void send_avstarted(int id, int m3, int m4)
 */
 static bool parse_vaarg(POSENTRY **list, char *arg)
 {
-	int		i, j, len;
+	short		i, j, len;
 	PATH		filename;
 	bool	in_quote = FALSE;
 	
-	len = (int)strlen(arg);
+	len = (short)strlen(arg);
 	if (len > 0)
 	{
 		i = 0;
@@ -400,10 +400,10 @@ static bool parse_vaarg(POSENTRY **list, char *arg)
 }
 
 
-void handle_av(int msgbuff[])
+void handle_av(short msgbuff[])
 {
 	char		*str_p, *arg;
-	int		kstate, d;
+	short		kstate, d;
 	POSENTRY	*va_list = NULL;
 
 	switch (msgbuff[0])
@@ -472,7 +472,7 @@ void handle_av(int msgbuff[])
 
 void init_av(void)
 {
-	int	i;
+	short	i;
 	char	name[9], *p;
 
 	p = getenv("AVSERVER");
@@ -480,7 +480,7 @@ void init_av(void)
 	{
 		strncpy(name, p, 8);
 		name[8] = EOS;
-		for (i = (int)strlen(name); i < 8; i++)
+		for (i = (short)strlen(name); i < 8; i++)
 			strcat(name, " ");
 		i = appl_find(name);
 		if (i >= 0)

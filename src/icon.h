@@ -9,26 +9,26 @@
 #define ALL_TYPES		-1
 
 
-extern int		all_icons		(int *c_obj_nr);
+extern short		all_icons		(short *c_obj_nr);
 
-extern int		decl_icon_type	(bool (*test)(int,int),
-			 							 int	(*edit)(int,int),
-										 void	(*exist)(int,SET),
-										 bool	(*drag)(int,int));
-extern bool		add_icon			(int type_id, int icon);
-extern void		del_icon			(int icon);
-extern int		icon_anz			(int type_id);
+extern short		decl_icon_type	(bool (*test)(short,short),
+			 							 short	(*edit)(short,short),
+										 void	(*exist)(short,SET),
+										 bool	(*drag)(short,short));
+extern bool		add_icon			(short type_id, short icon);
+extern void		del_icon			(short icon);
+extern short		icon_anz			(short type_id);
 
 /* <0 : Fehler bei der AusfÅhrung	*/
 /*	=0 : Nicht mîglich					*/
 /* >0 : Erfolgreich ausgefÅhrt		*/
-extern int		do_icon			(int icon, int action);
-extern void		do_all_icon		(int type_id, int action);
-extern bool		icon_test		(int icon, int action);
-extern int		icon_edit		(int icon, int action);
-extern void		icon_exist		(int icon, SET exist);
+extern short		do_icon			(short icon, short action);
+extern void		do_all_icon		(short type_id, short action);
+extern bool		icon_test		(short icon, short action);
+extern short		icon_edit		(short icon, short action);
+extern void		icon_exist		(short icon, SET exist);
 
-extern bool		icon_drag		(int dest_icon, int src_icon);
+extern bool		icon_drag		(short dest_icon, short src_icon);
 
 extern void		init_icon		(void);
 

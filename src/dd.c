@@ -22,9 +22,9 @@ long	drag_data_size;	/* Die L„nge der Daten */
 
 /* DD Empfang ****************************************************************/
 
-static int parse_ARGS(char *str)
+static short parse_ARGS(char *str)
 {
-	int		cnt = 1;
+	short		cnt = 1;
 	char 	*c = str;
 	bool	in_quote = FALSE;
 
@@ -63,13 +63,13 @@ static int parse_ARGS(char *str)
 }
 
 
-static int rel_path(char *path, bool cs, char *sub_path)
+static short rel_path(char *path, bool cs, char *sub_path)
 {
-	int	l;
+	short	l;
 	char	p1[256];
 	
 	split_filename(path, p1, NULL);
-	l = (int)strlen(p1);
+	l = (short)strlen(p1);
 	if (cs)
 	{
 		if (strncmp(p1, sub_path, l) == 0)
@@ -90,9 +90,9 @@ static int rel_path(char *path, bool cs, char *sub_path)
 #define DRAG_RELPATH		3
 #define DRAG_INHALT		4
 
-static void insert(WINDOWP w, int mode, bool shift, char *filename)
+static void insert(WINDOWP w, short mode, bool shift, char *filename)
 {
-	int	icon;
+	short	icon;
 
 	make_normalpath(filename);
 
@@ -121,7 +121,7 @@ static void insert(WINDOWP w, int mode, bool shift, char *filename)
 		else
 		{
 			TEXTP	t_ptr;
-			int	i;
+			short	i;
 
 			switch (mode)
 			{
@@ -164,11 +164,11 @@ static void insert(WINDOWP w, int mode, bool shift, char *filename)
 }
 
 
-static void parse(char *cmdline, WINDOWP w, int kstate)
+static void parse(char *cmdline, WINDOWP w, short kstate)
 {
-	int	comps = parse_ARGS(cmdline);
+	short	comps = parse_ARGS(cmdline);
 	char	*c = cmdline;
-	int	i, mode = DRAGDROP_PATH;
+	short	i, mode = DRAGDROP_PATH;
 	bool	shift;
 	
 	shift = (kstate & (K_LSHIFT|K_RSHIFT));
@@ -214,10 +214,10 @@ static void parse(char *cmdline, WINDOWP w, int kstate)
 	insert(w, mode, shift, c);
 }
 
-void	handle_dd(int *msg)
+void	handle_dd(short *msg)
 {
 	WINDOWP 	w_dest = get_window(msg[3]);
-	int		fd;
+	short		fd;
 	long		size;
 	char 		ext[5],
 				fname[PATH_MAX],
@@ -225,7 +225,7 @@ void	handle_dd(int *msg)
 
 	if (w_dest != NULL)
 	{
-		fd = (int)dd_open(msg[7], ourexts);
+		fd = (short)dd_open(msg[7], ourexts);
 		if (fd < 0)
 			return ;
 
@@ -246,7 +246,7 @@ void	handle_dd(int *msg)
 					continue;
 				}
 				dd_reply(fd, DD_OK);
-				Fread((int) fd, size, cmdline);
+				Fread((short) fd, size, cmdline);
 				dd_close(fd);
 				cmdline[size] = 0;
 				parse(cmdline, w_dest, msg[6]);
@@ -266,7 +266,7 @@ void	handle_dd(int *msg)
 					continue;
 				}
 				dd_reply(fd, DD_OK);
-				Fread((int) fd, drag_data_size, drag_data);
+				Fread((short) fd, drag_data_size, drag_data);
 				dd_close(fd);
 				drag_data[drag_data_size] = 0;
 #else
@@ -289,7 +289,7 @@ void	handle_dd(int *msg)
 }
 
 
-void	handle_avdd(int win_handle, int kstate, char *arg)
+void	handle_avdd(short win_handle, short kstate, char *arg)
 {
 	WINDOWP 	w_dest = get_window(win_handle);
 	char		*cmdline;
@@ -306,14 +306,14 @@ void	handle_avdd(int win_handle, int kstate, char *arg)
 
 /* DD Senden *****************************************************************/
 
-void send_dd(int win_id, int m_x, int m_y, int kstate, RINGP t)
+void send_dd(short win_id, short m_x, short m_y, short kstate, RINGP t)
 {
-	int	i, d;
+	short	i, d;
 	
 	/* gibts WF_OWNER? */
 	if ((appl_xgetinfo(11, &i, &d, &d, &d)) && (i & 16)) 
 	{
-		int	pipe, app_id;
+		short	pipe, app_id;
 		char	ext[33];
 		
 		wind_get(win_id, WF_OWNER, &app_id, &d, &d, &d);

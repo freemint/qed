@@ -7,27 +7,27 @@
 #include "vaproto.h"
 
 
-extern int	av_shell_id,		/* ID des Desktops */
+extern short	av_shell_id,		/* ID des Desktops */
 				av_shell_status;	/* Welche VA_* kann der Desktop */
 
 
-extern bool	send_avkey			(int ks, int kr);
+extern bool	send_avkey			(short ks, short kr);
 /*
  * Schickt Tastendruck an AV-Server.
 */
 
-extern void	send_avdrag			(int wh, int m_x, int m_y, int kstate, int data_type);
+extern void	send_avdrag			(short wh, short m_x, short m_y, short kstate, short data_type);
 /*
  * Schickt AV_DRAG_TO_WIN.
 */
 
-extern int check_avobj			(int x, int y);
+extern short check_avobj			(short x, short y);
 /*
  * Ermittelt, was an <x,y> auf dem AV-Desktop liegt.
 */
 
-extern void	send_avwinopen		(int handle);
-extern void	send_avwinclose	(int handle);
+extern void	send_avwinopen		(short handle);
+extern void	send_avwinclose	(short handle);
 /*
  * Fenster auf bzw. zu.
 */
@@ -42,7 +42,7 @@ extern bool	call_hyp				(char *data);
  * Schickt data an ST-Guide.
 */
 
-extern void	handle_av			(int msg[]);
+extern void	handle_av			(short msg[]);
 /*
  * Verabeitet Messages vom Server.
 */

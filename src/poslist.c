@@ -14,7 +14,7 @@
 #include "poslist.h"
 
 
-void insert_poslist(POSENTRY **list, char *n1, int x, long y)
+void insert_poslist(POSENTRY **list, char *n1, short x, long y)
 {
 	POSENTRY	*new, *p;
 	PATH		name;
@@ -60,7 +60,7 @@ debug("insert_poslist: %s, x= %d, y= %ld: new\n", new->filename, new->spalte, ne
 
 void open_poslist(POSENTRY *list)
 {
-	int		icon;
+	short		icon;
 	POSENTRY	*p;
 	
 	p = list;
@@ -108,7 +108,7 @@ void delete_poslist(POSENTRY **list)
 }
 
 
-POSENTRY *find_poslist(POSENTRY *list, char *name, int *x, long *y)
+POSENTRY *find_poslist(POSENTRY *list, char *name, short *x, long *y)
 {
 	POSENTRY	*p;
 

@@ -26,7 +26,7 @@
 /****** VARIABLES ************************************************************/
 
 /* Menuenummer zu einer Aktion */
-int menu_nr[] =	{MUNDO, MCUT, MCOPY, MPASTE, MSELALL, MCLOSE, -1, 
+short menu_nr[] =	{MUNDO, MCUT, MCOPY, MPASTE, MSELALL, MCLOSE, -1, 
 		  						 MINFO, -1, MLEFT, MRIGHT, MFORMAT, MPRINT, MABAND, 
 		  						 MSAVE, MSAVENEW, -1, MFNDGOON, MADD, MGOTO, MSSTRIP,
 		  						 MSTAB2LZ, -1, MSLZ2TAB, -1, MZEICHEN, MSWAP, MSMALL, 
@@ -40,7 +40,7 @@ static void	mclearup 	(void);
 /*****************************************************************************/
 static void info_dial(void)
 {
-	int	antw;
+	short	antw;
 
 	antw = simple_mdial(about, 0) & 0x7fff;
 	if (antw == AINFO)
@@ -67,8 +67,8 @@ void	set_overwrite(bool over)
 /***************************************************************************/
 bool prepare_quit(void)
 {
-	int	anz, i;
-	int	ic, icp[MAX_ICON_ANZ];
+	short	anz, i;
+	short	ic, icp[MAX_ICON_ANZ];
 	SET	actions;
 
 	if (makro_rec)
@@ -111,26 +111,26 @@ void do_quit(void)
 }
 
 /*****************************************************************************/
-void set_menu(int item, bool yes)
+void set_menu(short item, bool yes)
 {
-	if (((menu[item].ob_state & DISABLED) == 0) != yes)
+	if (((menu[item].ob_state & OS_DISABLED) == 0) != yes)
 		menu_ienable(menu, item, yes);
 }
 
-void mark_menu(int item, bool yes)
+void mark_menu(short item, bool yes)
 {
-	if (((menu[item].ob_state & CHECKED) != 0) != yes)
+	if (((menu[item].ob_state & OS_CHECKED) != 0) != yes)
 		menu_icheck(menu, item, yes);
 }
 
-void fillup_menu(int item, char *new_text, int free)
+void fillup_menu(short item, char *new_text, short free)
 {
-	int	len, max_len;
+	short	len, max_len;
 	char *str;
 
 	str = menu[item].ob_spec.free_string + free;
-	len = (int) strlen(new_text);
-	max_len = (int) strlen(str) - 4;		/* ' ?? ' Shortcut nicht berscrieben! */
+	len = (short) strlen(new_text);
+	max_len = (short) strlen(str) - 4;		/* ' ?? ' Shortcut nicht berscrieben! */
 	if (len > max_len)
 		len = max_len;
 	memcpy(str, new_text, len);
@@ -151,7 +151,7 @@ void update_menu (void)
 {
 	WINDOWP	window;
 	SET		all_actions;
-	int		i, nr;
+	short		i, nr;
 
 	setclr(all_actions);
 	window = winlist_top();
@@ -213,9 +213,9 @@ void update_menu (void)
 /***************************************************************************/
 static void multitest_action(SET icons, SET action)
 {
-	int	icp[MAX_ICON_ANZ], ic;
+	short	icp[MAX_ICON_ANZ], ic;
 	SET	help;
-	int	i;
+	short	i;
 
 	i = all_icons(icp);
 	setclr(action);
@@ -231,11 +231,11 @@ static void multitest_action(SET icons, SET action)
 }
 
 /*****************************************************************************/
-static void do_multi_action(int action)
+static void do_multi_action(short action)
 {
-	int	icp[MAX_ICON_ANZ], ic;
+	short	icp[MAX_ICON_ANZ], ic;
 	SET	sel_icons;
-	int	i, anz;
+	short	i, anz;
 
 	anz = all_icons(icp);
 	setcpy(sel_icons, sel_objs);
@@ -253,7 +253,7 @@ static void do_multi_action(int action)
 	}
 }
 
-void do_action(int action)
+void do_action(short action)
 {
 	if (sel_window != NULL)			/* Namen in Projekt selektiert */
 	{
@@ -272,10 +272,10 @@ void do_action(int action)
 }
 
 
-void menu_help(int title, int item)
+void menu_help(short title, short item)
 {
 	char	help[128], str[128];
-	int	i;
+	short	i;
 	
 	/* Spezial-F„lle: besonderer Text */
 	if (item >= MMARKE1 && item <= MMARKE5)
@@ -313,9 +313,9 @@ void menu_help(int title, int item)
 }
 
 
-static bool menu_key(int kstate, int kreturn)
+static bool menu_key(short kstate, short kreturn)
 {
-	int	title, item;
+	short	title, item;
 	
 	update_menu();
 
@@ -334,9 +334,9 @@ static bool menu_key(int kstate, int kreturn)
 /*
  * Globale Tasten auswerten, die bergeordnete Funktionen ausl”sen.
 */
-bool	key_global(int kstate, int kreturn)
+bool	key_global(short kstate, short kreturn)
 {
-	int	scan;
+	short	scan;
 	
 	scan = kreturn >> 8;
 	
@@ -377,10 +377,10 @@ bool	key_global(int kstate, int kreturn)
 }
 
 
-void handle_menu(int title, int item, bool ctrl)
+void handle_menu(short title, short item, bool ctrl)
 {
 	WINDOWP	w;
-	int		action, antw, anz;
+	short		action, antw, anz;
 	char 		str[10];
 
 	if (ctrl)

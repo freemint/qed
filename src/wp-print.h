@@ -62,7 +62,7 @@ extern bool	wp_load_cfgfile	(char *name);
  * ÅberprÅft ('GST-CFG:'). 
 */
 
-extern void	wp_get_prnname		(char *Printername, int max_len);
+extern void	wp_get_prnname		(char *Printername, short max_len);
 /* 
  * Eingetragenen Druckernamen liefern. Falls keiner vorhanden ist, dann
  * wird ein Leerstring ('') geliefert.
@@ -92,7 +92,7 @@ extern bool	wp_send_init		(bool use_nlq);
  * - Eintrag 35H       Proportional-Schrift wird ausgeschaltet.
 */
 
-extern bool	wp_set_mode			(int Mode);
+extern bool	wp_set_mode			(short Mode);
 /*
  * Zeichenbreite einstellen.
  *   Achtung: vorher 'SendInit' durchfÅhren!
@@ -108,7 +108,7 @@ extern bool	wp_formfeed			(void);
  * Seitenvorschub ausgeben
 */
 
-extern void	wp_set_tabsize		(int tab);
+extern void	wp_set_tabsize		(short tab);
 /* 
  * Tabulatorweite einstellen
 */

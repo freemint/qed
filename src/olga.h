@@ -11,12 +11,12 @@
 #define OL_SERVER                0x0001
 
 
-extern void	handle_olga	(int *msg);
+extern void	handle_olga	(short *msg);
 /*
  * Wertet OLGA-Msg aus.
 */
 
-extern void	do_olga		(int flag, char *name1, char *name2);
+extern void	do_olga		(short flag, char *name1, char *name2);
 /*
  * FÅhrt Aktion 'flag' aus.
 */

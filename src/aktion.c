@@ -2,15 +2,15 @@
 #include "aktion.h"
 #include "rsc.h"
 
-extern handle_msg(int *msg);	/* -> event.c */
+extern handle_msg(short *msg);	/* -> event.c */
 
-int	akt_handle;
+short	akt_handle;
 
 static long		max_value;
-static int		interupt;
+static short		interupt;
 static OBJECT	*aktion = NULL;
 
-static void redraw(int start, int depth, int x, int y, int w, int h)
+static void redraw(short start, short depth, short x, short y, short w, short h)
 {
 	GRECT		r, r1;
 	
@@ -28,7 +28,7 @@ static void redraw(int start, int depth, int x, int y, int w, int h)
 	wind_update(END_UPDATE);
 }
 
-static void move(int x, int y)
+static void move(short x, short y)
 {
 	GRECT	r;
 
@@ -45,7 +45,7 @@ static void move(int x, int y)
 
 void start_aktion(char *str, bool inter, long max)
 {
-	int	d;
+	short	d;
 	GRECT	r1, r2;
 
 	if (aktion == NULL)
@@ -57,7 +57,7 @@ void start_aktion(char *str, bool inter, long max)
 	max_value = max(max, 1);
 	set_string(aktion, ATEXT, str);
 	aktion[ABOX2].ob_width = 1;
-	set_flag(aktion, AESC, HIDETREE, !inter);
+	set_flag(aktion, AESC, OF_HIDETREE, !inter);
 	interupt = inter;
 
 	/* Zentrieren, nur beim ersten Mal */
@@ -81,7 +81,7 @@ void start_aktion(char *str, bool inter, long max)
 
 bool do_aktion(char *str, long value)
 {
-	int	msg[8], kreturn, d, event;
+	short	msg[8], kreturn, d, event;
 	long 	max_len, help;
 	GRECT	r;
 	bool	ret = TRUE;
@@ -99,7 +99,7 @@ bool do_aktion(char *str, long value)
 	help = min(max_len, help);
 	if (aktion[ABOX2].ob_width != help)
 	{
-		aktion[ABOX2].ob_width = (int) help;
+		aktion[ABOX2].ob_width = (short) help;
 		get_objframe(aktion, ABOX2, &r);
 		redraw(ABOX2, 0, r.g_x, r.g_y, r.g_w, r.g_h);
 	}
@@ -158,7 +158,7 @@ void end_aktion (void)
 {
 	if (akt_handle > 0)
 	{
-		int	msg[8], d, event = 0;
+		short	msg[8], d, event = 0;
 
 		wind_close(akt_handle);
 		wind_delete(akt_handle);

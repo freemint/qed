@@ -13,21 +13,21 @@
 
 /* lokale Variablen ********************************************************/
 static char	*text = NULL;
-static int	text_len = 0;
+static short	text_len = 0;
 #define MIN_TEXT_LEN	((MAX_LINE_LEN+1) / 4)	/* StartlÑnge: 256 Bytes */
 
 /*!! Muessen am Anfang jeder Routine gesetzt werden !!*/
 static bool	tab;
-static int	tab_size;
+static short	tab_size;
 static bool	umbrechen;
 static bool	show_end;
-static int	draw_mode;
+static short	draw_mode;
 static bool	opt_draw;
 
 
 void set_drawmode(void)
 {
-	if (bg_color == WHITE)
+	if (bg_color == G_WHITE)
 	{
 		/*
 		 * Schnellere Ausgabe, da durch MD_REPLACE das Lîschen der Zeile
@@ -47,7 +47,7 @@ void set_drawmode(void)
 }
 
 
-static void set_fill_color(int new)
+static void set_fill_color(short new)
 {
 	if (new != fill_color)
 	{
@@ -63,7 +63,7 @@ static void set_fill_color(int new)
 */
 static void adjust_text(TEXTP t_ptr)
 {
-	int	need;
+	short	need;
 	
 	if (t_ptr->max_line == NULL)
 		need = -1;
@@ -82,9 +82,9 @@ static void adjust_text(TEXTP t_ptr)
  * Tab-Zeichen werden ggf. in mehrere CHR(32) gewandelt
  * Die StringlÑnge wird zurÅckgegeben.
 */
-int line_to_str(char *str, int anz)
+short line_to_str(char *str, short anz)
 {
-	int	len, i, end;
+	short	len, i, end;
 	char	c, *t;
 
 	t = text;
@@ -95,7 +95,7 @@ int line_to_str(char *str, int anz)
 		end = anz;
 	if (tab)
 	{
-		int	tabH;
+		short	tabH;
 
 		tabH = tab_size;
 		for (i = end, len = text_len; (--i)>=0; )
@@ -155,9 +155,9 @@ int line_to_str(char *str, int anz)
 }
 
 /* Liefert die interne Position */
-int inter_pos(int x, ZEILEP a, bool tab, int tab_size)
+short inter_pos(short x, ZEILEP a, bool tab, short tab_size)
 {
-	int	len  = 0,
+	short	len  = 0,
 			tabH = tab_size,
 		 	i    = 0;
 	char *str;
@@ -185,14 +185,14 @@ int inter_pos(int x, ZEILEP a, bool tab, int tab_size)
 	return i;
 }
 
-int bild_len(ZEILEP a, bool tab, int tab_size)
+short bild_len(ZEILEP a, bool tab, short tab_size)
 {
 	return bild_pos(a->len,a,tab,tab_size);
 }
 
-int bild_pos(int x, ZEILEP a, bool tab, int tab_size)
+short bild_pos(short x, ZEILEP a, bool tab, short tab_size)
 {
-	int	len  = 0,
+	short	len  = 0,
 			tabH = tab_size;
 	char	*str;
 
@@ -219,13 +219,13 @@ int bild_pos(int x, ZEILEP a, bool tab, int tab_size)
 /*----------------------------------------------------------------------------
  * Cursor-Handling
 */
-int cursor_xpos(TEXTP t_ptr, int pos)
+short cursor_xpos(TEXTP t_ptr, short pos)
 {
-	int	len;
+	short	len;
 	
 	if (font_prop)
 	{
-		int	pxy[8];
+		short	pxy[8];
 		
 		tab = t_ptr->loc_opt->tab;
 		tab_size = t_ptr->loc_opt->tabsize;
@@ -242,7 +242,7 @@ int cursor_xpos(TEXTP t_ptr, int pos)
 
 static void _cursor(GRECT *r)
 {
-	int 	pxy[4];
+	short 	pxy[4];
 
 	pxy[0] = r->g_x;
 	pxy[1] = r->g_y;
@@ -256,17 +256,17 @@ static void _cursor(GRECT *r)
 
 void cursor(WINDOWP w, TEXTP t_ptr)
 {
-	int		pxy[8];
+	short		pxy[8];
 	char		c[2];
 	GRECT		curs_rect, clip;
 	long		zeile;
 	bool		hidden;
 
 	/* Position ermitteln */	
-	curs_rect.g_x = cursor_xpos(t_ptr, t_ptr->xpos) - ((int) w->doc.x * font_wcell) + w->work.g_x;
+	curs_rect.g_x = cursor_xpos(t_ptr, t_ptr->xpos) - ((short) w->doc.x * font_wcell) + w->work.g_x;
 
 	zeile = t_ptr->ypos - w->doc.y;
-	curs_rect.g_y = (int) zeile * font_hcell + w->work.g_y;
+	curs_rect.g_y = (short) zeile * font_hcell + w->work.g_y;
 
 	/* Cursor Åberhaupt sichtbar? */
 	if (curs_rect.g_x < w->work.g_x || curs_rect.g_x > (w->work.g_x + w->work.g_w - 1) ||
@@ -367,9 +367,9 @@ static ZEILEP get_wline(TEXTP t_ptr, long y)
  * y ist Pixel-Koordinate
  * w ist die Breite in Pixel, die abgedeckt werden soll
 */
-void fill_area(int x, int y, int w, int h, int color)
+void fill_area(short x, short y, short w, short h, short color)
 {
-	int	pxy[4];
+	short	pxy[4];
 
 	if (w <= 0) 
 		return;
@@ -391,9 +391,9 @@ void fill_area(int x, int y, int w, int h, int color)
  * w ist die Breite in Pixel, die abgedeckt werden soll
  * return ende der Textausgabe
 */
-int out_s(int x, int y, int w, char *str)
+short out_s(short x, short y, short w, char *str)
 {
-	int	pxy[8], len;
+	short	pxy[8], len;
 
 	if (w <= 0)
 		return x;
@@ -408,7 +408,7 @@ int out_s(int x, int y, int w, char *str)
 		len = pxy[2]-pxy[0];
 	}
 	else
-		len = (int) strlen(str) * font_wcell;
+		len = (short) strlen(str) * font_wcell;
 
 	if (len < w)
 	{
@@ -428,9 +428,9 @@ int out_s(int x, int y, int w, char *str)
  * w ist die Breite in Pixel, die abgedeckt werden soll
  * return ende der Textausgabe
 */
-int out_sb(int x, int y, int w, char *str)
+short out_sb(short x, short y, short w, char *str)
 {
-	int	pxy[8], len;
+	short	pxy[8], len;
 
 	if (w <= 0)
 		return x;
@@ -461,7 +461,7 @@ int out_sb(int x, int y, int w, char *str)
 		len = pxy[2] - pxy[0];
 	}
 	else
-		len = (int) strlen(str) * font_wcell;
+		len = (short) strlen(str) * font_wcell;
 	if (len > w)
 		return x + w;
 	return x + len;
@@ -470,9 +470,9 @@ int out_sb(int x, int y, int w, char *str)
 /*
  * Absatzmarke zeichnen.
 */
-static void draw_cr(int x, int y, bool inv)
+static void draw_cr(short x, short y, bool inv)
 {
-	int pxy[6], h, b;
+	short pxy[6], h, b;
 
 	if (inv)
 		vsl_color (vdi_handle, bg_color);
@@ -510,10 +510,10 @@ static void draw_cr(int x, int y, bool inv)
  * w ist die Breite in Pixel, die abgedeckt werden soll
  * offset in Zeichen
 */
-static void str_out(int x, int y, int w, int offset, ZEILEP a)
+static void str_out(short x, short y, short w, short offset, ZEILEP a)
 {
-	int	len, anz;
-	int	pxy[8];
+	short	len, anz;
+	short	pxy[8];
 
 	anz = line_to_str(TEXT(a), a->len);
 
@@ -584,9 +584,9 @@ static void str_out(int x, int y, int w, int offset, ZEILEP a)
  * offset in Zeichen
  * mode (BLKANF, BLKEND, BLKFULL)
 */
-static void str_out_b(int x, int y, int w, int offset, ZEILEP a, int mode, int x1, int x2)
+static void str_out_b(short x, short y, short w, short offset, ZEILEP a, short mode, short x1, short x2)
 {
-	int	anz, anz1, anz2, len, len2, pxy[8], end;
+	short	anz, anz1, anz2, len, len2, pxy[8], end;
 	char	h;
 
 	anz = line_to_str(TEXT(a), a->len);
@@ -749,9 +749,9 @@ static void str_out_b(int x, int y, int w, int offset, ZEILEP a, int mode, int x
 
 /* =========================================================== */
 
-void line_out(WINDOWP window, TEXTP t_ptr, int wy)
+void line_out(WINDOWP window, TEXTP t_ptr, short wy)
 {
-	int		y;
+	short		y;
 	ZEILEP	col;
 
 	adjust_text(t_ptr);					/* Zeilenpuffer an exp_len anpassen */
@@ -765,12 +765,12 @@ void line_out(WINDOWP window, TEXTP t_ptr, int wy)
 	{
 		if (t_ptr->block)
 		{
-			wy += (int) window->doc.y;
+			wy += (short) window->doc.y;
 			if (wy<t_ptr->z1 || wy>t_ptr->z2)
-				str_out(window->work.g_x, y, window->work.g_w, (int)window->doc.x, col);
+				str_out(window->work.g_x, y, window->work.g_w, (short)window->doc.x, col);
 			else
 			{
-				int	mode = 0;
+				short	mode = 0;
 
 				if (wy == t_ptr->z1)
 					mode |= BLKANF;
@@ -779,11 +779,11 @@ void line_out(WINDOWP window, TEXTP t_ptr, int wy)
 				if (!mode)
 					mode = BLKFULL;
 				str_out_b(window->work.g_x, y, window->work.g_w,
-				         (int) window->doc.x, col, mode, t_ptr->x1, t_ptr->x2);
+				         (short) window->doc.x, col, mode, t_ptr->x1, t_ptr->x2);
 			}
 		}
 		else
-			str_out(window->work.g_x, y, window->work.g_w, (int) window->doc.x, col);
+			str_out(window->work.g_x, y, window->work.g_w, (short) window->doc.x, col);
 	}
 	else
 		fill_area(window->work.g_x, y, window->work.g_w, font_hcell, bg_color);
@@ -791,9 +791,9 @@ void line_out(WINDOWP window, TEXTP t_ptr, int wy)
 
 void bild_out(WINDOWP window, TEXTP t_ptr)
 {
-	int		x, y, w;
+	short		x, y, w;
 	ZEILEP	lauf;
-	int		min_col, max_col, max_y;
+	short		min_col, max_col, max_y;
 	GRECT		c;
 
 	adjust_text(t_ptr);					/* Zeilenpuffer an exp_len anpassen */
@@ -809,11 +809,11 @@ void bild_out(WINDOWP window, TEXTP t_ptr)
 		head_out(window, t_ptr);
 
 	min_col = 0;
-	max_col = (int) min(window->w_height - 1, t_ptr->text.lines - window->doc.y-1);
+	max_col = (short) min(window->w_height - 1, t_ptr->text.lines - window->doc.y-1);
 	max_y   = y + window->work.g_h-1;
 	if (get_clip(&c))					/* nicht alles malen */
 	{
-		int y2 = c.g_y - y;
+		short y2 = c.g_y - y;
 
 		min_col = max(min_col, y2/font_hcell);
 		max_col = min(max_col, (c.g_y + c.g_h - 1) / font_hcell);
@@ -823,9 +823,9 @@ void bild_out(WINDOWP window, TEXTP t_ptr)
 	lauf = get_wline(t_ptr, window->doc.y + min_col);
 	if (lauf != NULL)
 	{
-		int	xoffset, i;
+		short	xoffset, i;
 
-		xoffset = (int) window->doc.x;
+		xoffset = (short) window->doc.x;
 		if (t_ptr->block)
 		{
 			long	y_r;
@@ -838,7 +838,7 @@ void bild_out(WINDOWP window, TEXTP t_ptr)
 					str_out(x, y, w, xoffset, lauf);
 				else
 				{
-					int mode = 0;
+					short mode = 0;
 
 					if (y_r == t_ptr->z1)
 						mode |= BLKANF;
@@ -865,9 +865,9 @@ void bild_out(WINDOWP window, TEXTP t_ptr)
 void bild_blkout(WINDOWP window, TEXTP t_ptr, long z1, long z2)
 /* Alle Textzeilen zwischen z1 und z2 werden neu ausgegeben */
 {
-	int		i, x, y, w, xoffset;
+	short		i, x, y, w, xoffset;
 	ZEILEP	lauf;
-	int		max_col;
+	short		max_col;
 	long		lines, y_r;
 
 	adjust_text(t_ptr);					/* Zeilenpuffer an exp_len anpassen */
@@ -884,8 +884,8 @@ void bild_blkout(WINDOWP window, TEXTP t_ptr, long z1, long z2)
 	x		  = window->work.g_x;
 	y 		  = window->work.g_y;
 	w		  = window->work.g_w;
-	xoffset = (int) window->doc.x;
-	max_col = (int) min(window->w_height-1, t_ptr->text.lines-window->doc.y-1);
+	xoffset = (short) window->doc.x;
+	max_col = (short) min(window->w_height-1, t_ptr->text.lines-window->doc.y-1);
 	y_r	  = window->doc.y;
 	lauf = get_wline(t_ptr, y_r);
 
@@ -898,7 +898,7 @@ void bild_blkout(WINDOWP window, TEXTP t_ptr, long z1, long z2)
 					str_out(x,y,w,xoffset,lauf);
 				else
 				{
-					int mode = 0;
+					short mode = 0;
 
 					if (y_r==t_ptr->z1) mode |= BLKANF;
 					if (y_r==t_ptr->z2) mode |= BLKEND;
@@ -923,31 +923,31 @@ void bild_blkout(WINDOWP window, TEXTP t_ptr, long z1, long z2)
 void head_out(WINDOWP window, TEXTP t_ptr)
 {
 	char	head_str[WINSTRLEN];
-	int	len, head_len;
+	short	len, head_len;
 
 	if (t_ptr->info_str[0] != EOS)
 	{
 		strncpy(head_str, t_ptr->info_str, WINSTRLEN);
 		head_str[WINSTRLEN] = EOS;
-		head_len = (int) strlen(head_str);
+		head_len = (short) strlen(head_str);
 	}
 	else 
 	{
-		if (t_ptr->text.ending != binmode)
+		if (t_ptr->text.ending != lns_binmode)
 		{
-			head_len = (int) strlen(rsc_string(HEADSTR));
+			head_len = (short) strlen(rsc_string(HEADSTR));
 			strcpy(head_str, rsc_string(HEADSTR));
 			if (t_ptr->readonly)
 				head_str[1] = '\x7F';
 	
 			switch (t_ptr->text.ending)
 			{
-				case tos :
+				case lns_tos :
 					break;
-				case unix :
+				case lns_unix :
 					head_str[2] = 'U';
 					break;
-				case apple :
+				case lns_apple :
 					head_str[2] = 'A';
 					break;
 				default:
@@ -963,7 +963,7 @@ void head_out(WINDOWP window, TEXTP t_ptr)
 		{
 			long	p;
 			
-			head_len = (int) strlen(rsc_string(BHEADSTR));
+			head_len = (short) strlen(rsc_string(BHEADSTR));
 			strcpy(head_str, rsc_string(BHEADSTR));
 			if (t_ptr->readonly)
 				head_str[1] = '\x7F';

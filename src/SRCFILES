@@ -1,0 +1,82 @@
+# This file gets included by the Makefile in this directory to determine
+# the files that should go only into source distributions.
+
+HEADER = \
+	./aktion.h \
+	./ausgabe.h \
+	./av.h \
+	./block.h \
+	./clipbrd.h \
+	./comm.h \
+	./dd.h \
+	./edit.h \
+	./error.h \
+	./event.h \
+	./file.h \
+	./find.h \
+	./global.h \
+	./icon.h \
+	./kurzel.h \
+	./makro.h \
+	./memory.h \
+	./menu.h \
+	./olga.h \
+	./options.h \
+	./poslist.h \
+	./printer.h \
+	./projekt.h \
+	./qed.h \
+	./rsc.h \
+	./se.h \
+	./seproto.h \
+	./set.h \
+	./sort.h \
+	./tasten.h \
+	./text.h \
+	./types.h \
+	./umbruch.h \
+	./vaproto.h \
+	./version.h \
+	./window.h \
+	./winlist.h \
+	./wp-print.h
+
+COBJS = \
+	./aktion.c \
+	./ausgabe.c \
+	./av.c \
+	./block.c \
+	./clipbrd.c \
+	./comm.c \
+	./dd.c \
+	./edit.c \
+	./error.c \
+	./event.c \
+	./file.c \
+	./find.c \
+	./global.c \
+	./icon.c \
+	./kurzel.c \
+	./main.c \
+	./makro.c \
+	./memory.c \
+	./menu.c \
+	./olga.c \
+	./options.c \
+	./poslist.c \
+	./prn_cfg.c \
+	./prn_out.c \
+	./projekt.c \
+	./rsc.c \
+	./se.c \
+	./set.c \
+	./sort.c \
+	./tasten.c \
+	./text.c \
+	./umbruch.c \
+	./window.c \
+	./winlist.c \
+	./wp-print.c
+
+SRCFILES = $(HEADER) $(COBJS)
+

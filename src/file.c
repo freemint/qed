@@ -1,5 +1,5 @@
 #include <errno.h>
-#include <stat.h>
+#include <sys/stat.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -24,7 +24,7 @@ static PATH	last_path; 						/* letzter Pfad der Dateiauswahl */
 /* Puffer-LÑnge zum Lesen/Schreiben */
 #define	BUFFERSIZE	4*1024L
 
-void open_error(char *filename, int error)
+void open_error(char *filename, short error)
 {
 	FILENAME	datei;
 	PATH		path;
@@ -36,9 +36,9 @@ void open_error(char *filename, int error)
 		snote(1, 0, READERR, datei);
 }
 
-int load(TEXTP t_ptr, bool verbose)
+short load(TEXTP t_ptr, bool verbose)
 {
-	int	antw;
+	short	antw;
 	bool	null_byte;
 	
 	antw = load_datei(t_ptr->filename, &t_ptr->text, verbose, &null_byte);
@@ -56,15 +56,15 @@ int load(TEXTP t_ptr, bool verbose)
 }
 
 
-int load_from_fd(int fd, char *name, RINGP t, bool verbose, bool *null_byte, long size)
+short load_from_fd(short fd, char *name, RINGP t, bool verbose, bool *null_byte, long size)
 {
-	int		antw;
+	short		antw;
 	bool		nb = FALSE, 
 				ol = FALSE;
 	char		*buffer, *zeile;
 	ZEILEP 	start, next;
 	long		l, p, bytes;
-	int		n;
+	short		n;
 	bool		new_line, cr = FALSE, mem = TRUE;
 
 	/* Puffer anfordern */
@@ -108,14 +108,14 @@ int load_from_fd(int fd, char *name, RINGP t, bool verbose, bool *null_byte, lon
 		p = 0;
 		while (mem && (p < l))
 		{
-			if (t->ending != binmode)
+			if (t->ending != lns_binmode)
 			{
 				if (buffer[p] == 0x0D)				/* CR -> Mac */
 				{
 					new_line = TRUE;
 					p++;
 					cr = TRUE;
-					t->ending = apple;
+					t->ending = lns_apple;
 				}
 				else if (buffer[p] == 0x0A)		/* LF */
 				{
@@ -123,12 +123,12 @@ int load_from_fd(int fd, char *name, RINGP t, bool verbose, bool *null_byte, lon
 					if (cr)								/* CRLF -> TOS*/
 					{
 						cr = FALSE;
-						t->ending = tos;
+						t->ending = lns_tos;
 					}
 					else
 					{
 						new_line = TRUE;				/* -> Unix */
-						t->ending = unix;
+						t->ending = lns_unix;
 					}
 				}
 				else if (n >= t->max_line_len)	/* öberlÑnge */
@@ -149,7 +149,7 @@ int load_from_fd(int fd, char *name, RINGP t, bool verbose, bool *null_byte, lon
 					p++;
 				}
 			}
-			else	/* binmode */
+			else	/* lns_binmode */
 			{
 				if (n >= (t->max_line_len - 1))
 					new_line = TRUE;
@@ -260,16 +260,16 @@ int load_from_fd(int fd, char *name, RINGP t, bool verbose, bool *null_byte, lon
 	return(antw);
 }
 
-int load_datei(char *name, RINGP t, bool verbose, bool *null_byte)
+short load_datei(char *name, RINGP t, bool verbose, bool *null_byte)
 {
-	int	antw, fd;
+	short	antw, fd;
 	long	size;
 	
 	/* grîûe der Datei ermitteln */
 	size = file_size(name);
 	if (size >= 0L)
 	{
-		fd = (int) Fopen(name, 0);
+		fd = (short) Fopen(name, 0);
 		if (fd > 0)
 		{
 			antw = load_from_fd(fd, name, t, verbose, null_byte, size);
@@ -289,10 +289,10 @@ int load_datei(char *name, RINGP t, bool verbose, bool *null_byte)
  * Ermittelt die anzahl der Bytes und Zeilen der Åbergebenen Datei.
  * Wird bei der Projektverwaltung (Info) benutzt.
  */
-int infoload(char *name, long *bytes, long *lines)
+short infoload(char *name, long *bytes, long *lines)
 {
 	RING	t;
-	int	antw = 1;
+	short	antw = 1;
 
 	if (file_exists(name))
 	{
@@ -320,7 +320,7 @@ int infoload(char *name, long *bytes, long *lines)
 
 /****************************************************************************/
 
-long	void backup_name(char *name, char *ext)
+void backup_name(char *name, char *ext)
 {
 	PATH		new;
 	FILENAME	new_name;
@@ -366,10 +366,10 @@ static void back_up(TEXTP t_ptr)
 	}
 }
 
-int save_to_fd(int fd, char *name, RINGP t, bool verbose)
+short save_to_fd(short fd, char *name, RINGP t, bool verbose)
 {
 	char		end_str[3], *zeile, *buffer, *ptr;
-	int		e_len, z_len, antw;
+	short		e_len, z_len, antw;
 	long		ret, count, b, rest, text_size;
 	ZEILEP	lauf;
 
@@ -403,15 +403,15 @@ int save_to_fd(int fd, char *name, RINGP t, bool verbose)
 	/* String mit Zeilenende erzeugen */
 	switch (t->ending)
 	{
-		case tos :
+		case lns_tos :
 			strcpy(end_str, "\r\n");
 			e_len = 2;
 			break;
-		case unix :
+		case lns_unix :
 			strcpy(end_str, "\n");
 			e_len = 1;
 			break;
-		case apple :
+		case lns_apple :
 			strcpy(end_str, "\r");
 			e_len = 1;
 			break;
@@ -496,7 +496,7 @@ int save_to_fd(int fd, char *name, RINGP t, bool verbose)
 				ret = -ENOSPC;
 		}
 		if (ret < 0)
-			antw = (int)ret;
+			antw = (short)ret;
 		else
 			antw = 0;
 	}
@@ -514,11 +514,11 @@ int save_to_fd(int fd, char *name, RINGP t, bool verbose)
 	return antw;
 }
 
-int save_datei(char *name, RINGP t, bool verbose)
+short save_datei(char *name, RINGP t, bool verbose)
 {
-	int	fd, antw;
+	short	fd, antw;
 
-	fd = (int) Fcreate(name, 0);
+	fd = (short) Fcreate(name, 0);
 	if (fd > 0)
 	{
 		antw = save_to_fd(fd, name, t, verbose);
@@ -533,9 +533,9 @@ int save_datei(char *name, RINGP t, bool verbose)
 }
 
 
-int save(TEXTP t_ptr)
+short save(TEXTP t_ptr)
 {
-	int			antw;
+	short			antw;
 	struct stat	st;
 	bool			not_exists;
 
@@ -607,9 +607,9 @@ int save(TEXTP t_ptr)
 }
 
 
-int save_as(TEXTP t_ptr, char *name)
+short save_as(TEXTP t_ptr, char *name)
 {
-	int	antw;
+	short	antw;
 
 	if (file_exists(name))
 	{
@@ -732,7 +732,7 @@ static int open_multi(char *path, char *name)
 	if (name[0] != EOS)			/* fÅr den Fall, daû nur ein Verzeichnis kommt */
 	{
 		PATH	filename;
-		int	r;
+		short	r;
 		
 		strcpy(filename, path);
 		strcat(filename, name);

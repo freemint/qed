@@ -17,14 +17,14 @@ typedef union tblock
 {
 	struct
 	{
-		unsigned int magic;				/* 2 Bytes */
-		unsigned int size;					/* 2 Bytes */
+		unsigned short magic;				/* 2 Bytes */
+		unsigned short size;					/* 2 Bytes */
 		union tblock *next;		/* 4 Bytes */
 		union tblock *prev;		/* 4 Bytes => 12 Bytes */
 	} FREI;
 	struct
 	{
-		unsigned int size;		/* 2 Bytes */
+		unsigned short size;		/* 2 Bytes */
 	} USED;
 } BLOCK;
 
@@ -101,7 +101,7 @@ static bool new_block(void)
 	return TRUE;
 }
 
-static void *MALLOC(unsigned int size)
+static void *MALLOC(unsigned short size)
 {
 	BLOCK *adr, **feld;
 
@@ -119,7 +119,7 @@ static void *MALLOC(unsigned int size)
 		if (size+16<=BLOCK_SIZE)								/* gr”žeren Block suchen und teilen */
 		{
 			BLOCK *adr2;
-			int	i;
+			short	i;
 
 			i = size+16; feld += 4;								/* 16 Bytes kleinster Block zum Abspalten */
 			while (TRUE)											/* gr”žeren Block suchen */
@@ -176,7 +176,7 @@ static void *MALLOC(unsigned int size)
 
 static void FREE(void *adr)
 {
-	int	size1, size2;
+	short	size1, size2;
 	BLOCK *adr1, *adr2, **feld;
 
 	adr1 = MEM_SUB(adr,2);										/* adr1 auf ersten Block */
@@ -211,7 +211,7 @@ static void FREE(void *adr)
 
 /* =========================================================== */
 
-void INSERT(ZEILEP *a, int pos, int delta, char *str)
+void INSERT(ZEILEP *a, short pos, short delta, char *str)
 {
 	char	*ptr;
 	
@@ -221,10 +221,10 @@ void INSERT(ZEILEP *a, int pos, int delta, char *str)
 
 /* =========================================================== */
 
-char *REALLOC(ZEILEP *a, int pos, int delta)
+char *REALLOC(ZEILEP *a, short pos, short delta)
 {
 	ZEILEP	col;
-	int		new_len;
+	short		new_len;
 	BLOCK 	*adr;
 
 	col = *a;
@@ -239,11 +239,11 @@ char *REALLOC(ZEILEP *a, int pos, int delta)
 		return NULL;
 	}
 	adr = MEM_SUB(col,2);
-	if (MEM_SIZE((unsigned int)sizeof(ZEILE)+new_len+1) != adr->USED.size)
+	if (MEM_SIZE((unsigned short)sizeof(ZEILE)+new_len+1) != adr->USED.size)
 	{
 		ZEILEP	new;
 
-		new = MALLOC( (int) sizeof(ZEILE) + new_len + 1);
+		new = MALLOC( (short) sizeof(ZEILE) + new_len + 1);
 		if (new == NULL)
 			return NULL;
 		memcpy(new, col, sizeof(ZEILE)+pos);
@@ -282,11 +282,11 @@ char *REALLOC(ZEILEP *a, int pos, int delta)
 	}
 }
 
-ZEILEP new_col(char *str, int l)
+ZEILEP new_col(char *str, short l)
 {
 	ZEILEP 	a;
 	
-	a = (ZEILEP)MALLOC( (int) sizeof(ZEILE)+l+1);
+	a = (ZEILEP)MALLOC( (short) sizeof(ZEILE)+l+1);
 	if (a != NULL)
 	{
 		a->info = 0;
@@ -367,10 +367,10 @@ void col_concate(ZEILEP *wo)
 	}
 }
 
-void col_split(ZEILEP *col,int pos)
+void col_split(ZEILEP *col,short pos)
 {
 	ZEILEP	new,help;
-	int		anz;
+	short		anz;
 	bool		absatz, overlen;
 
 	help = *col;
@@ -408,9 +408,9 @@ void col_split(ZEILEP *col,int pos)
 /* 
  * Wieviel WhiteSpace-Zeichen stehen am Anfang der Zeile?
 */
-int col_offset(ZEILEP col)
+short col_offset(ZEILEP col)
 {
-	int	pos;
+	short	pos;
 	char c, *str;
 
 	pos = 0;
@@ -424,10 +424,10 @@ int col_offset(ZEILEP col)
 	return pos;
 }
 
-int col_einrucken(ZEILEP *col)
+short col_einrucken(ZEILEP *col)
 {
 	ZEILEP	vor_col;
-	int		length;
+	short		length;
 
 	vor_col = (*col)->vorg;
 	if (!IS_HEAD(vor_col))
@@ -486,7 +486,7 @@ void init_textring(RINGP r)
 	FIRST(r) = a;
 	r->head.vorg = NULL;
 	r->lines = 1;
-	r->ending = tos;
+	r->ending = lns_tos;
 	r->max_line_len = MAX_LINE_LEN;
 }
 
@@ -506,11 +506,11 @@ long textring_bytes(RINGP r)
 			overlen++;
 	}
 
-	if (r->ending != binmode)
+	if (r->ending != lns_binmode)
 	{
 		/* plus Zeilenenden: 1 Zeichen fr alle */
 		bytes += r->lines - 1 - overlen;
-		if (r->ending == tos)
+		if (r->ending == lns_tos)
 			/* fr TOS noch ein Zeichen */
 			bytes += r->lines - 1 - overlen;
 	}
@@ -591,7 +591,7 @@ bool ist_leer(RINGP r)
 
 void kill_memory(void)
 {
-	int			i;
+	short			i;
 	BLOCK			**ptr;
 	void			*help;
 	
@@ -620,7 +620,7 @@ bool ist_mem_frei(void)
 
 void init_memory(void)
 {
-	int	i;
+	short	i;
 	BLOCK **ptr;
 
 	mem_need_TQ = mem_need_BS = FALSE;
@@ -637,7 +637,7 @@ void dump_freelist(void)
 {
 	if (debug_level)
 	{
-		int	i;
+		short	i;
 		
 		debug("dump_freelist...\n");
 		for (i = 0; i < MAX_ANZ + 1; i++)
@@ -645,7 +645,7 @@ void dump_freelist(void)
 			if ((free_list[i] != NULL) && (free_list[i]->FREI.magic == MAGIC))
 			{
 				BLOCK	*p;
-				int	d;
+				short	d;
 				
 				p = free_list[i];
 				d = 0;

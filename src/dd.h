@@ -27,17 +27,17 @@ extern char	*drag_data;
 extern long	drag_data_size;
 
 
-extern void	handle_dd	(int *msg);
+extern void	handle_dd	(short *msg);
 /*
  * Wickelt Empfang ab.
 */
 
-extern void	handle_avdd(int win_handle, int kstate, char *arg);
+extern void	handle_avdd(short win_handle, short kstate, char *arg);
 /*
  * Wickelt D&D ab, wenn glob. Fensterwechsel (VA_DRAGACCWIND) aktiv.
 */
 
-extern void send_dd(int win_id, int m_x, int m_y, int kstate, RINGP t);
+extern void send_dd(short win_id, short m_x, short m_y, short kstate, RINGP t);
 /*
  * Verschickt den Text in <t> an das Fenster <win_id>.
 */

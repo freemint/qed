@@ -325,9 +325,9 @@ typedef struct
 {
 	char	*errFile;			/* Zeiger auf den Namen der compilierten Datei */
 	char	*errMess;			/* Zeiger auf die Fehlermeldung */
-	int	errNum;				/* Die Fehlernummer */
+	short	errNum;				/* Die Fehlernummer */
 	long	errLine; 			/* Die fehlerhafte Zeile */
-	int	errRow;				/* Die Spalte mit dem Fehler (oder 0) */
+	short	errRow;				/* Die Spalte mit dem Fehler (oder 0) */
 } ERRINFO;
 
 /*

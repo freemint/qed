@@ -4,7 +4,7 @@
 #include "olga.h"
 
 /* lokale Variablem **********************************************************/
-static int	olga_id;
+static short	olga_id;
 static bool	olga_active, have_started = FALSE;
 
 /*****************************************************************************/
@@ -13,11 +13,11 @@ static void send_ole_init(void)
 	if (debug_level & DBG_OL)
 		debug("send_ole_init\n");
 
-	memset(msgbuff, 0, (int)sizeof(msgbuff));
+	memset(msgbuff, 0, (short)sizeof(msgbuff));
 	msgbuff[0] = OLE_INIT;
 	msgbuff[1] = gl_apid;
 	msgbuff[3] = OL_SERVER;
-	msgbuff[7] = 'ED';
+	msgbuff[7] = ('E' << 8) | 'D';
 	send_msg(olga_id);
 }
 
@@ -26,7 +26,7 @@ static void send_ole_exit(void)
 	if (debug_level & DBG_OL)
 		debug("send_ole_exit\n");
 
-	memset(msgbuff, 0, (int)sizeof(msgbuff));
+	memset(msgbuff, 0, (short)sizeof(msgbuff));
 	msgbuff[0] = OLE_EXIT;
 	msgbuff[1] = gl_apid;
 	send_msg(olga_id);
@@ -37,7 +37,7 @@ static void send_olga_update(char *filename)
 	if (debug_level & DBG_OL)
 		debug("send_ole_update: %s\n", filename);
 
-	memset(msgbuff, 0, (int)sizeof(msgbuff));
+	memset(msgbuff, 0, (short)sizeof(msgbuff));
 	msgbuff[0] = OLGA_UPDATE;
 	msgbuff[1] = gl_apid;
 	strcpy(global_str1, filename);
@@ -50,7 +50,7 @@ static void send_olga_rename(char *oldname, char *newname)
 	if (debug_level & DBG_OL)
 		debug("send_ole_rename: %s -> %s\n", oldname, newname);
 
-	memset(msgbuff, 0, (int)sizeof(msgbuff));
+	memset(msgbuff, 0, (short)sizeof(msgbuff));
 	msgbuff[0] = OLGA_RENAME;
 	msgbuff[1] = gl_apid;
 	strcpy(global_str1, oldname);
@@ -60,7 +60,7 @@ static void send_olga_rename(char *oldname, char *newname)
 	send_msg(olga_id);
 }
 
-void handle_olga(int *msg)
+void handle_olga(short *msg)
 {
 	switch (msg[0])
 	{
@@ -108,7 +108,7 @@ void handle_olga(int *msg)
 	}
 }
 
-void do_olga(int flag, char *name1, char *name2)
+void do_olga(short flag, char *name1, char *name2)
 {
 	if (olga_active)
 	{

@@ -13,12 +13,12 @@ extern void		clr_undo				(void);
 extern bool		any_undo				(void);
 extern bool		test_col_anders	(void);
 extern void		end_undo_seq		(void);
-extern void		add_undo				(int undo_op);
-extern int		get_undo				(void);
+extern void		add_undo				(short undo_op);
+extern short		get_undo				(void);
 extern void		undo_takes_text	(RINGP r);
 extern RINGP	get_undo_text		(void);
 extern void		get_undo_col		(TEXTP t_ptr);
-extern void		do_undo_col			(TEXTP t_ptr, int undo);
+extern void		do_undo_col			(TEXTP t_ptr, short undo);
 
 
 /* Klemmbrett */

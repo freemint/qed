@@ -4,13 +4,13 @@
 extern void	blk_mark_all	(TEXTP t_ptr);
 extern void	blk_mark_word	(TEXTP t_ptr);
 extern bool blk_mark_brace	(TEXTP t_ptr);
-extern void get_blk_mark	(TEXTP t_ptr, long *y, int *x);
-extern void	blk_mark			(TEXTP t_ptr, int marke);
+extern void get_blk_mark	(TEXTP t_ptr, long *y, short *x);
+extern void	blk_mark			(TEXTP t_ptr, short marke);
 extern void	blk_demark		(TEXTP t_ptr);
 extern void	blk_delete		(TEXTP t_ptr);
 extern void	blk_left			(TEXTP t_ptr);
 extern void	blk_right		(TEXTP t_ptr);
-extern void	blk_undo			(TEXTP t_ptr, int undo);
+extern void	blk_undo			(TEXTP t_ptr, short undo);
 extern void	blk_cut			(TEXTP t_ptr);
 extern void	blk_copy			(TEXTP t_ptr);
 extern void	blk_paste		(TEXTP t_ptr, RINGP t);
@@ -26,6 +26,6 @@ extern void	block_info		(TEXTP t_ptr);
 #define BLK_CH_UPLO 	3
 #define BLK_CAPS 		4
 
-extern void	blk_upplow		(TEXTP t_ptr, int type);
+extern void	blk_upplow		(TEXTP t_ptr, short type);
 
 #endif

@@ -22,14 +22,14 @@ PATH	clip_dir;
 static bool	clip_dirty;
 static PATH	clip_name;
 
-static int	undo[MAX_UNDO];
-static int	undo_anz;
+static short	undo[MAX_UNDO];
+static short	undo_anz;
 static RING	undo_text;
-static int	undo_ptr;
+static short	undo_ptr;
 
 static char	save_col[MAX_LINE_LEN];		/* Gerettete Zeile fÅr Undo */
-static int	save_len;
-static int	save_xpos;
+static short	save_len;
+static short	save_xpos;
 
 static bool	last_was_bin = FALSE;
 static long	clip_timestamp = 0;
@@ -51,7 +51,7 @@ bool any_undo(void)
 
 bool test_col_anders(void)
 {
-	int i;
+	short i;
 
 	if (undo_anz == 0)
 		return FALSE;
@@ -69,7 +69,7 @@ bool test_col_anders(void)
 
 void end_undo_seq(void)
 {
-	int	i;
+	short	i;
 
 	undo_ptr = -1;
 	if (undo_anz==0 || undo[undo_anz-1]==END_UNDO)
@@ -79,21 +79,21 @@ void end_undo_seq(void)
 		{
 			i++;
 			undo_anz -= i;
-			memcpy(undo, undo+i, (int) sizeof(int) * undo_anz);
+			memcpy(undo, undo+i, (short) sizeof(short) * undo_anz);
 			break;
 		}
 	add_undo(END_UNDO);
 }
 
-void add_undo(int undo_op)
+void add_undo(short undo_op)
 {
 	if (undo_anz<MAX_UNDO && (undo_anz==0 || undo[undo_anz-1]!=undo_op))
 		undo[undo_anz++] = undo_op;
 }
 
-int get_undo(void)
+short get_undo(void)
 {
-	int i;
+	short i;
 
 	if (undo_anz==0)
 		return NO_UNDO;
@@ -138,12 +138,12 @@ void get_undo_col(TEXTP t_ptr)
 	add_undo(COL_ANDERS);
 }
 
-void do_undo_col(TEXTP t_ptr, int undo)
+void do_undo_col(TEXTP t_ptr, short undo)
 {
 	ZEILEP	undo_col;
 	char		help[MAX_LINE_LEN];
 	char	 	*str;
-	int		length;
+	short		length;
 
 	if (undo == COL_ANDERS)
 	{
@@ -196,7 +196,7 @@ void load_clip(void)		/* nur laden */
 		{
 			free_textring(&clip_text);
 			if (last_was_bin)
-				clip_text.ending = binmode;
+				clip_text.ending = lns_binmode;
 			if (load_datei(clip_name, &clip_text, FALSE, NULL) != 0)
 				free_textring(&clip_text);
 			clip_timestamp = timestamp;
@@ -209,7 +209,7 @@ void clip_takes_text(RINGP r)
 {
 	kill_textring(&clip_text);
 	clip_text = *r;
-	last_was_bin = (r->ending == binmode);
+	last_was_bin = (r->ending == lns_binmode);
 	FIRST(r)->vorg = &clip_text.head;
 	LAST(r)->nachf = &clip_text.tail;
 	clip_dirty = TRUE;
@@ -230,10 +230,10 @@ void clip_add_text(RINGP r)
 	clip_dirty = TRUE;
 }
 
-static int get_first_drive(void)
+static short get_first_drive(void)
 {
 	unsigned long	drives;
-	int				drive;
+	short				drive;
 
 	drives = Dsetdrv(Dgetdrv());					/* Alle Laufwerke */
 	if (drives == 0)
@@ -268,7 +268,7 @@ void init_clipbrd(void)
 
 		else
 		{
-			int drive;
+			short drive;
 
 			strcpy (clip_dir, "A:\\CLIPBRD\\");
 			drive = get_first_drive();
