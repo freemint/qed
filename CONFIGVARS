@@ -1,8 +1,12 @@
 # 
-# 
 # cross compiling
+#
+ifneq (yes,$(M68K_ATARI_MINT_CROSS))
+CROSS = no
+#CROSS = yes
+else
 CROSS = yes
-#CROSS = no
+endif
 
 #
 # target and host compiler
