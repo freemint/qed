@@ -135,7 +135,7 @@
    listname: list pointer
 */    
 
-#define LIST_ADDEND( type, retptr, listname ) \
+#define LIST_APPEND( type, retptr, listname ) \
 {\
 	type **listadr = &(listname);\
 	(retptr) = *listadr;\

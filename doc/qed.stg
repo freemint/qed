@@ -11,7 +11,7 @@
 @limage logo.img 33
 
                            Ein Editor fr Atari
-                             Version 5.0 Beta
+                               Version 5.0
 
                                  Autoren
 
@@ -38,13 +38,12 @@
 @pnode Autoren
 begonnen von Tom Quellenberg
 weiterentwickelt von Christian Felsch (Version 3.20 bis 4.53)
-portiert von Stanislav Opichal (Version 4.6)
 weiterentwickelt von Heiko Achilles (ab Version 5.0)
 @endnode
 
 @pnode "Heiko Achilles"
+heinisoft@atari-users.net
 @endnode
-
 
 @node "Vorwort"
 @{U}Vorwort                                                               qed@{0}
@@ -75,7 +74,6 @@ Christian Felsch bernahm die Entwicklung von QED von Version 3.20
 bis 4.53.
 
 Seit Version 5.0 habe ich, Heiko Achilles, die Pflege von QED bernommen.
-
  
 @endnode
 
@@ -123,28 +121,34 @@ Die @{Installation ignore} ist denkbar einfach. Ab Version 3.97 besteht die
 Dokumentation nur noch aus einem Hypertext, der der Bin„r-Distribution
 beiliegt:
 
-   KURZEL/
-      C.KRZ
-      LATEX.KRZ
-      MODULA.KRZ  Beispiele fr Krzeldateien
+   kurzel/
+      c.krz
+      latex.krz
+      modula.krz  Beispiele fr Krzeldateien
 
-   HYP
-      QED.HYP
-      QED.REF     Der Hypertext fr ST-Guide.
+   hyp
+      qed.hyp
+      qed.ref     Der Hypertext fr ST-Guide.
 
-   TREIBER/
+   treiber/
       ...         Eine Auswahl von Druckertreibern
 
-   QED.APP        Programmdatei
-   QED.RSC        Resourcedatei
-   QED.CFG        Parameterdatei
-   SYNTAX.CFG     Syntax-Highlighting-Datei
-   ICONS.RSC      Etwas fr die Icon-Sammlung
+   syntax/
+      ...         Definitionsdateien fr Syntax-Highlighting
+
+   qed.app        Programmdatei
+   qed.rsc        Resourcedatei
+   qed.cfg        Parameterdatei
+   icons.rsc      Etwas fr die Icon-Sammlung
 
 Zum Betrieb von qed sind nur das Programm, die Resource und eine
 Parameterdatei n”tig, die normalerweise in dem gleichen Verzeichnis
 installiert sein sollten. Resource und Standardparameter k”nnen auch auf
 anderen Pfaden liegen, mehr dazu unter Environment.
+
+Wer das Syntax-Highlighting nicht ben”tigt und auf einem langsamen System
+arbeitet, kann bei der Installation den Syntax-Ordner auch weglassen, dann
+startet qed ein wenig schneller.
 
 Wer diesen Hypertext als Online-Hilfe benutzen m”chte, mu ihn so
 installieren, da ST-Guide in findet.
@@ -156,7 +160,27 @@ installieren, da ST-Guide in findet.
 @{U}Entwicklungsgeschichte                                                qed@{0}
 
 @autorefoff
-@{U}Version 5.0b2 vom 15.05.02@{0}
+@{U}Version 5.0 vom 08.06.02@{0}
+   ù Heiko Achilles hat die Weiterentwicklung bernommen
+   ù Syntax-Highlighting hinzugefgt.
+   ù Bei Papier- Text- und Blockfarben werden jetzt 256 Farben untersttzt.
+   ù Neue Option "Fenster sichern" in globale Optionen. Wenn 
+     ausgeschaltet, werden die Fenster (Position und geladener Text) beim 
+     Optionen sichern nicht mehr mitgespeichert.
+   ù Neue Option "Schlieen ignorieren" im SE-Parameter-Dialog. Dies
+     verhindert das „uerst l„stige Schlieen aller QED-Fenster, wenn man
+     in der PC-Shell das Projekt wechselt.
+   ù Beim Speichern von Dateien, und Konfiguration wird AV_PATH_UPDATE
+     gesendet; der Desktop aktualisiert das entsprechende Verzeichnis.
+   ù Suchmaske fr Suchen in Dateien mit * vorbelegt
+   ù Default-Pfad fr Suchen in Dateien wird aus oberstem Text genommen 
+     (wenn schon einer ge”ffnet).
+   ù Bei Suchen in Dateien ist Suche nach Text Default-Eingabefeld.
+   ù Bei Suchen in Dateien wird jetzt Suche nach Text wie beim 
+     Suchen/Ersetzen mit Blockauswahl vorbelegt.
+   ù Farbaufl”sungsabh„ngige Informationen werden jetzt in folgenden 
+     Dateien gespeichert: col01bit.qed fr 2, col02bit.qed fr 4, 
+     col04bit.qed fr 16 und col08bit fr 256 (oder mehr) Farben.
    ù Reihenfolge der Suche nach der Ressource-Datei ver„ndert. Es wird 
      jetzt 1. im eigenen Verzeichnis, 2. in $QED und 3. via shel_find 
      nach der Ressource gesucht. Einigen Leuten scheint es passiert zu 
@@ -164,45 +188,22 @@ installieren, da ST-Guide in findet.
      hatten, aber die Env-Variable $QED weiter auf das ursprngliche 
      Verzeichnis zeigte. Das gab Fehler wg. "Falscher Ressource Version", 
      weil die Ressource aus dem alten Verzeichnis geladen wurde.
-   ù Beim Speichern wird AV_PATH_UPDATE gesendet; der Desktop 
-     aktualisiert das entsprechende Verzeichnis.
-   ù Neue Option "Schlieen ignorieren" im SE-Parameter-Dialog. Dies
-     verhindert das „uerst l„stige Schlieen aller QED-Fenster, wenn man
-     in der PC-Shell das Projekt wechselt.
-   ù Neue Option "Fenster sichern" in globale Optionen. Wenn 
-     ausgeschaltet, werden die Fenster (Position und geladener Text) beim 
-     Optionen sichern nicht mehr mitgespeichert.
-   ù Farbaufl”sungsabh„ngige Informationen werden jetzt in folgenden 
-     Dateien gespeichert: col01bit.qed fr 2, col02bit.qed fr 4, 
-     col04bit.qed fr 16 und col08bit fr 256 (oder mehr) Farben.
-   ù Suchmaske fr Suchen in Dateien mit * vorbelegt
-   ù Default-Pfad fr Suchen in Dateien wird aus oberstem Text genommen 
-     (wenn schon einer ge”ffnet).
-   ù Bei Suchen in Dateien ist Suche nach Text Default-Eingabefeld.
-   ù Bei Suchen in Dateien wird jetzt Suche nach Text wie beim 
-     Suchen/Ersetzen mit Blockauswahl vorbelegt.
-   ù Iconify und Hypertext ans neue Logo angepasst
+   ù Weiteren Ort fr die Suche nach qed-Konfiguration hinzugefgt: 
+     $HOME/.qed/ (UNIX-typische Art der Konfiguration) Hauptgrund dafr war 
+     der inflation„re Zuwachs an qed-Konfig-Dateien. Die k”nnen jetzt alle
+     in diesem Verzeichnis gesammelt werden.
+   ù Suche nach Konfig-Dateien ver„ndert. Es wird jetzt in dieser 
+     Reihenfolge nach vorhandenen Konfig-Dateien gesucht: 
+     $HOME/.qed/ -> $HOME/ -> $HOME/defaults/ -> $QED/ ->
+     Startverzeichnis -> Aktuelles Verzeichnis
+   ù TABs werden im Bin„rmode nicht mehr expandiert, d.h. man kann jetzt 
+     auch ein TAB (ASCII 0x09) eingeben (und sehen, als kleines 
+     Uhrzeichen).
+   ù Neues Logo
    ù Bugfix: "Suchen" wurde nicht ausgegraut, wenn kein Text geladen.
      Dabei seltsamer Effekt: ST-Guide ging auf.
-   ù Bugfix: Selten Busfehler und H„nger beim ™ffnen des 
-     Syntax-Highlighting-Dialogs. Vermutliche Ursache gefixt; da der 
-     Fehler aber nur sporadisch auftrat, bin ich nicht 100% sicher. Bitte 
-     drauf achten.
-   ù Bugfix: Die Archive sind jetzt wieder lzh und lower case
-
-
-@{U}Version 5.0b vom 09.05.02@{0}
-
-   ù Heiko Achilles hat die Weiterentwicklung bernommen
-   ù Syntax-Highlighting hinzugefgt.
-   ù Bei Papier- Text- und Blockfarben werden jetzt 256 Farben untersttzt.
-
-@{U}Version 4.6 vom 15.04.02@{0}
-
-   ù Stanislav Opichal <opichals@seznam.cz> port
-   ù Portiert zum mintlib und cflib CVS.
-   ù 32bit integer (int -> short)
-   ù Nur internal version
+   ù Bugfix: Beim Abspeichern der Optionen konnte es Abstrze geben (Auch
+     beim Autosave der Optionen)
 
 @{U}Version 4.53 vom 19.09.99@{0}
 
@@ -254,6 +255,15 @@ installieren, da ST-Guide in findet.
    ù MagiC-Fontauswahl zermarmelt nicht mehr den Systemfont (CF-Lib). 
      Nebenbei war auch noch ein MagiC-Binding falsch (GEM-Lib).
 
+@autorefon   
+ ltere Versionen
+
+@endnode
+
+@node "ltere Versionen"
+@{U}News in „lteren Versionen                                             qed@{0}
+
+@autorefoff
 @{U}Version 4.50 vom 31.7.1998@{0}
 
    ù Neuer Menpunkt: Zeile toppen
@@ -295,15 +305,6 @@ installieren, da ST-Guide in findet.
       Kein interner Fehler mehr bei rekursiver Dateisuche mit Suchstring.
       Bei Klemmbrett-Aktionen bleiben die Umbrche erhalten.
 
-@autorefon   
- ltere Versionen
-
-@endnode
-
-@node "ltere Versionen"
-@{U}News in „lteren Versionen                                             qed@{0}
-
-@autorefoff
 @{U}Version 4.10 vom 19.02.98@{0}
 
    ù SE-Protokoll 1.05
@@ -393,31 +394,8 @@ installieren, da ST-Guide in findet.
 @{U}Die Dialoge                                                           qed@{0}
 
 @autorefoff
-Ab Version 4.5 benutzt qed nicht mehr die MyDials von Olaf Meisiek 
-sondern die neue @{CF-Lib link cflib.hyp/main}.
-
-Diese Lib nutzt vollst„ndig die neuen Objekt-Typen von MagiC (runde
-Radiokn”pfe, Ankreuzkn”pfe, šberschriften, Gruppenrahmen usw.) sowie
-den Shortcut-Mechanismus. Sollte MagiC nicht installiert sein, wird die 
-MagiC-Funktionalit„t nahezu identisch nachgebildet.
-Bei der Lib wurde versucht, so viel wie m”glich dem AES selbst die
-Behandlung der Objekte zu berlassen. Optimal l„uft die Lib also unter
-MagiC, da dort s„mtliche Funktionen vom AES bernommen werden, so da
-es z.B. keinerlei Probleme mit prop. Systemzeichens„tzen gibt.
-Dadurch ist auch die von den MyDials gewohnte 3D-Darstellung nur noch 
-unter Systemen verfgbar, deren AES diese Effekte untersttzt (MagiC, 
-N.AES, MultiTOS).
-Wie bereits erw„hnt untersttzt die Lib den MagiC-Shortcut-Mechanismus
-fr Dialog-Buttons. Die Position des Shortcuts wird grunds„tzlich aus
-der Resource ermittelt, so da dort pers”nliche nderungen vorgenommen
-werden k”nnen, falls die voreingestellten Shortcuts nicht gefallen.
-Einzige Einschr„nkung der CF-Lib unter N.AES: die Shortcut-Striche
-in Exit-Buttons werden nicht angezeigt, da ich keine Lust hatte, nur 
-dafr die animierten 3D-Buttons selbst zu malen :-) Die Ausl”sung der
-Shortcuts funtioniert aber selbstverst„ndlich.
-
-Ab Version 4.5 werden von qed alle Dialoge und Alerts in Fenstern
-dargestellt. Dabei handelt es sich um applikations-modale Dailoge, d.h.
+Alle Dialoge und Alerts von qed werden in Fenstern dargestellt.
+Dabei handelt es sich um applikations-modale Dailoge, d.h.
 solange ein Dialog offen ist, steht qed zwar still, man kann aber zu 
 anderen Programmen umschalten.
 Bei allen Dialog- und Alert-Boxen, die einen Abbruch-Button enthalten,
@@ -1131,7 +1109,7 @@ Cursorpositionierung.
    Suchen/Ersetzen...    ^F
    Weiter                ^G
   @{G}--------------------------@{0}
-   Dateien suchen...    ^F
+   in Dateien...        ^F
   @{G}--------------------------@{0}
    Gehe zu...            ^L
   @{G}--------------------------@{0}
@@ -1208,13 +1186,13 @@ erste Zeile dieses Blocks als Suchtext in den Dialog bernommen.
 @endnode
 
 
-@node "Dateien suchen"
-@{U}Dateien suchen                                                        qed@{0}
+@node "in Dateien"
+@{U}Suchen in Dateien                                                     qed@{0}
 
-Die Suche nach Dateien sowie die Suche in einem Projekt werden ber 
+Die Suche in Dateien sowie die Suche in einem Projekt werden ber 
 den selben Dialog gestartet.
 
-Fr die Suche nach Dateien kann man das Verzeichnis festlegen, in dem 
+Fr die Suche in Dateien kann man das Verzeichnis festlegen, in dem 
 die Suche beginnt. šber die Dateimaske wird eingestellt, welche Art von 
 Dateien beachtet werden. Dort drfen auch die bekannten Wildcards 
 vorkommen (z.B. *.[ch]).
@@ -1222,6 +1200,8 @@ Neben der Suchmaske befindet sich ein Schalter, mit dem man festlegen
 kann, ob nur in dem angegeben Verzeichnis gesucht wird oder ob auch 
 noch eventuell vorhandene Unterverzeichnisse mit einbezogen werden.
 Im unteren Abschnitt befinden sich die bekannte Parameter zur Textsuche.
+Dort mu jedoch nichts eingetragen werden so da man auch nach Dateien
+selbst und nicht nur deren Inhalt suchen kann.
 
 Bei der Suche im Projekt wird bei Pfad das zu durchsuchende Projekt
 angezeigt und man kann eine Dateimaske angeben, um die Menge der zu
@@ -1813,6 +1793,12 @@ Falle wird der Text nicht mit einer eigens eingestellten Farbe, sondern
 mit der Standard-Textfarbe bzw. der Textfarbe in Bl”cken dargestellt.
 (Siehe auch @{"Globales" link "Globales"})
 
+Wenn Sie "fr alle gleichnamigen Regeln setzen" ankreuzen, werden Textfarbe
+und Attribute fr in gleichnamigen Regeln fr @{U}alle@{0} Texte gesetzt.
+Z.B werden alle Regeln, die "Kommentar" heissen, in allen Texten gleichzeitig
+gef„rbt. Ist "fr alle gleichnamigen Regeln setzen" nicht angekreuzt, gelten
+die Einstellungen nur fr den angezeigten Texttyp.
+
 Die in diesem Dialog get„tigten Einstellungen werden mit
 @{"Parameter sichern" link "Parameter sichern"} gespeichert. Die Einstellungen werden
 dabei fr verschiedene Farbaufl”sungen getrennt gespeichert. N„here
@@ -1908,7 +1894,7 @@ Bei GDOS-@{Drucken ignore} ist ledeglich der zu verwendende Zeichensatz ber den
 entsprechenden Button einstellbar.
 
 @index WDIALOG-Druckdialog
-Sollte die Systemerweiterung WDIALOG installier sein und man die Nutzung
+Sollte die Systemerweiterung WDIALOG installiert sein und man die Nutzung
 der Druckdialoge aktiviert hat (-> Globales), benutzt qed die Druckdialoge 
 zur Konfiguration. Dabei werden die qed-eigenen Einstellungen in einer 
 zus„tzlichen Seite zur Verfgung gestellt. 
@@ -2266,133 +2252,160 @@ werden, auch wenn man gerade mitten in einem Wort befindet!
 
 @autorefoff
 qed beherrscht sogenanntes Syntax-Highlighting; dies bedeutet, da
-verschiedene Teile eines (Quell-)Textes verschieden dargestellt werden,
+Teile eines (Quell-)Textes verschieden dargestellt werden,
 z.B. Kommentare, Kennworte, Variablentypen etc.
 
-Im Menpunkt Optionen/@{"Syntax..." link "Syntax..."} kann man die Farben
+Im Menpunkt Optionen/@{"Syntax..." link "Syntax"} kann man die Farben
 und Attribute dieser Textteile einstellen.
 
-Fr eine Anpassung an Ihre bevorzugte Programmier- oder Hypertextsprache
-ist es jedoch n”tig, die Datei zu editieren, in welcher die Regeln fr
-das Syntax-Highlighting niedergelegt sind.
+Die Syntaxinformationen sind in den *.syn-Dateien im syntax/-Verzeichnis
+gespeichert. Zus„tzlich legt qed eine Datei syn_cfg.qed an, in welcher
+die benutzerdefinierten Einstellungen (Farben und Attribute), die im
+@{"Syntax-Dialog" link "Syntax"} eingestellt werden k”nnen.
 
-Die Datei, in welcher die Syntax-Highlighting-Informationen gespeichert
-werden, heit "syntax.cfg".
+Fr eine Anpassung an Ihre bevorzugte Programmier- oder Hypertextsprache
+ist es n”tig, eine Datei zu erstellen, in welcher die Regeln fr das
+Syntax-Highlighting festgelegt werden. Die Datei muss im syntax/-Ordner
+im qed-Verzeichnis liegen und auf .syn enden.
+
 H„ufig mssen Angaben in Anfhrungsstrichen geschrieben werden und es
 k”nnen mehrere Angaben durch Kommas getrennt angegeben werden, z.B.
-@{I}Keyword = "if","then","else"@{0}
+@{B}Keyword = "if","then","else"@{0}
 Wenn sie die Zeichen \ und " eintragen m”chten, mssen sie gequotet
 werden, z.B.
-@{I}From="\""
+@{B}From="\""
 To="\\"@{0}
 
 Hier der Aufbau dieser Datei:
 
-   ù Kommentare beginnen mit einem Semikolon und gehen bis ans Ende
-     der Zeile, z.B.
-     @{I};Dies ist ein Kommentar@{0}
+@{B};Dies ist ein Kommentar@{0}
+Kommentare beginnen mit einem Semikolon und gehen bis ans Ende 
+der Zeile.
      
-   ù Ein Eintrag in Rechteckigen Klammern leitet einen neuen Texttyp ein.
-     Dieser Eintrag wird auch im qed-Syntax-Options-Dialog angezeigt, z.B.
-     @{I}[C-Quelltext]@{0}
+@{B}[C-Quelltext]@{0}
+Ein Eintrag in rechteckigen Klammern leitet einen neuen Texttyp ein.
+Dieser Eintrag wird auch im qed-Syntax-Options-Dialog angezeigt.
+Jeder Texttyp darf in allen .syn-Dateien nur einmal vorkommen.
      
-   Nach dem Eintrag in rechteckigen Klammern mssen folgende Eintr„ge
-   folgen:
+Nach dem Eintrag in rechteckigen Klammern mssen folgende Eintr„ge
+folgen:
    
-   ù Der Textname(n) bzw die Text-Extension(s). Kennwort dafr ist
-     "Txttype". Beispiel:
-     @{I}Txttype = "syntax.cfg"@{0} oder
-     @{I}Txttype = "c", "h"@{0}
+@{B}Txttype = "syntax.cfg"@{0} oder
+@{B}Txttype = "c", "h"@{0}
+Der Textname(n) bzw die Text-Extension(s). Kennwort dafr ist
+"Txttype".
 
-   ù Die Buchstaben eines Wortes, Kennwort ist "Token". Alle Buchstaben
-     mssen hierbei ausgeschrieben werden und k”nnen nicht - wie bei
-     den anderen Eintr„gen - abgekrzt werden. Auch Quotes sind nicht
-     erlaubt.
-     Beispiel:
-     @{I}Token = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"@{0}
+@{B}Token = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"@{0}
+Die Buchstaben eines Wortes, Kennwort ist "Token". Alle Buchstaben
+mssen hierbei ausgeschrieben werden und k”nnen nicht - wie bei
+den anderen Eintr„gen - abgekrzt werden. Auch Quotes sind nicht
+erlaubt.
 
-   ù Es mu festgelegt werden, ob der Text Case-sensitiv (gro- und
-     Kleinschreibung werden unterschieden) ist. Kennwort ist
-     "CaseSensitive". Beispiel:
-     @{I}CaseSensitive = FALSE@{0} oder
-     @{I}CaseSensitive = TRUE@{0}
+@{B}Active = FALSE@{0} oder
+@{B}Active = TRUE@{0}
+legt fest, ob das Syntax-Highlighting fr diesen Texttyp aktiv ist.
+
+@{B}CaseSensitive = FALSE@{0} oder
+@{B}CaseSensitive = TRUE@{0}
+Es mu festgelegt werden, ob der Text Case-sensitiv (gro- und
+Kleinschreibung werden unterschieden) ist. Kennwort ist
+"CaseSensitive".
      
-   Nach diesen Eintr„gen folgen dann die Eintr„ge fr die einzelnen
-   Syntax-Regeln.
+Nach diesen Eintr„gen folgen dann die Eintr„ge fr die einzelnen
+Syntax-Regeln. 
    
-   ù Der Name der Regel in spitzen Klammern.
-     Dieser Eintrag wird auch im qed-Syntax-Options-Dialog angezeigt, z.B.
-     @{I}<Kommentar>@{0}
+@{B}<Kommentar>@{0}
+Der Name der Regel in spitzen Klammern.
+Dieser Eintrag wird auch im qed-Syntax-Dialog angezeigt.
+Regeln k”nnen mehrfach vorkommen. Z.B. kann in C++ ein Kommentar
+sowohl der Zwischenraum zwischen /* und */ sein, als auch alles,
+was in einer Zeile hinter // steht. In diesem Fall kann man
+einfach <Kommentar> mehrfach deklarieren, mit jeweils 
+verschiedenen Bedingungen. Wichtig: Nur fr die jeweils 1. Regel
+k”nnen Farben und Attribute angegeben werden. Alle weiteren richten
+sich nach den in dieser ersten Regel angegebenen Farben und
+Attribute.
 
-   Fr die Regeln gibt es 3 verschiedene M”glichkeiten:
+Fr die Bedingungen fr die Regel gibt es 3 verschiedene M”glichkeiten:
    
-   ù Die Kennwort-Regel:
+   ù @{B}Keyword = "if","then","else","case"@{0}
+     Die Kennwort-Regel:
      Mit dieser Regel werden Kennworte wie z.B. "if", "else", "case"
      festgelegt. Kennwort ist "Keyword". Es k”nnen auch mehrere Zeilen
-     mit "Keyword" geschrieben werden. Beispiel:
-     @{I}Keyword = "if","then","else","case"@{0}
+     mit "Keyword" geschrieben werden.
      
-   ù Die Von-Bis-Regel:
+   ù @{B}From = "/*"
+     To = "*/"@{0} oder
+     @{B}From = "//"
+     To = EOL@{0}
+     Die Von-Bis-Regel:
      Mit dieser Regel werden Einf„rbungen beschrieben, die ber mehrere 
      W”rter oder Zeilen gehen, z.B. Strings oder C-Kommentare. Hierzu mssen
      zwei Zeilen angegeben werden, und zwar "from" und "to". Bei "to" kann
      statt eines String-Eintrags auch "EOL" stehen, die Regel geht dann
-     bis ans Ende der Zeile. Beispiel:
-     @{I}From = "/*"
-     To = "*/"@{0} oder
-     @{I}From = "//"
-     To = EOL@{0}
-     Fr die Von-Bis-Regel k”nnen Sie noch zwei weitere Kennworte angeben.
-     Zum einen, ob die Regel z„hlend ist (z.B. verschachtelte Kommentare).
-     Kennwort hierfr ist "Counting"
-     @{I}Counting = FALSE@{0} oder
-     @{I}Counting = TRUE@{0}
-     Zweitens k”nnen Sie auch ein Quote-Zeichen angeben. Das Quote-Zeichen
-     fr C-Strings ist z.B. \. (Anderenfalls wrde bei dem C-String
-     "\"" das Syntax-Highlighting v”llig durcheinanderkommen. Hier das
-     Beispiel fr eine Regelbeschreibung fr C-Strings:
-     @{I}From = "\""
-     To = "\""
-     Counting = FALSE
-     Quotechar = "\\"@{0}
+     bis ans Ende der Zeile.
 
-   ù Die W„hrend-Regel:
+     Fr die Von-Bis-Regel k”nnen Sie noch weitere Eigenschaften
+     angeben: 
+
+     @{B}Nested = FALSE@{0} oder
+     @{B}Nested = TRUE@{0}
+     Legt fest, ob die Regel verschachtelt ist. Z.B. lassen manche C-Compiler
+     verschachtelte Kommentare zu. (Ein Kommntar kann innerhalb eines anderen
+     stehen)
+
+     @{B}Quotechar = "\\"@{0}
+     Quote-Zeichen. Das Quote-Zeichen fr C-Strings ist z.B. \.
+     (Anderenfalls wrde bei dem C-String "\"" das Syntax-Highlighting v”llig
+     durcheinanderkommen. Um die Verwirrung komplett zu machen ("H„?"), ist
+     das oben angegebene Beispiel genau dieses Zeichen fr C, n„mlich \.
+     Da qed jedoch selbst auch Quote-Zeichen benutzt, mu dieses doppelt
+     eingetragen werden (siehe oben).
+     
+     @{B}Firstcolumn = FALSE@{0} oder
+     @{B}Firstcolumn = TRUE@{0}
+     Ein Spezialfall. Die Regel ist nur dann gltig, wenn sie in der ersten
+     Spalte gefunden wird. Z.B. leitet beim Pure Assembler ein * einen
+     Kommentar ein, wenn er in der ersten Spalte steht.
+
+   ù @{B}From = "0"
+     While = "0"-"7"@{0}
+     Die W„hrend-Regel:
      Mit dieser Regel werden Einf„rbungen beschrieben, die gelten, w„hrend
      bestimmte Zeichen in beliebiger Anordnung dargestellt werden, z.B.
      Zahlenkonstanten. Auch hierbei mssen zwei Zeilen angegeben werden,
-     und zwar "From" und "To". Beispiel fr C-Oktalzahlen:
-     From = "0"-"7"
-     While = "0"-"7"
+     und zwar "From" und "To". Bei angegebenem Beispiel wrden also
+     Zahlen eingef„rbt, die mit 0 beginnen, und solange eingef„rbt,
+     wie Zeichen zwischen 0 und 7 dargestellt werden, z.B. wrde
+     0347 komplett eingef„rbt werden, nicht aber 0xff oder 0815.
      
-   Zu guter Letzt folgen auf die Regelbeschreibung die eigentlichen
-   Stil-Informationen, und zwar fr die Aufl”sungen 2-8 Farben, 16-128
-   Farben und >=256 Farben getrennt. Es mssen nicht fr jede Aufl”sung
-   diese Abschnitte vorhanden sein; fehlen sie, werden als Farben die
-   Standard-Farben verwandt und keine Attribute gesetzt.
-   Die Abschnitte fr die einzelnen Aufl”sungen werden gekennzeichnet
-   durch
-   
-   ù @{I}(Color2)@{0}   oder
-     @{I}(Color16)@{0}  oder
-     @{I}(Color256)@{0}
+@{B}(Color2)@{0}   oder
+@{B}(Color16)@{0}  oder
+@{B}(Color256)@{0}
+Zu guter Letzt folgen auf die Regelbeschreibung die eigentlichen
+Stil-Informationen, und zwar fr die Aufl”sungen 2-8 Farben, 16-128
+Farben und >=256 Farben getrennt. Es mssen nicht fr jede Aufl”sung
+diese Abschnitte vorhanden sein; fehlen sie, werden als Farben die
+Standard-Farben verwandt und keine Attribute gesetzt. Wichtig: Wenn
+mehrere gleichnamige Regeln existieren, drfen die Stil-Informationen
+nur hinter der ersten Regel stehen! Alle darauf folgenden gleichnamigen
+Regeln holen sich ihren Stil dann aus der ersten Regel.
 
-	In den einzelnen Abschnitten k”nnen jeweils stehen:
+In den einzelnen Abschnitten k”nnen jeweils stehen:
 
-	ù die Attribute, Kennwort "Attribs". Es kann "BOLD", "ITALIC" und
+	ù @{B}Attribs = BOLD,ITALIC,LIGHT@{0}
+	  die Attribute, Kennwort "Attribs". Es kann "BOLD", "ITALIC" und
 	  "LIGHT" angegeben werden.
-	  @{I}Attribs = BOLD,ITALIC,LIGHT@{0}
 
-	ù die normale Farbe. Kennwort "Color". Diese sollte natrlich
+	ù @{B}Color = 15@{0}
+	  die normale Farbe. Kennwort "Color". Diese sollte natrlich
 	  der entsprechenden Aufl”sung gem„ sein! Unter 2 Farben sollte
 	  also gar keine Farbe angegeben werden und unter 16 Farben nur die
 	  Farben von 0-15.
-	  @{I}Color = 15@{0}
 	  
-	ù Die selektierte Farbe, Kennwort "Selcolor":
-	  @{I}Selcolor = 2@{0}
-
-	Nach all diesen Abschnitten kann jetzt die n„chste @{I}<Regel>@{0} oder
-	der n„chste @{I}[Texttyp]@{0} folgen.
+	ù @{B}Selcolor = 2@{0}
+     Die selektierte Farbe, Kennwort "Selcolor": Diese Farbe wird
+     dargestellt, wenn ein Block dargestellt wird.
      
 @autorefon
 @endnode
@@ -2586,18 +2599,20 @@ mit anderen Applikationen:
 @{U}Environment@{0}
 
 qed sucht seine Parameterdatei qed.cfg, die Resource qed.rsc
-und die Syntaxdatei syntax.cfg auf verschiedenen Pfaden.
+und verschiedene andere Konfigurationsdateien, die auf .qed enden,
+auf verschiedenen Pfaden:
 
 Die Parameterdateien werden in folgender Reihenfolge gesucht:
-   1. Auf dem Pfad in der Variablen $QED
+   1. Im Verzeichnis $HOME/.qed/
    2. Auf dem Pfad in der Variablen $HOME
    3. Auf dem Pfad $HOME/defaults
-   4. Auf dem Pfad, von dem aus qed gestartet wurde
-   5. Im aktuellen Verzeichnis
+   4. Auf dem Pfad in der Variablen $QED
+   5. Auf dem Pfad, von dem aus qed gestartet wurde
+   6. Im aktuellen Verzeichnis
 
 Nach der Resource wird wie folgt gesucht:
-   1. Auf dem Pfad in der Variablen $QED
-   2. Auf dem Startpfad von qed
+   1. Auf dem Startpfad von qed
+   2. Auf dem Pfad in der Variablen $QED
    3. Auf dem aktuellen Pfad
 
 qed geht dabei davon aus, da die Dateien in Kleinbuchstaben geschrieben

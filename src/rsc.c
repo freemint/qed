@@ -49,6 +49,7 @@ static bool	rsc_init = FALSE;
 bool init_resource(void)
 {
 	PATH	rsc_path;
+	char t[20];
 
 	/* 1st, look in our own app dir */
 	strcpy(rsc_path, gl_appdir);
@@ -170,7 +171,9 @@ bool init_resource(void)
 
 		/* Versionen eintragen */		
 		set_string(about, ADATUM, __DATE__);
-		set_string(about, AVERSION, QED_VERSION);
+		strcpy( t, QED_VERSION );
+		strcat( t, QED_REVISION );
+		set_string(about, AVERSION, t);
 		get_patchlev(__Ident_gnulib, str);
 		set_string(about2, AMINT, str);
 		get_patchlev(__Ident_gem, str);

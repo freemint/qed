@@ -516,11 +516,6 @@ short save_to_fd(short fd, char *name, RINGP t, bool verbose)
 	if (verbose)
 		end_aktion();
 
-	{
-		char path[ MAX_PATH_LEN+1 ];
-		split_filename( name, path, NULL );
-		send_avpathupdate( path );
-	}
 	graf_mouse(ARROW, NULL);
 
 	return antw;
@@ -540,6 +535,12 @@ short save_datei(char *name, RINGP t, bool verbose)
 	}
 	else
 		antw = fd;
+
+	{
+		char path[ MAX_PATH_LEN+1 ];
+		split_filename( name, path, NULL );
+		send_avpathupdate( path );
+	}
 
 	return antw;
 }

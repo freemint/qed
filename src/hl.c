@@ -5,6 +5,7 @@
  * Autor: Heiko Achilles
  */
  
+#include <dirent.h>
 #include <support.h>
 
 #include "global.h"
@@ -16,18 +17,27 @@
 #include "rsc.h"
 #include "text.h"
 #include "window.h"
+#include "av.h"
 
-#define SYN_FILENAME "syntax.cfg"
+#define SYN_DIR "syntax"
+#define SYNCFGNAME "syn_cfg.qed"
 
-static void hl_error_callback(HL_ERRTYPE err, int linenr)
+static void hl_error_callback( char *currfile, HL_ERRTYPE err, int linenr)
 {
+	char f[20];
+	if( currfile )
+		make_shortpath( currfile, f, 19 );
+	else
+		f[0] = EOS;
+		
 	switch (err)
 	{
 		case E_HL_MEMORY:   note(1,0, SYN_MEM);               break;
-		case E_HL_TOFROM:   inote(1,0, SYN_TOFROM, linenr);   break;
-		case E_HL_MIXED:    inote(1,0, SYN_MIXED, linenr);    break;
-		case E_HL_SYNTAX:   inote(1,0, SYN_SYNTAX, linenr);   break;
-		case E_HL_WRONGVAL: inote(1,0, SYN_WRONGVAL, linenr); break;
+		case E_HL_TOFROM:   sinote(1,0, SYN_TOFROM, f, linenr );   break;
+		case E_HL_MIXED:    sinote(1,0, SYN_MIXED, f, linenr );    break;
+		case E_HL_SYNTAX:   sinote(1,0, SYN_SYNTAX, f, linenr );   break;
+		case E_HL_WRONGVAL: sinote(1,0, SYN_WRONGVAL, f, linenr ); break;
+		case E_HL_DUPTEXT: sinote(1,0, SYN_DUPTEXT, f, linenr ); break;
 	}
 }
 
@@ -148,7 +158,7 @@ void hl_update_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
 	                  TEXT(curr), FALSE);
 		if (curr == last)
 		{
-			if (curr->nachf)
+			if (curr->nachf && curr->nachf->hl_handle)
 		  	Hl_Update(r_ptr->hl_anchor,
 			                  curr->nachf->hl_handle,
 			                  TEXT(curr->nachf), TRUE);
@@ -260,7 +270,7 @@ void hl_insert_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
 		hl_insert_noupdate(r_ptr, curr);
 		if (curr == last)
 		{
-			if (curr->nachf)
+			if (curr->nachf && curr->nachf->hl_handle)
 		  	Hl_Update(r_ptr->hl_anchor,
 			                  curr->nachf->hl_handle,
 			                  TEXT(curr->nachf), TRUE);
@@ -339,25 +349,87 @@ void hl_free(TEXTP t_ptr)
 	Hl_Free(t_ptr->text.hl_anchor);
 }
 
-static PATH hl_filename;
-
 /* .syn-Datei lesen */
 bool hl_read_syn(void)
 {
-	strcpy(hl_filename, SYN_FILENAME);
-	if (get_config_file(hl_filename))
-		return Hl_ReadSyn(hl_filename, gl_planes);
+	PATH syn_path;
+	PATH curr_syn_file;
+	FILENAME ext;
 	
-	hl_filename[0] = EOS;
-	return FALSE;
+	DIR	*dh;
+	struct dirent	*entry;
+
+	/* read default syntax settings */
+	strcpy( syn_path,SYN_DIR );
+	if(!get_config_file( syn_path, TRUE ))
+		return FALSE;
+
+	dh = opendir(syn_path);
+	if( dh <= (DIR*)NULL )
+		return FALSE;
+		
+	if (dh < 0)
+		return FALSE;
+	for(;;)
+	{
+		entry = readdir(dh);
+		if( !entry )
+			break;
+
+		split_extension( entry->d_name, NULL, ext );
+		if( stricmp( ext, "syn" ) != 0 )
+			continue;
+		strcpy( curr_syn_file, syn_path );
+		strcat( curr_syn_file, "\\" );
+		strcat( curr_syn_file, entry->d_name );
+		if( !Hl_ReadSyn( curr_syn_file, gl_planes, FALSE ))
+		{
+			closedir( dh );
+			return FALSE;
+		}	
+	}
+	closedir( dh );
+
+	/* read user config */
+	get_config_dir( syn_path );
+	strcat( syn_path, SYNCFGNAME );
+	if( file_exists( syn_path ))
+		Hl_ReadSyn( syn_path, gl_planes, TRUE );
+		
+	return TRUE;
 }
 
 /* .syn-Datei schreiben */
 bool hl_write_syn(void)
 {
-	if (hl_filename[0] == EOS)
+	PATH cfg_path;
+	PATH tmp;
+
+  /* write the default *.syn - files - only if explicitly compiled for this.
+     in the normal user program, only the user syntax config file is written */
+	#ifdef WRITE_SYN	
+		if( !Hl_WriteSyn(NULL, FALSE))
+			return FALSE;
+		strcpy( cfg_path,SYN_DIR );
+		if(get_config_file( cfg_path, TRUE ))
+		{
+			strcat( cfg_path, "\\" );
+			send_avpathupdate( cfg_path );
+		}		
+		debug("*.syn files written\n");
+	#endif
+	/* and write an additional config file - to keep your own syntax settings */
+	get_config_dir( cfg_path );
+	strcat( cfg_path, SYNCFGNAME );
+	
+	if( !Hl_WriteSyn( cfg_path, TRUE ))
 		return FALSE;
-	return Hl_WriteSyn(hl_filename);
+	split_filename( cfg_path, tmp, NULL );
+	send_avpathupdate( tmp );		
+	debug("syn_cfg.qed written\n");
+
+	return TRUE;
+
 }
 
 /* Syntax-Highlighting-Cache fr eine Zeile abfragen.
@@ -400,10 +472,3 @@ void hl_change_text_type(TEXTP t_ptr, char *extension)
 	t_ptr->text.hl_anchor = NULL;
 	hl_init_text(t_ptr);
 }
-
-
-
-
-
-
-

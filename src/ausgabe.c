@@ -8,8 +8,8 @@
 #include "rsc.h"
 #include "window.h"
 
-#define BLKANF      1
-#define BLKEND      2
+#define BLKANF  1
+#define BLKEND  2
 #define BLKFULL 4
 
 /* lokale Variablen ********************************************************/
@@ -24,7 +24,6 @@ static short    tab_size;
 static bool umbrechen;
 static bool show_end;
 static short    draw_mode;
-static bool opt_draw;
 
 /* Statische Variablen fÅr str_out(); werden am Anfang von str_out()
  * initialisiert und dann von den Unterfunktionen aktualisiert
@@ -35,24 +34,7 @@ static bool line_start;   /* Ausgabe am Zeilenbeginn, init. mit TRUE */
 
 void set_drawmode(void)
 {
-#ifdef NOTDEFINED
-    if (bg_color == G_WHITE)
-    {
-        /*
-         * Schnellere Ausgabe, da durch MD_REPLACE das Lîschen der Zeile
-         * vor Ausgabe des Textes entfallen kann.
-         * Nur mîglich, wenn als Hintergrundfarbe weiû gewÑhlt ist!
-        */
-        opt_draw = TRUE;
-        draw_mode = MD_REPLACE;
-    }
-    else
-#endif
-    {
-        /* 'langsame' Ausgabe bei nicht-weiûem Hintergrund */
-        opt_draw = FALSE;
-        draw_mode = MD_TRANS;
-    }
+	draw_mode = MD_TRANS;
     vswr_mode(vdi_handle, draw_mode);
 }
 
@@ -461,12 +443,12 @@ short out_s(short x, short y, short w, char *str)
     short   pxy[8], len;
     
     vst_color(vdi_handle, fg_color);
+	vst_effects(vdi_handle, 0);
 
     if (w <= 0)
         return x;
 
-    if (!opt_draw)
-        fill_area(x, y, w, font_hcell, bg_color);
+	fill_area(x, y, w, font_hcell, bg_color);
 
     v_gtext(vdi_handle, x, y, str);
     if (font_prop)
@@ -478,12 +460,8 @@ short out_s(short x, short y, short w, char *str)
         len = (short) strlen(str) * font_wcell;
 
     if (len < w)
-    {
-        /* Text kÅrzer als Fenster breit: Rest lîschen */
-        if (opt_draw)
-            fill_area(x + len, y, w, font_hcell, bg_color);
         return x + len;
-    }
+
     return x + w;
 }
 
@@ -502,24 +480,13 @@ short out_sb(short x, short y, short w, char *str)
     if (w <= 0)
         return x;
 
-#if 0
-    /* Hintergrund fÅllen, da mit XOR drÅbergemalt wird */
-    fill_area(x, y, w, font_hcell, bg_block_color);
-
-    vswr_mode(vdi_handle, MD_XOR);
-    v_gtext(vdi_handle, x, y, str);
-    vswr_mode(vdi_handle, draw_mode);
-#endif
-
     /* Hintergrund mit fg_block_color fÅllen und Text mit fg_block_color drÅbermalen */
     fill_area(x, y, w, font_hcell, bg_block_color);
 
     vst_color(vdi_handle, fg_block_color);
-    if (opt_draw)
-        vswr_mode(vdi_handle, MD_TRANS);
+	vst_effects(vdi_handle, 0);
+
     v_gtext(vdi_handle, x, y, str);
-    if (opt_draw)
-        vswr_mode(vdi_handle, draw_mode);
 
     if (font_prop)
     {
@@ -581,6 +548,7 @@ static void draw_cr(short x, short y, bool inv)
  */
 static void output_text(short x, short y, short *width,
                         short vdiattr,
+
                         char *buffer,
                         short fgcolor, short bgcolor)
 {
@@ -613,6 +581,7 @@ static void output_text(short x, short y, short *width,
                               TRUE);
         last_italic = TRUE;
         v_gtext(vdi_handle, x,y, buffer);
+
         return;
     }
 
@@ -621,7 +590,7 @@ static void output_text(short x, short y, short *width,
        da sonst die AbstÑnde (auch mit v_justified()) nicht stimmen
        und die Schrift "schwabbelt". Dummerweise wird dieser Schrifttyp sehr
        hÑufig in QED benutzt werden. */
-    if ((vdiattr & HL_BOLD) && font_vector  )
+    if ( (vdiattr & HL_BOLD) && font_vector  )
     {
         char cbuf[2];
         cbuf[1] = '\0';
@@ -664,13 +633,14 @@ static void output_text(short x, short y, short *width,
  * block_end == -1: kein Block oder Block bis Zeilenende (je nach block_start), sonst: Blockende
  */
    
-static void str_out(short x, short y, short w, short offset, ZEILEP zp, short block_start, short block_end)
+static void str_out( short x, short y, short w, short offset, ZEILEP zp, short block_start, short block_end )
 {
     char *curr_text;   /* derzeitige Zeichenposition im globalen Puffer text (fÅr kopieren/tab-Expansion) */
     char *curr_line;   /* aktuelle Zeichenposition in der nicht expandierten Zeile */
     HL_LINE cacheline; /* aktuelle Syntax-Cache-Zeile */
     HL_ELEM flags;     /* aktuelle Syntax-Cache-Flags */
     HL_ELEM len;       /* aktuelle TextlÑnge aus Syntax-Cache */
+
     short fgcolor;       /* aktuelle Vordergrund-(Text-)Farbe */
     short bgcolor;       /* aktuelle Hintergrundfarbe */
     short hlcolor;       /* Vordergrund-Farbe aus Syntax-Cache */
@@ -707,7 +677,6 @@ static void str_out(short x, short y, short w, short offset, ZEILEP zp, short bl
     }
     vswr_mode(vdi_handle, MD_TRANS);
 
-
     offset *= font_wcell;
     x -= offset;
     w += offset;
@@ -729,11 +698,11 @@ static void str_out(short x, short y, short w, short offset, ZEILEP zp, short bl
             fgcolor = (hlcolor == -1 ? fg_color : hlcolor);
         vst_effects(vdi_handle, vdiattr);
         vst_color(vdi_handle, fgcolor);
-        
+
         while (len)
         {
             /* Zeichen in text-Puffer Åbertragen */
-            if (*curr_line == '\t') /* TABs werden inline expandiert */
+            if (tab && *curr_line == '\t') /* TABs werden inline expandiert */
             {
                 short i;
                 for (i= ((short)(curr_text-text)+chars_done) % tab_size; i<tab_size; i++)

@@ -57,9 +57,9 @@
 #define HL_ERROR( errn, linen, ret )\
 {\
 	if( error_callback )\
-		error_callback( errn, linen );\
+		error_callback( curr_synfile, errn, linen );\
 	else\
-		fprintf( stderr, "hl-Error %i in line %i\n",(errn),(linen) );\
+		fprintf( stderr, "hl-Error %i in file %s in line %i\n",(errn),curr_synfile,(linen) );\
 	{ret}\
 }
 
@@ -67,7 +67,7 @@
 {\
 	Hl_Exit();\
 	if( error_callback )\
-		error_callback( E_HL_MEMORY, 0 );\
+		error_callback( NULL, E_HL_MEMORY, 0 );\
 	else\
 		fprintf( stderr, "hl-fatal memory error\n" );\
 	memory_error = TRUE;\
@@ -80,7 +80,7 @@
 {\
 	Hl_Exit();\
 	if( error_callback )\
-		error_callback( E_HL_MEMORY, 0 );\
+		error_callback( NULL, E_HL_MEMORY, 0 );\
 	else\
 		fprintf( stderr, "out of memory while allocating list!\n");\
 	memory_error = TRUE;\
@@ -93,6 +93,7 @@
 /* rule flags */
 #define RULEF_EOL 1
 #define RULEF_NESTED 8
+#define RULEF_FIRSTCOLUMN 16
 
 /* other defines */
 #define BUFBLK 256           /* size of a linebuffer block */
@@ -133,6 +134,7 @@ typedef enum {
 /* a rule; description for detecting keywords/chars and setting the corresponding colors and flags */
 typedef struct rule {
 	char *name;                       /* name of the rule, e.g. "Comment" */
+	BOOLEAN dup;                      /* duplicate rule; another rule of the same name already exists, only the attributes of the 1st rule are valid */
 	RULETYPE type;                    /* rule type, RULE_... */
 	int flags;                        /* rule flags, RULEF_... */
 	HL_STYLEINFO style[NUM_RESTYPES]; /* attributes & colors for different resolutions */
@@ -150,6 +152,7 @@ typedef struct rule {
 /* Rule for a text type, e.g. "c"/"h", "pas", "s"... */
 typedef struct txtrule {
 	char *name;                  /* name of the text type, e.g. "C source" */
+	char *filename;              /* filename of this rule */
 	STRINGENTRY *txttypes;       /* txttypes of the text type, e.g "c" and "h" for c files */
 	char token[256];             /* all chars this text type uses in its rules */
 	char kwstartchar[256];       /* pre filter for start rules */
@@ -200,10 +203,11 @@ static HL_LINE linebuffer = NULL;     /* line buffer, is allocated and resized d
 static int bufflen=0;                 /* current length of buffer */
 static int maxbufflen=0;              /* current maximum length of buffer */
 static RESTYPE colidx;                /* color index (to access rule.style) of the current resol. */
-static void (*error_callback)( HL_ERRTYPE err, int linenr ) = NULL; /* user error callback routine */
+static void (*error_callback)( char *currfile, HL_ERRTYPE err, int linenr ) = NULL; /* user error callback routine */
 static BOOLEAN memory_error = FALSE;  /* set to true if a memory error occurred, all syntax highlighting
                                          is stopped then, and the portion of memory, which can be released,
                                          is freed */
+static char *curr_synfile=NULL;       /* currently read config file */
 
 /******************************************************************************/
 /* various small subroutines */
@@ -277,7 +281,7 @@ static char *chr_expand_quote( char *buffer, char c )
 static STRINGENTRY *add_stringentry( STRINGENTRY **anchor, char *st, int linenr )
 {
 	STRINGENTRY *new_strentry;
-	LIST_ADDEND( STRINGENTRY, new_strentry, *anchor );
+	LIST_APPEND( STRINGENTRY, new_strentry, *anchor );
 	if( memory_error )
 		return NULL;
 	if( new_strentry )
@@ -307,7 +311,7 @@ static void free_stringentrylist( STRINGENTRY **base )
  * Sets the error callback.
  ******************************************************************************/
 
-void Hl_Init( void (*err_callback)( HL_ERRTYPE err, int linenr ) )
+void Hl_Init( void (*err_callback)( char *currfile, HL_ERRTYPE err, int linenr ) )
 {
 	error_callback = err_callback;
 }
@@ -328,6 +332,8 @@ void Hl_Exit( void )
 	{
 		nxt_trule = trule->next;
 		HL_FREE( trule->name );
+		HL_FREE( trule->filename );
+		
 		free_stringentrylist( &trule->txttypes );
 		for( rule = trule->rules; rule; rule = nxt_rule )
 		{
@@ -365,6 +371,38 @@ void Hl_Exit( void )
 /******************************************************************************/
 /* subroutines for Hl_read_syn()
 /******************************************************************************/
+
+/* find rule by name
+ */
+static RULE *rule_by_name( TXTRULE *trule, char *name )
+{
+	RULE *rule = trule->rules;
+
+	while( rule != NULL )
+	{ 
+		if( stricmp( rule->name, name ) == 0 )
+			return rule;
+		rule = rule->next;
+	}
+
+	return NULL;	
+}
+
+/* find text rule by name
+ */
+static TXTRULE *txtrule_by_name( char *txtname )
+{
+	TXTRULE *trule = txtruleanchor;
+
+	while( trule != NULL )
+	{ 
+		if( stricmp( trule->name, txtname ) == 0 )
+			return trule;
+		trule = trule->next;
+	}
+
+	return NULL;
+}
 
 
 /* read a string to null byte or ",
@@ -625,6 +663,8 @@ static void parse_attribs( RULE *rule, char *attribs, int linenr, RESTYPE curr_c
 			rule->style[curr_colidx].attribs |= HL_ITALIC;
 		else if( stricmp( st, "light" ) == 0 )
 			rule->style[curr_colidx].attribs |= HL_LIGHT;
+		else if( stricmp( st, "none" ) == 0 )
+			rule->style[curr_colidx].attribs = 0;
 		else
    		HL_ERROR( E_HL_SYNTAX, linenr, return; );
    	st = strtok( NULL, "," );
@@ -647,13 +687,14 @@ static int getvalue( char *st, int minval, int maxval, int linenr )
 }
 
 /* parse a complete line of the *.syn-file */
-static BOOLEAN parse_line( char *linebuf, int linenr )
+static BOOLEAN parse_line( char *linebuf, int linenr, char *filename, BOOLEAN settingsonly )
 {
 	static TXTRULE *trule = NULL;
 	static RULE *rule = NULL;
 	char *keyword;
 	char *value;
 	static RESTYPE curr_colidx;
+	static BOOLEAN duptext = FALSE;
 
 	str_xtrim( linebuf, " \n\r" );
 	if( !linebuf[0] || linebuf[0] == ';' )
@@ -663,17 +704,37 @@ static BOOLEAN parse_line( char *linebuf, int linenr )
 	if( linebuf[ 0 ] == '[' )
 	{
 		str_xtrim( linebuf, "[]" );
-		LIST_ADDEND( TXTRULE, trule, txtruleanchor );
-		if( memory_error )
-			return FALSE;
-		trule->name = strdup( linebuf );
-		if( !trule->name )
-			HL_MEM_ERROR( return FALSE; );
-		trule->flags = TXTRULEF_ACTIVE;
+		if( settingsonly )
+		{
+			trule = txtrule_by_name( linebuf );
+			if( !trule )
+				HL_ERROR( E_HL_UNKNTEXT, linenr, return TRUE; );
+		}
+		else
+		{
+			if( txtrule_by_name( linebuf ) != NULL )
+			{
+				trule = NULL;
+				duptext = TRUE;
+				HL_ERROR( E_HL_DUPTEXT, linenr, return TRUE; );
+			}
+			duptext = FALSE;
+			LIST_APPEND( TXTRULE, trule, txtruleanchor );
+			if( memory_error )
+				return FALSE;
+			trule->name = strdup( linebuf );
+			trule->filename = strdup( filename );
+			if( !trule->name || !trule->filename )
+				HL_MEM_ERROR( return FALSE; );
+			trule->flags = TXTRULEF_ACTIVE;
+		}
 		rule = NULL;
 		return TRUE;
 	}
 
+	if( (duptext || settingsonly) && !trule )
+		return TRUE;
+		
 	/* new rule */
 	if( linebuf[ 0 ] == '<' )
 	{
@@ -681,18 +742,30 @@ static BOOLEAN parse_line( char *linebuf, int linenr )
 		if( !trule )
 			HL_ERROR( E_HL_SYNTAX, linenr, return TRUE; );
 		str_xtrim( linebuf, "<>" );
-		LIST_ADDEND( RULE, rule, trule->rules );
-		if( memory_error )
-			return FALSE;
-		rule->name = strdup( linebuf );
-		rule->quotechar = '\0';
-		if( !rule->name )
-			HL_MEM_ERROR( return FALSE; );
-		for( i=COLOR2; i<=COLOR256; i++ )
+		if( settingsonly )
 		{
-			rule->style[i].attribs = 0;
-			rule->style[i].color = -1;
-			rule->style[i].selcolor = -1;
+			rule = rule_by_name( trule, linebuf );
+			if( !rule )
+				HL_ERROR( E_HL_UNKNRULE, linenr, return TRUE; );
+			return TRUE;
+		}
+		else
+		{
+			BOOLEAN dup = rule_by_name( trule, linebuf ) != NULL;
+			LIST_APPEND( RULE, rule, trule->rules );
+			if( memory_error )
+				return FALSE;
+			rule->dup = dup;
+			rule->name = strdup( linebuf );
+			rule->quotechar = '\0';
+			if( !rule->name )
+				HL_MEM_ERROR( return FALSE; );
+			for( i=COLOR2; i<=COLOR256; i++ )
+			{
+				rule->style[i].attribs = 0;
+				rule->style[i].color = -1;
+				rule->style[i].selcolor = -1;
+			}
 		}
 		curr_colidx = COLOR256;                 /* Preset */
 		return TRUE;
@@ -732,7 +805,7 @@ static BOOLEAN parse_line( char *linebuf, int linenr )
 	if( txtruleanchor == NULL )
 		HL_ERROR( E_HL_SYNTAX, linenr, return TRUE; );
 
-	if( stricmp( keyword, "Txttype" ) == 0)
+	if( !settingsonly && stricmp( keyword, "Txttype" ) == 0)
 	{
 		char *st = rreadstr( &value );
 
@@ -758,14 +831,14 @@ static BOOLEAN parse_line( char *linebuf, int linenr )
 		}
 		return TRUE;
 	}
-	else if( stricmp( keyword, "CaseSensitive" ) == 0)
+	else if( !settingsonly && stricmp( keyword, "CaseSensitive" ) == 0)
 	{
 		if( rule )
 			HL_ERROR( E_HL_SYNTAX, linenr, return TRUE; );
 		read_boolflag( &trule->flags, TXTRULEF_CASE, value, linenr );
 		return TRUE;
 	}
-	else if( stricmp( keyword, "Token" ) == 0)
+	else if( !settingsonly && stricmp( keyword, "Token" ) == 0)
 	{
 		char *st = rreadstr( &value );
 		if( rule || !st || *(++value) )
@@ -784,24 +857,27 @@ static BOOLEAN parse_line( char *linebuf, int linenr )
 	}
 
 	if( !rule )
-		HL_ERROR( E_HL_SYNTAX, linenr, return TRUE; );
+		if( settingsonly )
+			return TRUE;
+		else
+			HL_ERROR( E_HL_SYNTAX, linenr, return TRUE; );
 
-	if( stricmp( keyword, "keyword" ) == 0)
+	if( !settingsonly && stricmp( keyword, "keyword" ) == 0)
 	{
 		if( !parse_rule( trule, rule, value, RULE_KEYWORD, linenr, curr_colidx ))
 			return FALSE;
 	}
-	else if( stricmp( keyword, "from" ) == 0)
+	else if( !settingsonly && stricmp( keyword, "from" ) == 0)
 	{
 		if( !parse_rule( trule, rule, value, RULE_FROM, linenr, curr_colidx ))
 			return FALSE;
 	}
-	else if( stricmp( keyword, "to" ) == 0)
+	else if( !settingsonly && stricmp( keyword, "to" ) == 0)
 	{
 		if( !parse_rule( trule, rule, value, RULE_TO, linenr, curr_colidx ))
 			return FALSE;
 	}
-	else if( stricmp( keyword, "while" ) == 0)
+	else if( !settingsonly && stricmp( keyword, "while" ) == 0)
 	{
 		if( !parse_rule( trule, rule, value, RULE_WHILE, linenr, curr_colidx ))
 			return FALSE;
@@ -810,9 +886,9 @@ static BOOLEAN parse_line( char *linebuf, int linenr )
 	{
 		switch( curr_colidx )
 		{
-			case COLOR2:   rule->style[curr_colidx].color = getvalue( value, 0, 1, linenr );   break;
-			case COLOR16:  rule->style[curr_colidx].color = getvalue( value, 0, 15, linenr );  break;
-			case COLOR256: rule->style[curr_colidx].color = getvalue( value, 0, 255, linenr ); break;
+			case COLOR2:   rule->style[curr_colidx].color = getvalue( value, -1, 1, linenr );   break;
+			case COLOR16:  rule->style[curr_colidx].color = getvalue( value, -1, 15, linenr );  break;
+			case COLOR256: rule->style[curr_colidx].color = getvalue( value, -1, 255, linenr ); break;
 		}
 		if( rule->link )
 			rule->link->style[curr_colidx].color = rule->style[curr_colidx].color;
@@ -821,18 +897,20 @@ static BOOLEAN parse_line( char *linebuf, int linenr )
 	{
 		switch( curr_colidx )
 		{
-			case COLOR2:   rule->style[curr_colidx].selcolor = getvalue( value, 0, 1, linenr );   break;
-			case COLOR16:  rule->style[curr_colidx].selcolor = getvalue( value, 0, 15, linenr );  break;
-			case COLOR256: rule->style[curr_colidx].selcolor = getvalue( value, 0, 255, linenr ); break;
+			case COLOR2:   rule->style[curr_colidx].selcolor = getvalue( value, -1, 1, linenr );   break;
+			case COLOR16:  rule->style[curr_colidx].selcolor = getvalue( value, -1, 15, linenr );  break;
+			case COLOR256: rule->style[curr_colidx].selcolor = getvalue( value, -1, 255, linenr ); break;
 		}
 		if( rule->link )
 			rule->link->style[curr_colidx].selcolor = rule->style[curr_colidx].selcolor;
 	}
 	else if( stricmp( keyword, "attribs" ) == 0)
 		parse_attribs( rule, value, linenr, curr_colidx );
-	else if( stricmp( keyword, "nested" ) == 0)
+	else if( !settingsonly && stricmp( keyword, "nested" ) == 0)
 		read_boolflag( &rule->flags, RULEF_NESTED, value, linenr );
-	else if( stricmp( keyword, "Quotechar" ) == 0)
+	else if( !settingsonly && stricmp( keyword, "firstcolumn" ) == 0)
+		read_boolflag( &rule->flags, RULEF_FIRSTCOLUMN, value, linenr );
+	else if( !settingsonly && stricmp( keyword, "Quotechar" ) == 0)
 	{
 		char *st = rreadstr( &value );
 		if( !st || !*st || *(++value) || strlen( st ) > 1 )
@@ -896,6 +974,7 @@ static void check_rules( void )
 {
 	static TXTRULE *trule;
 	static RULE *rule;
+	RULE *duprule;
 	int i;
 
 
@@ -920,27 +999,46 @@ static void check_rules( void )
 						rule->link->kwchar[i] = TRUE;
 			}
 
-		/* quotechars */
+			/* quotechars */
 			if( rule->link && rule->link->quotechar ) /* set quote char in filter (otherwise it wouldn't */
 				rule->link->kwchar[rule->link->quotechar] = TRUE; /* be recognized) */
 
-		/* sort stringentries (see sort_stringentry() for cause) */
+			/* firstcolumn */
+			if( (rule->flags & RULEF_FIRSTCOLUMN)
+			&&   rule->link)
+				rule->link->flags |= RULEF_FIRSTCOLUMN;
+
+			/* sort stringentries (see sort_stringentry() for cause) */
 			for( i=0; i<256; i++ )
 				sort_stringentry( rule->kwstring[i] );
 			if( rule->link )
 				for( i=0; i<256; i++ )
 					sort_stringentry( rule->link->kwstring[i] );
 
-		/* set attribs and color according to current resolution */
-			rule->attribs = rule->style[colidx].attribs;
-			rule->color = rule->style[colidx].color;
-			rule->selcolor = rule->style[colidx].selcolor;
+			/* duplicate rules - only the first rules color and attribs are valid */
+			if( rule->dup )
+			{
+				duprule = rule_by_name( trule, rule->name );
+				rule->attribs = duprule->attribs;
+				rule->color = duprule->color;
+				rule->selcolor = duprule->selcolor;
+			}
+			else
+			{	
+				/* set attribs and color according to current resolution */
+				rule->attribs = rule->style[colidx].attribs;
+				rule->color = rule->style[colidx].color;
+				rule->selcolor = rule->style[colidx].selcolor;
+			}
+
 			if( rule->link )
 			{
-				rule->link->attribs = rule->style[colidx].attribs;
-				rule->link->color = rule->style[colidx].color;
-				rule->link->selcolor = rule->style[colidx].selcolor;
+				rule->link->attribs = rule->attribs;
+				rule->link->color = rule->color;
+				rule->link->selcolor = rule->selcolor;
+				rule->link->dup = rule->dup;
 			}
+
 		}
 	}
 
@@ -952,7 +1050,7 @@ static void check_rules( void )
  * returns 0 when error.
  ******************************************************************************/
 
-int Hl_ReadSyn( char *filename, int curr_planes )
+int Hl_ReadSyn( char *filename, int curr_planes, int settingsonly )
 {
 	FILE *synfile;
 	char linebuf[ 256 ];
@@ -966,10 +1064,16 @@ int Hl_ReadSyn( char *filename, int curr_planes )
 		colidx = COLOR2;
 
 	if( (synfile = fopen( filename, "r" )) == NULL )
-		return FALSE;
+		HL_ERROR( E_HL_WRONGFILE, 0, return FALSE; );
+	
+	curr_synfile = filename;
+
 	while( fgets( linebuf, 256, synfile ))
-		if( !parse_line( linebuf, linenr++ )) /* fatal error */
-			break;
+		if( !parse_line( linebuf, linenr++, filename, (BOOLEAN) settingsonly ))
+			break; /* fatal error */
+
+	curr_synfile = NULL;
+	
 	fclose( synfile );
 	check_rules();
 	return TRUE;
@@ -1091,12 +1195,14 @@ static void fprint_stringentry( FILE *file, char *prefix, STRINGENTRY *anchor )
 }
 
 /* fprint attributes */
-static void	fprint_attribs( FILE *file, HL_ELEM attribs )
+static void	fprint_attribs( FILE *file, HL_ELEM attribs, BOOLEAN settingsonly  )
 {
 	char buffer[ 80 ];
-	if( !attribs )
+	if( !settingsonly && !attribs )
 		return;
 	strcpy( buffer, "Attribs =" );
+	if( settingsonly && !attribs )
+		strcat( buffer, " NONE" );
 	if( attribs & HL_BOLD )
 		strcat( buffer, " BOLD," );
 	if( attribs & HL_ITALIC )
@@ -1109,55 +1215,69 @@ static void	fprint_attribs( FILE *file, HL_ELEM attribs )
 
 /* fprint a complete rule with all keywords
  */
-static void fprint_rule( FILE *file, RULE *rule, BOOLEAN iscase )
+static void fprint_rule( FILE *file, RULE *rule, BOOLEAN iscase, BOOLEAN settingsonly )
 {
 	char *prefix;
 	char buffer[80];
 	char quotebuffer[ 160 ];
 	int i;
 
-	switch( rule->type )
+	if( !settingsonly )
 	{
-		case RULE_FROM:    prefix = "From = ";    break;
-		case RULE_TO:      prefix = "To = ";      break;
-		case RULE_WHILE:   prefix = "While = ";   break;
-		case RULE_KEYWORD: prefix = "Keyword = "; break;
+		switch( rule->type )
+		{
+			case RULE_FROM:    prefix = "From = ";    break;
+			case RULE_TO:      prefix = "To = ";      break;
+			case RULE_WHILE:   prefix = "While = ";   break;
+			case RULE_KEYWORD: prefix = "Keyword = "; break;
+		}
+	
+		if( rule->flags & RULEF_EOL )
+			fprintf( file, "%sEOL\n", prefix );
+	
+		fprint_kwstring( file, prefix, rule->kwstring, iscase );
+		fprint_singlechars( file, prefix, rule->kwsinglechar );
 	}
-
-	if( rule->flags & RULEF_EOL )
-		fprintf( file, "%sEOL\n", prefix );
-
-	fprint_kwstring( file, prefix, rule->kwstring, iscase );
-	fprint_singlechars( file, prefix, rule->kwsinglechar );
 	if( rule->type != RULE_FROM )
 	{
-		if( rule->type == RULE_TO )
+		if( !settingsonly )
 		{
-			fprintf( file, "Nested = %s\n", (rule->flags & RULEF_NESTED) ? "TRUE" : "FALSE" );
-			if( rule->quotechar )
-				fprintf( file, "Quotechar = \"%s\"\n", chr_expand_quote( quotebuffer, rule->quotechar ) );
+			if( rule->type == RULE_TO )
+			{
+				if( rule->flags & RULEF_NESTED )
+					fprintf( file, "Nested = TRUE\n" );
+				if( rule->quotechar )
+					fprintf( file, "Quotechar = \"%s\"\n", chr_expand_quote( quotebuffer, rule->quotechar ) );
+			}
+				if( rule->flags & RULEF_FIRSTCOLUMN )
+					fprintf( file, "Firstcolumn = TRUE\n" );
 		}
 
+		if( rule->dup )
+			return;
+			
 		for( i=COLOR2; i<=COLOR256; i++ )
 		{
-			if( !rule->style[i].attribs
-			&&  rule->style[i].color == -1
-			&&  rule->style[i].selcolor == -1 )
-				continue;
-
+			if( !settingsonly )
+			{
+				if( !rule->style[i].attribs
+				&&  rule->style[i].color == -1
+				&&  rule->style[i].selcolor == -1 )
+					continue;
+			}
 			switch( i )
 			{
 				case COLOR2:   fprintf( file, "(Color2)\n");   break;
 				case COLOR16:  fprintf( file, "(Color16)\n");  break;
 				case COLOR256: fprintf( file, "(Color256)\n"); break;
 			}
-			fprint_attribs( file, rule->style[i].attribs );
-			if( rule->style[i].color != -1 )
+			fprint_attribs( file, rule->style[i].attribs, settingsonly );
+			if( settingsonly || rule->style[i].color != -1 )
 			{
 				sprintf( buffer, "Color = %li", rule->style[i].color );
 				fprintf( file, "%s\n", buffer );
 			}
-			if( rule->style[i].selcolor != -1 )
+			if( settingsonly || rule->style[i].selcolor != -1 )
 			{
 				sprintf( buffer, "Selcolor = %li", rule->style[i].selcolor );
 				fprintf( file, "%s\n", buffer );
@@ -1201,9 +1321,8 @@ static void set_style( void )
  * returns 0 when error.
  ******************************************************************************/
 
-int Hl_WriteSyn( char *filename )
+int Hl_WriteSyn( char *filename, int settingsonly )
 {
-	const char def_filename[] = "qed.syn";
 	FILE *synfile;
 	TXTRULE *trule = txtruleanchor;
 	RULE *rule;
@@ -1211,41 +1330,55 @@ int Hl_WriteSyn( char *filename )
 	char buffer[ 256 ];
 	int i, j;
 	
-	if( !filename )
-		filename = (char *) def_filename;
-	if( (synfile = fopen( filename, "w" )) == NULL
-	||  memory_error )
-		return FALSE;
+	if( filename )
+		if( (synfile = fopen( filename, "w" )) == NULL
+		||  memory_error )
+			return FALSE;
 
 	set_style();
 
 	while( trule )
 	{
+		if( !filename )
+			if( (synfile = fopen( trule->filename, "w" )) == NULL
+			||  memory_error )
+				return FALSE;
+			
 		fprintf( synfile, "\n;********************************************************\n" );
 		fprintf( synfile, "[%s]\n",trule->name );
 		fprintf( synfile, ";********************************************************\n" );
-		fprint_stringentry( synfile, "Txttype = ", trule->txttypes );
-		fprintf( synfile, "CaseSensitive = %s\n",trule->flags & TXTRULEF_CASE ? "TRUE" : "FALSE" );
+		if( !settingsonly )
+			fprint_stringentry( synfile, "Txttype = ", trule->txttypes );
 		fprintf( synfile, "Active = %s\n",trule->flags & TXTRULEF_ACTIVE ? "TRUE" : "FALSE" );
-		memset( buffer, 0, 256 );
-		for( i=1, j=0; i<256; i++ )
-			if( trule->token[i] )
-				buffer[j++]=(char) i;
-		fprintf( synfile, "Token = \"%s\"\n\n", str_expand_quote( quotebuffer, buffer ) );
-
+		if( !settingsonly ) 
+		{
+			fprintf( synfile, "CaseSensitive = %s\n",trule->flags & TXTRULEF_CASE ? "TRUE" : "FALSE" );
+			memset( buffer, 0, 256 );
+			for( i=1, j=0; i<256; i++ )
+				if( trule->token[i] )
+					buffer[j++]=(char) i;
+			fprintf( synfile, "Token = \"%s\"\n\n", str_expand_quote( quotebuffer, buffer ) );
+		}
 		rule=trule->rules;
 		while( rule )
 		{
-			fprintf( synfile, "\n<%s>\n", rule->name );
-			fprint_rule( synfile, rule, trule->flags & TXTRULEF_CASE );
-			if( rule->link )
-				fprint_rule( synfile, rule->link, trule->flags & TXTRULEF_CASE );
+			if( !(settingsonly && rule->dup) )
+			{
+				fprintf( synfile, "\n<%s>\n", rule->name );
+				fprint_rule( synfile, rule, trule->flags & TXTRULEF_CASE, settingsonly );
+				if( rule->link )
+					fprint_rule( synfile, rule->link, trule->flags & TXTRULEF_CASE, settingsonly );
+			}
 			rule=rule->next;
 		}
+		if( !filename )
+			fclose( synfile );
 		trule = trule->next;
 	}
 
-	fclose( synfile );
+	if( filename )
+		fclose( synfile );
+		
 	return TRUE;
 }
 
@@ -1367,6 +1500,7 @@ static HL_LINE create_cachetok( char *st, RULE *rule, RULE **newrule, int count,
 	char *nextst;
 	STRINGENTRY *found;
 	char *lastst = st;
+	char *startst = st;
 	char *(*cmpfunc)(char *s1, char *s2);
 
 	if( !(txtrule->flags & TXTRULEF_ACTIVE))
@@ -1500,6 +1634,12 @@ static HL_LINE create_cachetok( char *st, RULE *rule, RULE **newrule, int count,
 						}
 					}
 
+					if( (search_rule->flags & RULEF_FIRSTCOLUMN) && st != startst ) /* if rule only valid in first column and it isn^t first column */
+					{
+						st = next_token( st, txtrule->token, txtrule->kwstartchar );
+						goto continue_outer_loop;
+					}
+					
 					if( st-lastst )
 					{
 						if( !add_to_linebuffer( NULL, (int) (st-lastst) ))
@@ -1700,7 +1840,7 @@ long Hl_RemoveLine( HL_HANDLE anchor, HL_LINEHANDLE prev, HL_LINEHANDLE *curr, i
 	if( !prv_ca )
 	{
 		ca = ca_base->cache;
-		ca_base->cache = ca_base->cache->next;
+		ca_base->cache = ca->next;
 		if( ca->next )
 		{
 			ca->next->startrule = NULL;
@@ -1877,6 +2017,7 @@ static RULE *rule_by_idx( int txtidx, int idx )
 	return rule;
 }
 
+
 /******************************************************************************
  * Hl_EnumTxtNames()
  * Enum the text rule names (e.g. for building a popup in a dialog)
@@ -1896,7 +2037,6 @@ int Hl_EnumTxtNames( char **txtname, int *idx )
 	(*idx)++;
 	return TRUE;
 }
-
 
 /******************************************************************************
  * Hl_EnumTxtTypes()
@@ -2066,7 +2206,7 @@ int Hl_SaveSettings( void )
 	{		
 		for( rule = trule->rules; rule; rule = rule->next )
 		{
-			LIST_ADDEND( SAVEINFO, si, saveinfo );
+			LIST_APPEND( SAVEINFO, si, saveinfo );
 			if( !si )
 				goto error;
 			si->isactive = trule->flags & TXTRULEF_ACTIVE;
@@ -2075,7 +2215,7 @@ int Hl_SaveSettings( void )
 			si->selcolor = rule->selcolor;
 			if( rule->link )
 			{
-				LIST_ADDEND( SAVEINFO, si, saveinfo );
+				LIST_APPEND( SAVEINFO, si, saveinfo );
 				if( !si )
 					goto error;
 				si->attribs = rule->link->attribs;

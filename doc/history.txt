@@ -1,4 +1,100 @@
-Version 5.0b2                    (15.05.02)
+Version 5.0.1                    (10.06.02)
+-------------------------------------------
+DEUTSCH:
+   ù Bugfix: Nicht expandierte TABs funktionieren wieder. Im Bin„rmodus h„lt 
+     sich die Darstellung an die lokalen Optionen.
+   ù Bugfix: Redrawproblem bei der Krzelexpandierung
+ENGLISH:
+   ù Bugfix: Unexpanded TABs now work again. In binary mode a TAB is expanded 
+     or not according to local options
+   ù Bugfix: Redraw problems while expanding tags
+
+Version 5.0                      (07.06.02)
+-------------------------------------------
+DEUTSCH:
+   ù Syntax-Konfiguration ist jetzt in getrennten Dateien (c.syn, cpp.syn, 
+     pas.syn...)
+   ù Es wird eine weitere Konfig-Datei syn_cfg.qed angelegt, in welcher die 
+     benutzerdefinierten Syntaxeinstellungen (Farbe etc) gespeichert werden. 
+     Damit wird verhindert, da die Benutzereinstellungen bei jedem Update 
+     berschrieben werden. Die Farbeinstellungen in den *syn-Dateien sind 
+     weiterhin vorhanden und werden als Default benutzt, wenn keine 
+     syn_cfg.qed gefunden wurde.
+   ù Wenn eine Textdefinition mehrfach vorhanden ist (z.B. [C-Quelltext]), 
+     wird das jetzt angemeckert und die doppelte nicht mehr geladen.
+   ù Ist eine Regeldefinition mehrfach vorhanden, werden nur die Attribute der 
+     jeweils ersten ausgewertet.
+   ù Neue Unterbedingung fr Syntax-Regel: Firstcolumn = TRUE/FALSE. (Regel 
+     gilt nur in der ersten Spalte).
+   ù Neuer Schalter im Syntax-Dialog: "fr alle gleichnamigen Regeln setzen".
+     Mit diesem Schlter wird alles durchgef„rbt, was den gleichen Namen hat, 
+     z.B. "Kommentar" fr alle Texte.
+   ù Alle Attribute fr Syntax-Highlighting in allen Farbaufl”sungen jetzt in 
+     den .syn-Dateien vorbelegt.
+   ù Weiteren Ort fr die Suche nach qed-Konfiguration hinzugefgt: 
+     $HOME/.qed/ (UNIX-typische Art der Konfiguration) Hauptgrund dafr war 
+     der inflation„re Zuwachs an qed-Konfig-Dateien. Die k”nnen jetzt alle in 
+     diesem Verzeichnis gesammelt werden.
+   ù Suche nach Konfig-Dateien ver„ndert. Es wird jetzt in dieser Reihenfolge 
+     nach vorhandenen Konfig-Dateien gesucht: $HOME/.qed/ -> $HOME/ -> 
+     $HOME/defaults/ -> $QED/ -> Startverzeichnis -> Aktuelles Verzeichnis
+   ù TABs werden im Bin„rmode nicht mehr expandiert, d.h. man kann jetzt auch 
+     ein TAB (ASCII 0x09) eingeben (und sehen, als kleines Uhrzeichen).
+   ù AV_PATHUPDATE wird jetzt auch beim Speichern von Configdateien gesendet.
+   ù Bugfix: AV_PATHUPDATE wird jetzt beim Dateien speichern _nach_ dem 
+     Schlieen der Datei gesandt - es wurde d„mlicherweise fr die betreffende 
+     Datei immer 0 Bytes im Desktop angezeigt.
+   ù Bugfix: Unter MiNT wurden beim Abspeichern eines neu angelegten Textes 
+     kronkelige Zeichen im Pfad der Dateiauswahl angezeigt. (Und auch an 
+     anderen Stellen)
+   ù Bugfix: Die Anzeige im Projektfenster hatte manchmal beim Redraw die 
+     falschen Attribute (Fett, hell..)
+   ù Bugfix: 2 Bomben beim Speichern oder Block ausschneiden/kopieren, wenn 
+     kein AV-Server anwesend.
+   ù Bugfix: Beim Abspeichern der Optionen konnte es Abstrze geben (Auch beim 
+     Autosave der Optionen)
+   ù Bugfix: 2 Bomben beim L”schen von Bl”cken in der ersten Zeile behoben. Es 
+     war ein schn”der Nullzeigerzugriff. Das unter MagiC PC herauszufinden, 
+     war wieder mal ein mittleres Abenteuer :-(
+   ù Bugfix: Absturz beim Einfgen eines Blockes in der letzten Zeile
+
+ENGLISH:
+   ù Syntax Config now in different files (c.syn, cpp.syn, pas.syn...)
+   ù Another config file "syn_cfg.qed" is created. In this file the user 
+     settings for the syntax highlighting are stored (color and attributes). 
+     With this it's made sure that the user settings aren't overwritten each 
+     time the syntax files are updated. The color settings in the *.syn-files 
+     are still available and used as a default, if syn_cfg.qed isn't found.
+   ù If a text definition (e.g. [C-Source]) is doubly defined, an alert occurs 
+     and the dupe definition isn't loaded anymore.
+   ù If a rule definition is defined twice or more, only the attributes and 
+     colors of the first defined are used.
+   ù New sub condition for rules: Firstcolumn = TRUE/FALSE. (rule is only 
+     valid in the first column)
+   ù All attributes in all color definitions in the *.syn files now defined.
+   ù Added another place for qed config files: $HOME/.qed/ (unix-style) The 
+     main reason was the increase of qed config files. These files may now all 
+     be stored in this folder.
+   ù Changed order of search for config files. It is now searched in this 
+     order:  $HOME/.qed/ -> $HOME/ -> $HOME/defaults/ -> $QED/ -> start dir -> 
+     actual dir
+   ù TABs aren't expanded anymore in binary mode. You can now enter TABs (and 
+     see them, as small clock signs)
+   ù AV_PATHUPDATE is now also sent when writing config files.
+   ù Bugfix: AV_PATHUPDATE is now sent _after_ closing the file when saving 
+     files. The desktop always showed 0 bytes for a saved file.
+   ù Bugfix: Under MiNT there were kronkely chars in the file selector when 
+     saving a new file. (And in some other places too)
+   ù Bugfix: The project window display sometimes had the wrong attributes 
+     (bold, light...)
+   ù Bugfix: Crash when saving or cutting/copying block, if no AV-server 
+     present.
+   ù Bugfix: There could be crashes when saving the options (Also on options 
+     autosave)
+   ù Bugfix: Crash when cutting a block in the first line
+   ù Bugfix: Crash when pasting a block in the last line
+
+Version 5.0 Beta 2               (15.05.02)
 -------------------------------------------
 DEUTSCH:
    ù Reihenfolge der Suche nach der Ressource-Datei ver„ndert. Es wird jetzt 
@@ -64,7 +160,7 @@ ENGLISH:
      error and report it, if it happens again.
    ù Bugfix: The archives are now lzh and lower case again.
 
-Version 5.0b							(09.05.02)
+Version 5.0 Beta                 (09.05.02)
 -------------------------------------------
 DEUTSCH:
    ù Syntax-Highlighting hinzugefgt.
@@ -76,16 +172,7 @@ ENGLISH:
 
 ====== Christian stellt die Entwicklung ein, Heiko bernimmt ======
 
-Version 4.6							(15.04.02)
-
-   ù Stanislav Opichal's <opichals@seznam.cz> build
-   ù Ported to the current mintlib and cflib CVS version
-   ù 32bit integer compilation (int -> short conversion in all sources)
-   ù Only internal version
-
-====== Christian Felsh development ======
-
-Version 4.53							(19.09.99)
+Version 4.53                     (19.09.99)
 
    ù Verhalten von Suchen (^F) und Weiter (^G) etwas ver„ndert:
       - ist Text markiert, wird er bei ^F in den Suchdialog bernommen.
@@ -105,7 +192,7 @@ Version 4.53							(19.09.99)
    ù Korrektur/Optimierung bei der farbigen Ausgabe im Fenster.
    ù Bugfix beim ™ffnen nicht existierender Projekte.
 
-Version 4.52							(17.11.98)
+Version 4.52                     (17.11.98)
 
    ù Beim Sichern bleiben die erweiterten Zugriffsrechte (Minix)
      erhalten.
@@ -123,7 +210,7 @@ Version 4.52							(17.11.98)
    ù Behandlung der Shift-Taste bei Makros korrigiert.
    ù Dateinamen mit ' werden ge”ffnet (lag am Startpcode der MiNT-Lib). 
 
-Version 4.51							(31.08.98)
+Version 4.51                     (31.08.98)
 
    ù Umlaut-Konvertierung berarbeitet.
    ù MAGCUFSL fhrt nicht mehr zum Deadlock (CF-Lib).
@@ -136,7 +223,7 @@ Version 4.51							(31.08.98)
    ù MagiC-Fontauswahl zermarmelt nicht mehr den Systemfont (CF-Lib). 
      Nebenbei war auch noch ein MagiC-Binding falsch (GEM-Lib).
 
-Version 4.50							(31.07.98)
+Version 4.50                     (31.07.98)
 
    ù Neue Ladereihenfolge CFG: 
        $QED -> $HOME -> $HOME/defaults -> Startpfad -> aktuelles Verzeichnis
@@ -151,7 +238,7 @@ Version 4.50							(31.07.98)
      korrekt gezeichnet.
   Beta vom 22.06.98
    ù Ich habe die GEM-Lib aufger„umt, insbesondere den VDI-Teil. Ich hoffe,
-   	 da ich dabei keine neuen Fehler in die Lib eingebaut habe.
+       da ich dabei keine neuen Fehler in die Lib eingebaut habe.
    ù Auf Wilfrieds Wunsch hin habe ich das Fenster-Snapping (beim Bewegen
      sowie beim ndern der Gr”e) testweise abgeschaltet. Durch Heraus-
      schieben des Fensters nach links sind damit unendlich groe Fenster
@@ -167,15 +254,15 @@ Version 4.50							(31.07.98)
      Damit lassen sich auch wieder 'Umlaut-Namen' mit purem TOS laden.
    ù MiNT-Lib PL48.
    ù Drucker-Konfig nochmals ge„ndert: 
-		- WDialog kann jetzt fr beide Druckdialoge (Konfig und Ausdruck) 
-		  benutzt (neuer Schalter unter Globales). Dazu sind die relevanten
-		  Ausdruck-Parameter (Zeilen/Seiten-Nummerierung, Rand) mit in den 
-		  Sub-Druck-Dialog integriert.
-		  Der Schalter 'Linker Rand' ist weggefallen, sobald eine L„nge fr 
-		  den Rand eingegeben ist, wird er entsprechend ausgegeben.
-   		- Die PDLG-Settings werden nun doch in einer zus„tzlichen 
-   		  Bin„rdatei (pdlg.qed) gesichert. Wilfried meinte, da es sonst
-   		  zu Problemen mit den erweiterten Settings von MagiCMac k„me.
+      - WDialog kann jetzt fr beide Druckdialoge (Konfig und Ausdruck) 
+        benutzt (neuer Schalter unter Globales). Dazu sind die relevanten
+        Ausdruck-Parameter (Zeilen/Seiten-Nummerierung, Rand) mit in den 
+        Sub-Druck-Dialog integriert.
+        Der Schalter 'Linker Rand' ist weggefallen, sobald eine L„nge fr 
+        den Rand eingegeben ist, wird er entsprechend ausgegeben.
+         - Die PDLG-Settings werden nun doch in einer zus„tzlichen 
+           Bin„rdatei (pdlg.qed) gesichert. Wilfried meinte, da es sonst
+           zu Problemen mit den erweiterten Settings von MagiCMac k„me.
    ù Work-Around fr MAGXDESK (Stichwort Leerzeichen im Namen) fr mehrere
      Leerzeichen korrigiert.
   Beta vom 24.05.98
@@ -219,7 +306,7 @@ Version 4.50							(31.07.98)
      '*' einen zus„tzlichen Standard-Typ fr 'Bin„r' eingefgt. Auerdem 
      k”nnen nun insgesamt 18 Endungen frei definiert werden.
 
-Version 4.10							(19.02.98)
+Version 4.10                     (19.02.98)
 
    ù SE-Protokoll 1.05
    ù Wenn eine Marke ein ' ' im Namen hatte, ging das Laden aus der
@@ -263,11 +350,11 @@ Version 4.00                            (23.09.97)
    ù Zeilenl„nge von max. 255 auf max. 1023 Zeichen erh”ht. Dazu eine voll
      dynamische Verwaltung des horizontalen Sliders.
    ù Ein paar erste Korrekturen am Umbruch:
-   		- Den dokumentierten Fehler im Zusammenhang mit 'Sichern unter'
-   		  entfernt.
-   		- Beim Hinzuladen von Text, werden am Ende jeder Zeile Absatzmarken
-   		  gesetzt und zu lange Zeilen ggf. umgebrochen (wenn 'Format beim
-   		  Laden' aktiv ist).
+         - Den dokumentierten Fehler im Zusammenhang mit 'Sichern unter'
+           entfernt.
+         - Beim Hinzuladen von Text, werden am Ende jeder Zeile Absatzmarken
+           gesetzt und zu lange Zeilen ggf. umgebrochen (wenn 'Format beim
+           Laden' aktiv ist).
    ù Zeilenweises Sortieren.
    ù Umgestellt auf MiNT-Lib PL46. (MyDials fr MiNT-Lib sind n”tig!)
    ù Bin„res Laden. Benutzung auf eigene Gefahr ;-)

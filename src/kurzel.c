@@ -10,6 +10,7 @@
 #include "text.h"
 #include "window.h"
 #include "kurzel.h"
+#include "hl.h"
 
 /*
  * Exportierte Variablen
@@ -286,6 +287,7 @@ void do_kurzel(TEXTP t_ptr, bool online)
 	{
 		if (*str == '^' && i > 0 && str[1] == '^')
 		{
+			hl_update( t_ptr );
 			char_cr(t_ptr);
 			restore_edit();						/* sonst entstehen komische Effekte */
 			xw++;
@@ -306,7 +308,7 @@ void do_kurzel(TEXTP t_ptr, bool online)
 	}
 	if (set_pos)
 		while ((--xw)>=0) char_left(t_ptr);
-
+	hl_update( t_ptr );
 	/*
 	 * Und wieder herstellen
 	*/

@@ -179,13 +179,6 @@ someplace that ST-Guide can find it.
 @{U}History                                                               qed@{0}
 
 @autorefoff
-@{U}Version 4.6 (Mar 15 2002)@{0}
-
-   ù Stanislav Opichal's <opichals@seznam.cz> port
-   ù Ported to the current mintlib and cflib CVS version
-   ù 32bit integer compilation (int -> short conversion in all sources)
-   ù Only internal version
-
 @{U}Version 4.53 (Sep 19 1999)@{0}
 
    ù Behaviour of Search (^F) and Again (^G) have been changed:

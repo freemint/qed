@@ -203,17 +203,17 @@
 #define GRAUS            7   /* BUTTON in Baum POS */
 
 #define MARKEN           13  /* Formular/Dialog */
-#define MRK1             2   /* BUTTON in Baum MARKEN */
-#define MRKTXT1          3   /* FTEXT in Baum MARKEN */
+#define MRKOK            2   /* BUTTON in Baum MARKEN */
+#define MRK1             3   /* BUTTON in Baum MARKEN */
 #define MRK2             4   /* BUTTON in Baum MARKEN */
-#define MRKTXT2          5   /* FTEXT in Baum MARKEN */
-#define MRK3             6   /* BUTTON in Baum MARKEN */
-#define MRKTXT3          7   /* FTEXT in Baum MARKEN */
-#define MRK4             8   /* BUTTON in Baum MARKEN */
-#define MRKTXT4          9   /* FTEXT in Baum MARKEN */
-#define MRK5             10  /* BUTTON in Baum MARKEN */
-#define MRKTXT5          11  /* FTEXT in Baum MARKEN */
-#define MRKOK            12  /* BUTTON in Baum MARKEN */
+#define MRK3             5   /* BUTTON in Baum MARKEN */
+#define MRK4             6   /* BUTTON in Baum MARKEN */
+#define MRK5             7   /* BUTTON in Baum MARKEN */
+#define MRKTXT1          8   /* FTEXT in Baum MARKEN */
+#define MRKTXT2          9   /* FTEXT in Baum MARKEN */
+#define MRKTXT3          10  /* FTEXT in Baum MARKEN */
+#define MRKTXT4          11  /* FTEXT in Baum MARKEN */
+#define MRKTXT5          12  /* FTEXT in Baum MARKEN */
 #define MRKRAUS          13  /* BUTTON in Baum MARKEN */
 
 #define FUNKTION         14  /* Formular/Dialog */
@@ -438,15 +438,16 @@
 #define SYORULEFRAME     4   /* BUTTON in Baum SYNTAXOP */
 #define SYORULE          5   /* BOXTEXT in Baum SYNTAXOP */
 #define SYOBOLD          6   /* BUTTON in Baum SYNTAXOP */
-#define SYOITALIC        7   /* BUTTON in Baum SYNTAXOP */
-#define SYOLIGHT         8   /* BUTTON in Baum SYNTAXOP */
-#define SYOSELCOLORTXT   9   /* STRING in Baum SYNTAXOP */
-#define SYOSELCOLOR      10  /* BOX in Baum SYNTAXOP */
-#define SYOCOLOR         11  /* BOX in Baum SYNTAXOP */
-#define SYOCOLORTXT      12  /* STRING in Baum SYNTAXOP */
-#define SYOHELP          13  /* BOXTEXT in Baum SYNTAXOP */
-#define SYOOK            14  /* BUTTON in Baum SYNTAXOP */
-#define SYOCANCEL        15  /* BUTTON in Baum SYNTAXOP */
+#define SYOCOLORTXT      7   /* STRING in Baum SYNTAXOP */
+#define SYOCOLOR         8   /* BOX in Baum SYNTAXOP */
+#define SYOITALIC        9   /* BUTTON in Baum SYNTAXOP */
+#define SYOSELCOLORTXT   10  /* STRING in Baum SYNTAXOP */
+#define SYOSELCOLOR      11  /* BOX in Baum SYNTAXOP */
+#define SYOLIGHT         12  /* BUTTON in Baum SYNTAXOP */
+#define SYOSETSAMENAME   13  /* BUTTON in Baum SYNTAXOP */
+#define SYOHELP          14  /* BOXTEXT in Baum SYNTAXOP */
+#define SYOOK            15  /* BUTTON in Baum SYNTAXOP */
+#define SYOCANCEL        16  /* BUTTON in Baum SYNTAXOP */
 
 #define NOWINDOW         0   /* Alert String */
 
@@ -533,3 +534,5 @@
 #define SYN_WRONGVAL     41  /* Alert String */
 
 #define SYN_MEM          42  /* Alert String */
+
+#define SYN_DUPTEXT      43  /* Alert String */

@@ -26,21 +26,25 @@ typedef struct {
 } HL_RULEINFO;
 
 /* error numbers */
-typedef enum { 
+typedef enum {
+	E_HL_WRONGFILE,    /* syntax file of wrong type */ 
 	E_HL_MEMORY,       /* memory error */
 	E_HL_TOFROM,       /* "to" or "while" keyword before "from" */
 	E_HL_MIXED,        /* "from"-"to"/"while" and "keyword" mixed */        
 	E_HL_SYNTAX,       /* syntax error */
-	E_HL_WRONGVAL      /* wrong numerical value */
+	E_HL_WRONGVAL,     /* wrong numerical value */
+	E_HL_UNKNTEXT,     /* unknown text when reading settings only */
+	E_HL_UNKNRULE,     /* unknown rule when reading settings only */
+	E_HL_DUPTEXT       /* doubly defined text definition */
 } HL_ERRTYPE;
 
 /* init and exit routines */
-void Hl_Init( void (*err_callback)( HL_ERRTYPE err, int linenr ) );
+void Hl_Init( void (*err_callback)( char *currfile, HL_ERRTYPE err, int linenr ) );
 void Hl_Exit( void );
 
 /* read and write syntax file */
-int Hl_ReadSyn( char *filename, int curr_planes );
-int Hl_WriteSyn( char *filename );
+int Hl_ReadSyn( char *filename, int curr_planes, int settingsonly );
+int Hl_WriteSyn( char *filename, int settingsonly );
 
 /* handle syntax cache (main functions) */
 HL_HANDLE     Hl_New( char *txttype, int resvd );
@@ -64,4 +68,3 @@ int Hl_ChangeRule( int txtidx, int idx, HL_RULEINFO *ri );
 int Hl_TxtIndexByTxttype( char *txttype );
 
 #endif
-

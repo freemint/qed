@@ -25,7 +25,7 @@ static char	gdos_name[80] = "";		/* Dev-Name */
 static short	fnt_anz;
 static bool	wp_config_read = FALSE;
 
-#define CFGNAME	"pdlg.qed"			/* Name der Settings-Datei */
+#define PCFGNAME	"pdlg.qed"			/* Name der Settings-Datei */
 
 /* --------------------------------------------------------------------------- */
 bool open_printer(void)
@@ -593,15 +593,16 @@ void prn_save_cfg(char *buffer)
 	/* pdlg-Settings */
 	if (prn->pdlg != NULL)
 	{
-		char	*pdlg_file, *p;
+		char *p;
 		FILE	*fd;
-				
-		pdlg_file = strdup(buffer);
+		PATH pdlg_file;
+		strcpy( pdlg_file, buffer );
 		p = strrchr(pdlg_file, '\\');
 		if (p)
-			strcpy(p+1, CFGNAME);
+			strcpy(p+1, PCFGNAME);
 		else
-			strcpy(pdlg_file, CFGNAME);
+			strcpy(pdlg_file, PCFGNAME);
+
 		fd = fopen(pdlg_file, "wb");
 		if (fd)
 		{
@@ -610,6 +611,7 @@ void prn_save_cfg(char *buffer)
 		}
 		free(pdlg_file);
 	}	
+
 	/* sonstige Einstellungen */
 	write_cfg_bool("PrnCheck", prn->pruef_prn);
 	write_cfg_int("PrnDensity", prn->wp_mode);
@@ -671,7 +673,7 @@ bool prn_get_cfg(char *var, char *buffer)
 				
 		pdlg_file = strdup(buffer);
 		p = strrchr(pdlg_file, '\\');
-		strcpy(p+1, CFGNAME);
+		strcpy(p+1, PCFGNAME);
 		fd = fopen(pdlg_file, "rb");
 		if (fd)
 		{

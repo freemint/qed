@@ -143,7 +143,7 @@ void do_all_text(TEXT_DOFUNC func)
 static LOCOPTP get_locopt(char *filename, short fs)
 {
 	short	i;
-	char	m[MUSTER_LEN + 3];
+	char	m[MASK_LEN + 3];
 	
 	for (i = 2; i < LOCAL_ANZ; i++)
 	{

@@ -91,8 +91,10 @@ bool prepare_quit(void)
 	}
 	if ((!save_opt) != (!shift_pressed()))
 	{
+debug("before option_save\n");
 		option_save();
 		hl_write_syn();
+debug("after\n");
 	}
 	i = anz;
 	while ((--i)>=0)
@@ -105,6 +107,7 @@ bool prepare_quit(void)
 				icon_edit(ic, DO_DELETE);
 		}
 	}
+debug("before quit\n");
 	return TRUE;
 }
 

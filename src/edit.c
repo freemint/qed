@@ -2212,7 +2212,6 @@ static short crt_new_text(char *filename, bool bin)
 
 	set_text_name(t_ptr, name, namenlos);
 
-
 	setincl(used_info, win->handle);
 
 	set_wtitle(win, name);
@@ -2224,6 +2223,7 @@ static short crt_new_text(char *filename, bool bin)
 	t_ptr->asave = time(NULL);
 
 	return win->handle;
+	
 }
 
 /***************************************************************************/

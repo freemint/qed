@@ -1,0 +1,13 @@
+- bug: redraw problems on MagiC Mac
+- switch to cvs/gcc
+- alert if "save as" and a block is selected (ask if block or whole text). I 
+  think the simple text "Save Block as" in the file selector is too dangerous. 
+  Afair I stepped into this trap myself a few years ago.
+- Show found text in find in files window. Hilight the found text. Jump to the 
+  found text directly.
+- popup menus (find, find in files...)
+- configurable Project management - most probably by resource files.
+- integrate the syntax and the local options into one dialog. Possibility to 
+  set syntax file masks directly from within qed.
+- free makeup (aligned to window width)
+- highlight asm labels in the complete text

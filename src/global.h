@@ -29,6 +29,8 @@
 
 #define MAX_TABWIDTH 99         /* Max. Tabweite */
 
+#define CFGNAME	"qed.cfg" /* main config file */
+
 
 /****** global Variablen ******************************************************/
 
@@ -65,14 +67,15 @@ extern void		set_clip				(bool	 flag, GRECT *size);
 extern short		note					(short def, short undo, short index);
 extern short		inote					(short def, short undo, short index, short val);
 extern short		snote					(short def, short undo, short index, char *val);
+extern short sinote(short def, short undo, short index, char *sval, short val );
 
 extern bool		shift_pressed		(void);
 
 extern void		get_datum			(char *date);
 extern long		file_time			(char *filename, char *date, char *time);
 extern long		file_size			(char *filename);
-extern void   get_config_path( PATH cfg_path );
-extern bool   get_config_file( PATH filename );
+extern bool   get_config_file( PATH filename, bool isdir );
+extern bool   get_config_dir( PATH p );
 extern void		file_name			(char *fullname, char *filename, bool withoutExt);
 extern bool		file_readonly		(char *filename);
 extern bool		is_bin_name			(char *filename);

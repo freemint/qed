@@ -22,7 +22,7 @@ extern short	fg_color, bg_color;
 extern short fg_block_color, bg_block_color;
 extern PATH	helpprog;
 #define BIN_ANZ	10
-extern char	bin_extension[BIN_ANZ][MUSTER_LEN+1];
+extern char	bin_extension[BIN_ANZ][MASK_LEN+1];
 
 extern void		set_global_options	(void);
 extern void		set_syntax_options	(void);

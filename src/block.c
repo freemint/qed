@@ -846,6 +846,7 @@ Problem: Wenn ein Block markiert war, muž eventuell gescrollt werden
 	t->ending = t_ptr->text.ending;
 	t->max_line_len = t_ptr->text.max_line_len;
 	t_ptr->max_line = NULL;
+	if( t_ptr->cursor_line->vorg && t_ptr->cursor_line->vorg->hl_handle )
 	hl_update_zeile( &t_ptr->text, t_ptr->cursor_line->vorg );
 	hl_update( t_ptr );
 	return TRUE;

@@ -151,7 +151,8 @@ void set_clip (bool clipflag, GRECT *size)
 
 
 /*****************************************************************************/
-
+/* some day this nonsense with x different alert routines will
+   have to be replaced by a variable argument list */
 static short do_note(short def, short undo, char *s)
 {
 	wake_mouse();
@@ -179,88 +180,85 @@ short snote(short def, short undo, short index, char *val)
 	return do_note(def, undo, buf);
 }
 
+short sinote(short def, short undo, short index, char *sval, short val )
+	{
+	char	buf[128];
+
+	sprintf(buf, (char *)alertmsg[index], sval, val);
+	return do_note(def, undo, buf);
+}
+
 /***************************************************************************/
 /* Verschiedenes																				*/
 /***************************************************************************/
 
-/* Konfigurationspfad (QED.CFG, QED.SYN etc.) */
-void get_config_path(PATH cfg_path)
-{
-	bool	found = FALSE;
-	PATH	env;
-	
-	if (path_from_env("QED", cfg_path))			/* 1. $QED */
-		found = path_exists(cfg_path);
-
-	if (!gl_debug)
-	if (!found && path_from_env("HOME", env))	/* 2. $HOME */
-	{
-		strcpy(cfg_path, env);
-		found = path_exists(cfg_path);
-		if (!found)										/* 2a. $HOME/defaults */
-		{
-			strcpy(cfg_path, env);
-			strcat(cfg_path, "defaults\\");
-			found = path_exists(cfg_path);
-		}		
-	}
-
-	if (!found && gl_appdir[0] != EOS)			/* 3. Startverzeichnis */
-	{
-		strcpy(cfg_path, gl_appdir);
-		found = file_exists(cfg_path);
-	}
-
-	if (!found)			/* 4. aktuelles Verzeichnis */
-		get_path(cfg_path, 0);
-
-/*
-debug("cfg_path: %s (%d)\n", cfg_path, found);
-*/
-}
-
-
 /* Konfigurationsdatei; returns TRUE wenn gefunden,
  * filename enth„lt in diesem Fall den kompletten Pfad
  */
-bool get_config_file(PATH filename)
+bool get_config_file( PATH filename, bool isdir )
 {
 	bool	found = FALSE;
 	PATH	env, p_for_save = "";
 	PATH	cfg_path;
+/*	if (!gl_debug) */
+	if (path_from_env("HOME", env))	/* 1. $HOME */
+	{
 	
-	if (path_from_env("QED", cfg_path))			/* 1. $QED */
+		strcpy(cfg_path, env); /* 1a. $HOME/.qed */
+		strcat(cfg_path, ".qed\\");
+		if (path_exists(cfg_path))
 	{
 		strcat(cfg_path, filename);
+			if (p_for_save[0] == EOS)
 		strcpy(p_for_save, cfg_path);
+			if( isdir )
+				found = path_exists(cfg_path);
+			else
 		found = file_exists(cfg_path);
 	}
 
-	if (!gl_debug)
-	if (!found && path_from_env("HOME", env))	/* 2. $HOME */
+		if (!found)										/* 1b. $HOME */
 	{
-		bool	h = FALSE;
-		
 		strcpy(cfg_path, env);
+			if (path_exists(cfg_path))
+			{
 		strcat(cfg_path, filename);
 		if (p_for_save[0] == EOS)
-		{
-			h = TRUE;
 			strcpy(p_for_save, cfg_path);
-		}
+				if( isdir )
+					found = path_exists(cfg_path);
+				else
 		found = file_exists(cfg_path);
-		if (!found)										/* 2a. $HOME/defaults */
+			}
+		}
+
+		if (!found)										/* 1c. $HOME/defaults */
 		{
 			strcpy(cfg_path, env);
 			strcat(cfg_path, "defaults\\");
 			if (path_exists(cfg_path))
 			{
 				strcat(cfg_path, filename);
-				if (p_for_save[0] == EOS || h)
+				if (p_for_save[0] == EOS)
 					strcpy(p_for_save, cfg_path);
+				if( isdir )
+					found = path_exists(cfg_path);
+				else
 				found = file_exists(cfg_path);
 			}
 		}		
+		
+	}
+
+	if (!found && path_from_env("QED", cfg_path))			/* 2. $QED */
+	{
+		strcat(cfg_path, filename);
+		if (p_for_save[0] == EOS)
+			strcpy(p_for_save, cfg_path);
+		if( isdir )
+			found = path_exists(cfg_path);
+		else
+			found = file_exists(cfg_path);
 	}
 
 	if (!found && gl_appdir[0] != EOS)			/* 3. Startverzeichnis */
@@ -269,10 +267,13 @@ bool get_config_file(PATH filename)
 		strcat(cfg_path, filename);
 		if (p_for_save[0] == EOS)
 			strcpy(p_for_save, cfg_path);
+		if( isdir )
+			found = path_exists(cfg_path);
+		else
 		found = file_exists(cfg_path);
 	}
 
-	if (!found && file_exists(filename))			/* 4. aktuelles Verzeichnis */
+	if (!found && (isdir ? path_exists(filename) : file_exists(filename)))			/* 4. aktuelles Verzeichnis */
 	{
 		get_path(cfg_path, 0);
 		strcat(cfg_path, filename);
@@ -286,9 +287,20 @@ bool get_config_file(PATH filename)
 
 	strcpy(filename, cfg_path);
 	
+	debug("cfg_file: %s (%d)\n", cfg_path, found);
+	
 	return found;
 }
 
+bool get_config_dir ( PATH p )
+{
+	bool ret;
+	PATH tmp;
+	strcpy( tmp, CFGNAME );
+	ret = get_config_file( tmp, FALSE );
+	split_filename( tmp, p, NULL);
+	return ret;
+}
 
 
 void file_name(char *fullname, char *filename, bool withoutExt)
@@ -446,7 +458,7 @@ static bool font_is_vector(short idx)
 	short fs_handle = open_vwork(workout);
 	short f_anz = workout[10];
 	char fontname[33];
-	bool ret;
+	bool ret = FALSE;
 	short *nvdicookie;
 	short di, fonttype;
 	
@@ -472,9 +484,8 @@ static bool font_is_vector(short idx)
 					break;
 				}
 			}
-	}
-	if (gl_gdos)
 		vst_unload_fonts(fs_handle, 0);
+	}
 	v_clsvwk(fs_handle);
 	return ret;
 }

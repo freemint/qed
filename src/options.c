@@ -80,13 +80,14 @@ void set_autosave_options(void)
 */
 bool	clip_on_disk, wind_cycle, f_to_desk;
 bool syntax_active;
+bool syntax_setsamename;
 short	transfer_size, bin_line_len;
 short	fg_color, bg_color;
 short fg_block_color, bg_block_color;
 bool	save_opt, save_win, overwrite, blinking_cursor, ctrl_mark_mode, olga_autostart,
 		emu_klammer;
 PATH	helpprog;
-char	bin_extension[BIN_ANZ][MUSTER_LEN+1];
+char	bin_extension[BIN_ANZ][MASK_LEN+1];
 
 static void do_avopen(WINDOWP window)
 {
@@ -413,7 +414,7 @@ static void option_get(void)
 static void config_muster(void)
 {
 	short	i, antw;
-	char 	str[MUSTER_LEN+1];
+	char 	str[MASK_LEN+1];
 
 	for (i = MFIRST; i <= MLAST; i++)
 		set_string(muster, i, local_options[i + 2 - MFIRST].muster);
@@ -439,12 +440,12 @@ static void config_muster(void)
 
 static bool build_popup(POPUP *pop)
 {
-	char	str[MUSTER_LEN + 4];
+	char	str[MASK_LEN + 4];
 	short	i;
 
 	strcpy(str, " ");
 	strcat(str, local_options[0].muster);			/* * */
-	create_popup(pop, LOCAL_ANZ, MUSTER_LEN+2, str);
+	create_popup(pop, LOCAL_ANZ, MASK_LEN+2, str);
 
 	strcpy(str, " ");										/* Binary */
 	strcat(str, local_options[1].muster);
@@ -631,6 +632,7 @@ static void disable_syntax_settings(bool disableit)
 	set_state(syntaxop, SYOSELCOLOR, OS_DISABLED, disableit);
 	set_state(syntaxop, SYOCOLORTXT, OS_DISABLED, disableit);
 	set_state(syntaxop, SYOSELCOLORTXT, OS_DISABLED, disableit);
+	set_state(syntaxop, SYOSETSAMENAME, OS_DISABLED, disableit);
 	if (disableit)
 	{
 		set_popobjcolor(syntaxop, SYOCOLOR, 1);
@@ -659,13 +661,16 @@ static void get_syntax_settings(int txtidx, int idx)
 	set_popobjcolor(syntaxop, SYOCOLOR, (ri.attribs & HL_COLOR) ? (short) ri.color : -2);
 	set_popobjcolor(syntaxop, SYOSELCOLOR, (ri.attribs & HL_SELCOLOR) ? (short) ri.selcolor : -2);
 
+	set_state(syntaxop, SYOSETSAMENAME, OS_SELECTED, syntax_setsamename );
+
 	set_state(syntaxop, SYOACTIVE, OS_SELECTED, Hl_IsActive(txtidx));
 	
 }
 
-void store_syntax_settings(short txtidx, short idx)
+static void store_syntax_settings(int txtidx, int idx)
 {
-	HL_RULEINFO ri;
+	HL_RULEINFO ri, tri;
+	int tidx = idx;
 	if (syntaxop[SYOBOLD].ob_state & OS_DISABLED)
 		return;
 	ri.attribs =   ((syntaxop[SYOBOLD].ob_state & OS_SELECTED) ? HL_BOLD : 0)
@@ -675,8 +680,30 @@ void store_syntax_settings(short txtidx, short idx)
 	             | ((get_popobjcolor(syntaxop, SYOSELCOLOR) != -2) ? HL_SELCOLOR : 0);
 	ri.color = get_popobjcolor(syntaxop, SYOCOLOR);
 	ri.selcolor = get_popobjcolor(syntaxop, SYOSELCOLOR);
-	Hl_ChangeRule(txtidx, idx, &ri);
+
 	Hl_SetActive(txtidx, syntaxop[SYOACTIVE].ob_state & OS_SELECTED);
+
+	Hl_EnumRules( txtidx, &tri, &tidx ); /* check if rule settings have really changed */
+	if( tri.attribs != ri.attribs        /* otherwise all rules would be changed if only SYOACTIVE had changed */
+	||  tri.color != ri.color
+	||  tri.selcolor != ri.selcolor )
+	{
+		if( syntax_setsamename )
+		{
+			HL_RULEINFO tri, cri;
+			Hl_EnumRules( txtidx, &tri, &idx ); /* get rule name in tri.name */
+			txtidx = 0;
+			while( Hl_EnumTxtNames( NULL, &txtidx ) ) /* compare for all texts */
+			{
+				idx = 0;
+				while( Hl_EnumRules( txtidx-1, &cri, &idx )) /* and all rules */
+					if( stricmp( tri.name, cri.name ) == 0 ) /* set it if same name */
+						Hl_ChangeRule(txtidx-1, idx-1, &ri);
+			}
+		}
+		else
+			Hl_ChangeRule(txtidx, idx, &ri);
+	}
 }
 
 
@@ -718,6 +745,7 @@ void set_syntax_options(void)
 	POPUP   txtnames, rules;
 	int     act_txttype = 0, act_rule = 0;
 	bool    saved = Hl_SaveSettings();
+	bool setsamename;
 
 	window = winlist_top();
 	if ((window != NULL) && (window->class == CLASS_EDIT))
@@ -737,6 +765,8 @@ void set_syntax_options(void)
 	}
 	build_rule_popup(act_txttype, &rules);
 	get_syntax_settings(act_txttype, 0);
+	
+	setsamename = syntax_setsamename;
 	
 	dial = open_mdial(syntaxop, 0);
 	if (dial != NULL)
@@ -775,6 +805,10 @@ void set_syntax_options(void)
 					redraw_mdobj(dial, SYORULEFRAME);
 					break;
 
+				case SYOSETSAMENAME:
+					syntax_setsamename = syntaxop[SYOSETSAMENAME].ob_state & OS_SELECTED;
+					break;
+				
 				case SYOCOLOR:
 					handle_colorpop(syntaxop, SYOCOLOR, POP_OPEN, 8, TRUE);
 					break;
@@ -794,6 +828,7 @@ void set_syntax_options(void)
 				case SYOCANCEL:
 					if (saved)
 						Hl_RestoreSettings();
+					syntax_setsamename = setsamename;
 					close = TRUE;
 					break;
 										
@@ -802,7 +837,7 @@ void set_syntax_options(void)
 					break;
 
 			}
-			if (!close)
+			if (!close && antw != SYOSETSAMENAME)
 			{
 				set_state(syntaxop, antw, OS_SELECTED, FALSE);
 				redraw_mdobj(dial, antw);
@@ -851,6 +886,7 @@ void init_default_var(void)
 	overwrite  = FALSE;
 	transfer_size = 100;
 	syntax_active = TRUE;
+	syntax_setsamename = FALSE;
 	
 	c = getenv("STGUIDE");
 	if (c != NULL)
@@ -932,8 +968,6 @@ void init_default_var(void)
 /*
  * Datei
 */
-#define CFGNAME	"qed.cfg"
-
 static PATH			cfg_path = "";
 static FILENAME	dsp_name;			/* Name der Display-Datei */
 static FILENAME col_name;     /* Name der Farb-Datei */
@@ -946,7 +980,7 @@ static bool get_cfg_path(void)
 	bool found;
 	short pl;
 	strcpy(cfg_path, CFGNAME);
-	found = get_config_file(cfg_path);
+	found = get_config_file( cfg_path, FALSE );
 	sprintf(dsp_name, "%04d%04d.qed", gl_desk.g_x + gl_desk.g_w, gl_desk.g_y + gl_desk.g_h);
 	pl = min( gl_planes, 8 ); /* max. 8 planes supported; higher resolutions get the same color */
 	sprintf(col_name, "col%02dbit.qed", pl );
@@ -1092,6 +1126,8 @@ static void parse_line(POSENTRY **arglist, char *zeile)
 			read_cfg_bool(buffer, &wind_cycle);
 		else if (strcmp(var, "GlobalSyntaxActive") == 0)
 			read_cfg_bool(buffer, &syntax_active);
+		else if (strcmp(var, "SyntaxSetSameName") == 0)
+			read_cfg_bool(buffer, &syntax_setsamename);
 
 		/* Hilfe-Programm */
 		else if (strcmp(var, "HelpProgram") == 0)
@@ -1455,7 +1491,7 @@ void option_save(void)
 {
 	short		i, x;
 	long		y;
-	char		tmp[50];
+	PATH		tmp;
 	LOCOPTP	lo;
 
 	fd = fopen(cfg_path, "w");
@@ -1501,6 +1537,8 @@ void option_save(void)
 		write_cfg_int ("GlobalTransSize", transfer_size);
 		write_cfg_bool("GlobalWindCycle", wind_cycle);
 		write_cfg_bool("GlobalSyntaxActive", syntax_active);
+	
+		write_cfg_bool("SyntaxSetSameName", syntax_setsamename);
 	
 		/* Hilfeprogramm */
 		write_cfg_str("HelpProgram", helpprog);
@@ -1572,6 +1610,8 @@ void option_save(void)
 			if (s_history[i][0] != EOS)
 				write_cfg_str("SearchHistory", s_history[i]);
 		}
+
+
 		write_cfg_bool("SearchQuant", s_quant);
 		write_cfg_bool("SearchRound", s_round);
 		write_cfg_bool("SearchWord", s_wort);
@@ -1635,6 +1675,8 @@ void option_save(void)
 				fd = NULL;
 			}
 		}
+		split_filename(cfg_path, tmp, NULL);		
+		send_avpathupdate (tmp);
 	}
 	else
 		note(1, 0, WRITEERR);

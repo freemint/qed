@@ -194,9 +194,10 @@ int main(short argc, char *argv[])
 		if (isdigit(argv[1][7]))						/* folgt Level ? */
 			debug_level |= atoi(argv[1]+7);
 	}
+#ifndef PREDEF_DEBUG_LEVEL
 	else
 		debug_level = 0;
-
+#endif
 
 	if (debug_level)
 	{
@@ -212,7 +213,7 @@ int main(short argc, char *argv[])
 #endif
 
 	}
-
+debug( "*************************************************\n" );
 /*
 debug_level = 1;
 debug_init("qed", Datei, "e:\\qed.log");

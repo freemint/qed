@@ -1,11 +1,20 @@
+/***************************************************
+ *
+ * qed basic types
+ *
+ ***************************************************/
+
 #ifndef _qed_types_h_
 #define _qed_types_h_
 
 #include "highlite.h"   /* highlight types */
-#define SETSIZE	32							/* Grîûe eines Sets in Longs */
-#define SETMAX		(SETSIZE*32 - 1)		/* Maximale Elemente eines Sets */
+#define SETSIZE	32							/* Size of a set in longs */
+#define SETMAX		(SETSIZE*32 - 1)		/* Max count of elements of a set */
 
-typedef unsigned long	SET[SETSIZE];			/* Menge */
+typedef unsigned long	SET[SETSIZE];
+
+/* file names, paths, file selection
+ ************************************************/
 
 #define MAX_PATH_LEN	256
 typedef char PATH[MAX_PATH_LEN];
@@ -21,34 +30,42 @@ typedef char FILENAME[MAX_NAME_LEN];
 
 #define EOS '\0'
 
+/* various enums
+ *************************************************/
+ 
 typedef enum {lns_tos, lns_unix, lns_apple, lns_binmode} LINEENDING;
 
 typedef enum {Atari, Latin, Mac, PC, LaTeX, HTML, ASCII} UMLAUTENCODING;
 
+/* change tokens for text; the aquired action is submitted to subroutines with these defines */
 typedef enum {POS_CHANGE, LINE_CHANGE, TOTAL_CHANGE, NOP_CHANGE, SCROLL_UP,
 				  SCROLL_DOWN, MOVE_UP, MOVE_DOWN, BLK_CHANGE, WT_CHANGE} CHANGE;
 
 typedef enum {FALSE, TRUE} bool;
 
-typedef struct                                                                
-{                                                                             
-	long	x;                                                              
-	long	y;                                                              
-	long	w;                                                              
-	long	h;                                                              
-} LRECT;                                                                      
+/* misc
+ *************************************************/
+/* a rect struct with longs */
+typedef struct
+{
+	long	x;
+	long	y;
+	long	w;
+	long	h;
+} LRECT;
 
-#define MUSTER_LEN	7
+/* file mask */
+#define MASK_LEN	7
 
 typedef struct
 {
-	char			muster[MUSTER_LEN + 1];	/* Datei-Maske */
+	char			muster[MASK_LEN + 1];
 	bool			tab;
 	short			tabsize;
 	bool			einruecken;
 	bool			umbrechen;
 	bool			format_by_load;
-	bool  		format_by_paste;
+	bool		format_by_paste;
 	short			lineal_len;
 	char			umbruch_str[35];
 	SET			umbruch_set;
@@ -63,8 +80,8 @@ typedef struct
 
 typedef struct _zeile
 {
-	struct _zeile 	*vorg;
-	struct _zeile 	*nachf;
+	struct _zeile	*vorg;
+	struct _zeile	*nachf;
 	HL_LINEHANDLE  hl_handle; /* Syntax-Highlighting-Cache */
 	char				info;
 	short				len;					/* LÑnge in Bytes */
@@ -77,7 +94,7 @@ typedef struct
 {
 	ZEILE				head;
 	ZEILE				tail;
-	long  			lines;
+	long			lines;
 	LINEENDING		ending;				/* Zeilenende */
 	unsigned short	max_line_len;		/* Maximale ZeilenlÑnge */
 	HL_HANDLE hl_anchor;   /* Syntax-Highlighting-Cache */
@@ -86,12 +103,12 @@ typedef struct
 
 typedef struct _text
 {
-	struct _text 	*next;
+	struct _text	*next;
 	short				link;					/* Fensterhandle */
 	RING				text;					/* Der Text */
 	long				file_date_time;	/* Datei-Datum und Zeit */
 	ZEILEP			cursor_line;      /* zeigt auf aktuellen Textzeile */
-	short				xpos;            	/* x-Position des Cursors im Text */
+	short				xpos;	/* x-Position des Cursors im Text */
 	long				ypos;					/* y-Position des Cursors im Text */
 	long				moved;				/* Text wurde seit letztem Sichern verÑndert */
 	ZEILEP			p1,p2;				/* Zeiger fÅr Block */
@@ -153,7 +170,7 @@ typedef struct _window
 typedef void (*WIN_DOFUNC)(WINDOWP w);
 typedef void (*WIN_CRTFUNC)(WINDOWP w);
 
-typedef struct 
+typedef struct
 {
 	char	name[9];		/* GEM-Name der Shell */
 	PATH	makefile;

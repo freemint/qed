@@ -1,0 +1,45 @@
+
+;********************************************************
+[ERROR.DAT fÅr Pure C]
+;********************************************************
+Txttype = "error.dat"
+Active = TRUE
+CaseSensitive = TRUE
+Token = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
+
+
+<Warnungen>
+Keyword = "Warning(s)","Warning "
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+Color = 11
+Selcolor = 3
+(Color256)
+Attribs = BOLD
+Color = 11
+Selcolor = 3
+
+<Errors>
+Keyword = "Error(s)","Error "
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+Color = 2
+Selcolor = 2
+(Color256)
+Attribs = BOLD
+Color = 2
+Selcolor = 2
+
+<Zeilennummern>
+From = "1"-"9"
+To = ":"
+(Color16)
+Color = 4
+Selcolor = 5
+(Color256)
+Color = 4
+Selcolor = 5
