@@ -1,0 +1,88 @@
+
+;********************************************************
+[Scripter-Script]
+;********************************************************
+Txttype = "sic"
+Active = TRUE
+CaseSensitive = TRUE
+Token = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
+
+
+<Kommentar>
+From = "/*"
+To = "*/"
+(Color2)
+Attribs = LIGHT
+(Color16)
+Color = 11
+Selcolor = 3
+(Color256)
+Color = 11
+Selcolor = 3
+
+<Kommentar>
+From = "//"
+To = EOL
+
+<Zeichenkette>
+From = "\""
+To = "\""
+Quotechar = "\\"
+(Color16)
+Color = 9
+Selcolor = 9
+(Color256)
+Color = 9
+Selcolor = 9
+
+<Array>
+Keyword = "[","]"
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+(Color256)
+Attribs = BOLD
+
+<Zeichen>
+From = "'"
+To = "'"
+Quotechar = "\\"
+(Color16)
+Color = 9
+Selcolor = 9
+(Color256)
+Color = 9
+Selcolor = 9
+
+<Schlsselworte>
+Keyword = "auto","break","continue","cdecl","catch","case","default","do"
+Keyword = "extern","else","enum","function","forever","for","goto","if"
+Keyword = "local","pascal","proc","return","sizeof","switch","typedef"
+Keyword = "try","uses","while","with"
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+(Color256)
+Attribs = BOLD
+
+<Hex-Konstanten>
+From = "0x","0X"
+While = "0"-"9","A"-"F","a"-"f"
+(Color16)
+Color = 12
+Selcolor = 5
+(Color256)
+Color = 12
+Selcolor = 5
+
+<Dezimal-Konstanten>
+From = "0"-"9"
+While = ".","0"-"9"
+(Color16)
+Color = 12
+Selcolor = 5
+(Color256)
+Color = 12
+Selcolor = 5
