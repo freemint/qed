@@ -1,6 +1,90 @@
-	ASHQED.KRZ @ Fr
+Version 5.0b2                    (15.05.02)
+-------------------------------------------
+DEUTSCH:
+   ù Reihenfolge der Suche nach der Ressource-Datei ver„ndert. Es wird jetzt 
+     1. im eigenen Verzeichnis, 2. in $QED und 3. via shel_find nach der 
+     Ressource gesucht. Einigen Leuten scheint es passiert zu sein, da sie 
+     die letzte Beta in einem Extraordner installiert hatten, aber die Env-
+     Variable $QED weiter auf das ursprngliche Verzeichnis zeigte. Das gab 
+     Fehler wg. "Falscher Ressource Version", weil die Ressource aus dem 
+     alten Verzeichnis geladen wurde.
+   ù Beim Speichern wird AV_PATH_UPDATE gesendet; der Desktop aktualisiert
+     das entsprechende Verzeichnis.
+   ù Neue Option "Schlieen ignorieren" im SE-Parameter-Dialog. Dies
+     verhindert das „uerst l„stige Schlieen aller QED-Fenster, wenn man
+     in der PC-Shell das Projekt wechselt.
+   ù Neue Option "Fenster sichern" in globale Optionen. Wenn ausgeschaltet,
+     werden die Fenster (Position und geladener Text) beim Optionen sichern
+     nicht mehr mitgespeichert.
+   ù Farbaufl”sungsabh„ngige Informationen werden jetzt in folgenden Dateien 
+     gespeichert: col01bit.qed fr 2, col02bit.qed fr 4, col04bit.qed fr 16 
+     und col08bit fr 256 (oder mehr) Farben.
+   ù Suchmaske fr Suchen in Dateien mit * vorbelegt
+   ù Default-Pfad fr Suchen in Dateien wird aus oberstem Text genommen (wenn 
+     schon einer ge”ffnet).
+   ù Bei Suchen in Dateien ist Suche nach Text Default-Eingabefeld.
+   ù Bei Suchen in Dateien wird jetzt Suche nach Text wie beim Suchen/Ersetzen
+     mit Blockauswahl vorbelegt.
+   ù Iconify und Hypertext ans neue Logo angepasst
+   ù Bugfix: "Suchen" wurde nicht ausgegraut, wenn kein Text geladen.
+     Dabei seltsamer Effekt: ST-Guide ging auf.
+   ù Bugfix: Selten Busfehler und H„nger beim ™ffnen des Syntax-Highlighting-
+     Dialogs. Vermutliche Ursache gefixt; da der Fehler aber nur sporadisch 
+     auftrat, bin ich nicht 100% sicher. Bitte drauf achten.
+   ù Bugfix: Die Archive sind jetzt wieder lzh und lower case
 
-   ùùùù
+ENGLISH:
+   ù changed the order of searching for the resource file. It is searched now 
+     1. in the own directory, 2. in $QED, 3. via shel_find in the search path. 
+     Some people had the problem, that they installed the new beta in a folder 
+     different to their previous installation. Because $QED pointed to the old 
+     directory, and the resource was loaded from there, they've got errors 
+     because of "Wrong Resource Version"
+   ù Sending AV_PATH_UPDATE now after saving; the desktop updates its paths 
+     now.
+   ù New option "ignore close" in the SE-parameters dialog. This preserves the 
+     annoying closing of all windows, when changing a project in the PC-Shell.
+   ù New Option "Save windows" in Global options. If deselected, window 
+     positions and open texts aren't loaded any more.
+   ù Color resolution dependent informations are now stored in the files 
+     col01bit.qed for 2, col02bit.qed for 4, col04bit.qed for 16 and col08bit 
+     for 256 (or more) colors.
+   ù Search mask for "Search for files" now predefined with *
+   ù Default path for search for files is now taken from the upper text (if 
+     any is loaded).
+   ù Finding text is now default text field in search for files.
+   ù Finding text is now filled with block selection in search for files (like 
+     in the find/replace dialog)
+   ù Changed hypertext and iconify to new logo
+   ù Bugfix: "Search" wasn't disabled in the menu, if no text was loaded. 
+     Strange effect: ST-Guide opened, if you clicked "Search".
+   ù Bugfix: Sometimes bus errors and system hangs when opening syntax 
+     highlighting dialog. Probably fixed the cause, but I'm not 100% sure 
+     because it was a seldom and not reproducable error. Please look for this 
+     error and report it, if it happens again.
+   ù Bugfix: The archives are now lzh and lower case again.
+
+Version 5.0b							(09.05.02)
+-------------------------------------------
+DEUTSCH:
+   ù Syntax-Highlighting hinzugefgt.
+   ù Bei Papier- Text- und Blockfarben werden jetzt 256 Farben untersttzt. 
+
+ENGLISH:
+   ù Added syntax highlighting.
+   ù supporting 256 colors for paper, text and block colors.
+
+====== Christian stellt die Entwicklung ein, Heiko bernimmt ======
+
+Version 4.6							(15.04.02)
+
+   ù Stanislav Opichal's <opichals@seznam.cz> build
+   ù Ported to the current mintlib and cflib CVS version
+   ù 32bit integer compilation (int -> short conversion in all sources)
+   ù Only internal version
+
+====== Christian Felsh development ======
+
 Version 4.53							(19.09.99)
 
    ù Verhalten von Suchen (^F) und Weiter (^G) etwas ver„ndert:

@@ -1,6 +1,6 @@
 @database "qed - An Editor"
-@author "Christian Felsch"
-@$VER: 4.53
+@author "Heiko Achilles/Christian Felsch"
+@$VER: 5.0b
 @subject "Documentation/Editors"
 @options "+z-s"
 
@@ -11,16 +11,9 @@
 @limage logo.img 32
 
                            An editor for ATARI
-                              Version 4.53
+                              Version 5.0 Beta
 
-                               started by
-                             Tom Quellenberg
-                              continued by
-                            Christian Felsch
-
-                          English hypertext by 
-                              Guido Flohr
-
+                                  Authors
 
    @{U}Contents:@{0}
 
@@ -40,15 +33,14 @@
 
 @endnode
 
-@pnode "Christian Felsch"
-Contact:
+@pnode Authors
+started by Tom Quellenberg
+continued by Christian Felsch (Version 3.20 to 4.53)
+continued by Heiko Achilles (from Version 5.0 on)
+English hypertext by Guido Flohr/Heiko Achilles
+@endnode
 
-Christian Felsch
-Bevenser Weg 18
-21079 Hamburg
-Germany
-
-email: felsch@tu-harburg.de
+@pnode "Heiko Achilles"
 @endnode
 
 @pnode "Guido Flohr"
@@ -187,6 +179,13 @@ someplace that ST-Guide can find it.
 @{U}History                                                               qed@{0}
 
 @autorefoff
+@{U}Version 4.6 (Mar 15 2002)@{0}
+
+   ù Stanislav Opichal's <opichals@seznam.cz> port
+   ù Ported to the current mintlib and cflib CVS version
+   ù 32bit integer compilation (int -> short conversion in all sources)
+   ù Only internal version
+
 @{U}Version 4.53 (Sep 19 1999)@{0}
 
    ù Behaviour of Search (^F) and Again (^G) have been changed:

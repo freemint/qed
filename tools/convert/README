@@ -1,0 +1,19 @@
+
+ convert.app
+ ===========
+
+This little program converts old parameter files (default.qed 
+until version 3.98 beta) into the new file format (qed.cfg) of 
+version 4.0.  The new format is human readable (and writable), 
+yet you should edit it with care.
+
+After converting default.qed you should start qed once with the 
+new qed.cfg and save your configuration in order to remove 
+errors that have slipped into the file during conversion.
+
+Christian Felsch
+Hamburg, 30 March 97
+
+Contact:
+  christian_felsch@hh.maus.de
+  felsch@tu-harburg.d400.de 

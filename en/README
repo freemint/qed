@@ -1,0 +1,35 @@
+
+   From version 3.09 qed (including sources) will be in the public domain!
+
+Thus, both the program and the sources of version 3.09 may be copied 
+by everybody and may be freely distributed by bulletin board systems 
+etc.
+Yet the Tom has prohibited the charge of a fee of whatever kind.
+
+=========================================================================
+
+I - Christian Felsch - am the maintainer of the current version. I
+will also continue the development of qed in the future.  However, 
+everybody is welcome to support me, which is easily done, because I 
+always publish my versions with the complete sources.
+
+My version of qed can be found at:
+
+   ù Bulletin board systems
+       Maus Hamburg (+49 40 53 89 70 13, "Gruppenprogrammteil" QED)
+   ù Internet
+       http://www.tu-harburg.de/~smcf1605/
+
+
+This archive (qed-XXXen.lzh) only contains the english components of qed,
+translated readme's, hypertext and resource file.
+For installing qed you also need the language-independet parts of qed (e.g
+qed.app and tag files) from the german base archive (qed-XXX.lzh)!!
+
+
+Christian Felsch
+Hamburg, Germany
+19.09.1999
+
+Contact:
+  felsch@tu-harburg.de
