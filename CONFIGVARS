@@ -15,6 +15,9 @@ NATIVECC = gcc
 NATIVECFLAGS = -O -Wall
 CRLF = echo crlf -s
 
+# I don't have the mintlib/gemlib/cflib in the /usr/m68k-atari/mint
+GENERAL = $(M68K_ATARI_MINT_CFLAGS) $(M68K_ATARI_MINT_LDFLAGS)
+
 else
 
 CROSSPREFIX=
@@ -31,6 +34,7 @@ AR = $(CROSSPREFIX)ar
 RANLIB = $(CROSSPREFIX)ranlib
 STRIP = $(CROSSPREFIX)strip
 FLAGS = $(CROSSPREFIX)flags
+STACK = $(CROSSPREFIX)stack
 
 # 
 # some tools
