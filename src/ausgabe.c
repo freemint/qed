@@ -956,7 +956,7 @@ void head_out(WINDOWP window, TEXTP t_ptr)
 
 			ltoa(t_ptr->ypos+1, head_str + 8, 10);
 			head_str[strlen(head_str)] = ' ';
-			itoa(bild_pos(t_ptr->xpos,t_ptr->cursor_line,tab,tab_size)+1,head_str+18,10);
+			ltoa(bild_pos(t_ptr->xpos,t_ptr->cursor_line,tab,tab_size)+1,head_str+18,10); // STan: itoa -> ltoa
 			head_str[strlen(head_str)] = ' ';
 		}
 		else
