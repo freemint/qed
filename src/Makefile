@@ -40,6 +40,9 @@ $(TARGET): $(OBJS)
 
 include $(top_srcdir)/DEPENDENCIES
 
+strip:
+	$(STRIP) $(TARGET)
+	
 install: all
 	$(top_srcdir)/mkinstalldirs $(installdir)
 	cp $(TARGET) $(srcdir)/qed.rsc $(srcdir)/qed.hrd $(installdir)
