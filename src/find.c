@@ -204,7 +204,7 @@ static char *STRSTR(char *str_anf, short str_len, char *mstr_anf, short *found_l
 			if (*(--mstr)!=*(--str)) break;		/* Match fehlgeschlagen */
 			if ((--i)<=0) return(str); 			/* gefunden */
 		}
-		i = delta[str_anf[-1]];
+		i = delta[(unsigned char)str_anf[-1]];
 		str_anf += i;										/* weiterrcken */
 		str_len -= i;
 	}
@@ -249,7 +249,7 @@ static char *STRSTR1(char *str_anf, short str_len, char *mstr_anf, short *found_
 		else if (s=='„') s = 'Ž';
 */
 		s = nkc_toupper(s);
-		i = delta[s];
+		i = delta[(unsigned char)s];
 		str_anf += i;										/* weiterrcken */
 		str_len -= i;
 	}
@@ -259,7 +259,8 @@ static char *STRSTR1(char *str_anf, short str_len, char *mstr_anf, short *found_
 static char *STRSTR2(char *str_anf, short str_len, char *mstr_anf, short *found_len)
 /* Suche mit Quantoren (rekursiv) */
 {
-	char *str, *mstr, m, s;
+	char *str, *mstr, s;
+	unsigned char m;
 	short	len, anz;
 
 	if (line_start)										/* Muster am Anfang finden */
@@ -308,11 +309,11 @@ static char *STRSTR2(char *str_anf, short str_len, char *mstr_anf, short *found_
 			if (m=='[')
 			{
 				m = *mstr++;								/* nach '[' folgt ein Infozeichen */
-				if (((unsigned char)m)==0xFF)							/* echtes '[' */
+				if (m==0xFF)							/* echtes '[' */
 				{
 					if (s!='[') break;
 				}
-				else if (((unsigned char)m)==0xFE) 							/* Wortende (letztes in Muster) */
+				else if (m==0xFE) 							/* Wortende (letztes in Muster) */
 				{
 					if (len==0 || !setin(wort_set,s))
 					{
@@ -321,7 +322,7 @@ static char *STRSTR2(char *str_anf, short str_len, char *mstr_anf, short *found_
 					}
 					break;
 				}
-				else if (((unsigned char)m)==0xFC) 						/* Zeilenende */
+				else if (m==0xFC) 						/* Zeilenende */
 				{
 					if (len==0)
 					{
@@ -546,7 +547,7 @@ static void set_suchmode(char *Muster, char *Replace, bool Grkl, bool Quantor,
 			delta[i] = muster_len;
 		j = muster_len-1;
 		for (i=0; i<j; i++) 
-			delta[muster_txt[i]] = j-i;
+			delta[(unsigned char)muster_txt[i]] = j-i;
 	}
 	if (Global)
 	{
