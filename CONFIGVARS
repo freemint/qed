@@ -61,8 +61,8 @@ OPTS = -O2 -finline-functions -fomit-frame-pointer
 WARN = \
 	-Wall \
 	-Wmissing-prototypes \
-	-Wshadow \
 	-Wpointer-arith \
+	-Wshadow \
 	-Wcast-qual \
 	-Waggregate-return
 
