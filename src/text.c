@@ -3,6 +3,7 @@
 #include "find.h"
 #include "memory.h"
 #include "options.h"
+#include "window.h"
 #include "rsc.h"
 #include "set.h"
 #include "text.h"
@@ -101,6 +102,7 @@ void destruct_text(TEXTP t_ptr)
 	t_ptr = NULL;
 }
 
+
 TEXTP get_text(short icon)
 {
 	TEXTP	p;
@@ -114,6 +116,15 @@ TEXTP get_text(short icon)
 			return p;
 		p = p->next;
 	}
+	return NULL;
+}
+
+TEXTP get_top_text( void )
+{
+	WINDOWP w = winlist_classtop( CLASS_EDIT );
+	if( w )
+		return get_text( w->handle );
+	
 	return NULL;
 }
 

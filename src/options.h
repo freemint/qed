@@ -14,7 +14,7 @@ extern void		set_autosave_options(void);
  * Globale Optionen 
 */
 extern bool	clip_on_disk, wind_cycle, f_to_desk,
-				save_opt, overwrite, blinking_cursor, ctrl_mark_mode,
+				save_opt, save_win, overwrite, blinking_cursor, ctrl_mark_mode,
 				olga_autostart, emu_klammer;
 extern bool syntax_active;
 extern short	transfer_size, bin_line_len;

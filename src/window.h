@@ -81,6 +81,7 @@ extern short 		num_openwin			(short class);
 extern WINDOWP get_window			(short handle);
 extern void 	do_all_window		(short class, WIN_DOFUNC func);
 extern WINDOWP winlist_top			(void);
+extern WINDOWP winlist_classtop	(short class);
 extern void 	get_realtop			(void);
 extern WINDOWP real_top				(void);
 extern bool 	rc_first				(short wh, GRECT *b, GRECT *r);

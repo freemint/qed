@@ -13,6 +13,8 @@ extern SHELLENTRY	se_shells[];
 extern bool			se_activ;
 extern bool			se_autosave;
 extern bool			se_autosearch;
+extern bool     se_ignoreclose;
+
 
 /* Heiko */
 extern bool se_ignoreclose;

@@ -15,7 +15,8 @@ SHELLENTRY se_shells[SHELLANZ];	/* 0 - 4 : qed sucht Shell */
 
 bool 	se_activ;				/* haben wir Kontakt zur Shell? */
 bool	se_autosave,
-		se_autosearch;
+		se_autosearch,
+		se_ignoreclose;
 
 /* lokale Variablem **********************************************************/
 typedef struct _separm
@@ -390,12 +391,14 @@ void handle_se(short *msg)
 				{
 					strcpy(datei, p);
 				 	send_ack(TRUE);
-/*
+
 					if (debug_level & DBG_SE)
-*/
 						debug("SE_CLOSE von %d, Datei: %s, Flag: %d\n", msg[1], datei, msg[5]);
 
-					close_edit(datei, msg[5]);
+					if( !se_ignoreclose || strcmp( "*.*", datei ) != 0 )
+						close_edit(datei, msg[5]);
+					else
+						debug("SE_CLOSE *.* ignored\n");
 				}
 			}
 			else
@@ -562,7 +565,7 @@ static void se_options(void)
 
 	set_state(seoptions, SESAVE, OS_SELECTED, se_autosave);
 	set_state(seoptions, SESEARCH, OS_SELECTED, se_autosearch);
-
+	set_state(seoptions, SEIGNORECLOSE, OS_SELECTED, se_ignoreclose );
 	set_flag(seoptions, SEOK, OF_DEFAULT, se_activ);
 	set_flag(seoptions, SESUCH, OF_DEFAULT, !se_activ);
 	
@@ -577,6 +580,7 @@ static void se_options(void)
 
 		se_autosave = get_state(seoptions, SESAVE, OS_SELECTED);
 		se_autosearch = get_state(seoptions, SESEARCH, OS_SELECTED);
+		se_ignoreclose = get_state(seoptions, SEIGNORECLOSE, OS_SELECTED);
 
 		if (antw == SESUCH)
 		{

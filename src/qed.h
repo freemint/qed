@@ -247,27 +247,28 @@
 #define GOBLEN           4   /* FTEXT in Baum GLOBALOP */
 #define GOBEXT1          7   /* FTEXT in Baum GLOBALOP */
 #define GOASAVE          14  /* BUTTON in Baum GLOBALOP */
-#define GOCLIP           15  /* BUTTON in Baum GLOBALOP */
-#define GOBLINK          16  /* BUTTON in Baum GLOBALOP */
-#define GOCTRL           17  /* BUTTON in Baum GLOBALOP */
-#define GOWDIAL          18  /* BUTTON in Baum GLOBALOP */
-#define GOOLGA           19  /* BUTTON in Baum GLOBALOP */
-#define GOKLAMMER        20  /* BUTTON in Baum GLOBALOP */
-#define GOTRANS          22  /* FTEXT in Baum GLOBALOP */
-#define GOFCSTR          24  /* STRING in Baum GLOBALOP */
-#define GOBCSTR          25  /* STRING in Baum GLOBALOP */
-#define GOFCOL           26  /* BOX in Baum GLOBALOP */
-#define GOBCOL           27  /* BOX in Baum GLOBALOP */
-#define GOBLOCKFCOL      28  /* BOX in Baum GLOBALOP */
-#define GOBLOCKBCOL      29  /* BOX in Baum GLOBALOP */
-#define GOSYNTAX         32  /* BUTTON in Baum GLOBALOP */
-#define GOHELPSEL        34  /* BUTTON in Baum GLOBALOP */
-#define GOHELPNAME       35  /* STRING in Baum GLOBALOP */
-#define GOAVWIN          37  /* BUTTON in Baum GLOBALOP */
-#define GOAVKEY          38  /* BUTTON in Baum GLOBALOP */
-#define GOHELP           39  /* BOXTEXT in Baum GLOBALOP */
-#define GOOK             40  /* BUTTON in Baum GLOBALOP */
-#define GOABBR           41  /* BUTTON in Baum GLOBALOP */
+#define GOSAVEWIN        15  /* BUTTON in Baum GLOBALOP */
+#define GOCLIP           16  /* BUTTON in Baum GLOBALOP */
+#define GOBLINK          17  /* BUTTON in Baum GLOBALOP */
+#define GOCTRL           18  /* BUTTON in Baum GLOBALOP */
+#define GOWDIAL          19  /* BUTTON in Baum GLOBALOP */
+#define GOOLGA           20  /* BUTTON in Baum GLOBALOP */
+#define GOKLAMMER        21  /* BUTTON in Baum GLOBALOP */
+#define GOSYNTAX         22  /* BUTTON in Baum GLOBALOP */
+#define GOTRANS          24  /* FTEXT in Baum GLOBALOP */
+#define GOFCSTR          28  /* STRING in Baum GLOBALOP */
+#define GOFCOL           29  /* BOX in Baum GLOBALOP */
+#define GOBLOCKFCOL      30  /* BOX in Baum GLOBALOP */
+#define GOBCSTR          31  /* STRING in Baum GLOBALOP */
+#define GOBCOL           32  /* BOX in Baum GLOBALOP */
+#define GOBLOCKBCOL      33  /* BOX in Baum GLOBALOP */
+#define GOHELPSEL        35  /* BUTTON in Baum GLOBALOP */
+#define GOHELPNAME       36  /* STRING in Baum GLOBALOP */
+#define GOAVWIN          38  /* BUTTON in Baum GLOBALOP */
+#define GOAVKEY          39  /* BUTTON in Baum GLOBALOP */
+#define GOHELP           40  /* BOXTEXT in Baum GLOBALOP */
+#define GOOK             41  /* BUTTON in Baum GLOBALOP */
+#define GOABBR           42  /* BUTTON in Baum GLOBALOP */
 
 #define LOCALOP          19  /* Formular/Dialog */
 #define OTYPESTR         2   /* STRING in Baum LOCALOP */
@@ -341,9 +342,10 @@
 #define SESTATUS         10  /* TEXT in Baum SEOPTION */
 #define SESEARCH         11  /* BUTTON in Baum SEOPTION */
 #define SESAVE           12  /* BUTTON in Baum SEOPTION */
-#define SESUCH           13  /* BUTTON in Baum SEOPTION */
-#define SEOK             14  /* BUTTON in Baum SEOPTION */
-#define SSABBRUCH        15  /* BUTTON in Baum SEOPTION */
+#define SEIGNORECLOSE    13  /* BUTTON in Baum SEOPTION */
+#define SESUCH           14  /* BUTTON in Baum SEOPTION */
+#define SEOK             15  /* BUTTON in Baum SEOPTION */
+#define SSABBRUCH        16  /* BUTTON in Baum SEOPTION */
 
 #define AKTION           26  /* Formular/Dialog */
 #define ATEXT            1   /* TEXT in Baum AKTION */
@@ -426,7 +428,7 @@
 
 #define WINICON          29  /* Formular/Dialog */
 #define WIBOX            0   /* BOX in Baum WINICON */
-#define WIBILD           1   /* IMAGE in Baum WINICON */
+#define WIBILD           4   /* IMAGE in Baum WINICON */
 
 #define PRN_ICON         30  /* Formular/Dialog */
 

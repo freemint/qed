@@ -50,22 +50,24 @@ bool init_resource(void)
 {
 	PATH	rsc_path;
 
-	if (path_from_env("QED", rsc_path))
+	/* 1st, look in our own app dir */
+	strcpy(rsc_path, gl_appdir);
+	strcat(rsc_path, "qed.rsc");
+	rsc_init = rsrc_load(rsc_path);
+
+	/* then look in $QED */
+	if( !rsc_init && path_from_env("QED", rsc_path))
 	{
 		strcat(rsc_path, "qed.rsc");
 		rsc_init = rsrc_load(rsc_path);
 	}
+	
+	/* then look via shel_find */
 	if (!rsc_init)
 	{
 		strcpy(rsc_path, "qed.rsc");
 		shel_find(rsc_path);
 		rsc_init = rsrc_load(rsc_path);
-		if (!rsc_init)
-		{
-			strcpy(rsc_path, gl_appdir);
-			strcat(rsc_path, "qed.rsc");
-			rsc_init = rsrc_load(rsc_path);
-		}
 	}
 
 	if (rsc_init)

@@ -13,6 +13,8 @@ short	av_shell_id = -1,				/* ID des Desktops */
 
 /* lokale Variablen **********************************************************/
 
+char *av_buf; /* AV-Puffer */
+
 /* Hilfe-System **************************************************************/
 
 #ifndef AC_HELP
@@ -273,6 +275,21 @@ void send_avwinclose(short handle)
 	}
 }
 
+void send_avpathupdate( char *str )
+{
+	short hi, lo;
+	strncpy( av_buf, str, MAX_PATH_LEN );
+	ol2ts( (long) av_buf, &hi, &lo );
+	memset(msgbuff, 0, (short)sizeof(msgbuff));
+	msgbuff[0] = AV_PATH_UPDATE;
+	msgbuff[1] = gl_apid;
+	msgbuff[3] = hi;
+	msgbuff[4] = lo;
+	send_msg(av_shell_id);
+	if (debug_level & DBG_AV)
+		debug("AV_PATHUPDATE (%s)\n", str );
+}
+
 void send_avdrag(short wh, short m_x, short m_y, short kstate, short data_type)
 {
 	if ((av_shell_id >= 0) && (av_shell_status & 512))
@@ -475,6 +492,8 @@ void init_av(void)
 	short	i;
 	char	name[9], *p;
 
+	av_buf = malloc_global( MAX_PATH_LEN+1 );
+	av_buf[ MAX_PATH_LEN ] = EOS;
 	p = getenv("AVSERVER");
 	if (p != NULL)
 	{
@@ -495,4 +514,5 @@ void init_av(void)
 void term_av(void)
 {
 	send_avexit();
+	Mfree( av_buf );
 }

@@ -104,6 +104,19 @@ WINDOWP winlist_top(void)			/* ehemals top() */
 }
 
 /*
+ * Erstes Fenster einer bestimmten Klasse aus der Liste.
+*/
+WINDOWP winlist_classtop	(short class)
+{
+	WINDOWP p;
+	for( p = used_list; p; p = p->next )
+		if( p->handle != UNUSED && p->class == class)
+			return p;
+
+	return NULL;
+}
+
+/*
  * Top-Fenster vom AES.
 */
 void get_realtop(void)

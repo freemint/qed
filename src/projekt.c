@@ -25,6 +25,7 @@
 #include "text.h"
 #include "window.h"
 #include "projekt.h"
+#include "block.h"
 
 
 /* exprortierte Variablen **************************************************/
@@ -74,8 +75,6 @@ static void	crt_prj				(WINDOWP window);
 static short	crt_new_prj			(char *filename);
 static void	info_projekt		(short icon);
 static void	select_def_prj 	(void);
-
-/*****************************************************************************/
 
 /*
  * do_for_prj()
@@ -424,7 +423,32 @@ static bool p_icon_test(short icon, short action)
 				erg = TRUE; 
 				break;
 			case DO_ADD 	:
-				erg = findfile_dial(df_path, FALSE);
+				{
+					TEXTP p = get_top_text();
+					if( df_path[0] == EOS ) 
+					{
+						if( p )                             /* versuchen, Pfad des obersten Textes zu holen */
+							split_filename( p->filename, df_path, NULL );
+						else
+							get_path(df_path, 0);							/* sonst aktuellen Pfad der Anwendung holen */
+					}
+	
+					if (p && p->block) /* Suchstring vorbelegen */
+					{
+						RING	r;
+			
+						/* copy to R_STR */
+						block_copy( p, &r );
+						if (strlen(TEXT(FIRST(&r))) > 0)
+						{
+							strncpy(s_str, TEXT(FIRST(&r)), HIST_LEN);
+							kill_textring(&r);
+							s_str[HIST_LEN] = EOS;
+						}
+					}
+	
+					erg = findfile_dial(df_path, FALSE);
+				}
 				break;
 			case DO_AUTOSAVE :
 				if (as_prj && t_ptr->moved)
@@ -1964,8 +1988,7 @@ void find_on_disk(void)
 
 void init_projekt(void)
 {
-	get_path(df_path, 0);							/* Aktuellen Pfad holen */
 	prj_type = decl_icon_type(p_icon_test, p_icon_edit, p_icon_exist, p_icon_drag);
-	def_prj_path[0] = EOS;
+	df_path[0] = def_prj_path[0] = EOS;
 	def_icon = -1;
 }

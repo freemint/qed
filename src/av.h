@@ -32,6 +32,9 @@ extern void	send_avwinclose	(short handle);
  * Fenster auf bzw. zu.
 */
 
+extern void send_avpathupdate ( char *str );
+/* fordert nach Speichern auf, das Directory zu aktualisieren. */
+
 extern bool	call_help			(char *str);
 /*
  * Schickt ein AC_HELP an das angemeldete Hilfe-ACC.

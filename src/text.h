@@ -5,6 +5,7 @@ extern TEXTP	new_text				(short link);
 extern void		destruct_text		(TEXTP t_ptr);
 extern void		clear_text			(TEXTP t_ptr);
 extern TEXTP	get_text				(short link);
+extern TEXTP  get_top_text    (void);
 extern void		do_all_text			(TEXT_DOFUNC func);
 
 extern void		set_text_name		(TEXTP t_ptr, char *filename, bool namenlos);

@@ -1010,6 +1010,9 @@ bool findfile_dial(char *ff_path, bool in_prj)
 	bool	close = FALSE, p_v;
 	MDIAL	*dial;
 	POPUP	pop;
+
+	if( ff_mask[0] == EOS )
+		strcpy( ff_mask, "*" );
 		
 	save_clip();
 
@@ -1045,7 +1048,8 @@ bool findfile_dial(char *ff_path, bool in_prj)
 
 	cycle = 0;
 
-	dial = open_mdial(find_obj, in_prj ? FFTEXT : FFMASK);
+	dial = open_mdial(find_obj, FFTEXT );
+/*	dial = open_mdial(find_obj, in_prj ? FFTEXT : FFMASK);*/
 	if (dial != NULL)
 	{
 		while (!close)

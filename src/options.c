@@ -83,7 +83,7 @@ bool syntax_active;
 short	transfer_size, bin_line_len;
 short	fg_color, bg_color;
 short fg_block_color, bg_block_color;
-bool	save_opt, overwrite, blinking_cursor, ctrl_mark_mode, olga_autostart,
+bool	save_opt, save_win, overwrite, blinking_cursor, ctrl_mark_mode, olga_autostart,
 		emu_klammer;
 PATH	helpprog;
 char	bin_extension[BIN_ANZ][MUSTER_LEN+1];
@@ -122,6 +122,7 @@ void set_global_options(void)
 	
 	old_cycle = wind_cycle;
 	set_state(globalop, GOASAVE, OS_SELECTED, save_opt);
+	set_state(globalop, GOSAVEWIN, OS_SELECTED, save_win);
 	set_state(globalop, GOCLIP, OS_DISABLED, (clip_dir[0] == EOS));
 	set_state(globalop, GOCLIP, OS_SELECTED, clip_on_disk);
 	set_state(globalop, GOBLINK, OS_SELECTED, blinking_cursor);
@@ -228,6 +229,7 @@ void set_global_options(void)
 		if (antw == GOOK)
 		{
 			save_opt = get_state(globalop, GOASAVE, OS_SELECTED);
+			save_win = get_state(globalop, GOSAVEWIN, OS_SELECTED);
 			if (clip_dir[0] != EOS)
 				clip_on_disk = get_state(globalop, GOCLIP, OS_SELECTED);
 			blinking_cursor = get_state(globalop, GOBLINK, OS_SELECTED);
@@ -736,7 +738,7 @@ void set_syntax_options(void)
 	build_rule_popup(act_txttype, &rules);
 	get_syntax_settings(act_txttype, 0);
 	
-	dial = open_mdial(syntaxop, GOTRANS);
+	dial = open_mdial(syntaxop, 0);
 	if (dial != NULL)
 	{
 		while (!close)
@@ -843,6 +845,7 @@ void init_default_var(void)
 	rp_box_y	  = 0;
 
 	save_opt	  = FALSE;
+	save_win  = FALSE;
 	wind_cycle = FALSE;
 	clip_on_disk = TRUE;
 	overwrite  = FALSE;
@@ -893,6 +896,8 @@ void init_default_var(void)
 
 	se_autosave = FALSE;
 	se_autosearch = FALSE;
+	se_ignoreclose = FALSE;
+	
 	for (i = 0; i < SHELLANZ; i++)
 	{
 		se_shells[i].name[0] = EOS;
@@ -931,6 +936,7 @@ void init_default_var(void)
 
 static PATH			cfg_path = "";
 static FILENAME	dsp_name;			/* Name der Display-Datei */
+static FILENAME col_name;     /* Name der Farb-Datei */
 static FILE			*fd;
 static LOCOPTP		lo = NULL;
 static short			muster_nr = 1;
@@ -938,9 +944,12 @@ static short			muster_nr = 1;
 static bool get_cfg_path(void)
 {
 	bool found;
+	short pl;
 	strcpy(cfg_path, CFGNAME);
 	found = get_config_file(cfg_path);
 	sprintf(dsp_name, "%04d%04d.qed", gl_desk.g_x + gl_desk.g_w, gl_desk.g_y + gl_desk.g_h);
+	pl = min( gl_planes, 8 ); /* max. 8 planes supported; higher resolutions get the same color */
+	sprintf(col_name, "col%02dbit.qed", pl );
 	return found;
 }
 
@@ -1052,6 +1061,8 @@ static void parse_line(POSENTRY **arglist, char *zeile)
 		/* Globales */
 		else if (strcmp(var, "GlobalAutosaveCfg") == 0)
 			read_cfg_bool(buffer, &save_opt);
+		else if (strcmp(var, "GlobalSaveWindows") == 0)
+			read_cfg_bool(buffer, &save_win);
 		else if (strcmp(var, "GlobalFgColor") == 0)
 			fg_color = atoi(buffer);
 		else if (strcmp(var, "GlobalBgColor") == 0)
@@ -1234,6 +1245,8 @@ static void parse_line(POSENTRY **arglist, char *zeile)
 			read_cfg_bool(buffer, &se_autosave);
 		else if (strcmp(var, "SESearch") == 0)
 			read_cfg_bool(buffer, &se_autosearch);
+		else if (strcmp(var, "SEIgnoreClose") == 0)
+			read_cfg_bool(buffer, &se_ignoreclose);
 		else if (strcmp(var, "SEShellName") == 0)
 		{
 			read_cfg_str(buffer, tmp);
@@ -1309,7 +1322,39 @@ void option_load(POSENTRY **list)
 		fclose(fd);
 		fd = NULL;
 
-		/* Bildschirm-abh„ngige Parameter sichern */
+		/* Farb-abh„ngige Parameter laden */
+		split_filename(cfg_path, tmp, NULL);
+		strcat(tmp, col_name);
+		fd = fopen(tmp, "r");
+		if (fd != NULL)
+		{
+			/* 1. Zeile auf ID checken */
+			fgets(buffer, (short)sizeof(buffer), fd);
+			if (strncmp(buffer, "ID=qed color configuration", 26) == 0)
+			{
+				while (fgets(buffer, (short)sizeof(buffer), fd) != NULL)
+				{
+					if (buffer[strlen(buffer) - 1] == '\n')
+						buffer[strlen(buffer) - 1] = EOS;
+					parse_line(list, buffer);
+				}
+			}
+			else
+			{
+				/* Zeile kurzhacken */
+				if (strlen(buffer) > 28)
+					buffer[28] = EOS;
+				snote(1, 0, WRONGINF, buffer);
+			}
+
+			fclose(fd);
+			fd = NULL;
+			
+			set_drawmode();
+			
+		}
+		
+		/* Aufl”sungs-abh„ngige Parameter laden */
 		split_filename(cfg_path, tmp, NULL);
 		strcat(tmp, dsp_name);
 		fd = fopen(tmp, "r");
@@ -1337,16 +1382,10 @@ void option_load(POSENTRY **list)
 			fclose(fd);
 			fd = NULL;
 			
-			if (gl_planes == 1)
-			{
-				fg_color = G_BLACK;
-				bg_color = G_WHITE;
-				fg_block_color = bg_color;
-				bg_block_color = fg_color;
-			}
 			set_drawmode();
 			
 		}
+
 		/* Zum Schluž noch 'pdlg.qed' */
 		prn_get_cfg("PdlgRead", cfg_path);
 	}
@@ -1451,6 +1490,7 @@ void option_save(void)
 	
 		/* Globales */
 		write_cfg_bool("GlobalAutosaveCfg", save_opt);
+		write_cfg_bool("GlobalSaveWindows", save_win);
 		write_cfg_int ("GlobalBinLineLen", bin_line_len);
 		write_cfg_bool("GlobalBlinkCursor", blinking_cursor);
 		write_cfg_bool("GlobalCtrlBlock", ctrl_mark_mode);
@@ -1541,6 +1581,7 @@ void option_save(void)
 		/* SE-Protokoll */
 		write_cfg_bool("SESave", se_autosave);
 		write_cfg_bool("SESearch", se_autosearch);
+		write_cfg_bool("SEIgnoreClose", se_ignoreclose);
 		for (i = 0; i < SHELLANZ - 1; i++)
 		{
 			if (se_shells[i].name[0] != EOS)
@@ -1550,13 +1591,13 @@ void option_save(void)
 		fclose(fd);
 		fd = NULL;
 
-		/* Bildschirm-abh„ngige Parameter sichern */
+		/* Farb-abh„ngige Parameter sichern */
 		split_filename(cfg_path, tmp, NULL);
-		strcat(tmp, dsp_name);
+		strcat(tmp, col_name);
 		fd = fopen(tmp, "w");
-		if (fd != NULL)
+		if (fd != NULL )
 		{
-			fprintf(fd, "ID=qed display configuration\n");
+			fprintf(fd, "ID=qed color configuration\n");
 
 			/* Farb-Infos */
 			write_cfg_int("GlobalBgColor", bg_color);
@@ -1564,21 +1605,36 @@ void option_save(void)
 			write_cfg_int("GlobalBlockBgColor", bg_block_color);
 			write_cfg_int("GlobalBlockFgColor", fg_block_color);
 
-			/* geladene Dateien */
-			do_all_text(save_open_text);
-
-			/* Pos. der Replace-Ask-Box */
-			fprintf(fd, "ReplaceBox=%d %d\n", rp_box_x, rp_box_y);
-
-			/* Fensterfont */	
-			write_cfg_int("WinFontID", font_id);
-			write_cfg_int("WinFontSize", font_pts);
-	
-			/* Fensterposition */
-			save_winlist(fd);
-
 			fclose(fd);
 			fd = NULL;
+		}
+
+		/* Aufl”sungs-abh„ngige Parameter sichern */
+		if( save_win )
+		{
+			split_filename(cfg_path, tmp, NULL);
+			strcat(tmp, dsp_name);
+			fd = fopen(tmp, "w");
+			if (fd != NULL )
+			{
+				fprintf(fd, "ID=qed display configuration\n");
+	
+				/* geladene Dateien */
+				do_all_text(save_open_text);
+	
+				/* Pos. der Replace-Ask-Box */
+				fprintf(fd, "ReplaceBox=%d %d\n", rp_box_x, rp_box_y);
+	
+				/* Fensterfont */	
+				write_cfg_int("WinFontID", font_id);
+				write_cfg_int("WinFontSize", font_pts);
+		
+				/* Fensterposition */
+				save_winlist(fd);
+	
+				fclose(fd);
+				fd = NULL;
+			}
 		}
 	}
 	else
