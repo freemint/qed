@@ -1,5 +1,4 @@
 #include <dirent.h>
-#include <keycodes.h>
 #include <support.h>
 #include <sys/stat.h>
 #include <time.h>
