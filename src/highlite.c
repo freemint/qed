@@ -150,7 +150,7 @@ typedef struct rule {
 	STRINGENTRY *kwstring[256];       /* all strings to be searched for, indexed by the first char */
 	char kwsinglechar[256];           /* all single chars of this rule */
 	char kwchar[256];                 /* all beginning chars of kwsinglechar and kwstring (pre filter) */
-	char quotechar;                   /* quote char, as e.g. \ in C strings */
+	unsigned char quotechar;          /* quote char, as e.g. \ in C strings */
 	struct rule *link;                /* stoprule, if type == RULE_FROM, or link to startrule if nested rule */
 	struct rule *next;                /* next rule struct */
 } RULE;
@@ -375,7 +375,7 @@ void Hl_Exit( void )
 
 
 /******************************************************************************/
-/* subroutines for Hl_read_syn()
+/* subroutines for Hl_read_syn()                                              */
 /******************************************************************************/
 
 /* find rule by name
@@ -416,7 +416,7 @@ static TXTRULE *txtrule_by_name( char *txtname )
  * string and  a pointer to the next string
  * if ended by " in str (or NULL if no next string)
  */
-static char *rreadstr( char **str )
+static unsigned char *rreadstr( char **str )
 {
 	char lastchar = '\0';
 	char *retstr = ++(*str);
@@ -554,7 +554,7 @@ static char *ruletok( char *str, int *flags, int linenr )
 static BOOLEAN parse_rule( TXTRULE *txtrule, RULE *rule, char *keywords, RULETYPE ruletype,
                         int linenr, RESTYPE curr_colidx )
 {
-	char *st;
+	unsigned char *st;
 	int flags;
 	BOOLEAN caseindiff = !(txtrule->flags & TXTRULEF_CASE);
 
@@ -657,9 +657,9 @@ static void read_boolflag( int *var, int flag, char *str, int linenr )
 static void parse_attribs( RULE *rule, char *attribs, int linenr, RESTYPE curr_colidx )
 {
 	char *st = (char*)strtok( attribs, "," );
-
 	if( !st )
-   	HL_ERROR( E_HL_SYNTAX, linenr, return; );
+		HL_ERROR( E_HL_SYNTAX, linenr, return; );
+
 	while( st )
 	{
 		str_xtrim( st, " " );
@@ -672,12 +672,12 @@ static void parse_attribs( RULE *rule, char *attribs, int linenr, RESTYPE curr_c
 		else if( stricmp( st, "none" ) == 0 )
 			rule->style[curr_colidx].attribs = 0;
 		else
-   		HL_ERROR( E_HL_SYNTAX, linenr, return; );
-   	st = strtok( NULL, "," );
+			HL_ERROR( E_HL_SYNTAX, linenr, return; );
+		st = strtok( NULL, "," );
 	}
+
 	if( rule->link )
 		rule->link->style[curr_colidx].attribs = rule->style[curr_colidx].attribs;
-
 }
 
 /* atoi with check for min/max and error if wrong value.
@@ -815,7 +815,7 @@ static BOOLEAN parse_line( char *linebuf, int linenr, char *filename, BOOLEAN se
 
 	if( !settingsonly && stricmp( keyword, "Txttype" ) == 0)
 	{
-		char *st = rreadstr( &value );
+		unsigned char *st = rreadstr( &value );
 
 		if( rule )
 			HL_ERROR( E_HL_SYNTAX, linenr, return TRUE; );
@@ -848,7 +848,7 @@ static BOOLEAN parse_line( char *linebuf, int linenr, char *filename, BOOLEAN se
 	}
 	else if( !settingsonly && stricmp( keyword, "Token" ) == 0)
 	{
-		char *st = rreadstr( &value );
+		unsigned char *st = rreadstr( &value );
 		if( rule || !st || *(++value) )
 			HL_ERROR( E_HL_SYNTAX, linenr, return TRUE; );
 
@@ -864,11 +864,12 @@ static BOOLEAN parse_line( char *linebuf, int linenr, char *filename, BOOLEAN se
 		return TRUE;
 	}
 
-	if( !rule )
+	if( !rule ) {
 		if( settingsonly )
 			return TRUE;
 		else
 			HL_ERROR( E_HL_SYNTAX, linenr, return TRUE; );
+	}
 
 	if( !settingsonly && stricmp( keyword, "keyword" ) == 0)
 	{
@@ -897,6 +898,7 @@ static BOOLEAN parse_line( char *linebuf, int linenr, char *filename, BOOLEAN se
 			case COLOR2:   rule->style[curr_colidx].color = getvalue( value, -1, 1, linenr );   break;
 			case COLOR16:  rule->style[curr_colidx].color = getvalue( value, -1, 15, linenr );  break;
 			case COLOR256: rule->style[curr_colidx].color = getvalue( value, -1, 255, linenr ); break;
+			default:;
 		}
 		if( rule->link )
 			rule->link->style[curr_colidx].color = rule->style[curr_colidx].color;
@@ -908,6 +910,7 @@ static BOOLEAN parse_line( char *linebuf, int linenr, char *filename, BOOLEAN se
 			case COLOR2:   rule->style[curr_colidx].selcolor = getvalue( value, -1, 1, linenr );   break;
 			case COLOR16:  rule->style[curr_colidx].selcolor = getvalue( value, -1, 15, linenr );  break;
 			case COLOR256: rule->style[curr_colidx].selcolor = getvalue( value, -1, 255, linenr ); break;
+			default:;
 		}
 		if( rule->link )
 			rule->link->style[curr_colidx].selcolor = rule->style[curr_colidx].selcolor;
@@ -920,7 +923,7 @@ static BOOLEAN parse_line( char *linebuf, int linenr, char *filename, BOOLEAN se
 		read_boolflag( &rule->flags, RULEF_FIRSTCOLUMN, value, linenr );
 	else if( !settingsonly && stricmp( keyword, "Quotechar" ) == 0)
 	{
-		char *st = rreadstr( &value );
+		unsigned char *st = rreadstr( &value );
 		if( !st || !*st || *(++value) || strlen( st ) > 1 )
 			HL_ERROR( E_HL_SYNTAX, linenr, return TRUE; );
 		rule->quotechar = st[0];
@@ -1100,9 +1103,9 @@ int Hl_ReadSyn( char *filename, int curr_planes, int settingsonly )
 
 
 
-/******************************************************************************/
-/* subroutines for Hl_write_syn()
-/******************************************************************************/
+/******************************************************************************
+ * subroutines for Hl_write_syn()
+ ******************************************************************************/
 
 /* fprint all STRINGENTRY structs in <stringentry> vector with prefix in <prefix>
  * eg. <keyword="auto","break","case">
@@ -1236,7 +1239,7 @@ static void	fprint_attribs( FILE *file, HL_ELEM attribs, BOOLEAN settingsonly  )
  */
 static void fprint_rule( FILE *file, RULE *rule, BOOLEAN iscase, BOOLEAN settingsonly )
 {
-	char *prefix;
+	char *prefix = "";
 	char buffer[80];
 	char quotebuffer[ 160 ];
 	int i;
@@ -1342,26 +1345,26 @@ static void set_style( void )
 
 int Hl_WriteSyn( char *filename, int settingsonly )
 {
-	FILE *synfile;
+	FILE *synfile = NULL;
 	TXTRULE *trule = txtruleanchor;
 	RULE *rule;
 	char quotebuffer[ 256 ];
 	char buffer[ 256 ];
 	int i, j;
 
-	if( filename )
-		if( (synfile = fopen( filename, "w" )) == NULL
-		||  memory_error )
-			return FALSE;
+	if( memory_error )
+		return FALSE;
+	if( filename && (synfile = fopen( filename, "w" )) == NULL )
+		return FALSE;
 
 	set_style();
 
 	while( trule )
 	{
-		if( !filename )
-			if( (synfile = fopen( trule->filename, "w" )) == NULL
-			||  memory_error )
-				return FALSE;
+		if( memory_error )
+			return FALSE;
+		if( !filename && (synfile = fopen( trule->filename, "w" )) == NULL )
+			return FALSE;
 
 		fprintf( synfile, "\n;********************************************************\n" );
 		fprintf( synfile, "[%s]\n",trule->name );
@@ -1411,9 +1414,9 @@ int Hl_WriteSyn( char *filename, int settingsonly )
  ******************************************************************************/
 
 
-/******************************************************************************/
-/* subroutines for Hl_Update()
-/******************************************************************************/
+/******************************************************************************
+ * subroutines for Hl_Update()
+ ******************************************************************************/
 
 /* check and fix - if necessary - the size of the linebuffer in
  * which the format infos are saved temporary
@@ -1464,7 +1467,7 @@ static BOOLEAN add_to_linebuffer( RULE *rule, int len )
 }
 
 /* get next token to explore */
-static char *next_token( char *st, char token[256], char search[256] )
+static char *next_token( unsigned char *st, char token[256], char search[256] )
 {
 	for(;;)
 	{
@@ -1513,13 +1516,13 @@ static char *str_xieq( char *s1, char *s2 )
  * sets the global var memory_error to TRUE (check it after create_cachetok!)
  * and returns NULL.
  */
-static HL_LINE create_cachetok( char *st, RULE *rule, RULE **newrule, int count, int *newcount, TXTRULE *txtrule )
+static HL_LINE create_cachetok( unsigned char *st, RULE *rule, RULE **newrule, int count, int *newcount, TXTRULE *txtrule )
 {
 	HL_LINE retline;
-	char *nextst;
+	unsigned char *nextst = NULL;
 	STRINGENTRY *found;
-	char *lastst = st;
-	char *startst = st;
+	unsigned char *lastst = st;
+	unsigned char *startst = st;
 	char *(*cmpfunc)(char *s1, char *s2);
 
 	if( !(txtrule->flags & TXTRULEF_ACTIVE))
@@ -1622,7 +1625,7 @@ static HL_LINE create_cachetok( char *st, RULE *rule, RULE **newrule, int count,
 					lastst = st;
 					rule = NULL;
 					goto continue_outer_loop;
-
+				default:;
 			}
 		}
 

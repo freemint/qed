@@ -3,6 +3,7 @@
 #include "edit.h"
 #include "memory.h"
 #include "rsc.h"
+#include "sort.h"
 #include "text.h"
 #include "window.h"
 
@@ -45,8 +46,8 @@ static char	sort_tab[] =
 
 static short qed_strncmp(char *s1, char *s2, short n, bool grkl)
 {
-	register char	c1, c2;
-	register long	count;
+	register unsigned char c1, c2;
+	register long count;
 
 	if (!s1)
 		return s2 ? -1 : 0;

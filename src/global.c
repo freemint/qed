@@ -159,32 +159,32 @@ static short do_note(short def, short undo, char *s)
 	return do_walert(def, undo, s, " qed ");
 }
 
-short note(short def, short undo, short index)
+short note(short def, short undo, short idx)
 {
-	return do_note(def, undo, (char *)alertmsg[index]);
+	return do_note(def, undo, (char *)alertmsg[idx]);
 }
 
-short inote(short def, short undo, short index, short val)
-{
-	char	buf[128];
-	
-	sprintf(buf, (char *)alertmsg[index], val);
-	return do_note(def, undo, buf);
-}
-
-short snote(short def, short undo, short index, char *val)
+short inote(short def, short undo, short idx, short val)
 {
 	char	buf[128];
 	
-	sprintf(buf, (char *)alertmsg[index], val);
+	sprintf(buf, (char *)alertmsg[idx], val);
 	return do_note(def, undo, buf);
 }
 
-short sinote(short def, short undo, short index, char *sval, short val )
+short snote(short def, short undo, short idx, char *val)
+{
+	char	buf[128];
+	
+	sprintf(buf, (char *)alertmsg[idx], val);
+	return do_note(def, undo, buf);
+}
+
+short sinote(short def, short undo, short idx, char *sval, short val )
 	{
 	char	buf[128];
 
-	sprintf(buf, (char *)alertmsg[index], sval, val);
+	sprintf(buf, (char *)alertmsg[idx], sval, val);
 	return do_note(def, undo, buf);
 }
 
@@ -312,20 +312,20 @@ void file_name(char *fullname, char *filename, bool withoutExt)
 
 /*****************************************************************************/
 
-static void make_date(struct tm *stime, char *date)
+static void make_date(struct tm *timev, char *date)
 {
 	if (date != NULL)
 	{
 		switch ((unsigned short)_idt & 0xF00)			/* Reihenfolge im Datum */
 		{
 			case 0x000:  /* MM/DD/YYYY */
-				strftime(date, 11, "%m/%d/%Y", stime);
+				strftime(date, 11, "%m/%d/%Y", timev);
 				break;
 			case 0x100:  /* DD.MM.YYYY */
-				strftime(date, 11, "%d.%m.%Y", stime);
+				strftime(date, 11, "%d.%m.%Y", timev);
 				break;
 			default:  /* YYYY-MM-DD */
-				strftime(date, 11, "%Y-%m-%d", stime);
+				strftime(date, 11, "%Y-%m-%d", timev);
 				break;
 		}
 	}
@@ -335,36 +335,36 @@ static void make_date(struct tm *stime, char *date)
 void get_datum(char *date)
 {
 	time_t		ttime;
-	struct tm	*stime;
+	struct tm	*timev;
 
 	time(&ttime);
-	stime = localtime(&ttime);
-	make_date(stime, date);
+	timev = localtime(&ttime);
+	make_date(timev, date);
 }
 
 /*****************************************************************************/
 
-long file_time(char *filename, char *date, char *time)
+long file_time(char *filename, char *fdate, char *ftime)
 {
 	struct stat	s;
 
 	if (stat(filename, &s) == 0)
 	{
-		struct tm	*stime;
+		struct tm	*timev;
 
-		stime = localtime(&s.st_mtime);
-		if (time != NULL)
-			strftime(time, 9, "%H:%M:%S", stime);
-		if (date != NULL)
-			make_date(stime, date);
+		timev = localtime(&s.st_mtime);
+		if (ftime != NULL)
+			strftime(ftime, 9, "%H:%M:%S", timev);
+		if (fdate != NULL)
+			make_date(timev, fdate);
 		return s.st_mtime;
 	}
 	else
 	{
-		if (time != NULL)
-			strcpy(time, "??");
-		if (date != NULL)
-			strcpy(date, "??");
+		if (ftime != NULL)
+			strcpy(ftime, "??");
+		if (fdate != NULL)
+			strcpy(fdate, "??");
 		return 0;
 	}
 }

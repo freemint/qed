@@ -34,9 +34,6 @@ short menu_nr[] =	{MUNDO, MCUT, MCOPY, MPASTE, MSELALL, MCLOSE, -1,
 		  						 MBIG, MSMALLBIG, MCAPS, MUMLAUTE, -1, MFEHLERSPRUNG, 
 		  						 MDELETE, MSORT, MTOPLINE};
 
-/*****************************************************************************/
-
-static void	mclearup 	(void);
 
 /*****************************************************************************/
 static void info_dial(void)
@@ -130,17 +127,17 @@ void mark_menu(short item, bool yes)
 		menu_icheck(menu, item, yes);
 }
 
-void fillup_menu(short item, char *new_text, short free)
+void fillup_menu(short item, char *text, short start_pos)
 {
 	short	len, max_len;
 	char *str;
 
-	str = menu[item].ob_spec.free_string + free;
-	len = (short) strlen(new_text);
+	str = menu[item].ob_spec.free_string + start_pos;
+	len = (short) strlen(text);
 	max_len = (short) strlen(str) - 4;		/* ' ?? ' Shortcut nicht berscrieben! */
 	if (len > max_len)
 		len = max_len;
-	memcpy(str, new_text, len);
+	memcpy(str, text, len);
 	str += len; 
 	len = max_len - len; 					/* Restl„nge */
 	while ((--len) >= 0)
@@ -218,6 +215,7 @@ void update_menu (void)
 
 
 /***************************************************************************/
+#if 0
 static void multitest_action(SET icons, SET action)
 {
 	short	icp[MAX_ICON_ANZ], ic;
@@ -259,6 +257,7 @@ static void do_multi_action(short action)
 		}
 	}
 }
+#endif
 
 void do_action(short action)
 {

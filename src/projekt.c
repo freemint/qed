@@ -41,7 +41,7 @@ PATH		def_prj_path;
 
 /****** TYPES **************************************************************/
 
-typedef struct			/* fr Dreaddir */
+typedef struct				/* fr Dreaddir */
 {
 	long		inode;
 	FILENAME name;
@@ -50,31 +50,31 @@ typedef struct			/* fr Dreaddir */
 /****** VAR ****************************************************************/
 static short	do_find_icon;
 static PATH	df_path;
-static short	def_icon;						/* Icon fr Defaultprojekt */
+static short	def_icon;		/* Icon fr Defaultprojekt */
 
 /****** FUNCTIONS **********************************************************/
 
 static void	p_icon_exist		(short icon, SET actions);
-static bool	p_icon_test			(short icon, short action);
-static short	p_icon_edit			(short icon, short action);
-static bool	p_icon_drag			(short icon, short source);
-static void	draw_line			(WINDOWP window, short line);
-static void	wi_draw				(WINDOWP window, GRECT *d);
-static void	wi_click 			(WINDOWP window, short m_x, short m_y, short bstate, short kstate, short breturn);
-static void	wi_unclick			(WINDOWP window);
-static bool	wi_key				(WINDOWP window, short kstate, short kreturn);
-static void	wi_snap				(WINDOWP window, GRECT *new, short mode);
-static void	wi_iconify			(WINDOWP window);
+static bool	p_icon_test		(short icon, short action);
+static short	p_icon_edit		(short icon, short action);
+static bool	p_icon_drag		(short icon, short source);
+static void	draw_line		(WINDOWP window, short line);
+static void	wi_draw			(WINDOWP window, GRECT *d);
+static void	wi_click 		(WINDOWP window, short m_x, short m_y, short bstate, short kstate, short breturn);
+static void	wi_unclick		(WINDOWP window);
+static bool	wi_key			(WINDOWP window, short kstate, short kreturn);
+static void	wi_snap			(WINDOWP window, GRECT *new, short mode);
+static void	wi_iconify		(WINDOWP window);
 static void	wi_uniconify		(WINDOWP window);
-static bool	find_files			(char *pfad, bool rekursiv, char *df_muster, short icon, short tmp_icon);
+static bool	find_files		(char *pfad, bool rekursiv, char *df_muster, short icon, short tmp_icon);
 static void	get_prj_line		(short link, short line, char *str);
 static short	del_from_projekt	(short link, short line);
-static bool	open_prj 			(short icon);
-static void	destruct 			(short icon);
-static void	crt_prj				(WINDOWP window);
-static short	crt_new_prj			(char *filename);
+static bool	open_prj 		(short icon);
+static void	destruct 		(short icon);
+static void	crt_prj			(WINDOWP window);
+static short	crt_new_prj		(char *filename);
 static void	info_projekt		(short icon);
-static void	select_def_prj 	(void);
+static void	select_def_prj 		(void);
 
 /*
  * do_for_prj()
@@ -95,7 +95,7 @@ static void do_for_prj(short icon, SET s, short (*do_it)(short,short), bool verb
 	else
 		file_name(t_ptr->filename, prj, FALSE);
 	strcat(prj, ": ");
-	p = strrchr(prj, ' ') + 1;						/* p zeigt auf das Ende */
+	p = strrchr(prj, ' ') + 1;			/* p zeigt auf das Ende */
 	
 	if (verbose)
 	{
@@ -128,7 +128,7 @@ static void do_for_prj(short icon, SET s, short (*do_it)(short,short), bool verb
 		if (IS_MARKED(lauf))
 		{
 			anz++;
-			lauf->info &= (~MARKED);				/* sonst Endlosschleife */
+			lauf->info &= (~MARKED);	/* sonst Endlosschleife */
 			if (verbose)
 			{
 				get_prj_line(icon,i,name);
@@ -169,18 +169,18 @@ static bool do_find(short icon);
 static void do_for_prj2(short icon, SET s, short aktion, bool verbose)
 {
 	short		i, t_icon, anz, soll, antw;
-	TEXTP 	t_ptr, t_ptr2;
+	TEXTP 		t_ptr, t_ptr2;
 	PATH		name, prj;
-	FILENAME file;
-	char		*p;
+	FILENAME	file;
+	char		*p = NULL;
 	
-	t_ptr = new_text(TEMP_LINK);					/* Temp-Text zum Laden der Elemente */
+	t_ptr = new_text(TEMP_LINK);		/* Temp-Text zum Laden der Elemente */
 	if (t_ptr == NULL) 
 		return;
 
 	if (verbose)
 	{
-		t_ptr2 = get_text(icon);					/* Name des Projekts ermitteln */
+		t_ptr2 = get_text(icon);	/* Name des Projekts ermitteln */
 		if (t_ptr2->namenlos)
 			strcpy(file, t_ptr2->filename);
 		else
@@ -188,7 +188,7 @@ static void do_for_prj2(short icon, SET s, short aktion, bool verbose)
 		
 		strcpy(prj, file);
 		strcat(prj, ": ");
-		p = strrchr(prj, ' ') + 1;					/* p zeigt auf das Ende */
+		p = strrchr(prj, ' ') + 1;	/* p zeigt auf das Ende */
 		strcpy(p, file);
 		start_aktion(prj, TRUE, setcard(s));
 	}
@@ -227,7 +227,7 @@ static void do_for_prj2(short icon, SET s, short aktion, bool verbose)
 					if ((ff_mask[0] == EOS) || filematch(t_ptr2->filename, ff_mask, t_ptr2->filesys))
 						do_find(t_icon);
 					else
-						file[0] = EOS;			/* nicht in Aktion-Box eintragen! */
+						file[0] = EOS;	/* nicht in Aktion-Box eintragen! */
 					break;
 
 				default:
@@ -288,7 +288,7 @@ static bool delete_prj(short icon)
 
 static void chg_prj_name(short icon)
 {
-	WINDOWP 		window;
+	WINDOWP 	window;
 	FILENAME 	name;
 	TEXTP 		t_ptr = get_text(icon);
 
@@ -427,7 +427,7 @@ static bool p_icon_test(short icon, short action)
 					TEXTP p = get_top_text();
 					if( df_path[0] == EOS ) 
 					{
-						if( p )                             /* versuchen, Pfad des obersten Textes zu holen */
+						if( p )	/* versuchen, Pfad des obersten Textes zu holen */
 							split_filename( p->filename, df_path, NULL );
 						else
 							get_path(df_path, 0);							/* sonst aktuellen Pfad der Anwendung holen */
@@ -459,10 +459,8 @@ static bool p_icon_test(short icon, short action)
 					min = (short)((time(NULL) - t_ptr->asave) / 60L);
 					if (min >= as_prj_min)
 					{
-						if (as_prj_ask)				/* Nachfrage ? */
+						if (as_prj_ask)		/* Nachfrage ? */
 						{
-							FILENAME 	name;
-
 							if (t_ptr->namenlos)
 								strcpy(name, t_ptr->filename);
 							else
@@ -509,13 +507,13 @@ static short do_open(short prj_icon, short i)
 	if (prj)
 	{
 		if (shift_pressed())
-			return load_edit(name, FALSE);			/* Laden als Text und ”ffnen */
+			return load_edit(name, FALSE);	/* Laden als Text und ”ffnen */
 		else
-			return load_projekt(name);					/* Laden als Projekt und ”ffnen */
+			return load_projekt(name);	/* Laden als Projekt und ”ffnen */
 	}
 	else
 	{
-		icon = load_edit(name, FALSE);				/* Laden als Text und ”ffnen */
+		icon = load_edit(name, FALSE);		/* Laden als Text und ”ffnen */
 		return icon;
 	}
 }
@@ -623,7 +621,7 @@ static short p_icon_edit(short icon, short action)
 				}
 				do_for_prj2(icon, help, DO_FIND, TRUE);
 				t_ptr = get_text(do_find_icon);
-				if (t_ptr->moved)									/* etwas gefunden? */
+				if (t_ptr->moved)	/* etwas gefunden? */
 				{
 					t_ptr->moved = 0;
 					window = get_window(do_find_icon);
@@ -800,7 +798,7 @@ static bool p_icon_drag(short icon, short source)
  */
 static bool find_files(char *pfad, bool rekursiv, char *df_muster, short icon, short tmp_icon)
 {
-	TEXTP t_ptr;
+	TEXTP	t_ptr = NULL;
 	char 	*ptr;
 	bool	raus;
 	short	t_icon;
@@ -1170,7 +1168,7 @@ short crt_new_prj(char *filename)
 /***************************************************************************/
 static void crt_prj(WINDOWP window)
 {
-	short	initw, inith;
+	short	initw = 0, inith = 0;
 
 	if (window->work.g_w == 0 || window->work.g_h == 0)
 	{
@@ -1188,15 +1186,15 @@ static void crt_prj(WINDOWP window)
 	window->doc.h		= 0;
 	window->xfac		= font_wcell;
 	window->yfac		= font_hcell;
-	window->w_width	= initw/font_wcell;
+	window->w_width		= initw/font_wcell;
 	window->w_height	= inith/font_hcell;
 	window->draw		= wi_draw;
 	window->click		= wi_click;
-	window->unclick	= wi_unclick;
+	window->unclick		= wi_unclick;
 	window->key 		= wi_key;
 	window->snap		= wi_snap;
-	window->iconify	= wi_iconify;
-	window->uniconify = wi_uniconify;
+	window->iconify		= wi_iconify;
+	window->uniconify 	= wi_uniconify;
 }
 
 /***************************************************************************/
@@ -1299,7 +1297,7 @@ static void wi_draw (WINDOWP window, GRECT *d)
 }
 
 /***************************************************************************/
-short drag_box(short x, short y, short w, short h, short *m_x, short *m_y, short *bstate, short *kstate)
+static short drag_box(short x, short y, short w, short h, short *m_x, short *m_y, short *bstate, short *kstate)
 {
 	short	wh, d;
 	
@@ -1820,7 +1818,7 @@ static void info_projekt(short icon)
 {
 	char 	str[32], date[11];
 	TEXTP t_ptr = get_text(icon);
-	short	r_anz, i, antw;
+	short	r_anz, i, antw = 0;
 	SET	all;
 	bool	close = FALSE;
 	MDIAL	*dial;

@@ -99,6 +99,7 @@ static void do_avclose(WINDOWP window)
 	send_avwinclose(window->handle);
 }
 
+#if 0
 static void set_popcolor(short s_obj, short d_obj)
 {
 	OBSPEC	spec;
@@ -110,11 +111,12 @@ static void set_popcolor(short s_obj, short d_obj)
 	spec.obspec.interiorcol = color;			/* neue Farbe setzen */
 	set_obspec(globalop, d_obj, spec.index);
 }
+#endif
 
 
 void set_global_options(void)
 {
-	short	antw, i;
+	short	i, antw = 0;
 	bool	old_cycle, new_cycle, new_fg, new_bg, new_block_fg, new_block_bg;
 	bool	close = FALSE;
 	char	n[23] = "";
@@ -472,7 +474,7 @@ static bool build_popup(POPUP *pop)
 
 void set_local_options(void)
 {
-	short		antw, y;
+	short		y, antw = 0;
 	WINDOWP 	window;
 	PATH		save_name;
 	POPUP		pop;
@@ -690,14 +692,14 @@ static void store_syntax_settings(int txtidx, int idx)
 	{
 		if( syntax_setsamename )
 		{
-			HL_RULEINFO tri, cri;
-			Hl_EnumRules( txtidx, &tri, &idx ); /* get rule name in tri.name */
+			HL_RULEINFO ltri, cri;
+			Hl_EnumRules( txtidx, &ltri, &idx ); /* get rule name in ltri.name */
 			txtidx = 0;
 			while( Hl_EnumTxtNames( NULL, &txtidx ) ) /* compare for all texts */
 			{
 				idx = 0;
 				while( Hl_EnumRules( txtidx-1, &cri, &idx )) /* and all rules */
-					if( stricmp( tri.name, cri.name ) == 0 ) /* set it if same name */
+					if( stricmp( ltri.name, cri.name ) == 0 ) /* set it if same name */
 						Hl_ChangeRule(txtidx-1, idx-1, &ri);
 			}
 		}
@@ -738,7 +740,7 @@ static bool build_rule_popup(int txtidx, POPUP *pop)
 
 void set_syntax_options(void)
 {
-	short	antw, y;
+	short	y, antw = 0;
 	bool	close = FALSE;
 	WINDOWP window;
 	MDIAL	*dial;
@@ -968,12 +970,12 @@ void init_default_var(void)
 /*
  * Datei
 */
-static PATH			cfg_path = "";
-static FILENAME	dsp_name;			/* Name der Display-Datei */
-static FILENAME col_name;     /* Name der Farb-Datei */
-static FILE			*fd;
-static LOCOPTP		lo = NULL;
-static short			muster_nr = 1;
+static PATH	cfg_path = "";
+static FILENAME	dsp_name;	/* Name der Display-Datei */
+static FILENAME col_name;	/* Name der Farb-Datei */
+static FILE	*fd;
+static LOCOPTP	lo = NULL;
+static short	muster_nr = 1;
 
 static bool get_cfg_path(void)
 {
@@ -1202,9 +1204,9 @@ static void parse_line(POSENTRY **arglist, char *zeile)
 		else if (strcmp(var, "Marke") == 0)
 		{
 			read_cfg_str(buffer, filename);
-			d = sscanf(buffer + strlen(filename) + 3, "%d \"%[^\"]\" %ld %d", &i, tmp, &y, &x);
+			d = sscanf(buffer + strlen(filename) + 3, "%hd \"%[^\"]\" %ld %hd", &i, tmp, &y, &x);
 			if (d != 4)		/* altes Format (<4.10) ohne " um tmp */
-				sscanf(buffer + strlen(filename) + 3, "%d %s %ld %d", &i, tmp, &y, &x);
+				sscanf(buffer + strlen(filename) + 3, "%hd %s %ld %hd", &i, tmp, &y, &x);
 			set_marke(i, tmp, filename, y, x);
 		}
 
@@ -1217,7 +1219,7 @@ static void parse_line(POSENTRY **arglist, char *zeile)
 		else if (strcmp(var, "OpenText") == 0)
 		{
 			read_cfg_str(buffer, filename);
-			sscanf(buffer + strlen(filename) + 3, "%ld %d", &y, &x);
+			sscanf(buffer + strlen(filename) + 3, "%ld %hd", &y, &x);
 			insert_poslist(arglist, filename, x, y);
 		}
 
@@ -1227,7 +1229,7 @@ static void parse_line(POSENTRY **arglist, char *zeile)
 
 		/* Ersetzen */
 		else if (strcmp(var, "ReplaceBox") == 0)
-			sscanf(buffer, "%d %d", &rp_box_x, &rp_box_y);
+			sscanf(buffer, "%hd %hd", &rp_box_x, &rp_box_y);
 		else if (strcmp(var, "ReplaceMode") == 0)
 			r_modus = atoi(buffer);
 		else if (strcmp(var, "ReplaceStr") == 0)
@@ -1304,8 +1306,8 @@ static void parse_line(POSENTRY **arglist, char *zeile)
 			short	class;
 			GRECT	size;
 
-			sscanf(buffer, "%d %d %d %d %d", &class, &size.g_x, &size.g_y,
-																 &size.g_w, &size.g_h);
+			sscanf(buffer, "%hd %hd %hd %hd %hd",
+				 &class, &size.g_x, &size.g_y, &size.g_w, &size.g_h);
 			add_winlist(class, &size);
 		}
 
@@ -1460,15 +1462,9 @@ void write_cfg_long(char *var, long value)
 	fprintf(fd, "%s=%ld\n", var, value);
 }
 
-void write_cfg_bool(char *var, bool bool)
+void write_cfg_bool(char *var, bool value)
 {
-	char	str[6];
-
-	if (bool)
-		strcpy(str, "TRUE");
-	else
-		strcpy(str, "FALSE");
-	fprintf(fd, "%s=%s\n", var, str);
+	fprintf(fd, "%s=%s\n", var, value ? "TRUE" : "FALSE");
 }
 
 static void save_open_text(TEXTP t_ptr)
@@ -1479,8 +1475,9 @@ static void save_open_text(TEXTP t_ptr)
 	{
 		if (w->class == CLASS_EDIT)
 		{
-			fprintf(fd, "OpenText=\"%s\" %ld %d\n", t_ptr->filename, t_ptr->ypos,
-							bild_pos(t_ptr->xpos, t_ptr->cursor_line, t_ptr->loc_opt->tab, t_ptr->loc_opt->tabsize));
+			fprintf(fd, "OpenText=\"%s\" %ld %d\n", t_ptr->filename,
+				t_ptr->ypos,
+				bild_pos(t_ptr->xpos, t_ptr->cursor_line, t_ptr->loc_opt->tab, t_ptr->loc_opt->tabsize));
 		}
 		if (w->class == CLASS_PROJEKT)
 			write_cfg_str("OpenPrj", t_ptr->filename);
@@ -1489,10 +1486,10 @@ static void save_open_text(TEXTP t_ptr)
 
 void option_save(void)
 {
-	short		i, x;
-	long		y;
-	PATH		path;
-	LOCOPTP	lo;
+	short	i, x;
+	long	y;
+	PATH	path;
+	LOCOPTP	lo_opt;
 
 	fd = fopen(cfg_path, "w");
 	if (fd == NULL) {
@@ -1553,24 +1550,24 @@ void option_save(void)
 	/* Lokales */
 	for (i = 0; i < LOCAL_ANZ; i++)
 	{
-		lo = &local_options[i];
-		if (lo->muster[0] != EOS)
+		lo_opt = &local_options[i];
+		if (lo_opt->muster[0] != EOS)
 		{
-			write_cfg_str("LocalBegin", lo->muster);
-			write_cfg_bool("LocalBackup", lo->backup);
-			write_cfg_str("LocalBackupExt", lo->backup_ext);
-			write_cfg_bool("LocalInsert", lo->einruecken);
-			write_cfg_str("LocalKurzel", lo->kurzel);
-			write_cfg_bool("LocalTab", lo->tab);
-			write_cfg_int("LocalTabSize", lo->tabsize);
-			write_cfg_bool("LocalUmbruch", lo->umbrechen);
-			write_cfg_int("LocalUmbruchLineLen", lo->lineal_len);
-			write_cfg_bool("LocalUmbruchIns", lo->format_by_paste);
-			write_cfg_bool("LocalUmbruchLoad", lo->format_by_load);
-			write_cfg_str("LocalUmbruchAt", lo->umbruch_str);
-			write_cfg_bool("LocalUmbruchShow", lo->show_end);
-			write_cfg_str("LocalWordSet", lo->wort_str);
-			write_cfg_str("LocalEnd", lo->muster);
+			write_cfg_str("LocalBegin", lo_opt->muster);
+			write_cfg_bool("LocalBackup", lo_opt->backup);
+			write_cfg_str("LocalBackupExt", lo_opt->backup_ext);
+			write_cfg_bool("LocalInsert", lo_opt->einruecken);
+			write_cfg_str("LocalKurzel", lo_opt->kurzel);
+			write_cfg_bool("LocalTab", lo_opt->tab);
+			write_cfg_int("LocalTabSize", lo_opt->tabsize);
+			write_cfg_bool("LocalUmbruch", lo_opt->umbrechen);
+			write_cfg_int("LocalUmbruchLineLen", lo_opt->lineal_len);
+			write_cfg_bool("LocalUmbruchIns", lo_opt->format_by_paste);
+			write_cfg_bool("LocalUmbruchLoad", lo_opt->format_by_load);
+			write_cfg_str("LocalUmbruchAt", lo_opt->umbruch_str);
+			write_cfg_bool("LocalUmbruchShow", lo_opt->show_end);
+			write_cfg_str("LocalWordSet", lo_opt->wort_str);
+			write_cfg_str("LocalEnd", lo_opt->muster);
 		}
 	}
 

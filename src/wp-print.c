@@ -82,8 +82,8 @@ static bool out(char ch)
 
 static bool print_seq(short which)
 {
-	short		i;
-	bool	ok;
+	short	i;
+	bool	ok = TRUE;
 
 	for (i = seq_table[which].pos; i <= seq_table[which].pos + seq_table[which].len - 1; i++)
 	{
@@ -103,10 +103,10 @@ static bool print(short entry, bool set)		/* Ausgabe der angew„hlten Steuerseque
 }
 
 
-static bool write_char(char ch)
+static bool write_char(unsigned char ch)
 {
-	short		i;
-	bool	ok;
+	short	i;
+	bool	ok = TRUE;
 
 	if (trans_table[ch].len > 0)
 	{
@@ -129,8 +129,8 @@ static bool write_char(char ch)
 
 static bool set_head(void)							/*  Druckkopf neu positionieren */
 {
-	short		i, len, pos;
-	bool	ok;
+	short	i, len, pos;
+	bool	ok = TRUE;
 
 	len = seq_table[VERTPOS].len;
 	pos = seq_table[VERTPOS].pos;
@@ -338,8 +338,8 @@ bool wp_write_ln(void)
 
 bool wp_write(char ch)
 {
-	short		i;
-	bool	ok;
+	short	i;
+	bool	ok = TRUE;
 
 	if ((ch == TAB) || (ch == ' '))
 	{

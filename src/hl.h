@@ -1,4 +1,5 @@
 void hl_init( void );
+void hl_exit( void );
 void hl_insert( RINGP rp, ZEILEP zp );
 void hl_insert_block( RINGP rp, ZEILEP first, ZEILEP last );
 void hl_remove( RINGP rp, ZEILEP zp );

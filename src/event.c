@@ -71,6 +71,8 @@ static bool		menu_ctrl;
 static void handle_keybd	(short kstate, short kreturn);
 static void handle_button	(short m_x, short m_y, short bstate, short kstate, short breturn);
 
+void handle_msg(short *msg);
+
 /*****************************************************************************/
 
 static bool is_event(void)

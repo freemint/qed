@@ -55,24 +55,24 @@ typedef struct
 } TCHANGE;
 
 /* lokale Variablen ********************************************************/
-static SET			used_info;
-static short			chg_anz, find_erg, ascii_wert;
+static SET	used_info;
+static short	chg_anz, find_erg, ascii_wert;
 static TCHANGE 	chg[MAX_CHG];
-static SET			chg_links;
+static SET	chg_links;
 static POSENTRY	*lastpos_list = NULL;
 
 /* lokale Prototypen *******************************************************/
 
-static void 	e_icon_exist	(short icon, SET actions);
+static void 	e_icon_exist		(short icon, SET actions);
 static bool 	e_icon_test		(short icon, short action);
-static short		e_icon_edit		(short icon, short action);
+static short	e_icon_edit		(short icon, short action);
 static bool 	e_icon_drag		(short icon, short source);
 static void 	wi_draw			(WINDOWP window, GRECT *d);
 static void 	wi_click 		(WINDOWP window, short m_x, short m_y, short bstate, short kstate, short breturn);
 static bool 	wi_key			(WINDOWP window, short kstate, short kreturn);
 static void 	wi_top			(WINDOWP window);
-static void		wi_iconify		(WINDOWP window);
-static void		wi_uniconify	(WINDOWP window);
+static void	wi_iconify		(WINDOWP window);
+static void	wi_uniconify		(WINDOWP window);
 static void 	destruct 		(short icon);
 
 static void 	lz2tab			(TEXTP t_ptr);
@@ -82,7 +82,7 @@ static void 	make_undo		(TEXTP t_ptr);
 static void 	print_edit		(TEXTP t_ptr);
 static bool 	open_edit		(short icon);
 static void 	crt_edit 		(WINDOWP window);
-static short  	crt_new_text	(char *filename, bool bin);
+static short  	crt_new_text		(char *filename, bool bin);
 
 /***************************************************************************/
 
@@ -134,8 +134,8 @@ static short col_lz2tab(ZEILEP col, char *t, short tab_size)
 static void lz2tab(TEXTP t_ptr)
 {
 	ZEILEP 	lauf;
-	short		x, i, tabsize;
-	char		str[MAX_LINE_LEN + 1];
+	short	x, i, tabsize;
+	char	str[MAX_LINE_LEN + 1];
 
 	graf_mouse(HOURGLASS, NULL);
 	tabsize = t_ptr->loc_opt->tabsize;
@@ -201,8 +201,8 @@ static short col_tab2lz(ZEILEP col, char *t, short tab_size)
 static void tab2lz(TEXTP t_ptr)
 {
 	ZEILEP 	lauf;
-	short		i, x, tabsize;
-	char		str[MAX_LINE_LEN + 1];
+	short	i, x, tabsize;
+	char	str[MAX_LINE_LEN + 1];
 
 	graf_mouse(HOURGLASS, NULL);
 	tabsize = t_ptr->loc_opt->tabsize;
@@ -351,7 +351,7 @@ short load_edit(char *name, bool bin)
 /* 		  <0	weiter Texte versuchen nicht sinnvoll */
 {
 	WINDOWP 	window;
-	TEXTP 	t_ptr;
+	TEXTP 		t_ptr;
 	FILENAME	datei;
 	PATH		path;
 	short		err, icon;
@@ -444,7 +444,7 @@ short load_edit(char *name, bool bin)
 static void print_edit (TEXTP t_ptr)
 {
 	FILENAME name;
-	bool		print_block;
+	bool	 print_block;
 	
 	if (t_ptr->namenlos)
 		strcpy(name, t_ptr->filename);
@@ -502,8 +502,8 @@ void close_edit(char *mask, short flag)
 
 static bool delete_edit(short icon, TEXTP t_ptr)
 {
-	short	antw;
-	FILENAME	name;
+	short	 antw;
+	FILENAME name;
 
 	if (t_ptr->moved != 0)
 	{
@@ -535,8 +535,8 @@ static bool delete_edit(short icon, TEXTP t_ptr)
 /* Ermittelt aus einer Mauspos (my) die zugeh”rige y-Position im Text */
 static long get_ypos(WINDOWP window, short my)
 {
-	TEXTP		t_ptr = get_text(window->handle);
-	long		y;
+	TEXTP	t_ptr = get_text(window->handle);
+	long	y;
 	
 	y = (my - window->work.g_y);
 	if (y < 0)
@@ -554,8 +554,8 @@ static long get_ypos(WINDOWP window, short my)
 /* Ermittelt aus einer Mauspos (mx) die zugeh”rige x-Position im Text */
 static short get_xpos(WINDOWP window, long ypos, short mx)
 {
-	TEXTP		t_ptr = get_text(window->handle);
-	short		x;
+	TEXTP	t_ptr = get_text(window->handle);
+	short	x;
 	ZEILEP	col;
 
 	col = get_line(&t_ptr->text, ypos);
@@ -621,7 +621,7 @@ static short get_xpos(WINDOWP window, long ypos, short mx)
 static void set_cursor(WINDOWP window, short mx, short my)
 {
 	TEXTP 	t_ptr = get_text(window->handle);
-	long		y;
+	long	y;
 	ZEILEP	col;
 
 	y = get_ypos(window, my);
@@ -682,9 +682,9 @@ static bool click_in_blk(WINDOWP window, short x, short y)
 
 static void wi_click(WINDOWP window, short m_x, short m_y, short bstate, short kstate, short breturn)
 {
-	short		event, mode, kreturn;
+	short	event, mode, kreturn;
 	TEXTP 	t_ptr = get_text(window->handle);
-	GRECT		*s = &window->work;
+	GRECT	*s = &window->work;
 	
 	/* Infomeldung l”schen */
 	clear_info(t_ptr);
@@ -861,31 +861,31 @@ static void wi_click(WINDOWP window, short m_x, short m_y, short bstate, short k
 				if (mode == WORD_MODE)
 				{
 					long	y;
-					short	x, pos,len;
+					short	x, xpos,len;
 					char	*str;
 
-					pos = t_ptr->xpos;
-					str = TEXT(t_ptr->cursor_line) + pos;
+					xpos = t_ptr->xpos;
+					str = TEXT(t_ptr->cursor_line) + xpos;
 					len = t_ptr->cursor_line->len;
 					get_blk_mark(t_ptr, &y, &x);
 					if (t_ptr->ypos > y || t_ptr->xpos > x) 		/* nach rechts */
 					{
-						while(pos<=len && setin(t_ptr->loc_opt->wort_set,*str))
+						while(xpos<=len && setin(t_ptr->loc_opt->wort_set,*str))
 						{
-							pos++;
+							xpos++;
 							str++;
 						}
 					}
 					else														/* nach links */
 					{
-						while(pos>=0 && setin(t_ptr->loc_opt->wort_set,*str))
+						while(xpos>=0 && setin(t_ptr->loc_opt->wort_set,*str))
 						{
-							pos--;
+							xpos--;
 							str--;
 						}
-						str++; pos++;
+						str++; xpos++;
 					}
-					t_ptr->xpos = pos;
+					t_ptr->xpos = xpos;
 				}
 				else if (mode == LINE_MODE)
 				{
@@ -960,7 +960,7 @@ static void wi_top(WINDOWP window)
 
 static	void wi_iconify(WINDOWP window)
 {
-	TEXTP 	t_ptr = get_text(window->handle);
+	TEXTP 		t_ptr = get_text(window->handle);
 	FILENAME	short_name;
 
 	make_shortpath(t_ptr->filename, short_name, 8);
@@ -980,7 +980,7 @@ static	void wi_uniconify(WINDOWP window)
 
 static void e_icon_exist(short icon, SET actions)
 {
-	TEXTP		t_ptr = get_text(icon);
+	TEXTP	t_ptr = get_text(icon);
 	WINDOWP	window = get_window(icon);
 
 	setclr(actions);
@@ -1053,9 +1053,9 @@ static void e_icon_exist(short icon, SET actions)
 
 static bool e_icon_test(short icon, short action)
 {
-	bool	erg;
-	TEXTP 	t_ptr = get_text(icon);
-	FILENAME	name;
+	bool	 erg;
+	TEXTP 	 t_ptr = get_text(icon);
+	FILENAME name;
 
 	switch(action)
 	{
@@ -1186,8 +1186,6 @@ static bool e_icon_test(short icon, short action)
 				{
 					if (as_text_ask)				/* Nachfrage ? */
 					{
-						FILENAME		name;
-
 						if (t_ptr->namenlos)
 							strcpy(name, t_ptr->filename);
 						else
@@ -1230,12 +1228,12 @@ static bool e_icon_test(short icon, short action)
 
 static short e_icon_edit(short icon, short action)
 {
-	PATH		name = "";
-	TEXTP		t_ptr = get_text(icon);
-	RING		r;
+	PATH	name = "";
+	TEXTP	t_ptr = get_text(icon);
+	RING	r;
 	WINDOWP	window;
-	short		erg;
-	bool		ok, bin, shift;
+	short	erg;
+	bool	ok, bin, shift;
 	ZEILEP	lauf;
 
 	shift = shift_pressed();
@@ -1614,8 +1612,6 @@ abandon:	strcpy(name, t_ptr->filename);
 
 					if (date_time!=t_ptr->file_date_time)
 					{
-						FILENAME	name;
-
 						file_name(t_ptr->filename, name, FALSE);
 						if (snote(1, 2, MOVED3, name) == 1)
 							goto abandon;
@@ -1677,7 +1673,7 @@ static bool e_icon_drag(short icon, short source)
 {
 	WINDOWP	w = get_window(icon);
 	TEXTP 	t_ptr;
-	bool		ret = FALSE;
+	bool	ret = FALSE;
 
  	if ((w->flags & WI_ICONIFIED) || (w->flags & WI_SHADED))
  		return FALSE;
@@ -1958,9 +1954,9 @@ void pos_korr(WINDOWP window, TEXTP t_ptr)
 */
 static void restore_offdesk(WINDOWP window, TCHANGE *c, short c_anz, TEXTP t_ptr)
 {
-	short		y_screen;
-	bool	done = FALSE;
-	GRECT		a;
+	short	y_screen;
+	bool	finished = FALSE;
+	GRECT	a;
 
 	for (; (--c_anz)>=0; c++)
 	{
@@ -1996,9 +1992,9 @@ static void restore_offdesk(WINDOWP window, TCHANGE *c, short c_anz, TEXTP t_ptr
 			case BLK_CHANGE	 :
 			case SCROLL_UP 	 :
 			case SCROLL_DOWN :
-				if (!done)
+				if (!finished)
 					redraw_window(window, &window->work);
-				done = TRUE;
+				finished = TRUE;
 				break;
 
 			case MOVE_UP:
@@ -2096,7 +2092,7 @@ void restore_edit(void)
 {
 	WINDOWP	window;
 	TEXTP 	t_ptr;
-	short		i, c_anz, link, max;
+	short	i, c_anz, link, max;
 	TCHANGE	c[MAX_CHG], *c_ptr;
 	
 	if (!chg_anz) 
@@ -2231,7 +2227,7 @@ static short crt_new_text(char *filename, bool bin)
 /***************************************************************************/
 static void crt_edit(WINDOWP window)
 {
-	short		initw, inith;
+	short initw = 0, inith = 0;
 
 	if (window->work.g_w == 0 || window->work.g_h == 0)
 	{
@@ -2250,14 +2246,14 @@ static void crt_edit(WINDOWP window)
 	window->doc.h		= 0;
 	window->xfac		= font_wcell;
 	window->yfac		= font_hcell;
-	window->w_width	= initw/font_wcell;
+	window->w_width		= initw/font_wcell;
 	window->w_height	= inith/font_hcell;
 	window->draw		= wi_draw;
 	window->click		= wi_click;
 	window->key 		= wi_key;
-	window->top			= wi_top;
+	window->top		= wi_top;
 	window->ontop		= wi_top;
-	window->iconify	= wi_iconify;
+	window->iconify		= wi_iconify;
 	window->uniconify	= wi_uniconify;
 	window->close		= NULL;
 }
@@ -2297,11 +2293,11 @@ static bool open_edit(short icon)
 /***************************************************************************/
 bool info_edit (short icon)
 {
-	char			str[32], date[11];
+	char		str[32], date[11];
 	TEXTP 		t_ptr = get_text(icon);
-	short			erg;
+	short		erg;
 	LINEENDING	ending;
-	bool			b;
+	bool		b;
 	
 	set_long(textinfo, INFBYTES, textring_bytes(&t_ptr->text));
 	if (t_ptr->text.ending != lns_binmode)

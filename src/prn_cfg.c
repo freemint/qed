@@ -10,7 +10,13 @@
 /*
  * aus cflib
 */
-extern void handle_mdial_msg(short *msg);
+void handle_mdial_msg(short *msg);
+
+/*
+ * locale functions
+ */
+bool open_printer	(void);
+void close_printer	(void);
 
 /*
  * globale Variablen
@@ -117,7 +123,7 @@ static bool sel_font(PRN_CFG *cfg)
 /*
  * Callbacks fÅr Sub-Dialog
 */
-long CDECL init_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
+static long CDECL init_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
 {
 	OBJECT	*tree;
 	short		offset;
@@ -146,7 +152,7 @@ long CDECL init_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
 	return 1;
 }
 
-long CDECL do_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog, short exit_obj)
+static long CDECL do_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog, short exit_obj)
 {
 	OBJECT	*tree;
 	short		offset;
@@ -178,7 +184,7 @@ long CDECL do_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog, short exit_o
 	return 1;
 }
 
-long CDECL reset_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
+static long CDECL reset_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
 {
 	OBJECT	*tree;
 	short		offset;
@@ -354,7 +360,7 @@ static bool get_gdos_device(void)
 static bool qed_cfg_dial(PRN_CFG *cfg)
 {
 	char		tmp[33];
-	short		antw, i;
+	short		i, antw = 0;
 	bool		close = FALSE;
 	PATH		str = "";
 	MDIAL		*dial;

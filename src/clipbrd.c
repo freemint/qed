@@ -138,14 +138,14 @@ void get_undo_col(TEXTP t_ptr)
 	add_undo(COL_ANDERS);
 }
 
-void do_undo_col(TEXTP t_ptr, short undo)
+void do_undo_col(TEXTP t_ptr, short undo_type)
 {
 	ZEILEP	undo_col;
 	char		help[MAX_LINE_LEN];
 	char	 	*str;
 	short		length;
 
-	if (undo == COL_ANDERS)
+	if (undo_type == COL_ANDERS)
 	{
 		undo_col = get_line(&t_ptr->text,undo_y);
 		length = undo_col->len;
@@ -233,7 +233,7 @@ void clip_add_text(RINGP r)
 static short get_first_drive(void)
 {
 	unsigned long	drives;
-	short				drive;
+	short		drive;
 
 	drives = Dsetdrv(Dgetdrv());					/* Alle Laufwerke */
 	if (drives == 0)

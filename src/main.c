@@ -28,12 +28,12 @@
 #include "hl.h"
 
 
-void CDECL handle_term(int sig)
+static void handle_term(int sig)
 {
 	abort_prog = TRUE;
 }
 
-static bool init_all(short argc, char *argv[])
+static bool init_all(int argc, char *argv[])
 {
 	POSENTRY	*arglist = NULL;
 
@@ -178,7 +178,7 @@ static bool init_all(short argc, char *argv[])
 	return TRUE;
 }
 
-int main(short argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	short	i, d;
 	char	menu_str[20];
@@ -187,7 +187,7 @@ int main(short argc, char *argv[])
 	debug_level = PREDEF_DEBUG_LEVEL;
 #endif
 
-	Pdomain(1);
+	d = Pdomain(1);
 	if ((argc > 1) && (strncmp(argv[1], "--debug", 7) == 0))
 	{
 		debug_level = DBG_GEN;
@@ -201,32 +201,28 @@ int main(short argc, char *argv[])
 
 	if (debug_level)
 	{
-		extern short __mint;
 /* added by Heiko */
 #ifdef DEBUG_LOGFILE
-	debug_init("qed",Datei,DEBUG_LOGFILE );
+		debug_init("qed",Datei,DEBUG_LOGFILE );
 #else
+		extern short __mint;
 		if (__mint)		/* gl_mint wird erst vin init_app() gesetzt! */
 			debug_init("qed", Con, NULL);
 		else
 			debug_init("qed", TCon, NULL);
 #endif
 
+		debug( "*************************************************\n" );
 	}
-debug( "*************************************************\n" );
-debug_level = 255;
-debug_init("qed", Datei, "e:\\qed.log");
 
 	nkc_init();
 	init_app(NULL);
-  init_colorpop( 8 );
-  
+	init_colorpop( 8 );
+
 	debug("Debug-Level: %d\n", debug_level);
 
 	if (debug_level & DBG_ARG)
 	{
-		short	i;
-	
 		debug("argc=  %d\n", argc);
 		for (i = 0; i < argc; i++)
 			debug("argv[%d]= >%s<\n", i, argv[i]);

@@ -42,7 +42,7 @@ bool		all_iconified;
  * lokale Variablen
 */
 static GRECT	border;
-static short		top_handle;
+static short	top_handle;
 
 /*
  * Anzahl der offenen Fenster einer Klasse ermitteln.
@@ -312,13 +312,13 @@ void redraw_window(WINDOWP w, GRECT *area)
 /*
  * Setzt die Gr”že.
 */
-void size_window(WINDOWP w, GRECT *new, bool border)
+void size_window(WINDOWP w, GRECT *new, bool outer)
 {
 	GRECT r;
 
 	if (w != NULL)
 	{
-		if (!border)
+		if (!outer)
 			wind_calc_grect(WC_BORDER, w->kind, (GRECT*)new, &r);
 		else
 			r = *new;
@@ -531,7 +531,7 @@ void untop_window(WINDOWP w)
 */
 void top_window(WINDOWP w)
 {
-	if (w == NULL || !(w->flags & WI_OPEN) && !(w->flags & WI_ICONIFIED))
+	if (w == NULL || (!(w->flags & WI_OPEN) && !(w->flags & WI_ICONIFIED)))
 		return;
 
 	if (w->top != NULL)
@@ -577,7 +577,7 @@ void cycle_window(void)
 */
 void bottom_window(WINDOWP w, short which)
 {
-	if (w == NULL || !(w->flags & WI_OPEN) && !(w->flags & WI_ICONIFIED))
+	if (w == NULL || (!(w->flags & WI_OPEN) && !(w->flags & WI_ICONIFIED)))
 		return;
 
 	if (w->bottom != NULL)

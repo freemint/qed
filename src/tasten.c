@@ -622,9 +622,9 @@ static void deselect_block(TEXTP t_ptr, short dir)
 
 bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 {
-	short	nkey;
-	short	ascii_code;
-	bool	shift, ctrl, alt;
+	unsigned short	nkey;
+	unsigned char	ascii_code;
+	bool		shift, ctrl, alt;
 	
 	/* Key konvertieren */	
 	nkey = gem_to_norm(kstate, kreturn);
@@ -635,7 +635,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 	alt = (kstate & K_ALT) != 0;
 
 	/* Sonderbehandlung fr ^Y */
-	if (ascii_code == 'Y' && (ctrl))
+	if (ascii_code == 'Y' && ctrl)
 	{
 		pos_korr(window, t_ptr);
 		t_ptr->blk_mark_mode = FALSE;

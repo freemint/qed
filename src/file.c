@@ -33,7 +33,7 @@ void open_error(char *filename, short error)
 	PATH		path;
 
 	split_filename(filename, path, datei);
-	if (error == -33 && path_exists(path))	/* file not found und Pfad existiert */
+	if (error == -ENOENT && path_exists(path))	/* file not found und Pfad existiert */
 		snote(1, 0, NOTEXIST, datei);
 	else
 		snote(1, 0, READERR, datei);
@@ -70,7 +70,7 @@ short load_from_fd(short fd, char *name, RINGP t, bool verbose, bool *null_byte,
 				ol = FALSE;
 	char		*buffer, *zeile;
 	ZEILEP 	start, next;
-	long		l, p, bytes;
+	long		l, p, bytes = 0L;
 	short		n;
 	bool		new_line, cr = FALSE, mem = TRUE;
 
@@ -81,7 +81,7 @@ short load_from_fd(short fd, char *name, RINGP t, bool verbose, bool *null_byte,
 	if (buffer == NULL || zeile == NULL)
 	{
 		note(1, 0, NOMEMORY);
-		return -39;
+		return -ENOMEM;
 	}				
 
 	nb = FALSE;
@@ -98,7 +98,6 @@ short load_from_fd(short fd, char *name, RINGP t, bool verbose, bool *null_byte,
 		file_name(name, file, FALSE);
 		strcat(str, file);
 		start_aktion(str, FALSE, size);
-		bytes = 0L;
 	}
 
 
@@ -251,7 +250,7 @@ short load_from_fd(short fd, char *name, RINGP t, bool verbose, bool *null_byte,
 		}
 		graf_mouse(ARROW, NULL);
 		note(1, 0, NOMEMORY);
-		antw = -39;
+		antw = -ENOMEM;
 	}
 
 	free(buffer);
@@ -327,7 +326,7 @@ short infoload(char *name, long *bytes, long *lines)
 
 /****************************************************************************/
 
-void backup_name(char *name, char *ext)
+static void backup_name(char *name, char *ext)
 {
 	PATH		new;
 	FILENAME	new_name;
@@ -347,12 +346,13 @@ static void restore_back_up(TEXTP t_ptr)
 	if (t_ptr->loc_opt->backup)
 	{
 		PATH old;
+		long err;
 
 		if (file_exists(t_ptr->filename))
 			Fdelete(t_ptr->filename);
 		strcpy(old, t_ptr->filename);
 		backup_name(old, t_ptr->loc_opt->backup_ext);
-		Frename(0, old, t_ptr->filename);
+		err = Frename(0, old, t_ptr->filename);
 	}
 }
 
@@ -363,21 +363,24 @@ static void back_up(TEXTP t_ptr)
 
 	if (t_ptr->loc_opt->backup)
 	{
+		long err;
+
 		graf_mouse(HOURGLASS, NULL);
 		strcpy(new, t_ptr->filename);
 		backup_name(new, t_ptr->loc_opt->backup_ext);
 		if (file_exists(new))			/* Alte DUP-Datei l”schen */
 			Fdelete(new);
-		Frename(0, t_ptr->filename, new);
+		err = Frename(0, t_ptr->filename, new);
 		graf_mouse(ARROW, NULL);
 	}
 }
 
 short save_to_fd(short fd, char *name, RINGP t, bool verbose)
 {
-	char		end_str[3], *zeile, *buffer, *ptr;
-	short		e_len, z_len, antw;
-	long		ret, count, b, rest, text_size;
+	char	end_str[3], *zeile, *buffer, *ptr;
+	short	e_len, z_len, antw;
+	long	bytes = 0L;
+	long	ret, b, rest, text_size;
 	ZEILEP	lauf;
 
 	/* Puffer anfordern */
@@ -387,7 +390,7 @@ short save_to_fd(short fd, char *name, RINGP t, bool verbose)
 	if (buffer == NULL || zeile == NULL)
 	{
 		note(1, 0, NOMEMORY);
-		return -39;
+		return -ENOMEM;
 	}				
 
 	graf_mouse(HOURGLASS, NULL);
@@ -404,7 +407,6 @@ short save_to_fd(short fd, char *name, RINGP t, bool verbose)
 		file_name(name, file, FALSE);
 		strcat(str,file);
 		start_aktion(str, FALSE, text_size);
-		count = 0L;
 	}
 
 	/* String mit Zeilenende erzeugen */
@@ -472,8 +474,8 @@ short save_to_fd(short fd, char *name, RINGP t, bool verbose)
 				ret = Fwrite(fd, BUFFERSIZE, buffer);
 				if (verbose)
 				{
-					count += BUFFERSIZE;
-					do_aktion("", count);
+					bytes += BUFFERSIZE;
+					do_aktion("", bytes);
 				}
 
 				if (ret != BUFFERSIZE)
@@ -496,8 +498,8 @@ short save_to_fd(short fd, char *name, RINGP t, bool verbose)
 			ret = Fwrite(fd, b, buffer);
 			if (verbose)
 			{
-				count += b;
-				do_aktion("", count);
+				bytes += b;
+				do_aktion("", bytes);
 			}
 			if (ret != b)
 				ret = -ENOSPC;
@@ -548,9 +550,9 @@ short save_datei(char *name, RINGP t, bool verbose)
 
 short save(TEXTP t_ptr)
 {
-	short			antw;
+	short		antw;
 	struct stat	st;
-	bool			not_exists;
+	bool		not_exists;
 
 	if (file_exists(t_ptr->filename))
 	{
@@ -561,7 +563,7 @@ short save(TEXTP t_ptr)
 			t_ptr->readonly = TRUE;
 			file_name(t_ptr->filename, file, FALSE);
 			snote(1, 0, READONLY, file);
-			return -39;
+			return -EACCES;
 		}
 		else
 			t_ptr->readonly = FALSE;
@@ -584,24 +586,7 @@ short save(TEXTP t_ptr)
 	
 	back_up(t_ptr);
 	antw = save_datei(t_ptr->filename, &t_ptr->text, TRUE);
-	if (antw == 0)
-	{
-		t_ptr->moved = 0;
-		t_ptr->file_date_time = file_time(t_ptr->filename, NULL, NULL);
-		t_ptr->asave = time(NULL);
-
-		/* OLGA informieren */
-		do_olga(OLGA_UPDATE, t_ptr->filename, NULL);
-
-		/* Attribute wieder herstellen */
-		if (!not_exists)
-		{
-			chmod(t_ptr->filename, (st.st_mode & 0x0000FFFF));
-			if (getuid() == 0)						/* nur root darf Owner „ndern */
-				chown(t_ptr->filename, st.st_uid, st.st_gid);
-		}
-	}
-	else
+	if (antw != 0)
 	{
 		if (antw == -ENOSPC)
 		{
@@ -612,8 +597,24 @@ short save(TEXTP t_ptr)
 		}
 		else
 			note(1, 0, WRITEERR);
-/*		restore_back_up(t_ptr); */
+		restore_back_up(t_ptr);
 		t_ptr->file_date_time = -1L;
+		return antw;
+	}
+
+	t_ptr->moved = 0;
+	t_ptr->file_date_time = file_time(t_ptr->filename, NULL, NULL);
+	t_ptr->asave = time(NULL);
+
+	/* OLGA informieren */
+	do_olga(OLGA_UPDATE, t_ptr->filename, NULL);
+
+	/* Attribute wieder herstellen */
+	if (!not_exists)
+	{
+		chmod(t_ptr->filename, (st.st_mode & 0x0000FFFF));
+		if (getuid() == 0)						/* nur root darf Owner „ndern */
+			chown(t_ptr->filename, st.st_uid, st.st_gid);
 	}
 
 	return antw;
@@ -632,7 +633,7 @@ short save_as(TEXTP t_ptr, char *name)
 
 			file_name(t_ptr->filename, file, FALSE);
 			snote(1, 0, READONLY, file);
-			return -39;
+			return -EACCES;
 		}
 	}
 	antw = save_datei(name, &t_ptr->text, TRUE);
@@ -647,7 +648,7 @@ short save_as(TEXTP t_ptr, char *name)
 		}
 		else
 			note(1, 0, WRITEERR);
-/*		restore_back_up(t_ptr);*/
+		restore_back_up(t_ptr);
 	}
 	return(antw);
 }

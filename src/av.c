@@ -421,22 +421,22 @@ static bool parse_vaarg(POSENTRY **list, char *arg)
 }
 
 
-void handle_av(short msgbuff[])
+void handle_av(short msg[])
 {
 	char		*str_p, *arg;
 	short		kstate, d;
 	POSENTRY	*va_list = NULL;
 
-	switch (msgbuff[0])
+	switch (msg[0])
 	{
 		case VA_START :
 			if (all_iconified)
 				all_uniconify(NULL, NULL);
-			str_p = *(char **)(msgbuff + 3);
+			str_p = *(char **)(msg + 3);
 			if (str_p != NULL)
 			{
 				arg = strdup(str_p);
-				send_avstarted(msgbuff[1], msgbuff[3], msgbuff[4]);
+				send_avstarted(msg[1], msg[3], msg[4]);
 
 				if ((debug_level & DBG_AV) || (debug_level & DBG_ARG))
 					debug("VA_START %s\n", arg);
@@ -454,8 +454,8 @@ void handle_av(short msgbuff[])
 
 		case VA_PROTOSTATUS :
 			if (debug_level & DBG_AV)
-				debug("VA_PROTSTATUS %u\n", (unsigned short)msgbuff[3]);
-			av_shell_status = msgbuff[3];
+				debug("VA_PROTSTATUS %u\n", (unsigned short)msg[3]);
+			av_shell_status = msg[3];
 			if (wind_cycle && !(av_shell_status & 64))
 				wind_cycle = FALSE;			/* glob. Fensterwechsel abschalten */
 			break;
@@ -471,18 +471,18 @@ void handle_av(short msgbuff[])
 			break;
 
 		case VA_DRAGACCWIND :				/* bei D&D mit glob. Fensterwechsel */
-			str_p = *(char **)(msgbuff + 6);
+			str_p = *(char **)(msg + 6);
 			if (str_p != NULL)
 			{
 				graf_mkstate(&d, &d, &d, &kstate);
-				handle_avdd(msgbuff[3], kstate, str_p);
+				handle_avdd(msg[3], kstate, str_p);
 			}
 			break;
 
 		case AV_SENDKEY :
 			if (debug_level & DBG_AV)
-				debug("AV_SENDKEY von %d: %d, %d\n", msgbuff[1], msgbuff[3], msgbuff[4]);
-			if ((msgbuff[3] == 4) && (msgbuff[4] == 0x1117))	/* ^W */
+				debug("AV_SENDKEY von %d: %d, %d\n", msg[1], msg[3], msg[4]);
+			if ((msg[3] == 4) && (msg[4] == 0x1117))	/* ^W */
 				cycle_window();
 			break;
 			

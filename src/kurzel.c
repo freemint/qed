@@ -48,7 +48,6 @@ static MARKE	Marken[MARKEN_ANZ];
 static PATH		krz_name;	/* Name der aktuellen KÅrzeldatei, oder leer */
 
 /***************************************************************************/
-static void	go_to_marke	(short nr);
 
 static short  load_kurzel	(void);
 static void clr_kurzel	(void);

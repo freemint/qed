@@ -2,7 +2,7 @@
 #include "aktion.h"
 #include "rsc.h"
 
-extern handle_msg(short *msg);	/* -> event.c */
+extern void handle_msg(short *msg);	/* -> event.c */
 
 short	akt_handle;
 

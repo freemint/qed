@@ -7,6 +7,7 @@
  
 #include <dirent.h>
 #include <support.h>
+#include <assert.h>
 
 #include "global.h"
 #include "ausgabe.h"
@@ -37,7 +38,8 @@ static void hl_error_callback( char *currfile, HL_ERRTYPE err, int linenr)
 		case E_HL_MIXED:    sinote(1,0, SYN_MIXED, f, linenr );    break;
 		case E_HL_SYNTAX:   sinote(1,0, SYN_SYNTAX, f, linenr );   break;
 		case E_HL_WRONGVAL: sinote(1,0, SYN_WRONGVAL, f, linenr ); break;
-		case E_HL_DUPTEXT: sinote(1,0, SYN_DUPTEXT, f, linenr ); break;
+		case E_HL_DUPTEXT:  sinote(1,0, SYN_DUPTEXT, f, linenr ); break;
+		default:;
 	}
 }
 
@@ -137,6 +139,9 @@ void hl_update_zeile(RINGP r_ptr, ZEILEP z_ptr)
 {
 	if (!syntax_active)
 		return;
+
+	assert(r_ptr);
+	assert(z_ptr);
 		
 	Hl_Update(r_ptr->hl_anchor,
 	                z_ptr->hl_handle,
@@ -150,6 +155,9 @@ void hl_update_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
 	ZEILEP curr = first;
 	if (!syntax_active)
 		return;
+
+	assert(r_ptr);
+	assert(curr);
 		
 	for (;;)
 	{
@@ -178,6 +186,9 @@ void hl_remove(RINGP r_ptr, ZEILEP z_ptr)
 {
 	if (!syntax_active)
 		return;
+
+	assert(r_ptr);
+	assert(z_ptr);
 		
 	if (z_ptr->vorg)
 		Hl_RemoveLine(r_ptr->hl_anchor,
@@ -197,6 +208,9 @@ void hl_insert(RINGP r_ptr, ZEILEP z_ptr)
 {
 	if (!syntax_active)
 		return;
+
+	assert(r_ptr);
+	assert(z_ptr);
 		
 	if (z_ptr->hl_handle)
 		hl_remove(r_ptr, z_ptr);
@@ -221,6 +235,8 @@ void hl_insert(RINGP r_ptr, ZEILEP z_ptr)
  */
 static void hl_remove_noupdate(RINGP r_ptr, ZEILEP z_ptr)
 {
+	assert(z_ptr);
+
 	if (z_ptr->vorg)
 		Hl_RemoveLine(r_ptr->hl_anchor,
 	  	                  z_ptr->vorg->hl_handle, 
@@ -265,6 +281,9 @@ void hl_insert_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
 	if (!syntax_active)
 		return;
 		
+	assert(r_ptr);
+	assert(curr);
+
 	for(;;)
 	{
 		hl_insert_noupdate(r_ptr, curr);
@@ -289,6 +308,8 @@ void hl_remove_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
 
 	if (!syntax_active)
 		return;
+
+	assert(r_ptr);
 		
 	for (;;)
 	{

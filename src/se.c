@@ -181,10 +181,10 @@ static void	send_ack(bool ok)
 
 void handle_se(short *msg)
 {
-	PATH 			datei, fehler;
-	char			str[9], *p, *p2;
-	short			icon, i, d, x;
-	long			y;
+	PATH 		datei, msgtxt;
+	char		str[9], *p, *p2;
+	short		icon, i, d, x = 0;
+	long		y = 0;
 	ERRINFO		*error;
 	SEMENUINFO	*pmenu;
 
@@ -306,7 +306,7 @@ void handle_se(short *msg)
 				if (debug_level & DBG_SE)
 					debug("SE_ERROR von %d\n", msg[1]);
 				strcpy(datei, error->errFile);
-				strcpy(fehler, error->errMess);
+				strcpy(msgtxt, error->errMess);
 				x = error->errRow;
 				y = error->errLine;
 			}
@@ -316,11 +316,11 @@ void handle_se(short *msg)
 				icon = load_edit(datei, FALSE);
 				if (icon > 0)
 				{
-					char	str[WINSTRLEN+1];
+					char txt[WINSTRLEN+1];
 
-					strcpy(str, rsc_string(ERRORSTR));
-					strcat(str, fehler);
-					set_info(get_text(icon), str);
+					strcpy(txt, rsc_string(ERRORSTR));
+					strcat(txt, msgtxt);
+					set_info(get_text(icon), txt);
 					if ((x >= 1) && (y >= 1))
 					{
 						desire_x = x - 1;
@@ -336,20 +336,20 @@ void handle_se(short *msg)
 			if ((p != NULL) && (p2 != NULL))
 			{
 				strcpy(datei, p);
-				strcpy(fehler, p2);
+				strcpy(msgtxt, p2);
 				if (debug_level & DBG_SE)
 				{
 					debug("SE_ERRFILE von %d\n", msg[1]);
 					debug("      name   = %s\n", datei);
-					debug("      fehler = %s\n", fehler);
+					debug("      error  = %s\n", msgtxt);
 				}
 			}
 			send_ack(TRUE);
 			if ((strlen(datei) > 0) && file_exists(datei))
 				icon = load_edit(datei, FALSE);
-			if ((strlen(fehler) > 0) && file_exists(fehler))
+			if ((strlen(msgtxt) > 0) && file_exists(msgtxt))
 			{
-				icon = load_edit(fehler, FALSE);
+				icon = load_edit(msgtxt, FALSE);
 				if (icon > 0)
 				{
 					do_icon(icon, DO_ABAND);

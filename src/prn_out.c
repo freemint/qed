@@ -13,8 +13,8 @@
 /*
  * aus prn_cfg.c
 */
-extern bool open_printer	(void);
-extern void close_printer	(void);
+bool open_printer	(void);
+void close_printer	(void);
 
 /*
  * lokales 

@@ -50,21 +50,20 @@ static SET		wort_set;
 /* !!! muessen bei match gesichet werden !!! */
 static bool		quantor, vorw, grkl, wort, modus, round, line_start;
 static short		muster_len;
-static char 		muster_txt[HIST_LEN+1];
-static char 		replace_txt[HIST_LEN+1];
+static unsigned char 	muster_txt[HIST_LEN+1];
+static unsigned char 	replace_txt[HIST_LEN+1];
 static SET		group[SETANZ];
 static short		setanz;
 static short		delta[256];
 
 /* lokale Prototypen *****************************************************/
 static bool	build_popup (char h[HIST_ANZ][HIST_LEN+1], POPUP *pop);
-static short	hist_popup	(char h[HIST_ANZ][HIST_LEN+1], OBJECT *tree, short obj_pos, short obj_text);
 
 /*=======================================================================*/
 
-static void init_suche(TEXTP t_ptr, short modus)
+static void init_suche(TEXTP t_ptr, short mode)
 {
-	if (modus == M_CURSOR)
+	if (mode == M_CURSOR)
 	{
 		start = t_ptr->cursor_line;
 		text_y = t_ptr->ypos;
@@ -111,7 +110,7 @@ static void init_suche(TEXTP t_ptr, short modus)
 			}
 		}
 	}
-	else if (modus==M_TSTART)
+	else if (mode==M_TSTART)
 	{
 		start = FIRST(&t_ptr->text);
 		text_x = 0;
@@ -287,11 +286,11 @@ static char *STRSTR2(char *str_anf, short str_len, char *mstr_anf, short *found_
 
 			if (m=='*')
 			{
-				bool	save = line_start;
+				bool tmp = line_start;
 
 				line_start = FALSE;
 				str = STRSTR2(str, len, mstr, found_len);
-				line_start = save;
+				line_start = tmp;
 				if (str==NULL)
 					return NULL;
 				*found_len += (short)(str - str_anf);
@@ -447,7 +446,7 @@ static short suchen(TEXTP t_ptr, short *such_len)
 /* ====================================================================== */
 
 static void set_suchmode(char *Muster, char *Replace, bool Grkl, bool Quantor, 
-								 bool Vorw, bool Wort, bool Global, bool Round)
+			 bool Vorw, bool Wort, bool Global, bool Round)
 {
 	char	*ptr, *d, help[HIST_LEN+1];
 	bool	invers;
@@ -588,7 +587,7 @@ short start_find(TEXTP t_ptr, bool quiet)
 short start_replace(TEXTP t_ptr)
 {
 	char 	*ptr;
-	short	delta, erg, loc_r_modus, d,
+	short	len, erg, loc_r_modus, d,
 			such_len, rpl_len;
 	long	anz;
 
@@ -610,8 +609,8 @@ short start_replace(TEXTP t_ptr)
 	
 	while((erg=suchen(t_ptr, &such_len))==1)
 	{
-		delta = rpl_len-such_len;
-		if (start->len + delta > MAX_LINE_LEN)
+		len = rpl_len-such_len;
+		if (start->len + len > MAX_LINE_LEN)
 		{
 			inote(1, 0, TOOLONG, MAX_LINE_LEN);
 			erg = -1;
@@ -667,7 +666,7 @@ short start_replace(TEXTP t_ptr)
 		}
 		anz ++;
 		get_undo_col(t_ptr);
-		ptr = REALLOC(&start, text_x, delta);
+		ptr = REALLOC(&start, text_x, len);
 		memcpy(ptr, replace_txt, rpl_len);
 		t_ptr->cursor_line = start;
 		hl_update( t_ptr );
@@ -681,7 +680,7 @@ short start_replace(TEXTP t_ptr)
 		if (vorw)
 		{
 			text_x += rpl_len;
-			text_len += delta;
+			text_len += len;
 			text_len -= rpl_len;
 		}
 		else
@@ -725,10 +724,10 @@ short start_replace(TEXTP t_ptr)
 short do_next(TEXTP t_ptr)
 {
 	short	erg;
-	bool	vorw;
+	bool	direction;
 
-	vorw = (shift_pressed()) ? (!s_vorw) : s_vorw;
-	set_suchmode(s_str, r_str, s_grkl, s_quant, vorw, s_wort, FALSE, s_round);
+	direction = (shift_pressed()) ? (!s_vorw) : s_vorw;
+	set_suchmode(s_str, r_str, s_grkl, s_quant, direction, s_wort, FALSE, s_round);
 	if (last_op == 1)
 		erg = start_find(t_ptr,FALSE);
 	else if (last_op == 2)
@@ -743,7 +742,7 @@ void find_selection(TEXTP t_ptr)
 	if (t_ptr->block)
 	{
 		RING	r;
-		bool	vorw;
+		bool	direction;
 		
 		block_copy(t_ptr, &r);
 		if (strlen(TEXT(FIRST(&r))) > 0)
@@ -751,8 +750,8 @@ void find_selection(TEXTP t_ptr)
 			strncpy(s_str, TEXT(FIRST(&r)), HIST_LEN);
 			kill_textring(&r);
 			s_str[HIST_LEN] = EOS;
-			vorw = (shift_pressed()) ? (!s_vorw) : s_vorw;
-			set_suchmode(s_str, r_str, s_grkl, s_quant, vorw, s_wort, FALSE, s_round);
+			direction = (shift_pressed()) ? (!s_vorw) : s_vorw;
+			set_suchmode(s_str, r_str, s_grkl, s_quant, direction, s_wort, FALSE, s_round);
 			if (start_find(t_ptr, FALSE) == 0)
 				Bconout(2, 7);
 		}
@@ -762,8 +761,8 @@ void find_selection(TEXTP t_ptr)
 
 bool filematch(char *str, char *m, short fs_typ)
 {
-	char 	*where, muster[HIST_LEN+1];
-	short		i;
+	char 	*where, mustertxt[HIST_LEN+1];
+	short	i;
 	bool	gk = FALSE, old_flg[2];
 
 	if ((str[0] == EOS) || (m[0] == EOS))
@@ -782,8 +781,8 @@ bool filematch(char *str, char *m, short fs_typ)
 	old_flg[0] = (modus != M_CURSOR);
 	old_flg[1] = round;
 
-	sprintf(muster, "^%s$", m);
-	set_suchmode(muster, "", gk, TRUE, TRUE, FALSE, FALSE, FALSE);
+	sprintf(mustertxt, "^%s$", m);
+	set_suchmode(mustertxt, "", gk, TRUE, TRUE, FALSE, FALSE, FALSE);
 	where = STRSTR2((char*)str, (short) strlen(str), muster_txt, &i);
 
 	/* 
@@ -848,15 +847,16 @@ static bool build_popup(char h[HIST_ANZ][HIST_LEN+1], POPUP *pop)
 }
 
 
-static short circle_popup(char h[HIST_ANZ][HIST_LEN+1], void *dial, OBJECT* tree, short text_obj, short pos)
+static short circle_popup	(char h[HIST_ANZ][HIST_LEN+1], void *dial,
+				 OBJECT* tree, short text_obj, short position)
 {
-	if ((pos + 1 < HIST_ANZ) && (h[pos + 1][0] != EOS))
-		pos++;
+	if ((position + 1 < HIST_ANZ) && (h[position + 1][0] != EOS))
+		position++;
 	else
-		pos = 0;
-	set_string(tree, text_obj, h[pos]);
+		position = 0;
+	set_string(tree, text_obj, h[position]);
 	redraw_mdobj(dial, text_obj);
-	return pos;
+	return position;
 }
 
 
@@ -868,7 +868,8 @@ static short circle_popup(char h[HIST_ANZ][HIST_LEN+1], void *dial, OBJECT* tree
 */
 short replace_dial(void)
 {
-	short	antw, d, r_cycle, s_cycle;
+	short	antw = 0;
+	short	d, r_cycle, s_cycle;
 	bool	im_kreis, s_p_v, r_p_v;			/* *_popup_valid */
 	bool	close = FALSE;
 	MDIAL	*dial;
@@ -1006,7 +1007,8 @@ bool findfile_dial(char *ff_path, bool in_prj)
 {
 	PATH	new_path = "", str = "";
 	char 	s[HIST_LEN+1];
-	short	antw, cycle, d;
+	short	antw = 0;
+	short	d, cycle;
 	bool	close = FALSE, p_v;
 	MDIAL	*dial;
 	POPUP	pop;
@@ -1055,7 +1057,6 @@ bool findfile_dial(char *ff_path, bool in_prj)
 		while (!close)
 		{
 			antw = do_mdial(dial) & 0x7fff;
-
 			switch (antw)
 			{
 				case FFSTR :
@@ -1261,7 +1262,8 @@ void change_umlaute(TEXTP t_ptr)
 bool umlaut_dial(void)
 {
 	bool	ret = FALSE, close = FALSE;
-	short	antw, new_from, new_to, d;
+	short	antw = 0;
+	short	d, new_from, new_to;
 	MDIAL	*dial;
 	char	str[30];
 		

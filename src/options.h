@@ -53,7 +53,7 @@ extern void		set_local_options(void);
 extern void 	write_cfg_str		(char *var, char *value);
 extern void 	write_cfg_int		(char *var, short value);
 extern void 	write_cfg_long		(char *var, long value);
-extern void 	write_cfg_bool		(char *var, bool bool);
+extern void 	write_cfg_bool		(char *var, bool value);
 extern void 	read_cfg_bool		(char *str, bool *val);
 extern void 	read_cfg_str		(char *str, char *val);
 

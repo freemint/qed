@@ -19,10 +19,10 @@ static short    text_len = 0;
 #define INSERT_CURSOR_WIDTH 3
 
 /*!! Muessen am Anfang jeder Routine gesetzt werden !!*/
-static bool tab;
+static bool 	tab;
 static short    tab_size;
-static bool umbrechen;
-static bool show_end;
+static bool 	umbrechen;
+static bool 	show_end;
 static short    draw_mode;
 
 /* Statische Variablen fr str_out(); werden am Anfang von str_out()
@@ -70,14 +70,14 @@ static void adjust_text(TEXTP t_ptr)
 
 
 /* Liefert die interne Position */
-short inter_pos(short x, ZEILEP a, bool tab, short tab_size)
+short inter_pos(short x, ZEILEP a, bool tabflag, short tabsize)
 {
     short   len  = 0,
-            tabH = tab_size,
+            tabH = tabsize,
             i    = 0;
     char *str;
 
-    if (!tab)
+    if (!tabflag)
         return min(x,a->len);
     str = TEXT(a);
     while(len < x && i < a->len)
@@ -85,13 +85,13 @@ short inter_pos(short x, ZEILEP a, bool tab, short tab_size)
         if ((*str++) == '\t')
         {
             len += tabH;
-            tabH = tab_size;
+            tabH = tabsize;
         }
         else
         {
             len++;
             if ((--tabH)==0)
-                tabH = tab_size;
+                tabH = tabsize;
         }
         i++;
     }
@@ -100,18 +100,18 @@ short inter_pos(short x, ZEILEP a, bool tab, short tab_size)
     return i;
 }
 
-short bild_len(ZEILEP a, bool tab, short tab_size)
+short bild_len(ZEILEP a, bool tabflag, short tabsize)
 {
-    return bild_pos(a->len,a,tab,tab_size);
+    return bild_pos(a->len,a,tabflag,tabsize);
 }
 
-short bild_pos(short x, ZEILEP a, bool tab, short tab_size)
+short bild_pos(short x, ZEILEP a, bool tabflag, short tabsize)
 {
     short   len  = 0,
-            tabH = tab_size;
+            tabH = tabsize;
     char    *str;
 
-    if (!tab)
+    if (!tabflag)
         return min(x, a->len);
     str = TEXT(a);
     while ((--x)>=0)
@@ -119,13 +119,13 @@ short bild_pos(short x, ZEILEP a, bool tab, short tab_size)
         if ((*str++) == '\t')
         {
             len += tabH;
-            tabH = tab_size;
+            tabH = tabsize;
         }
         else
         {
             len++;
             if ((--tabH)==0)
-                tabH = tab_size;
+                tabH = tabsize;
         }
     }
     return len;
@@ -134,11 +134,11 @@ short bild_pos(short x, ZEILEP a, bool tab, short tab_size)
 /*----------------------------------------------------------------------------
  * Cursor-Handling
 */
-short cursor_xpos(TEXTP t_ptr, short pos, bool *isitalicp)
+short cursor_xpos(TEXTP t_ptr, short position, bool *isitalicp)
 {
     char *textptr;
     HL_LINE cacheline;
-    HL_ELEM flags;
+    HL_ELEM flags = 0;
     HL_ELEM len;
     short tabwidth;
     short i;
@@ -150,7 +150,7 @@ short cursor_xpos(TEXTP t_ptr, short pos, bool *isitalicp)
     if (isitalicp)
         *isitalicp = FALSE;
         
-    if (!pos)
+    if (!position)
         return 0;
 
     /* bei nichtprop. Font wird der Syntax-Cache nicht ausgewertet, sondern
@@ -159,8 +159,7 @@ short cursor_xpos(TEXTP t_ptr, short pos, bool *isitalicp)
     {
         if (isitalicp)
         {
-            short tpos = pos;
-            flags = 0;
+            short tpos = position;
             cacheline = hl_get_zeile(t_ptr->cursor_line);
             while (!(*cacheline & HL_CACHEEND))
             {
@@ -175,7 +174,7 @@ short cursor_xpos(TEXTP t_ptr, short pos, bool *isitalicp)
             }
             *isitalicp = flags & HL_ITALIC;
         }
-        return bild_pos(pos, t_ptr->cursor_line, t_ptr->loc_opt->tab, t_ptr->loc_opt->tabsize) * font_wcell;
+        return bild_pos(position, t_ptr->cursor_line, t_ptr->loc_opt->tab, t_ptr->loc_opt->tabsize) * font_wcell;
     }
 
     adjust_text(t_ptr);
@@ -183,7 +182,7 @@ short cursor_xpos(TEXTP t_ptr, short pos, bool *isitalicp)
     start_line = line = TEXT(t_ptr->cursor_line);
     tabwidth = t_ptr->loc_opt->tab ? t_ptr->loc_opt->tabsize : 1;
 
-    while (!(*cacheline & HL_CACHEEND) && (short)(line-start_line) < pos)
+    while (!(*cacheline & HL_CACHEEND) && (short)(line-start_line) < position)
     {
         flags = *(cacheline++);    /* Hole L„nge und Attribute aus dem Syntax-Cache */
         len = *(cacheline++);
@@ -191,7 +190,7 @@ short cursor_xpos(TEXTP t_ptr, short pos, bool *isitalicp)
             cacheline++;
         if (flags & HL_SELCOLOR)
             cacheline++;
-        for (textptr = text; len && (short)(line-start_line) < pos; line++, len--)
+        for (textptr = text; len && (short)(line-start_line) < position; line++, len--)
         {
             if (*line == '\t') /* Tabs werden innerhalb der Kopierschleife expandiert */
                 for (i= ((short)(textptr-text)+done_expanded) % tabwidth; i<tabwidth; i++)

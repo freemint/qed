@@ -21,9 +21,10 @@ typedef struct
 	short	icon;
 	short	type_id;
 } ICON_TO_TYPE;
+
 typedef ICON_TO_TYPE *I2T;
 
-static ICON_TYPE		icon[MAX_TYPE_ANZ];
+static ICON_TYPE	icon[MAX_TYPE_ANZ];
 static ICON_TO_TYPE	i2t[MAX_ICON_ANZ];
 static short				type_anz = 0;
 
@@ -59,13 +60,13 @@ short all_icons(short *c)
 /* <0 : Fehler bei der Ausfhrung	*/
 /*	=0 : Nicht m”glich					*/
 /* >0 : Erfolgreich ausgefhrt		*/
-short do_icon(short icon, short action)
+short do_icon(short type, short action)
 {
 	TYPEP	t;
 
-	t = search_type(icon);
-	if (t!=NULL && (t->test)(icon,action))
-		return (t->edit)(icon,action);
+	t = search_type(type);
+	if (t!=NULL && (t->test)(type,action))
+		return (t->edit)(type,action);
 	return 0;
 }
 
@@ -82,34 +83,34 @@ void do_all_icon(short type_id, short action)
 		}
 }
 
-bool icon_test(short icon, short action)
+bool icon_test(short type, short action)
 {
 	TYPEP	t;
 
-	t = search_type(icon);
+	t = search_type(type);
 	if (t!=NULL)
-		return (t->test)(icon,action);
+		return (t->test)(type,action);
 	return FALSE;
 }
 
-short icon_edit(short icon, short action)
+short icon_edit(short type, short action)
 {
 	TYPEP	t;
 
-	t = search_type(icon);
+	t = search_type(type);
 	if (t!=NULL)
-		return (t->edit)(icon,action);
+		return (t->edit)(type,action);
 	return 0;
 }
 
-void icon_exist(short icon, SET actions)
+void icon_exist(short type, SET actions)
 {
 	TYPEP	t;
 
-	t = search_type(icon);
+	t = search_type(type);
 	if (t==NULL || t->exist==NULL)
 		setclr(actions);
-	else (t->exist)(icon,actions);
+	else (t->exist)(type,actions);
 }
 
 bool icon_drag(short dest_obj, short src_obj)
@@ -121,10 +122,10 @@ bool icon_drag(short dest_obj, short src_obj)
 	return((t->drag)(dest_obj,src_obj));
 }
 
-short decl_icon_type(bool(*test)(short,short),
-						 short(*edit)(short,short),
-						 void(*exist)(short,SET),
-						 bool(*drag)(short,short))
+short decl_icon_type(	bool(*test)(short,short),
+			short(*edit)(short,short),
+			void(*exist)(short,SET),
+			bool(*drag)(short,short))
 {
 	TYPEP	t;
 

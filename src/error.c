@@ -46,7 +46,7 @@ static short	err_anz = 0;
 
 
 
-static void init_parser(char *muster)
+static void init_parser(char *mustertxt)
 {
 	char	tmp[2] = " ";
 	short	i;
@@ -65,15 +65,15 @@ static void init_parser(char *muster)
 		strcpy(token_list[i].text, "");
 	}
 
-	for (i = 0; i < (short)strlen(muster); i++)
+	for (i = 0; i < (short)strlen(mustertxt); i++)
 	{
-		switch (muster[i])
+		switch (mustertxt[i])
 		{
 			case '%' :
 				i++;
 				if (last_token == read_text)
 					token_anzahl++;
-				switch (muster[i])
+				switch (mustertxt[i])
 				{
 					case 'f' :
 						token_list[token_anzahl].token = read_name;
@@ -97,7 +97,7 @@ static void init_parser(char *muster)
 				if (last_token > read_text)
 					token_anzahl++;
 				token_list[token_anzahl].token = read_text;
-				tmp[0] = muster[i];
+				tmp[0] = mustertxt[i];
 				strcat(token_list[token_anzahl].text, tmp);
 				last_token = read_text;
 				break;
@@ -106,29 +106,29 @@ static void init_parser(char *muster)
 }
 
 
-static bool	readin_text(char *zeile, short *pos, char *text)
+static bool readin_text(char *zeile, short *position, char *text)
 {
 	short	len = (short)strlen(text),
 			i;
 	char	tmp[10];
 
-	i = *pos;
-	while ( (i < (short)strlen(zeile)) && (i < (len + *pos)))
+	i = *position;
+	while ( (i < (short)strlen(zeile)) && (i < (len + *position)))
 	{
-		tmp[i - *pos] = zeile[i];
+		tmp[i - *position] = zeile[i];
 		i++;
 	}
-	if (i > *pos)
+	if (i > *position)
 	{
-		tmp[i - *pos] = EOS;
-		*pos = i;
+		tmp[i - *position] = EOS;
+		*position = i;
 		return (strcmp(tmp, text) == 0);
 	}
 	else
 		return FALSE;
 }
 
-static bool	readin_name(char *zeile, short *pos)
+static bool	readin_name(char *zeile, short *position)
 {
 	SET	valid_char;
 	PATH	tmp;
@@ -136,18 +136,18 @@ static bool	readin_name(char *zeile, short *pos)
 
 	strcpy(tmp,"-+._~\\/A-Za-z0-9");				/* ZulÑssige Zeichen fÅr Dateinamen */
 	str2set(tmp, valid_char);
-	i = *pos;
+	i = *position;
 	while ( 	(i < (short)strlen(zeile)) && 	/* Sonderbehandlung fÅr ':', nur im Pfad erlaubt! */
 				((setin(valid_char, zeile[i])) ||
-				 (zeile[i] == ':' && (zeile[i+1] == '\\') || zeile[i+1] == '/')))
+				 (zeile[i] == ':' && ((zeile[i+1] == '\\') || zeile[i+1] == '/'))))
 	{
-		tmp[i - *pos] = zeile[i];
+		tmp[i - *position] = zeile[i];
 		i++;
 	}
-	if (i > *pos)
+	if (i > *position)
 	{
-		tmp[i - *pos] = EOS;
-		*pos = i;
+		tmp[i - *position] = EOS;
+		*position = i;
 
 		if (strchr(tmp, '/') != NULL)				/* UNIX-Pfad -> nach TOS wandeln */
 		{
@@ -167,67 +167,67 @@ static bool	readin_name(char *zeile, short *pos)
 		return FALSE;
 }
 
-static bool	readin_zeile(char *zeile, short *pos)
+static bool	readin_zeile(char *zeile, short *position)
 {
 	short	i;
 	char	tmp[10];
 
-	i= *pos;
+	i= *position;
 	while ( (i < (short)strlen(zeile)) && (isdigit(zeile[i])) )
 	{
-		tmp[i - *pos] = zeile[i];
+		tmp[i - *position] = zeile[i];
 		i++;
 	}
-	if (i > *pos)
+	if (i > *position)
 	{
-		tmp[i - *pos] = EOS;
+		tmp[i - *position] = EOS;
 		fehlerzeile = atol(tmp);
-		*pos = i;
+		*position = i;
 		return TRUE;
 	}
 	else
 		return FALSE;
 }
 
-static bool	readin_spalte(char *zeile, short *pos)
+static bool	readin_spalte(char *zeile, short *position)
 {
 	short	i;
 	char	tmp[10];
 
-	i= *pos;
+	i= *position;
 	while ( (i < (short)strlen(zeile)) && (isdigit(zeile[i])) )
 	{
-		tmp[i - *pos] = zeile[i];
+		tmp[i - *position] = zeile[i];
 		i++;
 	}
-	if (i > *pos)
+	if (i > *position)
 	{
-		tmp[i - *pos] = EOS;
+		tmp[i - *position] = EOS;
 		fehlerspalte = atoi(tmp);
-		*pos = i;
+		*position = i;
 		return TRUE;
 	}
 	else
 		return FALSE;
 }
 
-static bool	readin_fehler(char *zeile, short *pos)
+static bool	readin_fehler(char *zeile, short *position)
 {
 	short	i, j;
 	char	tmp[MAX_ERRLEN];
 
-	i = *pos;
+	i = *position;
 	j = 0;
 	while ( (i < (short)strlen(zeile)) && (j < sizeof(tmp)) )
 	{
-		tmp[i - *pos] = zeile[i];
+		tmp[i - *position] = zeile[i];
 		i++;
 		j++;
 	}
-	if (i > *pos)
+	if (i > *position)
 	{
-		tmp[i - *pos] = EOS;
-		*pos = i;
+		tmp[i - *position] = EOS;
+		*position = i;
 		strcpy(fehlertext, tmp);
 		return TRUE;
 	}
@@ -259,11 +259,12 @@ static bool	parse_line(char *zeile)
 			case read_fehler :
 				ok = readin_fehler(zeile, &z_pos);
 				break;
+			default:;
 		}
 		if (!ok)
 			break;
 	}
-	return ok;;
+	return ok;
 }
 
 
@@ -329,7 +330,7 @@ void	handle_error(TEXTP t_ptr)
  */
 void	fehler_box(void)
 {
-	short	antw, i;
+	short	i, antw = 0;
 	char	str[40];
 	MDIAL	*dial;
 	bool	close = FALSE;

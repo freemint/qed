@@ -16,8 +16,8 @@ extern void		close_edit		(char *filename, short flag);
 
 extern bool		info_edit		(short icon);
 
-extern void		make_chg			(short link, short change, long ypos);
-extern void		restore_edit	(void);
+extern void		make_chg		(short line, short change, long ypos);
+extern void		restore_edit		(void);
 
 extern void		cursor_on		(short wHandle);
 extern void		cursor_off		(short wHandle);

@@ -77,14 +77,12 @@ retry:
 
 void to_makro(short kstate, short kreturn)
 {
-	if (makro_rec && !makro_play)				/* Zeichen erfassen */
-														/* wenn echtes Zeichen */
+	if (makro_rec && !makro_play)	/* Zeichen erfassen wenn echtes Zeichen */
 	{
-		short pos = makro_rec_ptr->len;
-		
-		if (pos < MAKRO_DEF_LEN)
+		short len = makro_rec_ptr->len;
+		if (len < MAKRO_DEF_LEN)
 		{
-			makro_rec_ptr->daten.tasten[pos] = gem_to_norm(kstate, kreturn);
+			makro_rec_ptr->daten.tasten[len] = gem_to_norm(kstate, kreturn);
 			makro_rec_ptr->len++;
 		}
 		else
@@ -92,7 +90,7 @@ void to_makro(short kstate, short kreturn)
 	}
 }
 
-void start_blk_rec(char *name, short key, RINGP r)
+static void start_blk_rec(char *name, short key, RINGP r)
 {
 	short	new, i;
 	MAKRO	*m;

@@ -73,7 +73,7 @@ bool init_resource(void)
 
 	if (rsc_init)
 	{
-		char		str[25];
+		char	str[25];
 		OBJECT	*tmp;
 		
 		/* Stimmt die RSC-Version? */

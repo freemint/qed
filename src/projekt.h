@@ -5,7 +5,7 @@ extern short	prj_type;
 extern PATH	def_prj_path;
 
 extern short	load_projekt	(char *filename);
-extern bool	add_to_projekt	(short link, char *name, bool draw);
+extern bool	add_to_projekt	(short line, char *name, bool draw);
 extern short	new_projekt		(void);
 
 extern void	find_on_disk	(void);

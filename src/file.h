@@ -1,7 +1,7 @@
 #ifndef _qed_file_h_
 #define _qed_file_h_
 
-extern void 	open_error		(char *filename, short error);
+extern void 	open_error		(char *filename, short error_code);
 
 extern short 		load_from_fd	(short fd, char *name, RINGP t, bool verbose, bool *null_byte, long size);
 extern short 		load_datei		(char *name, RINGP t, bool verbose, bool *null_byte);
