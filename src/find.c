@@ -50,8 +50,8 @@ static SET		wort_set;
 /* !!! muessen bei match gesichet werden !!! */
 static bool		quantor, vorw, grkl, wort, modus, round, line_start;
 static short		muster_len;
-static char 	muster_txt[HIST_LEN+1];
-static char 	replace_txt[HIST_LEN+1];
+static char 		muster_txt[HIST_LEN+1];
+static char 		replace_txt[HIST_LEN+1];
 static SET		group[SETANZ];
 static short		setanz;
 static short		delta[256];
@@ -139,7 +139,7 @@ static short suche1(ZEILEP col, short x, short str_len, short *such_len,
 		if (x>0 && line_start)									/* Muster am Anfang finden */
 			return -1;
 		if (x+str_len<col->len && muster_len>=2 &&
-			 muster_txt[muster_len-2]=='[' && ((unsigned char)muster_txt[muster_len-1])==0xFC)
+			 muster_txt[muster_len-2]=='[' && (muster_txt[muster_len-1])==0xFC)
 			return -1;
 	}
 	ptr = TEXT(col);
@@ -548,7 +548,7 @@ static void set_suchmode(char *Muster, char *Replace, bool Grkl, bool Quantor,
 			delta[i] = muster_len;
 		j = muster_len-1;
 		for (i=0; i<j; i++) 
-			delta[(unsigned char)muster_txt[i]] = j-i;
+			delta[muster_txt[i]] = j-i;
 	}
 	if (Global)
 	{
@@ -707,7 +707,7 @@ short start_replace(TEXTP t_ptr)
 		}
 		if (loc_r_modus != RP_FIRST)
 		{
-			char	info[30];
+			char	info[WINSTRLEN+1];
 
 			sprintf(info, rsc_string(REPLACESTR), anz);
 			set_info(t_ptr, info);

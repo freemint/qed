@@ -100,6 +100,7 @@ typedef struct
 	HL_HANDLE hl_anchor;   /* Syntax-Highlighting-Cache */
 } RING, *RINGP;
 
+#define WINSTRLEN	127
 
 typedef struct _text
 {
@@ -122,7 +123,7 @@ typedef struct _text
 	bool				blk_mark_mode;		/* Block wird durch Cursor aufgezogen */
 	bool				readonly;			/* Datei auf Disk schreibgeschÅtzt */
 	short				desire_x;			/* FÅr UP und DOWN in [TASTEN] */
-	char				info_str[256];		/* Text, der im Fenster-Info ausgegeben wird */
+	char				info_str[WINSTRLEN+1];		/* Text, der im Fenster-Info ausgegeben wird */
 	PATH				filename;			/* Name der Datei */
 	short				filesys;				/* Ergebnis von fs_case_sens(filename) */
 	bool				namenlos;			/* Datei hat noch keinen Name */
@@ -133,7 +134,6 @@ typedef struct _text
 
 typedef void (*TEXT_DOFUNC)(TEXTP t_ptr);
 
-#define WINSTRLEN	128
 typedef struct _window
 {
 	struct _window	*next;
@@ -148,8 +148,8 @@ typedef struct _window
 	short				w_width;				/* Fensterbreite in Einheiten */
 	short				w_height;			/* Fensterhîhe in Einheiten */
 	GRECT				work;					/* Arbeitsbereich */
-	char				title[WINSTRLEN];	/* Titel des Fensters (mit ' ' und '*') */
-	char				info[WINSTRLEN];	/* Infozeile des Fensters */
+	char				title[WINSTRLEN+1];	/* Titel des Fensters (mit ' ' und '*') */
+	char				info[WINSTRLEN+1];	/* Infozeile des Fensters */
 	short				icon_x, icon_y;	/* Position des Icons */
 	GRECT				old_size;			/* Absolute Grîûe vor dem Iconify */
 

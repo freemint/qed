@@ -270,7 +270,7 @@ static bool	parse_line(char *zeile)
 void	handle_error(TEXTP t_ptr)
 {
 	short	icon, i;
-	char	str[256];
+	char	str[WINSTRLEN+1];
 
 	if (last_errtext != NULL && t_ptr != last_errtext)
 	{

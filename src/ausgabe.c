@@ -925,7 +925,7 @@ void bild_blkout(WINDOWP window, TEXTP t_ptr, long z1, long z2)
 
 void head_out(WINDOWP window, TEXTP t_ptr)
 {
-    char    head_str[WINSTRLEN];
+    char    head_str[WINSTRLEN+1];
     short   len, head_len;
 
     if (t_ptr->info_str[0] != EOS)

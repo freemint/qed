@@ -316,7 +316,7 @@ void handle_se(short *msg)
 				icon = load_edit(datei, FALSE);
 				if (icon > 0)
 				{
-					char	str[256];
+					char	str[WINSTRLEN+1];
 
 					strcpy(str, rsc_string(ERRORSTR));
 					strcat(str, fehler);
