@@ -1,0 +1,124 @@
+
+;********************************************************
+[Pure M68K assembler source]
+;********************************************************
+Txttype = "s","a"
+Active = TRUE
+CaseSensitive = FALSE
+Token = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
+
+
+<Comment>
+From = "	*"," *"
+From = ";"
+To = EOL
+(Color2)
+Attribs = LIGHT
+(Color16)
+Color = 11
+Selcolor = 3
+(Color256)
+Color = 11
+Selcolor = 3
+
+<Comment>
+From = "*"
+To = EOL
+Firstcolumn = TRUE
+
+<Comment>
+From = "/*"
+To = "*/"
+
+<Opcodes (MC 68030)>
+Keyword = "abcd","adda","addi","addq","addx","andi","add","and","asl"
+Keyword = "asr","bfexts","bfextu","bfclr","bfffo","bfins","bfset","bftst"
+Keyword = "bchg","bkpt","bset","btst","bhi","bls","bcc","bcs","bne","beq"
+Keyword = "bra","bmi","bpl","bsr","bf","bt","callm","cas2","chk2","cmpa"
+Keyword = "cmpi","cmpm","cmp2","cas","chk","clr","cmp","divsl","divul"
+Keyword = "dbhi","dbls","dbcc","dbcs","dbne","dbeq","dbra","dbpl","dbmi"
+Keyword = "divs","divu","dbf","dbt","eori","extb","eor","exg","ext"
+Keyword = "illegal","jmp","jsr","link","lea","lsr","lsl","movea","movec"
+Keyword = "movem","movep","moveq","moves","move","muls","mulu","nbcd"
+Keyword = "negx","neg","not","ori","or","pack","pea","reset","roxl","roxr"
+Keyword = "rol","ror","rtd","rte","rtm","rtr","rts","sbcd","stop","suba"
+Keyword = "subi","subq","subx","swap","shi","sls","scc","scs","sne","seq"
+Keyword = "smi","spl","sub","sf","st","traphi","trapls","trapcc","trapcs"
+Keyword = "trapne","trapeq","trapmi","trappl","trapf","trapt","trapv"
+Keyword = "trap","tas","tst","unlk","unpk"
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+(Color256)
+Attribs = BOLD
+
+<Pseudo-Ops>
+Keyword = "*=","asciil","asciiz","align","aline","ascii","bss","comm"
+Keyword = "data","dcb","ds","dc","endmod","export","endif","error","exitm"
+Keyword = "else","endc","endm","even","end","equ","fline","globl"
+Keyword = "include","import","ifnb","ifeq","ifne","ifle","iflt","ifge"
+Keyword = "ifgt","iff","ifb","if1","if2","if","lcomm","local","list"
+Keyword = "mc68000","mc68010","mc68020","mc68030","mc68040","mc68851"
+Keyword = "module","macro","nolist","offset","org","print","page","rept"
+Keyword = "reg","super","set","text","ttl","user","xdef","xref"
+Keyword = "="
+(Color2)
+Attribs = ITALIC
+(Color16)
+Attribs = BOLD
+Color = 10
+Selcolor = 10
+(Color256)
+Attribs = BOLD
+Color = 10
+Selcolor = 10
+
+<Register>
+Keyword = ")+","-(","a0","a1","a2","a3","a4","a5","a6","a7","ccr","d0"
+Keyword = "d1","d2","d3","d4","d5","d6","d7","pc","ssp","sp","sr","usp"
+Keyword = "(",")"
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+(Color256)
+Attribs = BOLD
+
+<Byte>
+Keyword = ".b"
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+(Color256)
+Attribs = BOLD
+
+<Word>
+Keyword = ".w"
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+(Color256)
+Attribs = BOLD
+
+<Long>
+Keyword = ".l"
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+(Color256)
+Attribs = BOLD
+
+<Constant>
+From = "#"
+While = "<<",">>"
+While = "$","+","-",".","0"-"9","A"-"Z","_","a"-"z"
+(Color16)
+Color = 12
+Selcolor = 5
+(Color256)
+Color = 12
+Selcolor = 5
