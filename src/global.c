@@ -494,12 +494,13 @@ void font_change(void)
 {
 	short ret, w1, w2, d, d1[5], effects[3];
 
+	vst_effects(vdi_handle, 0);
 	/* *_cell werden NUR hier ver„ndert */
 	vst_font(vdi_handle, font_id);
 	font_pts = vst_point(vdi_handle, font_pts, &d, &d, 
 										&font_wcell, &font_hcell);
 
-	vqt_width(vdi_handle, 'M', &w1, &ret, &ret);
+	vqt_width(vdi_handle, 'W', &w1, &ret, &ret);
 	vqt_width(vdi_handle, 'i', &w2, &ret, &ret);
 	font_prop = (w1 != w2);
 
@@ -510,6 +511,15 @@ void font_change(void)
 		min_ascii = 1;
 
 	font_vector = font_is_vector(font_id);
+
+	if( font_vector )
+	{	
+		short extent[8];
+		vqt_extent(vdi_handle, "a", extent); /* no matter if prop font - font_wcell isn't used at all in that case */
+		font_wcell = extent[2] - extent[0];
+		font_hcell = extent[5] - extent[1];
+	}
+
 	font_right_italicoffset = effects[ 2 ];
 	font_left_italicoffset = effects[ 1 ];
 	

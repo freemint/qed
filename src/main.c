@@ -214,10 +214,8 @@ int main(short argc, char *argv[])
 
 	}
 debug( "*************************************************\n" );
-/*
-debug_level = 1;
+debug_level = 255;
 debug_init("qed", Datei, "e:\\qed.log");
-*/
 
 	nkc_init();
 	init_app(NULL);

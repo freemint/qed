@@ -1,3 +1,24 @@
+Version 5.0.2
+-------------------------------------------
+DEUTSCH:
+   ù Laden der Syntaxdateien deutlich beschleunigt; qed startet schneller.
+   ù Font ID und Gr”e wird jetzt in jedem Fall bei "Parameter sichern" 
+     gespeichert, auch, wenn "Fenster sichern" im globalen Optionsdialog 
+     ausgeschaltet ist.
+   ù Bugfix: Nichtproportionale Vektorfonts werden jetzt _endlich_ richtig 
+     behandelt. Was noch ein wenig st”rt, ist die H”he der jeweiligen 
+     Schriften. Hier bin ich mir aber sicher, keinen Fehler gemacht zu haben; 
+     es sieht in anderen Editoren genauso aus. In einer der n„chsten Versionen 
+     wird die H”he einer Zeile vermutlich anpassbar sein.
+   ù Im udo.syn waren ein paar Eintr„ge doppelt.     
+   ù Neue Hyp-Dateien von Tobias Jung: php.syn und htm.syn (ersetzt die 
+     bisherige htm.syn). Die Syn-Datei fr UDO-Dateien ist von Thomas 
+     Kerkloh - habe ich bisher leider vergessen zu erw„hnen - 
+     Entschuldigung. 
+   ù Franz”sische Resource von Remy Villatel und tschechische Resource von 
+     Martin Musil verfgbar. 
+        
+
 Version 5.0.1                    (10.06.02)
 -------------------------------------------
 DEUTSCH:

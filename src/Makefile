@@ -24,7 +24,7 @@ all-here: $(TARGET)
 #INCLUDES += -I/usr/GEM/include
 CFLAGS += $(INCLUDES)
 #CFLAGS += -D_GNU_SOURCE
-#CFLAGS += -DDEBUG
+CFLAGS += -DPREDEF_DEBUG_LEVEL=255
 CFLAGS += -g
 #CFLAGS += -mshort
 

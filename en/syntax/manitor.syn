@@ -1,0 +1,65 @@
+
+;********************************************************
+[Manitor-Logfile]
+;********************************************************
+Txttype = "manitor.log"
+Active = TRUE
+CaseSensitive = TRUE
+Token = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
+
+
+<Sent>
+From = "Message send"
+To = "]:"
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+Color = 10
+Selcolor = 10
+(Color256)
+Attribs = BOLD
+Color = 10
+Selcolor = 10
+
+<Received>
+From = "Message received"
+To = "]:"
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+Color = 11
+Selcolor = 11
+(Color256)
+Attribs = BOLD
+Color = 11
+Selcolor = 11
+
+<AV-Protocol>
+From = "AV_","VA_"
+To = EOL
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+Color = 12
+Selcolor = 12
+(Color256)
+Attribs = BOLD
+Color = 12
+Selcolor = 12
+
+<GEMScript>
+From = "GS_"
+To = EOL
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+Color = 14
+Selcolor = 14
+(Color256)
+Attribs = BOLD
+Color = 14
+Selcolor = 14

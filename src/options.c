@@ -103,7 +103,7 @@ static void set_popcolor(short s_obj, short d_obj)
 {
 	OBSPEC	spec;
 	short		color;
-					
+
 	spec.index = get_obspec(popups, s_obj);
 	color = spec.obspec.interiorcol;			/* neue Farbe holen */
 	spec.index = get_obspec(globalop, d_obj);
@@ -120,7 +120,7 @@ void set_global_options(void)
 	char	n[23] = "";
 	MDIAL	*dial;
 	PATH	new_helpprog;
-	
+
 	old_cycle = wind_cycle;
 	set_state(globalop, GOASAVE, OS_SELECTED, save_opt);
 	set_state(globalop, GOSAVEWIN, OS_SELECTED, save_win);
@@ -167,11 +167,11 @@ void set_global_options(void)
 		{
 			antw = do_mdial(dial) & 0x7fff;
 			switch (antw)
-			{				
+			{
 				case GOHELP :
 					menu_help(TOPTIONS, MGLOBALO);
 					break;
-					
+
 				case GOHELPSEL :
 					if (select_single(new_helpprog, "", rsc_string(FINDHPSTR)))
 					{
@@ -180,7 +180,7 @@ void set_global_options(void)
 						redraw_mdobj(dial, GOHELPNAME);
 					}
 					break;
-		
+
 				case GOFCSTR :
 				case GOFCOL :
 					if (antw == GOFCOL)
@@ -241,7 +241,7 @@ void set_global_options(void)
 			transfer_size = get_short(globalop, GOTRANS);
 			if (transfer_size == 0)
 				transfer_size = 1;
-	
+
 			if( syntax_active && !get_state(globalop, GOSYNTAX, OS_SELECTED))
 			{
 				hl_disable();
@@ -265,30 +265,30 @@ void set_global_options(void)
 				do_all_window(CLASS_ALL, do_avopen);
 			}
 			f_to_desk = get_state(globalop, GOAVKEY, OS_SELECTED);
-	
+
 			bin_line_len = get_short(globalop, GOBLEN);
-			if (bin_line_len < 1) 
+			if (bin_line_len < 1)
 				bin_line_len = 1;
-			if (bin_line_len > MAX_LINE_LEN) 
+			if (bin_line_len > MAX_LINE_LEN)
 				bin_line_len = MAX_LINE_LEN;
 			for (i = 4; i < BIN_ANZ; i++)
 				get_string(globalop, i - 4 + GOBEXT1, bin_extension[i]);
-	
+
 			strcpy(helpprog, new_helpprog);
 
-			if (new_fg != fg_color || new_bg != bg_color) 
+			if (new_fg != fg_color || new_bg != bg_color)
 			{
 				fg_color = new_fg;
 				bg_color = new_bg;
 				color_change();
 			}
-			if (new_block_fg != fg_block_color || new_block_bg != bg_block_color) 
+			if (new_block_fg != fg_block_color || new_block_bg != bg_block_color)
 			{
 				fg_block_color = new_block_fg;
 				bg_block_color = new_block_bg;
 				color_change();
 			}
-			
+
 			if (olga_autostart)
 				init_olga();
 		}
@@ -305,7 +305,7 @@ void set_klammer_options(void)
 {
 	short	antw;
 	char	s1[11], s2[11];
-	
+
 	set_string(klammer, KPAUF, klammer_auf);
 	set_string(klammer, KPZU, klammer_zu);
 	antw = simple_mdial(klammer, KPAUF);
@@ -403,7 +403,7 @@ static void option_get(void)
 	lo->backup = get_state(localop, OBACKUP, OS_SELECTED);
 	get_string(localop, OEXT, lo->backup_ext);
 	lo->lineal_len = get_short(localop, OLINEAL);
-	if (lo->lineal_len < 3 || lo->lineal_len > MAX_LINE_LEN) 
+	if (lo->lineal_len < 3 || lo->lineal_len > MAX_LINE_LEN)
 		lo->lineal_len = 65;
 	get_string(localop, OWORT, lo->wort_str);
 	str2set(lo->wort_str,lo->wort_set);
@@ -463,9 +463,9 @@ static bool build_popup(POPUP *pop)
 
 	append_popup(pop, "--");
 	append_popup(pop, rsc_string(CHAGESTR));
-	
+
 	fix_popup(pop->tree, TRUE);
-	
+
 	return (pop->tree != NULL);
 }
 
@@ -479,7 +479,7 @@ void set_local_options(void)
 	bool		close = FALSE;
 	MDIAL		*dial;
 	LOCOPT	*backup;
-	
+
 	active_local_option = 0;
 	window = winlist_top();
 
@@ -497,7 +497,7 @@ void set_local_options(void)
 	memcpy(backup, local_options, (LOCAL_ANZ * sizeof(LOCOPT)));
 
 	build_popup(&pop);
-	
+
 	dial = open_mdial(localop, OTABSIZE);
 	if (dial != NULL)
 	{
@@ -540,18 +540,18 @@ void set_local_options(void)
 					}
 					else
 					{
-						if (select_single(local_options[active_local_option].kurzel, 
+						if (select_single(local_options[active_local_option].kurzel,
 												"*.krz", rsc_string(FINDKURZELSTR)))
 						{
 							FILENAME str;
-							
+
 							file_name(local_options[active_local_option].kurzel, str, FALSE);
 							krz_changed = TRUE;
 							set_string(localop, OKURZELNAME, str);
 						}
 					}
 					break;
-		
+
 				case LCHELP :
 					menu_help(TOPTIONS, MLOCALOP);
 					break;
@@ -594,7 +594,7 @@ static bool build_txtname_popup(int txtidx, POPUP *pop)
 	int count = 0;
 	char str[256];
 	bool ret = FALSE;
-	
+
 	while (Hl_EnumTxtNames(NULL, &count));
 
 	if (Hl_EnumTxtNames(&name, &idx))
@@ -644,14 +644,14 @@ static void get_syntax_settings(int txtidx, int idx)
 {
 	char str[256];
 	HL_RULEINFO ri;
-	
+
 	if (!Hl_EnumRules(txtidx, &ri, &idx)) /* idx wird zerst”rt */
 	{
 		disable_syntax_settings(TRUE);
 		return;
 	}
 	disable_syntax_settings(FALSE);
-	
+
 	strcpy(str, " ");
 	strncpy(str+1, ri.name, syntaxop[SYORULE].ob_spec.tedinfo->te_txtlen - 2);
 	set_string(syntaxop, SYORULE, str);
@@ -664,7 +664,7 @@ static void get_syntax_settings(int txtidx, int idx)
 	set_state(syntaxop, SYOSETSAMENAME, OS_SELECTED, syntax_setsamename );
 
 	set_state(syntaxop, SYOACTIVE, OS_SELECTED, Hl_IsActive(txtidx));
-	
+
 }
 
 static void store_syntax_settings(int txtidx, int idx)
@@ -715,7 +715,7 @@ static bool build_rule_popup(int txtidx, POPUP *pop)
 	char str[256];
 	HL_RULEINFO ri;
 	bool ret = FALSE;
-	
+
 	while (Hl_EnumRules(txtidx, NULL, &count));
 
 	if (Hl_EnumRules(txtidx, &ri, &idx))
@@ -756,7 +756,7 @@ void set_syntax_options(void)
 		if ((act_txttype = Hl_TxtIndexByTxttype(extension)) == -1)
 			act_txttype = 0;
 	}
-	
+
 	if (!build_txtname_popup(act_txttype, &txtnames))
 	{
 		set_string(syntaxop, SYOTXT, "");
@@ -765,9 +765,9 @@ void set_syntax_options(void)
 	}
 	build_rule_popup(act_txttype, &rules);
 	get_syntax_settings(act_txttype, 0);
-	
+
 	setsamename = syntax_setsamename;
-	
+
 	dial = open_mdial(syntaxop, 0);
 	if (dial != NULL)
 	{
@@ -779,7 +779,7 @@ void set_syntax_options(void)
 				case SYOHELP:
 					menu_help(TOPTIONS, MSYNTAXOP);
 					break;
-					
+
 				case SYOTXT:
 					y = handle_popup(syntaxop, SYOTXT, txtnames.tree, 0, POP_OPEN) - 1;
 					if (y == -1)
@@ -808,15 +808,15 @@ void set_syntax_options(void)
 				case SYOSETSAMENAME:
 					syntax_setsamename = syntaxop[SYOSETSAMENAME].ob_state & OS_SELECTED;
 					break;
-				
+
 				case SYOCOLOR:
 					handle_colorpop(syntaxop, SYOCOLOR, POP_OPEN, 8, TRUE);
 					break;
-				
+
 				case SYOSELCOLOR:
 					handle_colorpop(syntaxop, SYOSELCOLOR, POP_OPEN, 8, TRUE);
 					break;
-				
+
 				case SYOOK:
 					store_syntax_settings(act_txttype, act_rule);
 					if (saved)
@@ -831,7 +831,7 @@ void set_syntax_options(void)
 					syntax_setsamename = setsamename;
 					close = TRUE;
 					break;
-										
+
 				default:
 					close = TRUE;
 					break;
@@ -887,17 +887,17 @@ void init_default_var(void)
 	transfer_size = 100;
 	syntax_active = TRUE;
 	syntax_setsamename = FALSE;
-	
+
 	c = getenv("STGUIDE");
 	if (c != NULL)
 		strcpy(helpprog, c);
 	else
 		helpprog[0] = EOS;
-		
+
 	blinking_cursor = TRUE;
 	ctrl_mark_mode = FALSE;
 	f_to_desk = FALSE;
-	
+
 	for (i = 0; i < FEHLERANZ; i++)
 		error[i][0] = EOS;
 
@@ -927,13 +927,13 @@ void init_default_var(void)
 	strcpy(bin_extension[1], "app");
 	strcpy(bin_extension[2], "tos");
 	strcpy(bin_extension[3], "ttp");
-	for (i = 4; i < BIN_ANZ; i++)	
+	for (i = 4; i < BIN_ANZ; i++)
 		bin_extension[i][0] = EOS;
 
 	se_autosave = FALSE;
 	se_autosearch = FALSE;
 	se_ignoreclose = FALSE;
-	
+
 	for (i = 0; i < SHELLANZ; i++)
 	{
 		se_shells[i].name[0] = EOS;
@@ -959,7 +959,7 @@ void init_default_var(void)
 	bg_color = G_WHITE;
 	fg_block_color = bg_color;
 	bg_block_color = fg_color;
-	
+
 	olga_autostart = FALSE;
 	emu_klammer = FALSE;
 }
@@ -1006,7 +1006,7 @@ void read_cfg_str(char *str, char *val)
 	else
 	{
 		short	len, i, j;
-		
+
 		if (str[0] == '"')
 		{
 			len = (short)strlen(str);
@@ -1030,7 +1030,7 @@ static void parse_line(POSENTRY **arglist, char *zeile)
 	short	x, i, d;
 	long	y;
 	PATH	filename;
-					
+
 	// STan: BUG? CRLF vs LF newlines in the .cfg file?
 	// 	 The real solution is to ensure the .cfg file is either in CRLF or LF
 	// 	 mode regardless to whether it runs under MiNT or SingleTOS. Other, quite nice
@@ -1083,14 +1083,14 @@ static void parse_line(POSENTRY **arglist, char *zeile)
 			read_cfg_str(buffer, def_prj_path);
 			set_def_prj();
 		}
-		
+
 		/* Fehlerzeilen */
 		else if(strcmp(var, "Error") == 0)
 		{
 			read_cfg_str(buffer, tmp);
 			set_errorline(tmp);
 		}
-		
+
 		/* Globales */
 		else if (strcmp(var, "GlobalAutosaveCfg") == 0)
 			read_cfg_bool(buffer, &save_opt);
@@ -1132,13 +1132,13 @@ static void parse_line(POSENTRY **arglist, char *zeile)
 		/* Hilfe-Programm */
 		else if (strcmp(var, "HelpProgram") == 0)
 			read_cfg_str(buffer, helpprog);
-		
+
 		/* Klammerpaare */
 		else if (strcmp(var, "KlammerAuf") == 0)
 			read_cfg_str(buffer, klammer_auf);
 		else if (strcmp(var, "KlammerZu") == 0)
 			read_cfg_str(buffer, klammer_zu);
-			
+
 		/* Lokales */
 		else if (strcmp(var, "LocalBegin") == 0)
 		{
@@ -1192,7 +1192,7 @@ static void parse_line(POSENTRY **arglist, char *zeile)
 		{
 			read_cfg_str(buffer, lo->wort_str);
 			str2set(lo->wort_str,lo->wort_set);
-		}		
+		}
 
 		/* Makro */
 		else if (strcmp(var, "Makro") == 0)
@@ -1220,7 +1220,7 @@ static void parse_line(POSENTRY **arglist, char *zeile)
 			sscanf(buffer + strlen(filename) + 3, "%ld %d", &y, &x);
 			insert_poslist(arglist, filename, x, y);
 		}
-		
+
 		/* Drucker */
 		else if (prn_get_cfg(var, buffer))
 			/* do nothing */ ;
@@ -1274,7 +1274,7 @@ static void parse_line(POSENTRY **arglist, char *zeile)
 			read_cfg_bool(buffer, &s_wort);
 		else if (strcmp(var, "SearchStr") == 0)
 			read_cfg_str(buffer, s_str);
-			
+
 		/* SE-Protokoll */
 		else if (strcmp(var, "SESave") == 0)
 			read_cfg_bool(buffer, &se_autosave);
@@ -1303,7 +1303,7 @@ static void parse_line(POSENTRY **arglist, char *zeile)
 		{
 			short	class;
 			GRECT	size;
-			
+
 			sscanf(buffer, "%d %d %d %d %d", &class, &size.g_x, &size.g_y,
 																 &size.g_w, &size.g_h);
 			add_winlist(class, &size);
@@ -1384,11 +1384,11 @@ void option_load(POSENTRY **list)
 
 			fclose(fd);
 			fd = NULL;
-			
+
 			set_drawmode();
-			
+
 		}
-		
+
 		/* Aufl”sungs-abh„ngige Parameter laden */
 		split_filename(cfg_path, tmp, NULL);
 		strcat(tmp, dsp_name);
@@ -1416,9 +1416,9 @@ void option_load(POSENTRY **list)
 
 			fclose(fd);
 			fd = NULL;
-			
+
 			set_drawmode();
-			
+
 		}
 
 		/* Zum Schluž noch 'pdlg.qed' */
@@ -1463,7 +1463,7 @@ void write_cfg_long(char *var, long value)
 void write_cfg_bool(char *var, bool bool)
 {
 	char	str[6];
-	
+
 	if (bool)
 		strcpy(str, "TRUE");
 	else
@@ -1483,7 +1483,7 @@ static void save_open_text(TEXTP t_ptr)
 							bild_pos(t_ptr->xpos, t_ptr->cursor_line, t_ptr->loc_opt->tab, t_ptr->loc_opt->tabsize));
 		}
 		if (w->class == CLASS_PROJEKT)
-			write_cfg_str("OpenPrj", t_ptr->filename); 
+			write_cfg_str("OpenPrj", t_ptr->filename);
 	}
 }
 
@@ -1491,194 +1491,254 @@ void option_save(void)
 {
 	short		i, x;
 	long		y;
-	PATH		tmp;
+	PATH		path;
 	LOCOPTP	lo;
 
 	fd = fopen(cfg_path, "w");
-	if (fd != NULL)
+	if (fd == NULL) {
+		note(1, 0, WRITEERR);
+		return;
+	}
+
+	/* ID zur identifizierung */
+	fprintf(fd, "ID=qed %s\n", QED_VERSION);
+
+	/* Autosave */
+	write_cfg_bool("AutoSavePrj", as_prj);
+	write_cfg_bool("AutoSavePrjAsk", as_prj_ask);
+	write_cfg_int("AutoSavePrjMin", as_prj_min);
+	write_cfg_bool("AutoSaveText", as_text);
+	write_cfg_bool("AutoSaveTextAsk", as_text_ask);
+	write_cfg_int("AutoSaveTextMin", as_text_min);
+
+	/* Bin„r-Extionsions */
+	for (i = 4; i < BIN_ANZ; i++)
+		if (bin_extension[i][0] != EOS)
+			write_cfg_str("BinExtension", bin_extension[i]);
+
+	/* Defaultprojekt */
+	write_cfg_str("DefaultPrj", def_prj_path);
+
+	/* Fehlerzeilen */
+	for (i = 0; i < FEHLERANZ; i++)
 	{
-		/* ID zur identifizierung */
-		fprintf(fd, "ID=qed %s\n", QED_VERSION);
-	
-		/* Autosave */	
-		write_cfg_bool("AutoSavePrj", as_prj);
-		write_cfg_bool("AutoSavePrjAsk", as_prj_ask);
-		write_cfg_int("AutoSavePrjMin", as_prj_min);
-		write_cfg_bool("AutoSaveText", as_text);
-		write_cfg_bool("AutoSaveTextAsk", as_text_ask);
-		write_cfg_int("AutoSaveTextMin", as_text_min);
+		if (error[i][0] != EOS)
+			write_cfg_str("Error", error[i]);
+	}
 
-		/* Bin„r-Extionsions */	
-		for (i = 4; i < BIN_ANZ; i++)
-			if (bin_extension[i][0] != EOS)
-				write_cfg_str("BinExtension", bin_extension[i]);
+	/* Globales */
+	write_cfg_bool("GlobalAutosaveCfg", save_opt);
+	write_cfg_bool("GlobalSaveWindows", save_win);
+	write_cfg_int ("GlobalBinLineLen", bin_line_len);
+	write_cfg_bool("GlobalBlinkCursor", blinking_cursor);
+	write_cfg_bool("GlobalCtrlBlock", ctrl_mark_mode);
+	write_cfg_bool("GlobalEmuKlammer", emu_klammer);
+	write_cfg_bool("GlobalFtoDesk", f_to_desk);
+	write_cfg_bool("GlobalGEMClip", clip_on_disk);
+	write_cfg_bool("GlobalOlga", olga_autostart);
+	write_cfg_bool("GlobalOverwrite", overwrite);
+	write_cfg_int ("GlobalTransSize", transfer_size);
+	write_cfg_bool("GlobalWindCycle", wind_cycle);
+	write_cfg_bool("GlobalSyntaxActive", syntax_active);
 
-		/* Defaultprojekt */
-		write_cfg_str("DefaultPrj", def_prj_path);
-	
-		/* Fehlerzeilen */	
-		for (i = 0; i < FEHLERANZ; i++)
+	write_cfg_bool("SyntaxSetSameName", syntax_setsamename);
+
+	/* Hilfeprogramm */
+	write_cfg_str("HelpProgram", helpprog);
+
+	/* Klammerpaare */
+	write_cfg_str("KlammerAuf", klammer_auf);
+	write_cfg_str("KlammerZu", klammer_zu);
+
+	/* Lokales */
+	for (i = 0; i < LOCAL_ANZ; i++)
+	{
+		lo = &local_options[i];
+		if (lo->muster[0] != EOS)
 		{
-			if (error[i][0] != EOS)
-				write_cfg_str("Error", error[i]);
+			write_cfg_str("LocalBegin", lo->muster);
+			write_cfg_bool("LocalBackup", lo->backup);
+			write_cfg_str("LocalBackupExt", lo->backup_ext);
+			write_cfg_bool("LocalInsert", lo->einruecken);
+			write_cfg_str("LocalKurzel", lo->kurzel);
+			write_cfg_bool("LocalTab", lo->tab);
+			write_cfg_int("LocalTabSize", lo->tabsize);
+			write_cfg_bool("LocalUmbruch", lo->umbrechen);
+			write_cfg_int("LocalUmbruchLineLen", lo->lineal_len);
+			write_cfg_bool("LocalUmbruchIns", lo->format_by_paste);
+			write_cfg_bool("LocalUmbruchLoad", lo->format_by_load);
+			write_cfg_str("LocalUmbruchAt", lo->umbruch_str);
+			write_cfg_bool("LocalUmbruchShow", lo->show_end);
+			write_cfg_str("LocalWordSet", lo->wort_str);
+			write_cfg_str("LocalEnd", lo->muster);
 		}
-	
-		/* Globales */
-		write_cfg_bool("GlobalAutosaveCfg", save_opt);
-		write_cfg_bool("GlobalSaveWindows", save_win);
-		write_cfg_int ("GlobalBinLineLen", bin_line_len);
-		write_cfg_bool("GlobalBlinkCursor", blinking_cursor);
-		write_cfg_bool("GlobalCtrlBlock", ctrl_mark_mode);
-		write_cfg_bool("GlobalEmuKlammer", emu_klammer);
-		write_cfg_bool("GlobalFtoDesk", f_to_desk);
-		write_cfg_bool("GlobalGEMClip", clip_on_disk);
-		write_cfg_bool("GlobalOlga", olga_autostart);
-		write_cfg_bool("GlobalOverwrite", overwrite);
-		write_cfg_int ("GlobalTransSize", transfer_size);
-		write_cfg_bool("GlobalWindCycle", wind_cycle);
-		write_cfg_bool("GlobalSyntaxActive", syntax_active);
-	
-		write_cfg_bool("SyntaxSetSameName", syntax_setsamename);
-	
-		/* Hilfeprogramm */
-		write_cfg_str("HelpProgram", helpprog);
-	
-		/* Klammerpaare */
-		write_cfg_str("KlammerAuf", klammer_auf);
-		write_cfg_str("KlammerZu", klammer_zu);
+	}
 
-		/* Lokales */	
-		for (i = 0; i < LOCAL_ANZ; i++)
-		{
-			lo = &local_options[i];
-			if (lo->muster[0] != EOS)
-			{
-				write_cfg_str("LocalBegin", lo->muster);			
-				write_cfg_bool("LocalBackup", lo->backup);
-				write_cfg_str("LocalBackupExt", lo->backup_ext);
-				write_cfg_bool("LocalInsert", lo->einruecken);
-				write_cfg_str("LocalKurzel", lo->kurzel);
-				write_cfg_bool("LocalTab", lo->tab);
-				write_cfg_int("LocalTabSize", lo->tabsize);
-				write_cfg_bool("LocalUmbruch", lo->umbrechen);
-				write_cfg_int("LocalUmbruchLineLen", lo->lineal_len);
-				write_cfg_bool("LocalUmbruchIns", lo->format_by_paste);
-				write_cfg_bool("LocalUmbruchLoad", lo->format_by_load);
-				write_cfg_str("LocalUmbruchAt", lo->umbruch_str);
-				write_cfg_bool("LocalUmbruchShow", lo->show_end);
-				write_cfg_str("LocalWordSet", lo->wort_str);
-				write_cfg_str("LocalEnd", lo->muster);			
-			}
-		}
-	
-		/* Makros */
-		for (i = 0; i < MAKRO_ANZ; i++)
-		{
-			if (get_makro_str(i, buffer))
-				fprintf(fd, "Makro=%s\n", buffer);
-		}
-		
-		/* Marken */
-		for (i = 0; i < MARKEN_ANZ; i++)
-		{
-			if (get_marke(i, tmp, buffer, &y, &x))
-				fprintf(fd, "Marke=\"%s\" %d \"%s\" %ld %d\n", buffer, i, tmp, y, x);
-		}
-	
-		/* Drucker */
-		prn_save_cfg(cfg_path);
+	/* Makros */
+	for (i = 0; i < MAKRO_ANZ; i++)
+	{
+		if (get_makro_str(i, buffer))
+			fprintf(fd, "Makro=%s\n", buffer);
+	}
 
-		/* Ersetzen */
-		write_cfg_int("ReplaceMode", r_modus);
-		write_cfg_str("ReplaceStr", r_str);
-		for (i = 0; i < HIST_ANZ; i++)
-		{
-			if (r_history[i][0] != EOS)
-				write_cfg_str("ReplaceHistory", r_history[i]);
-		}
-		write_cfg_int("ReplaceUmlautFrom", umlaut_from);				
-		write_cfg_int("ReplaceUmlautTo", umlaut_to);				
+	/* Marken */
+	for (i = 0; i < MARKEN_ANZ; i++)
+	{
+		if (get_marke(i, path, buffer, &y, &x))
+			fprintf(fd, "Marke=\"%s\" %d \"%s\" %ld %d\n", buffer, i, path, y, x);
+	}
 
-		/* Suchen */
-		write_cfg_str("SearchFileMask", ff_mask);
-		write_cfg_bool("SearchFileRek", ff_rekursiv);
-		write_cfg_bool("SearchDown", s_vorw);
-		write_cfg_bool("SearchGlobal", s_global);
-		write_cfg_bool("SearchGrkl", s_grkl);
-		for (i = 0; i < HIST_ANZ; i++)
-		{
-			if (s_history[i][0] != EOS)
-				write_cfg_str("SearchHistory", s_history[i]);
-		}
+	/* Drucker */
+	prn_save_cfg(cfg_path);
+
+	/* Ersetzen */
+	write_cfg_int("ReplaceMode", r_modus);
+	write_cfg_str("ReplaceStr", r_str);
+	for (i = 0; i < HIST_ANZ; i++)
+	{
+		if (r_history[i][0] != EOS)
+			write_cfg_str("ReplaceHistory", r_history[i]);
+	}
+	write_cfg_int("ReplaceUmlautFrom", umlaut_from);
+	write_cfg_int("ReplaceUmlautTo", umlaut_to);
+
+	/* Suchen */
+	write_cfg_str("SearchFileMask", ff_mask);
+	write_cfg_bool("SearchFileRek", ff_rekursiv);
+	write_cfg_bool("SearchDown", s_vorw);
+	write_cfg_bool("SearchGlobal", s_global);
+	write_cfg_bool("SearchGrkl", s_grkl);
+	for (i = 0; i < HIST_ANZ; i++)
+	{
+		if (s_history[i][0] != EOS)
+			write_cfg_str("SearchHistory", s_history[i]);
+	}
 
 
-		write_cfg_bool("SearchQuant", s_quant);
-		write_cfg_bool("SearchRound", s_round);
-		write_cfg_bool("SearchWord", s_wort);
-		write_cfg_str("SearchStr", s_str);
+	write_cfg_bool("SearchQuant", s_quant);
+	write_cfg_bool("SearchRound", s_round);
+	write_cfg_bool("SearchWord", s_wort);
+	write_cfg_str("SearchStr", s_str);
 
-		/* SE-Protokoll */
-		write_cfg_bool("SESave", se_autosave);
-		write_cfg_bool("SESearch", se_autosearch);
-		write_cfg_bool("SEIgnoreClose", se_ignoreclose);
-		for (i = 0; i < SHELLANZ - 1; i++)
-		{
-			if (se_shells[i].name[0] != EOS)
-				write_cfg_str("SEShellName", se_shells[i].name);
-		}			
-		
+	/* SE-Protokoll */
+	write_cfg_bool("SESave", se_autosave);
+	write_cfg_bool("SESearch", se_autosearch);
+	write_cfg_bool("SEIgnoreClose", se_ignoreclose);
+	for (i = 0; i < SHELLANZ - 1; i++)
+	{
+		if (se_shells[i].name[0] != EOS)
+			write_cfg_str("SEShellName", se_shells[i].name);
+	}
+
+	fclose(fd);
+	fd = NULL;
+
+	/* Farb-abh„ngige Parameter sichern */
+	split_filename(cfg_path, path, NULL);
+	strcat(path, col_name);
+	fd = fopen(path, "w");
+	if (fd != NULL )
+	{
+		fprintf(fd, "ID=qed color configuration\n");
+
+		/* Farb-Infos */
+		write_cfg_int("GlobalBgColor", bg_color);
+		write_cfg_int("GlobalFgColor", fg_color);
+		write_cfg_int("GlobalBlockBgColor", bg_block_color);
+		write_cfg_int("GlobalBlockFgColor", fg_block_color);
+
 		fclose(fd);
 		fd = NULL;
+	}
 
-		/* Farb-abh„ngige Parameter sichern */
-		split_filename(cfg_path, tmp, NULL);
-		strcat(tmp, col_name);
-		fd = fopen(tmp, "w");
+	/* save resolution dependent parameters */
+	/* this is a bit hacked of course - but I am planning to replace the whole config stuff
+	   by one global config file ASAP */
+	{
+		bool copied_ok = FALSE;
+
+		/* if the window settings shall not be saved, remove
+		   the font settings from the file. These will be written, even if
+		   save_win == FALSE. In this case The font settings are appended to the file. */
+
+		if( !save_win )
+		{
+			FILE *tf;
+			PATH tmp;
+			char	var[30], *p;
+
+			/* copy all lines except "WinFontID" and "WinFontSize" to a tempfile.
+			   remove the old file and rename the tempfile to the new settings file. */
+			split_filename(cfg_path, path, NULL);
+			strcpy( tmp, path );
+			strcat( path, dsp_name );
+			strcat( tmp, "temp.qed" );
+			fd = fopen( path, "r" );
+			if (fd != NULL )
+			{
+				tf = fopen( tmp, "w" );
+				if( tf != NULL ) {
+					while (fgets(buffer, (short)sizeof(buffer), fd) != NULL)
+					{
+						p = strchr(buffer, '=');
+						if (p != NULL)
+						{
+							strncpy(var, buffer, p-buffer);
+							var[p-buffer] = EOS;
+							if( strcmp( var, "WinFontID" ) == 0
+								||  strcmp( var, "WinFontSize" ) == 0 )
+								continue;
+						}
+						if( strcmp( buffer, "ID=qed display configuration\n" ) == 0 )
+							copied_ok = TRUE;
+						fputs( buffer, tf );
+					}
+					fclose( tf );
+					tf = NULL;
+				}
+				fclose(fd);
+				fd = NULL;
+			}
+			if( copied_ok )
+			{
+				remove( path );
+				rename( tmp, path );
+			}
+			else
+				remove( tmp );
+		}
+
+		split_filename(cfg_path, path, NULL);
+		strcat(path, dsp_name);
+		fd = fopen(path, save_win ? "w" : "a" );
 		if (fd != NULL )
 		{
-			fprintf(fd, "ID=qed color configuration\n");
+			if( save_win )
+			{
+				fprintf(fd, "ID=qed display configuration\n");
 
-			/* Farb-Infos */
-			write_cfg_int("GlobalBgColor", bg_color);
-			write_cfg_int("GlobalFgColor", fg_color);
-			write_cfg_int("GlobalBlockBgColor", bg_block_color);
-			write_cfg_int("GlobalBlockFgColor", fg_block_color);
+				/* geladene Dateien */
+				do_all_text(save_open_text);
+
+				/* Pos. der Replace-Ask-Box */
+				fprintf(fd, "ReplaceBox=%d %d\n", rp_box_x, rp_box_y);
+
+				/* Fensterposition */
+				save_winlist(fd);
+			}
+
+			if( save_win || copied_ok )
+			{
+				/* Fensterfont */
+				write_cfg_int("WinFontID", font_id);
+				write_cfg_int("WinFontSize", font_pts);
+			}
 
 			fclose(fd);
 			fd = NULL;
 		}
-
-		/* Aufl”sungs-abh„ngige Parameter sichern */
-		if( save_win )
-		{
-			split_filename(cfg_path, tmp, NULL);
-			strcat(tmp, dsp_name);
-			fd = fopen(tmp, "w");
-			if (fd != NULL )
-			{
-				fprintf(fd, "ID=qed display configuration\n");
-	
-				/* geladene Dateien */
-				do_all_text(save_open_text);
-	
-				/* Pos. der Replace-Ask-Box */
-				fprintf(fd, "ReplaceBox=%d %d\n", rp_box_x, rp_box_y);
-	
-				/* Fensterfont */	
-				write_cfg_int("WinFontID", font_id);
-				write_cfg_int("WinFontSize", font_pts);
-		
-				/* Fensterposition */
-				save_winlist(fd);
-	
-				fclose(fd);
-				fd = NULL;
-			}
-		}
-		split_filename(cfg_path, tmp, NULL);		
-		send_avpathupdate (tmp);
 	}
-	else
-		note(1, 0, WRITEERR);
-}
 
+	split_filename(cfg_path, path, NULL);
+	send_avpathupdate (path);
+}

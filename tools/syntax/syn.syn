@@ -7,6 +7,7 @@ Active = TRUE
 CaseSensitive = FALSE
 Token = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
+
 <Kommentar>
 From = ";"
 To = EOL

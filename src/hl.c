@@ -382,6 +382,7 @@ bool hl_read_syn(void)
 		strcpy( curr_syn_file, syn_path );
 		strcat( curr_syn_file, "\\" );
 		strcat( curr_syn_file, entry->d_name );
+
 		if( !Hl_ReadSyn( curr_syn_file, gl_planes, FALSE ))
 		{
 			closedir( dh );

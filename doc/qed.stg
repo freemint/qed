@@ -160,6 +160,32 @@ installieren, da ST-Guide in findet.
 @{U}Entwicklungsgeschichte                                                qed@{0}
 
 @autorefoff
+
+@{U}Version 5.0.2 vom 19.06.02@{0}
+   ù Laden der Syntaxdateien deutlich beschleunigt; qed
+     startet schneller.
+   ù Font ID und Gr”e wird jetzt in jedem Fall bei "Parameter sichern" 
+     gespeichert, auch, wenn "Fenster sichern" im globalen Optionsdialog 
+     ausgeschaltet ist.
+   ù Bugfix: Nichtproportionale Vektorfonts werden jetzt @{U}endlich@{0} richtig 
+     behandelt. Was noch ein wenig st”rt, ist die H”he der jeweiligen 
+     Schriften. Hier bin ich mir aber sicher, keinen Fehler gemacht zu
+     haben; es sieht in anderen Editoren genauso aus. In einer der
+     n„chsten Versionen wird die H”he einer Zeile vermutlich anpassbar
+     sein.
+   ù Im udo.syn waren ein paar Eintr„ge doppelt.     
+   ù Neue Hyp-Dateien von Tobias Jung: php.syn und htm.syn (ersetzt die
+     bisherige htm.syn). Die Syn-Datei fr UDO-Dateien ist von Thomas
+     Kerkloh - habe ich bisher leider vergessen zu erw„hnen - 
+     Entschuldigung.
+   ù Franz”sische Resource von Remy Villatel und tschechische Resource von
+     Martin Musil verfgbar.
+        
+@{U}Version 5.0.1 vom 10.06.02@{0}
+   ù Bugfix: Nicht expandierte TABs funktionieren wieder. Im Bin„rmodus
+     h„lt sich die Darstellung an die lokalen Optionen.
+   ù Bugfix: Redrawproblem bei der Krzelexpandierung
+
 @{U}Version 5.0 vom 08.06.02@{0}
    ù Heiko Achilles hat die Weiterentwicklung bernommen
    ù Syntax-Highlighting hinzugefgt.

@@ -4,13 +4,77 @@
 ;********************************************************
 Txttype = "htm","html"
 Active = TRUE
-CaseSensitive = TRUE
+CaseSensitive = FALSE
 Token = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
 
 
+<Kommentar>
+From = "<!--"
+To = "-->"
+(Color2)
+Attribs = LIGHT
+(Color16)
+Color = 11
+Selcolor = 3
+(Color256)
+Color = 11
+Selcolor = 3
+
+<Zeichenkette>
+From = "\""
+To = "\""
+Quotechar = "\\"
+(Color16)
+Color = 9
+Selcolor = 9
+(Color256)
+Color = 9
+Selcolor = 9
+
 <Tag>
-From = "<"
-To = ">"
+Keyword = "</blockquote>","<blockquote>","<blockquote","</colgroup>"
+Keyword = "</fieldset>","</frameset>","</multicol>","</noframes>"
+Keyword = "</noscript>","</optgroup>","</textarea>","</acronym>"
+Keyword = "</address>","</caption>","<colgroup>","</comment>","<fieldset>"
+Keyword = "</listing>","</marquee>","<multicol>","<noframes>","</nolayer>"
+Keyword = "<noscript>","<optgroup>","<textarea>","<acronym>","<address>"
+Keyword = "</applet>","<basefont","</button>","<caption>","</center>"
+Keyword = "<comment>","<fieldset","<frameset","</iframe>","</ilayer>"
+Keyword = "<isindex>","</legend>","<listing>","<nolayer>","<optgroup"
+Keyword = "</script>","</select>","</strike>","</strong>","<textarea"
+Keyword = "<acronym","<address","<bgsound","</blink>","<button>"
+Keyword = "<caption","<center>","<iframe>","<ilayer>","<isindex"
+Keyword = "</label>","<legend>","<marquee","<object>","<option>"
+Keyword = "<script>","</small>","<spacer>","<strike>","<strong>"
+Keyword = "</style>","</table>","</tbody>","</tfoot>","</thead>"
+Keyword = "</title>","</abbr>","<above>","<applet","<array>","<blink>"
+Keyword = "</body>","<center","</cite>","</code>","</font>","</form>"
+Keyword = "</head>","</html>","<input>","<label>","<layer>","<legend"
+Keyword = "</menu>","<nextid","</nobr>","</note>","<object","<option"
+Keyword = "<quote>","<range>","</samp>","<script","<select","<small>"
+Keyword = "</span>","<strike","<strong","<style>","<table>","<tbody>"
+Keyword = "<tfoot>","<thead>","<title>","<abbr>","</area","</bdo>"
+Keyword = "</big>","<body>","<blink","<cite>","<code>","</col>","</del>"
+Keyword = "</dfn>","</dir>","</div>","<embed","<form>","<frame","<head>"
+Keyword = "<html>","<input","</ins>","</kbd>","<label","</map>","<menu>"
+Keyword = "<nobr>","<note>","<param","</pre>","<root>","<samp>","<small"
+Keyword = "<sound","<span>","<sqrt>","<style","</sub>","</sup>","<table"
+Keyword = "<tbody","<text>","<tfoot","<thead","</var>","</xmp>","<abbr"
+Keyword = "<area","<base","<bdo>","<big>","<body","<box>","<cite","<code"
+Keyword = "<col>","</dd>","<del>","<dfn>","<dir>","<div>","</dl>","</dt>"
+Keyword = "</em>","<fig>","<font","<form","</h1>","</h2>","</h3>","</h4>"
+Keyword = "</h5>","</h6>","<head","<html","<ins>","<kbd>","</li>","<link"
+Keyword = "<menu","<meta","</ol>","<pre>","<samp","<span","<sub>","<sup>"
+Keyword = "</td>","</th>","</tr>","</tt>","</ul>","<var>","<wbr>","<xmp>"
+Keyword = "</a>","</b>","<bdo","<big","<br>","<big","<dd>","<del","<dfn"
+Keyword = "<dir","<div","<dl>","<dt>","<em>","<h1>","<h2>","<h3>","<h4>"
+Keyword = "<h5>","<h6>","<hr>","</i>","<img","<ins","<kbd","<li>","<map"
+Keyword = "<ol>","</p>","<pre","</q>","</s>","<sub","<sup","<td>","<th>"
+Keyword = "<tr>","<tt>","</u>","<ul>","<var","<b>","<br","<dd","<dl","<dt"
+Keyword = "<em","<h1","<h2","<h3","<h4","<h5","<h6","<hr","<i>","<li"
+Keyword = "<ol","<p>","<q>","<s>","<td","<th","<tr","<tt","<u>","<ul","<a"
+Keyword = "<b","<i","<p","<q","<s","<u"
+Keyword = ">"
 (Color2)
 Attribs = BOLD
 (Color16)
@@ -18,4 +82,64 @@ Color = 13
 Selcolor = 13
 (Color256)
 Color = 13
+Selcolor = 13
+
+<Attribute>
+Keyword = "accept-charset=","accesskey=","archive=","accept=","action="
+Keyword = "align=","alink=","abbr=","axis=","alt=","bordercolor="
+Keyword = "background=","behavior","bgcolor=","border=","below"
+Keyword = "cellpadding=","cellspacing=","codebase=","codetype=","charoff="
+Keyword = "charset=","classid=","colspan=","content=","checked","compact"
+Keyword = "coords=","class=","clear=","color=","char=","cite=","code="
+Keyword = "cols=","datetime=","disabled","declare","data=","defer","dir="
+Keyword = "enctype=","framespacing=","frameborder=","frame=","face="
+Keyword = "for=","http-equiv=","hreflang=","headers=","height=","hidden="
+Keyword = "hspace=","href=","ismap=","id=","leftmargin=","language="
+Keyword = "longdesc=","label=","lang=","link=","loop=","marginheight="
+Keyword = "marginwidth=","maxlength=","multiple","mailto=","method="
+Keyword = "media=","noresize","noshade","nohref","name=","onmousedown="
+Keyword = "onmousemove=","onmouseover=","onkeypress=","ondblclick="
+Keyword = "onmouseout=","onkeydown=","onmouseup=","onchange=","onselect="
+Keyword = "onsubmit=","onunload=","onfocus=","onkeyup=","onreset="
+Keyword = "onclick=","object=","onblur=","onload=","profile=","prompt="
+Keyword = "rightmargin=","readonly","rowspan=","rules=","rows=","rel="
+Keyword = "rev=","scrolling=","selected","standby=","summary=","scheme="
+Keyword = "scope=","shape=","start=","style=","size=","span=","src="
+Keyword = "topmargin=","tabindex=","target=","title=","text=","type="
+Keyword = "usemap=","url=","valuetype=","version=","valign=","vspace="
+Keyword = "value=","vlink=","width="
+(Color2)
+Attribs = BOLD
+(Color16)
+Color = 13
+Selcolor = 13
+(Color256)
+Color = 10
+Selcolor = 13
+
+<Entities>
+Keyword = "&curren;","&brvbar;","&plusmn;","&middot;","&frac14;"
+Keyword = "&frac12;","&frac34;","&iquest;","&agrave;","&aacute;"
+Keyword = "&atilde;","&ccedil;","&egrave;","&eacute;","&igrave;"
+Keyword = "&iacute;","&ntilde;","&ograve;","&oacute;","&otilde;"
+Keyword = "&oslash;","&ugrave;","&uacute;","&yacute;","&agrave;"
+Keyword = "&aacute;","&atilde;","&ccedil;","&egrave;","&eacute;"
+Keyword = "&igrave;","&iacute;","&ntilde;","&ograve;","&oacute;"
+Keyword = "&otilde;","&divide;","&oslash;","&ugrave;","&uacute;"
+Keyword = "&yacute;","&iexcl;","&pound;","&laquo;","&acute;","&micro;"
+Keyword = "&cedil;","&raquo;","&acirc;","&aring;","&aelig;","&ecirc;"
+Keyword = "&icirc;","&ocirc;","&times;","&ucirc;","&thorn;","&szlig;"
+Keyword = "&acirc;","&aring;","&aelig;","&ecirc;","&icirc;","&ocirc;"
+Keyword = "&ucirc;","&thorn;","&quot;","&nbsp;","&cent;","&sect;","&copy;"
+Keyword = "&ordf;","&macr;","&sup2;","&sup3;","&para;","&sup1;","&ordm;"
+Keyword = "&auml;","&euml;","&iuml;","&ouml;","&uuml;","&auml;","&euml;"
+Keyword = "&iuml;","&ouml;","&uuml;","&yuml;","&amp;","&yen;","&uml;"
+Keyword = "&not;","&shy;","&reg;","&deg;","&eth;","&eth;","&lt;","&gt;"
+(Color2)
+Attribs = BOLD
+(Color16)
+Color = 13
+Selcolor = 13
+(Color256)
+Color = 12
 Selcolor = 13
