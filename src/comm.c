@@ -68,12 +68,16 @@ void send_dhst(char *filename)
 	{
 		if (dhst == NULL)
 		{
+			char s[128];
+			char appname[256];
+			shel_read (appname, s);
+
 			dhst = malloc_global(sizeof(DHSTINFO));
 			dhst->appname = malloc_global(4);
 			strcpy(dhst->appname, "qed");
-			dhst->apppath = malloc_global(strlen(gl_appdir) + strlen("qed.app") + 1);
-			strcpy(dhst->apppath, gl_appdir);
-			strcat(dhst->apppath, "qed.app");
+			dhst->apppath = malloc_global(strlen(appname) + 1);
+			strcpy(dhst->apppath, appname);
+
 			dhst->docname = malloc_global(sizeof(FILENAME));
 			dhst->docpath = malloc_global(sizeof(PATH));
 		}
