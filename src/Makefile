@@ -22,11 +22,9 @@ all-here: $(TARGET)
 
 # default overwrites
 #INCLUDES += -I/usr/GEM/include
-CFLAGS += $(INCLUDES)
-#CFLAGS += -D_GNU_SOURCE
-CFLAGS += -DPREDEF_DEBUG_LEVEL=255
-CFLAGS += -g
-#CFLAGS += -mshort
+CFLAGS += -funsigned-char $(INCLUDES) $(GENERAL)
+CFLAGS += $(OPTS)
+#CFLAGS += -ggdb -O0 -DPREDEF_DEBUG_LEVEL=255
 
 # default definitions
 OBJS = $(COBJS:.c=.o)
@@ -37,6 +35,7 @@ GENFILES = $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS)
+	$(STACK) --fix 32k $@
 
 include $(top_srcdir)/DEPENDENCIES
 
