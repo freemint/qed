@@ -1671,8 +1671,16 @@ void option_save(void)
 			strcat( path, dsp_name );
 			strcat( tmp, "temp.qed" );
 			fd = fopen( path, "r" );
-			if (fd != NULL )
+			if (fd == NULL )
 			{
+				/* there is no such file -> write empty one */
+				fd = fopen(path, "w" );
+				if (fd != NULL ) {
+						fprintf(fd, "ID=qed display configuration\n");
+						copied_ok = TRUE;
+						fclose(fd);
+				}
+			} else {
 				tf = fopen( tmp, "w" );
 				if( tf != NULL ) {
 					while (fgets(buffer, (short)sizeof(buffer), fd) != NULL)
@@ -1682,8 +1690,8 @@ void option_save(void)
 						{
 							strncpy(var, buffer, p-buffer);
 							var[p-buffer] = EOS;
-							if( strcmp( var, "WinFontID" ) == 0
-								||  strcmp( var, "WinFontSize" ) == 0 )
+							if( strcmp( var, "WinFontID" ) == 0 ||
+							    strcmp( var, "WinFontSize" ) == 0 )
 								continue;
 						}
 						if( strcmp( buffer, "ID=qed display configuration\n" ) == 0 )
@@ -1695,14 +1703,15 @@ void option_save(void)
 				}
 				fclose(fd);
 				fd = NULL;
+
+				if( copied_ok )
+				{
+						remove( path );
+						rename( tmp, path );
+				} else {
+						remove( tmp );
+				}
 			}
-			if( copied_ok )
-			{
-				remove( path );
-				rename( tmp, path );
-			}
-			else
-				remove( tmp );
 		}
 
 		split_filename(cfg_path, path, NULL);
