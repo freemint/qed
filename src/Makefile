@@ -23,8 +23,8 @@ all-here: $(TARGET)
 # default overwrites
 #INCLUDES += -I/usr/GEM/include
 CFLAGS += -funsigned-char $(INCLUDES) $(GENERAL)
-CFLAGS += $(OPTS)
-#CFLAGS += -ggdb -O0 -DPREDEF_DEBUG_LEVEL=255
+CFLAGS += $(OPTS) $(WARN)
+#CFLAGS += -ggdb -O0 -DDEBUG_LOGFILE=\"i:\\\\qed.log\" -DPREDEF_DEBUG_LEVEL=255 $(WARN)
 
 # default definitions
 OBJS = $(COBJS:.c=.o)
@@ -32,6 +32,8 @@ OBJS = $(COBJS:.c=.o)
 LIBS += -lcflib -lgem
 LIBS += -liio
 GENFILES = $(TARGET)
+
+$(OBJS): Makefile
 
 $(TARGET): $(OBJS)
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS)
