@@ -786,6 +786,16 @@ static void parse_line(POSENTRY **arglist, char *zeile)
 	long	y;
 	PATH	filename;
 					
+	// STan: BUG? This is an workaround that fixes the CRLF vs LF newlines
+	// 	 within the .cfg file. The CRLF saved is read like LFLF ones ATM by mintlib.
+	// 	 The real solution is to ensure the .cfg file is either in CRLF or LF
+	// 	 mode regardless to whether it runs under MiNT or SingleTOS. Other, quite nice
+	// 	 solution is to read and write the documentation using QED text file routine
+	// 	 itself. But this would need to rewrite the whole configuratin stuff.
+	// -> So for now we skip empty lines here.
+	if ( strlen(zeile) == 0 )
+		return;
+
 	p = strchr(zeile, '=');
 	if (p != NULL)
 	{
