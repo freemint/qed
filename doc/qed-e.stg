@@ -7,11 +7,13 @@
 @node "Title"
 @{U}Title                                                                 qed@{0}
 
+@image logo.img 32
 
-@limage logo.img 32
+
+
 
                            An editor for ATARI
-                              Version 5.0 Beta
+                            Version 5.0 Beta
 
                                   Authors
 
@@ -170,7 +172,7 @@ default configuration file can also be installed somewhere else in the
 file system (for further information cf. the node environment).
 
 In order to use this hypertext as an online help you have to install
-someplace that ST-Guide can find it.
+someplace that ST-Guide/HYPView can find it.
 
 @endnode
 
@@ -422,7 +424,7 @@ Each shortcut can start with one or more 'modification key':
 @index "Menu help"
 If you hold down the control key when selecting a menu item with mouse 
 click, qed jumps into the hypertext and shows the corresponding 
-documentation. For this feature ST-GUIDE had to be installed!
+documentation. For this feature ST-GUIDE or HYPView had to be installed!
 
 @endnode
 
@@ -1526,7 +1528,7 @@ of them are mentioned or described elsewhere in this document.
                             the online-help.  You can either
                             assign a program or an accessory! To
                             use the online-help you definitely
-                            have to use ST-Guide.
+                            have to use ST-Guide or HYPView.
 
    AV-Server:
       Send window cycle:    qed can pass the window cycle through
@@ -2142,8 +2144,8 @@ applications:
 
    ù VA_START:       When receiving this message the specified file will
                      be loaded and qed answer with AV_STARTED.
-                     qed sends this message to ST-Guide for displaying
-                     the online help.
+                     qed sends this message to ST-Guide/HYPView for
+                     displaying the online help.
 
    ù AP_TERM:        When receiving this message, qed will behave like
                      the user has selected the function Save & Quit.

@@ -45,7 +45,7 @@ static bool make_name(char *longname, char *shortname, bool must_stg)
 		len = (short) strlen(shortname);
 		for (i = len; i < 8; i++)
 			strcat(shortname, " ");
-		if (must_stg && (strcmp(shortname, "ST-GUIDE") != 0))
+		if ( ( must_stg && (strcmp(shortname, "ST-GUIDE") && strcmp(shortname, "HYP_VIEW"))  ) != 0 )
 		{
 			note(1, 0, NOSTG);
 			return FALSE;

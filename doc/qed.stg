@@ -8,7 +8,11 @@
 @{U}Titel                                                                 qed@{0}
 
 
-@limage logo.img 33
+@image logo.img 33
+
+
+
+
 
                            Ein Editor fr Atari
                                Version 5.0
@@ -128,7 +132,7 @@ beiliegt:
 
    hyp
       qed.hyp
-      qed.ref     Der Hypertext fr ST-Guide.
+      qed.ref     Der Hypertext fr ST-Guide/HYPView.
 
    treiber/
       ...         Eine Auswahl von Druckertreibern
@@ -151,7 +155,7 @@ arbeitet, kann bei der Installation den Syntax-Ordner auch weglassen, dann
 startet qed ein wenig schneller.
 
 Wer diesen Hypertext als Online-Hilfe benutzen m”chte, mu ihn so
-installieren, da ST-Guide in findet.
+installieren, da ST-Guide/HYPView in findet.
 
 @endnode
 
@@ -485,7 +489,7 @@ vorangestellt werden (auch kombiniert):
 @index Men-Hilfe
 Wird ein Menpunkt mit gedrckter Control-Taste angeklickt, wird die
 entsprechende Position im Hyptertext angesprungen. Damit das funktioniert,
-mu ST-Guide als Hilfeprogramm installiert sein.
+mu ST-Guide or HYPView als Hilfeprogramm installiert sein.
 
 
 @endnode
@@ -1666,7 +1670,8 @@ zuvor hingewiesen wurde.
                                     ein Programm als auch ein Accessory an-
                                     gemeldet werden!
                                     Will man die Online-Hilfe benutzen, mu
-                                    man auf jeden Fall ST-GUIDE verwenden!
+                                    man auf jeden Fall ST-GUIDE or HYPView
+                                    verwenden!
 
    AV-Server:
       Fensterwechsel weiterleiten:  qed kann den Fensterwechsel an den
@@ -2538,7 +2543,7 @@ mit anderen Applikationen:
    ù VA_START:     Wenn qed diese Meldung empf„ngt, wird die bergeben
                    Datei ge”ffnet und qed antwortet mit AV_STARTED.
                    qed verschickt diese Message fr die Onlinehilfe an
-                   ST-Guide.
+                   ST-Guide/HYPView.
 
    ù AP_TERM:      Wenn qed diese Meldung empf„ngt, verh„lt er sich so
                    wie bei der Funktion Sichern & Beenden.
