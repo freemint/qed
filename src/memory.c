@@ -19,8 +19,8 @@ typedef union tblock
 {
 	struct
 	{
-		unsigned short magic;				/* 2 Bytes */
-		unsigned short size;					/* 2 Bytes */
+		unsigned short magic;		/* 2 Bytes */
+		unsigned short size;		/* 2 Bytes */
 		union tblock *next;		/* 4 Bytes */
 		union tblock *prev;		/* 4 Bytes => 12 Bytes */
 	} FREI;
@@ -30,8 +30,8 @@ typedef union tblock
 	} USED;
 } BLOCK;
 
-static bool		mem_need_BS,					/* BS hat keinen Speicher mehr */
-					mem_need_TQ;					/* TQ hat keinen Speicher mehr */
+static bool	mem_need_BS,			/* BS hat keinen Speicher mehr */
+		mem_need_TQ;			/* TQ hat keinen Speicher mehr */
 static BLOCK*	free_list[MAX_ANZ+1+1];		/* ein Dummy am Ende */
 static void*	block_list;
 
@@ -84,8 +84,8 @@ static bool new_block(void)
 	{
 		adr2 = MEM_ADD(adr,BLOCK_SIZE);
 		*(long*)&adr->FREI.magic = (long)(MAGIC<<16)+BLOCK_SIZE;
-											/*	adr->FREI.magic = MAGIC;		*/
-											/*	adr->FREI.size = BLOCK_SIZE;	*/
+		/*	adr->FREI.magic = MAGIC;	*/
+		/*	adr->FREI.size = BLOCK_SIZE;	*/
 		adr->FREI.next = adr2;
 		adr->FREI.prev = pre;
 		pre = adr;
@@ -93,8 +93,8 @@ static bool new_block(void)
 	}
 	adr2 = MEM_ADD(adr,BLOCK_SIZE);
 	*(long*)&adr->FREI.magic = (long)(MAGIC<<16)+BLOCK_SIZE;
-										/*	adr->FREI.magic = MAGIC;		*/
-										/*	adr->FREI.size = BLOCK_SIZE;	*/
+	/*	adr->FREI.magic = MAGIC;	*/
+	/*	adr->FREI.size = BLOCK_SIZE;	*/
 	adr->FREI.next = NULL;
 	adr->FREI.prev = pre;
 
@@ -317,38 +317,37 @@ ZEILEP col_insert(RINGP rp, ZEILEP wo, ZEILEP was)
 	was->nachf = help;
 	was->vorg = wo;
 	wo->nachf = was;
-	
-	if( rp )
+	if (rp)
 		hl_insert( rp, was );
 	return was;
 }
 
 /* Zeile am Ende anh„ngen */
-void col_append(RINGP t, ZEILEP was)
+void col_append(RINGP rp, ZEILEP was)
 {
 	ZEILEP help;
 
-	help = LAST(t);
+	help = LAST(rp);
 	was->vorg = help;
 	was->nachf = help->nachf;
 	help->nachf = was;
-	t->tail.vorg = was;
-	t->lines++;
-	hl_insert( t, was );
+	rp->tail.vorg = was;
+	rp->lines++;
+	hl_insert( rp, was );
 }
 
-void col_delete(RINGP t, ZEILEP was)
+void col_delete(RINGP rp, ZEILEP was)
 {
-	hl_remove( t, was );
+	hl_remove( rp, was );
 	was->vorg->nachf = was->nachf;
 	was->nachf->vorg = was->vorg;
 	FREE(was);
-	t->lines--;
+	rp->lines--;
 }
 
 void col_concate(RINGP rp, ZEILEP *wo)
 {
-	ZEILEP		help, col;
+	ZEILEP	help, col;
 	bool	absatz;
 
 	col = *wo;
@@ -359,8 +358,7 @@ void col_concate(RINGP rp, ZEILEP *wo)
 		INSERT(&col, col->len, help->len, TEXT(help));
 		help->nachf->vorg = col;
 		col->nachf = help->nachf;
-		if( rp )
-		{
+		if (rp) {
 			hl_remove( rp, help );
 			hl_update_zeile( rp, col );
 		}
@@ -375,7 +373,7 @@ void col_concate(RINGP rp, ZEILEP *wo)
 	{
 		col->vorg->nachf = help;
 		help->vorg = col->vorg;
-		if( rp )
+		if (rp)
 			hl_remove( rp, col );
 		FREE(col);
 		*wo = help;
@@ -385,8 +383,8 @@ void col_concate(RINGP rp, ZEILEP *wo)
 void col_split(RINGP rp, ZEILEP *col,short pos)
 {
 	ZEILEP	new,help;
-	short		anz;
-	bool		absatz, overlen;
+	short	anz;
+	bool	absatz, overlen;
 
 	help = *col;
 	absatz = IS_ABSATZ(help);
@@ -401,13 +399,16 @@ void col_split(RINGP rp, ZEILEP *col,short pos)
 	}
 	else if (pos<help->len)
 	{
-		hl_remove( rp, help );
+		if (rp)
+			hl_remove( rp, help );
 		anz = help->len-pos;
 		new = new_col(TEXT(help)+pos, anz);
 		col_insert (NULL, help, new);
 		REALLOC(&help,pos,-anz);
-		hl_insert( rp, help );
-		hl_insert( rp, new );
+		if (rp) {
+			hl_insert( rp, help );
+			hl_insert( rp, new );
+		}
 		*col = help;
 	}
 	else
@@ -568,13 +569,13 @@ void kill_textring(RINGP r)
 bool doppeln(RINGP old, RINGP new)
 {
 	ZEILEP	lauf, neu, a;
-	long		lines, anz;
-	bool		erg;
+	long	lines, anz;
+	bool	erg;
 
 	erg = TRUE;
 	free_textring(new);
-	a	  = FIRST(new);
-	lauf = FIRST(old);
+	a	= FIRST(new);
+	lauf	= FIRST(old);
 	anz	= old->lines;
 
 	INSERT(&a, 0, lauf->len, TEXT(lauf));
@@ -585,8 +586,8 @@ bool doppeln(RINGP old, RINGP new)
 	while (lines<anz)
 	{
 		neu = new_col(TEXT(lauf),lauf->len);
-		neu->info = lauf->info;						/* ABSATZ mit kopieren */
-		col_insert(NULL, a->vorg,neu);
+		neu->info = lauf->info;			/* ABSATZ mit kopieren */
+		col_insert(NULL,a->vorg,neu);
 		NEXT(lauf);
 		lines++;
 		if (!ist_mem_frei())
