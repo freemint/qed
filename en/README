@@ -1,3 +1,4 @@
+Readme V.5.0 beta English
 
    From version 3.09 qed (including sources) will be in the public domain!
 
@@ -8,28 +9,24 @@ Yet the Tom has prohibited the charge of a fee of whatever kind.
 
 =========================================================================
 
-I - Christian Felsch - am the maintainer of the current version. I
-will also continue the development of qed in the future.  However, 
-everybody is welcome to support me, which is easily done, because I 
-always publish my versions with the complete sources.
+From Version 3.20 to Version 4.53 Christian Felsch was the maintainer of QED.
 
-My version of qed can be found at:
-
-   ù Bulletin board systems
-       Maus Hamburg (+49 40 53 89 70 13, "Gruppenprogrammteil" QED)
-   ù Internet
-       http://www.tu-harburg.de/~smcf1605/
+=========================================================================
 
 
-This archive (qed-XXXen.lzh) only contains the english components of qed,
-translated readme's, hypertext and resource file.
-For installing qed you also need the language-independet parts of qed (e.g
-qed.app and tag files) from the german base archive (qed-XXX.lzh)!!
+From Version 5.0 beta on I, Heiko Achilles, have taken on the maintenance of 
+QED.
 
+This archive only contains some preliminary English translations: this readme, 
+the resource file and the translated syntax.cfg.
 
-Christian Felsch
-Hamburg, Germany
-19.09.1999
+The hypertext is still at work; additionally I have to contact Guido Flohr, 
+who was the maintainer for the English translation of the hypertext. I think 
+a preliminary version will be available in a few days.
 
-Contact:
-  felsch@tu-harburg.de
+For the use of QED you will need to download the complete (German) version and 
+replace the files in this archive with the according English translations.
+
+Because currently I've got a "temporarily" mail address only, please look on 
+http://heinisoft.atari-users.net for the recent address. Sorry for the 
+inconvenience; this will change soon.
