@@ -277,17 +277,21 @@ void send_avwinclose(short handle)
 
 void send_avpathupdate( char *str )
 {
-	short hi, lo;
-	strncpy( av_buf, str, MAX_PATH_LEN );
-	ol2ts( (long) av_buf, &hi, &lo );
-	memset(msgbuff, 0, (short)sizeof(msgbuff));
-	msgbuff[0] = AV_PATH_UPDATE;
-	msgbuff[1] = gl_apid;
-	msgbuff[3] = hi;
-	msgbuff[4] = lo;
-	send_msg(av_shell_id);
-	if (debug_level & DBG_AV)
-		debug("AV_PATHUPDATE (%s)\n", str );
+	if (av_shell_id >= 0)
+	{
+		short hi, lo;
+
+		strncpy( av_buf, str, MAX_PATH_LEN );
+		ol2ts( (long) av_buf, &hi, &lo );
+		memset(msgbuff, 0, (short)sizeof(msgbuff));
+		msgbuff[0] = AV_PATH_UPDATE;
+		msgbuff[1] = gl_apid;
+		msgbuff[3] = hi;
+		msgbuff[4] = lo;
+		send_msg(av_shell_id);
+		if (debug_level & DBG_AV)
+			debug("AV_PATHUPDATE (%s)\n", str );
+	}
 }
 
 void send_avdrag(short wh, short m_x, short m_y, short kstate, short data_type)
