@@ -32,9 +32,9 @@ bool		all_iconified;
 
 
 #define MIN_WIDTH		(8 * gl_wchar)			/* Kleinste Breite */
-#define MIN_HEIGHT 	(8 * gl_hchar)			/* Kleinste H”he */
+#define MIN_HEIGHT 	(8 * gl_hchar)			/* Kleinste Hhe */
 
-#define WORK_MOVED	0x01				/* Fr Verschieben und Vergr”žern */
+#define WORK_MOVED	0x01				/* Fr Verschieben und Vergrern */
 #define WORK_SIZED	0x02
 
 
@@ -147,8 +147,16 @@ static void snap_window(WINDOWP w, GRECT *new, short mode)
 {
 	if (mode & WORK_SIZED)
 	{
-		new->g_w = new->g_w-(new->g_w % w->xfac);
-		new->g_h = new->g_h-(new->g_h % w->yfac);
+// 		short xdist = new->g_w - (new->g_w - (new->g_w % w->xfac));
+		short ydist = new->g_h - (new->g_h - (new->g_h % w->yfac));
+		
+// 		if (w->work.g_x != new->g_x)
+// 			new->g_x += xdist;
+// 		new->g_w -= xdist;
+
+		if (w->work.g_y != new->g_y)
+			new->g_y += ydist;
+		new->g_h -= ydist;
 	}
 
 	if (w->snap != NULL)
@@ -168,7 +176,10 @@ static void get_work(WINDOWP w, GRECT *new, short mode)
 			new->g_h = MIN_HEIGHT;
 	}
 
-	wind_calc_grect(WC_WORK, w->kind, new, new);
+#ifndef ONLY_XAAES
+	if (!wcmode)
+		wind_calc_grect(WC_WORK, w->kind, new, new);
+#endif
 	snap_window(w, new, mode);
 
 	/* work und w_* (und doc) anpassen */
@@ -177,7 +188,7 @@ static void get_work(WINDOWP w, GRECT *new, short mode)
 	if (mode & WORK_SIZED)
 	{
 		long max_doc;
-
+		
 		w->work.g_w = new->g_w;
 		w->w_width  = w->work.g_w / w->xfac;
 		max_doc = w->doc.w - w->w_width;
@@ -197,8 +208,17 @@ static void get_work(WINDOWP w, GRECT *new, short mode)
 
 	if (w->flags & WI_OPEN)
 	{
-		wind_calc_grect(WC_BORDER, w->kind,	new, new);
-		wind_set_grect(w->handle, WF_CURRXYWH, new);
+#ifdef ONLY_XAAES
+		wind_set_grect(w->handle, WF_WORKXYWH, new);
+#else
+		if (wcmode)
+			wind_set_grect(w->handle, WF_WORKXYWH, new);
+		else
+		{
+			wind_calc_grect(WC_BORDER, w->kind,	new, new);
+			wind_set_grect(w->handle, WF_CURRXYWH, new);
+		}
+#endif
 	}
 
 	if (mode & WORK_SIZED)
@@ -248,7 +268,7 @@ void clr_area (GRECT *area)
 		vsf_color(vdi_handle,G_WHITE);
 		fill_color = G_WHITE;
 	}
-	vr_recfl(vdi_handle, xy);								/* Bereich l”schen */
+	vr_recfl(vdi_handle, xy);								/* Bereich lschen */
 }
 
 bool free_for_draw(WINDOWP w)
@@ -298,7 +318,7 @@ void redraw_window(WINDOWP w, GRECT *area)
 				}
 				else
 				{
-					if (w->draw!=NULL)					/* Zeichenroutine ausfhren */
+					if (w->draw!=NULL)					/* Zeichenroutine ausfhren */
 						(*w->draw)(w, &r1);
 				}
 			}
@@ -310,32 +330,60 @@ void redraw_window(WINDOWP w, GRECT *area)
 }
 
 /*
- * Setzt die Gr”že.
+ * Setzt die Gre.
 */
 void size_window(WINDOWP w, GRECT *new, bool outer)
 {
 	GRECT r;
-
+	
 	if (w != NULL)
 	{
-		if (!outer)
+
+#ifdef ONLY_XAAES
+		r = *new;
+#else
+		if (!outer && !wcmode)
+		{
 			wind_calc_grect(WC_BORDER, w->kind, (GRECT*)new, &r);
+		}
 		else
 			r = *new;
+#endif
 		if (w->kind & SIZER)
 		{
 			get_work(w, &r, WORK_SIZED);
 			w->flags &= ~WI_FULLED;
-			if (w->flags & WI_REDRAW)
-				redraw_window(w, &w->work);
+			
+			/*
+			 * Under XaAES, resizing window will reliably send
+			 * WM_REDRAWs
+			 */
+#ifndef ONLY_XAAES
+			if (!wcmode)
+			{
+ 				if (w->flags & WI_REDRAW)
+ 					redraw_window(w, &w->work);
+			}
+#endif
 		}
 		else
 			move_window(w, &r);
 	}
 }
+void
+repos_window(WINDOWP w, GRECT *new)
+{
+	GRECT r;
+	if (w)
+	{
+		r = *new;
+		get_work(w, &r, WORK_SIZED);
+		w->flags &= ~WI_FULLED;
+	}
+}
 
 /*
- * Full/Prev Gr”že einstellen.
+ * Full/Prev Gre einstellen.
 */
 void full_window(WINDOWP w)
 {
@@ -345,7 +393,7 @@ void full_window(WINDOWP w)
 	{
 		if (w->flags & WI_FULLED)					/* Mache Fenster klein */
 			wind_get_grect(w->handle, WF_PREVXYWH, &new);
-		else												/* Mache Fenster grož */
+		else												/* Mache Fenster gro */
 			wind_get_grect(w->handle, WF_FULLXYWH, &new);
 		get_work(w, &new, WORK_MOVED|WORK_SIZED);
 		w->flags ^= WI_FULLED;
@@ -366,7 +414,7 @@ void iconify_window(WINDOWP w, GRECT *new)
 		if (w->iconify != NULL)
 			(*w->iconify)(w);
 
-		/* alte Gr”že merken */
+		/* alte Gre merken */
 		wind_get_grect(w->handle, WF_CURRXYWH, &w->old_size);
 		wind_set_grect(w->handle, WF_ICONIFY, (GRECT*)new);
 
@@ -401,9 +449,13 @@ void uniconify_window(WINDOWP w, GRECT *new)
 		if (w->uniconify != NULL)
 			(*w->uniconify)(w);
 
+#ifdef N_ONLY_XAAES
+		wind_xget_grect(w->handle, WF_CALCW2F, &w->work, &r);
+#else
 		wind_calc_grect(WC_BORDER, w->kind, &w->work, &r);
+#endif
 
-		/* Wurde Font gewechselt w„hrend Fenster iconifiziert? */
+		/* Wurde Font gewechselt whrend Fenster iconifiziert? */
 		if (w->old_size.g_w != r.g_w)
 			new = &r;
 
@@ -428,7 +480,7 @@ void	all_iconify(WINDOWP w, GRECT *new)
 		return;
 	}
 
-	/* Zun„chst alle Fenster bis auf das angeklickte schliežen */
+	/* Zunchst alle Fenster bis auf das angeklickte schlieen */
 	p = used_list;
 	while (p)
 	{
@@ -462,7 +514,11 @@ void all_uniconify(WINDOWP w, GRECT *new)
 				uniconify_window(p, new);
 			else
 			{
+#ifdef ONLY_XAAES
+				wind_xget_grect(p->handle, WF_CALCW2F, &p->work, &r);
+#else
 				wind_calc_grect(WC_BORDER, p->kind, &p->work, &r);
+#endif
 				wind_open_grect(p->handle, &r);
 			}
 			p = p->next;
@@ -551,7 +607,7 @@ void top_window(WINDOWP w)
 }
 
 /*
- * N„chstes Fenster toppen.
+ * Nchstes Fenster toppen.
 */
 void cycle_window(void)
 {
@@ -591,7 +647,7 @@ void bottom_window(WINDOWP w, short which)
 	clr_undo();
 	move_to_end(w);
 
-	get_realtop();					/* qed ber das neue top-Fenster informieren */
+	get_realtop();					/* qed ber das neue top-Fenster informieren */
 	memset(msgbuff, 0, (short) sizeof(msgbuff));
 	msgbuff[0] = WM_TOPPED;
 	msgbuff[3] = top_handle;
@@ -659,8 +715,8 @@ static void scroll_window(WINDOWP w, short dir, long delta)
 
 	if (!draw)
 	{
-		grect_to_array(&r, xy);						/* Quelle fr vro_cpyfm */
-		xy[4] = xy[0];									/* Ziel fr vro_cpyfm */
+		grect_to_array(&r, xy);						/* Quelle fr vro_cpyfm */
+		xy[4] = xy[0];									/* Ziel fr vro_cpyfm */
 		xy[5] = xy[1];
 		xy[6] = xy[2];
 		xy[7] = xy[3];
@@ -673,7 +729,7 @@ static void scroll_window(WINDOWP w, short dir, long delta)
 				xy[6] -= (short) delta;
 
 				r.g_x += r.g_w - (short)delta;	/* Rechter Bereich nicht gescrollt, */
-				r.g_w  = (short)delta;				/* muž neu gezeichnet werden */
+				r.g_w  = (short)delta;				/* mu neu gezeichnet werden */
 			}
 			else											/* Rechts Scrolling */
 			{
@@ -685,17 +741,17 @@ static void scroll_window(WINDOWP w, short dir, long delta)
 		}
 		else												/* Vertikales Scrolling */
 		{
-			if (delta > 0)								/* Aufw„rts Scrolling */
+			if (delta > 0)								/* Aufwrts Scrolling */
 			{
-				xy[1] += (short)delta;				/* Werte fr vro_cpyfm */
+				xy[1] += (short)delta;				/* Werte fr vro_cpyfm */
 				xy[7] -= (short)delta;
 
 				r.g_y += r.g_h - (short)delta;	/* Unterer Bereich nicht gescrollt, */
-				r.g_h  = (short) delta;				/* muž neu gezeichnet werden */
+				r.g_h  = (short) delta;				/* mu neu gezeichnet werden */
 			}
-			else											/* Abw„rts Scrolling */
+			else											/* Abwrts Scrolling */
 			{
-				xy[3] += (short)delta;				/* Werte fr vro_cpyfm */
+				xy[3] += (short)delta;				/* Werte fr vro_cpyfm */
 				xy[5] -= (short)delta;
 
 				r.g_h = (short)(-delta);			/* Oberen Bereich noch neu zeichnen */
@@ -754,7 +810,7 @@ void arrow_window (WINDOWP w, short arrow, long amount)
 	if (w != NULL)
 	{
 		ww = w->w_width; 								/* Breite in Zeichen */
-		wh = w->w_height;								/* H”he in Zeichen */
+		wh = w->w_height;								/* Hhe in Zeichen */
 
 		if (arrow <= WA_DNLINE)
 		{
@@ -866,7 +922,7 @@ void set_sliders(WINDOWP w, short which, short mode)
 
 			if (mode & SLPOS)
 			{
-				if (max_doc <= 0)			/* Fenster zu grož oder passend */
+				if (max_doc <= 0)			/* Fenster zu gro oder passend */
 					newval = 0;
 				else
 					newval = (short)((1000L * w->doc.x) / max_doc);
@@ -877,7 +933,7 @@ void set_sliders(WINDOWP w, short which, short mode)
 			}
 			if (mode & SLSIZE)
 			{
-				if (w->doc.w <= size)	/* Fenster zu grož oder passend */
+				if (w->doc.w <= size)	/* Fenster zu gro oder passend */
 					newval = 1000;
 				else
 					newval = (short)((1000L * size) / w->doc.w);
@@ -894,7 +950,7 @@ void set_sliders(WINDOWP w, short which, short mode)
 
 			if (mode & SLPOS)
 			{
-				if (max_doc <= 0)			/* Fenster zu grož oder passend */
+				if (max_doc <= 0)			/* Fenster zu gro oder passend */
 					newval = 0;
 				else
 					newval = (short)((1000L * w->doc.y) / max_doc);
@@ -904,7 +960,7 @@ void set_sliders(WINDOWP w, short which, short mode)
 			}
 			if (mode & SLSIZE)
 			{
-				if (w->doc.h <= size)	/* Fenster zu grož oder passend */
+				if (w->doc.h <= size)	/* Fenster zu gro oder passend */
 					newval = 1000;
 				else
 					newval = (short)((1000L * size) / w->doc.h);
@@ -987,7 +1043,7 @@ WINDOWP create_window(short kind, short class, WIN_CRTFUNC crt)
 }
 
 /*
- * Fenster ”ffnen.
+ * Fenster ffnen.
 */
 bool open_window(WINDOWP w)
 {
@@ -999,9 +1055,14 @@ bool open_window(WINDOWP w)
 		clr_undo();
 		unclick_window();
 		w->flags |= WI_OPEN;
-		w->flags &= ~WI_FULLED;					/* Fenster hat nicht volle Gr”že */
+		w->flags &= ~WI_FULLED;					/* Fenster hat nicht volle Gre */
 
-		wind_calc_grect(WC_BORDER, w->kind, &w->work, &r);
+#ifndef ONLY_XAAES
+		if (!wcmode)
+			wind_calc_grect(WC_BORDER, w->kind, &w->work, &r);
+		else
+#endif
+			r = w->work;
 
 		if (w->kind & NAME)						/* Name setzen */
 			wind_set_str(w->handle, WF_NAME, w->title);
@@ -1023,7 +1084,7 @@ bool open_window(WINDOWP w)
 }
 
 /*
- * Fenster schliežen.
+ * Fenster schlieen.
 */
 void close_window(WINDOWP w)
 {

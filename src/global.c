@@ -17,12 +17,14 @@
 /*
  * exportierte Variablen
  */
-short		fill_color;			/* aktuell eingestellte FÅllfarbe */
+short		wcmode;				/* Window Coordinate Mode */
+
+short		fill_color;			/* aktuell eingestellte Fllfarbe */
 
 bool		quick_close;		/* Sichern der Texte ohne Nachfrage */
 short		vdi_handle;			/* Virtuelles Workstation Handle */
 
-bool		done;					/* Ende gewÑhlt ? */
+bool		done;					/* Ende gewhlt ? */
 
 short		desire_x, return_code;
 long		desire_y, undo_y;
@@ -43,7 +45,7 @@ static bool 	msleep = FALSE;
 static GRECT 	clip; 			/* Letztes Clipping Rechteck */
 static bool 	clip_flag;
 
-static long		_idt;				/* Cookie fÅr Datum und Zeit */
+static long		_idt;				/* Cookie fr Datum und Zeit */
 
 /*****************************************************************************/
 /* Maus-Routinen																														 */
@@ -72,14 +74,14 @@ void wake_mouse(void)
 }
 
 /*****************************************************************************/
-/* Ausgabe recht oben im MenÅ */
+/* Ausgabe recht oben im Men */
 void print_headline(char *str)
 {
 	GRECT	c;
 		
-	if (gl_desk.g_y != 1)		/* gl_desk.g_y = 1: MenÅ unsichtbar unter N.AES */
+	if (gl_desk.g_y != 1)		/* gl_desk.g_y = 1: Men unsichtbar unter N.AES */
 	{
-		if (str[0] == EOS)		/* lîschen */
+		if (str[0] == EOS)		/* lschen */
 			menu_bar(menu, 1);
 		else
 		{
@@ -138,7 +140,7 @@ void set_clip (bool clipflag, GRECT *size)
 		if (size == NULL)
 			clip = gl_desk;						/* Nichts definiert, nimm Desktop */
 		else
-			clip = *size;							/* Benutze definierte Grîûe */
+			clip = *size;							/* Benutze definierte Gre */
 		xy[0] = clip.g_x;
 		xy[1] = clip.g_y;
 		xy[2] = xy[0] + clip.g_w - 1;
@@ -193,7 +195,7 @@ short sinote(short def, short undo, short idx, char *sval, short val )
 /***************************************************************************/
 
 /* Konfigurationsdatei; returns TRUE wenn gefunden,
- * filename enthÑlt in diesem Fall den kompletten Pfad
+ * filename enthlt in diesem Fall den kompletten Pfad
  */
 bool get_config_file( PATH filename, bool isdir )
 {
@@ -495,7 +497,7 @@ void font_change(void)
 	short ret, w1, w2, d, d1[5], effects[3];
 
 	vst_effects(vdi_handle, 0);
-	/* *_cell werden NUR hier verÑndert */
+	/* *_cell werden NUR hier verndert */
 	vst_font(vdi_handle, font_id);
 	font_pts = vst_point(vdi_handle, font_pts, &d, &d, 
 										&font_wcell, &font_hcell);
@@ -566,8 +568,8 @@ void init_global (void)
 
 	vst_alignment(vdi_handle, TA_LEFT, TA_TOP, &ret, &ret);
 
-	if (!getcookie("_IDT", &_idt))				/* Format fÅr Datum und Zeit */
-		_idt = 0x0000112E;							/* DD.MM.YYYY HH:MM:SS */
+	if (!getcookie("_IDT", &_idt))				/* Format fr Datum und Zeit */
+		_idt = 0x0000112E;				/* DD.MM.YYYY HH:MM:SS */
 }
 
 /************************************************************************/

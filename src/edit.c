@@ -40,7 +40,7 @@ short	edit_type;
 #define KIND	(NAME|INFO|CLOSER|FULLER|MOVER|SIZER|UPARROW|DNARROW|VSLIDE|LFARROW|RTARROW|HSLIDE|SMALLER)
 #define FLAGS	(WI_TEXT|WI_FONTSIZE|WI_REDRAW)
 
-/* Anzahl der Žnderungen in allen Texten bis zum restore_edit */
+/* Anzahl der nderungen in allen Texten bis zum restore_edit */
 #define MAX_CHG 30
 
 #define TEMP_LINK 101
@@ -50,7 +50,7 @@ short	edit_type;
 typedef struct
 {
 	short	link; 		/* Nummer von Text und Window */
-	short	c; 		/* Art der Žnderung */
+	short	c; 		/* Art der nderung */
 	long	y; 		/* y-Position */
 } TCHANGE;
 
@@ -144,7 +144,7 @@ static void lz2tab(TEXTP t_ptr)
 	while (!IS_TAIL(lauf))
 	{
 		i = col_lz2tab(lauf, str, tabsize);
-		if (i != -1)									/* Zeile ver„ndert */
+		if (i != -1)									/* Zeile verndert */
 		{
 			REALLOC (&lauf, 0, i-lauf->len);
 			memcpy(TEXT(lauf), str, (short) strlen(str));
@@ -211,7 +211,7 @@ static void tab2lz(TEXTP t_ptr)
 	while (!IS_TAIL(lauf))
 	{
 		i = col_tab2lz (lauf,str,tabsize);
-		if (i != -1)									/* Zeile ver„ndert */
+		if (i != -1)									/* Zeile verndert */
 		{
 			REALLOC (&lauf, 0, i-lauf->len);
 			memcpy(TEXT(lauf), str, (short)strlen(str));
@@ -298,7 +298,7 @@ static void do_absatz(WINDOWP window)
 
 
 /*
- * Es wurde Zeilenumbruch ein oder ausgeschaltet und/oder Tab ge„ndert 
+ * Es wurde Zeilenumbruch ein oder ausgeschaltet und/oder Tab gendert 
 */
 void absatz_edit(void)
 {
@@ -476,16 +476,16 @@ void close_edit(char *mask, short flag)
 			{
 				switch (flag)
 				{
-					case 0 :							/* sichern ohne schliežen */
-						if (t_ptr->moved)			/* nur wenn n”tig! */
+					case 0 :							/* sichern ohne schlieen */
+						if (t_ptr->moved)			/* nur wenn ntig! */
 							do_icon(i, DO_SAVE);
 						break;
 
-					case 1 :							/* sichern und schliežen */
+					case 1 :							/* sichern und schlieen */
 						do_icon(i, DO_DELETE);
 						break;
 
-					case 2 :							/* schliežen ohne sichern */
+					case 2 :							/* schlieen ohne sichern */
 						t_ptr->moved = 0;
 						do_icon(i, DO_DELETE);
 						break;
@@ -532,7 +532,7 @@ static bool delete_edit(short icon, TEXTP t_ptr)
 /* Fenster angeclickt																		*/
 /***************************************************************************/
 
-/* Ermittelt aus einer Mauspos (my) die zugeh”rige y-Position im Text */
+/* Ermittelt aus einer Mauspos (my) die zugehrige y-Position im Text */
 static long get_ypos(WINDOWP window, short my)
 {
 	TEXTP	t_ptr = get_text(window->handle);
@@ -551,7 +551,7 @@ static long get_ypos(WINDOWP window, short my)
 	return y;
 }
 
-/* Ermittelt aus einer Mauspos (mx) die zugeh”rige x-Position im Text */
+/* Ermittelt aus einer Mauspos (mx) die zugehrige x-Position im Text */
 static short get_xpos(WINDOWP window, long ypos, short mx)
 {
 	TEXTP	t_ptr = get_text(window->handle);
@@ -581,9 +581,9 @@ static short get_xpos(WINDOWP window, long ypos, short mx)
 			t_ptr->xpos = x;
 			i = cursor_xpos(t_ptr, t_ptr->xpos, NULL);
 			if (i > x_soll)
-				e = x;			/* in linker H„lfte */
+				e = x;			/* in linker Hlfte */
 			else
-				s = x;			/* in rechter H„lfte */
+				s = x;			/* in rechter Hlfte */
 			xl = x;				
 		}
 		/* jetzt Fein-Positionierung zeichenweise heranbewegen */
@@ -642,7 +642,7 @@ static void set_cursor(WINDOWP window, short mx, short my)
 }
 
 /*
- * Prft, ob Mauspos (x,y) innerhalb der Blockselektion liegt.
+ * Prft, ob Mauspos (x,y) innerhalb der Blockselektion liegt.
 */
 static bool click_in_blk(WINDOWP window, short x, short y)
 {
@@ -686,7 +686,7 @@ static void wi_click(WINDOWP window, short m_x, short m_y, short bstate, short k
 	TEXTP 	t_ptr = get_text(window->handle);
 	GRECT	*s = &window->work;
 	
-	/* Infomeldung l”schen */
+	/* Infomeldung lschen */
 	clear_info(t_ptr);
 
 	if (bstate & 2) 											/* Rechtsclick */
@@ -778,7 +778,7 @@ static void wi_click(WINDOWP window, short m_x, short m_y, short bstate, short k
 				else
 					h = ((short)(t_ptr->z2 - t_ptr->z1) + 1) * font_hcell;
 				
-				/* Clipping auf Fenstergr”že */
+				/* Clipping auf Fenstergre */
 				if (y < r.g_y)
 				{
 					h -= (r.g_y - y); 
@@ -803,7 +803,7 @@ static void wi_click(WINDOWP window, short m_x, short m_y, short bstate, short k
 
 				if (qed_win)											/* eigenes Fenster */
 				{
-					/* Ziel muž Textfenster sein */
+					/* Ziel mu Textfenster sein */
 					if (qed_win->class == CLASS_EDIT)
 					{
 						if (qed_win != window)						/* ein anderes */
@@ -840,7 +840,7 @@ static void wi_click(WINDOWP window, short m_x, short m_y, short bstate, short k
 		mode = KEY_MODE;
 	}
 	graf_mkstate(&m_x, &m_y, &bstate, &kstate);
-	if (bstate & 1)													/* immernoch gedrckt */
+	if (bstate & 1)													/* immernoch gedrckt */
 	{
 		graf_mouse(POINT_HAND, NULL);
 		wind_update(BEG_MCTRL);
@@ -914,7 +914,7 @@ static bool wi_key (WINDOWP window, short kstate, short kreturn)
 {
 	TEXTP t_ptr = get_text(window->handle);
 
-	/* Infomeldung l”schen */
+	/* Infomeldung lschen */
 	clear_info(t_ptr);
 
 	if (edit_key(t_ptr, window, kstate, kreturn))
@@ -931,6 +931,7 @@ static void wi_draw(WINDOWP window, GRECT *d)
 	TEXTP t_ptr = get_text(window->handle);
 
 	set_clip(TRUE, d);
+#if 0
 	if (d->g_x == window->work.g_x && d->g_w == window->work.g_w)
 	{
 		if (d->g_y == window->work.g_y + window->work.g_h - window->yfac &&
@@ -948,13 +949,14 @@ static void wi_draw(WINDOWP window, GRECT *d)
 			bild_out(window, t_ptr);
 	}
 	else
+#endif
 		bild_out(window,t_ptr);
 }
 
 
 static void wi_top(WINDOWP window)
 {
-	/* Krzel/Schreibschutz „ndern */
+	/* Krzel/Schreibschutz ndern */
 	do_icon(window->handle, DO_UPDATE);
 }
 
@@ -987,7 +989,7 @@ static void e_icon_exist(short icon, SET actions)
 
 	if ((window->flags & WI_ICONIFIED) || (window->flags & WI_SHADED))
 	{
-		/* Einzige m”gliche Aktion: */
+		/* Einzige mgliche Aktion: */
 		setincl(actions, DO_DELETE);
 		return;
 	}
@@ -1223,7 +1225,7 @@ static bool e_icon_test(short icon, short action)
 }
 
 /***************************************************************************/
-/* Operation durchfhren																	*/
+/* Operation durchfhren																	*/
 /***************************************************************************/
 
 static short e_icon_edit(short icon, short action)
@@ -1553,7 +1555,7 @@ abandon:	strcpy(name, t_ptr->filename);
 				ok = select_single(name, "", rsc_string(MERGESTR));
 			if (ok)
 			{
-				if (shift)				/* Dateinamen einfgen */
+				if (shift)				/* Dateinamen einfgen */
 				{
 					RING		temp_ring;
 					ZEILEP	col;
@@ -1565,7 +1567,7 @@ abandon:	strcpy(name, t_ptr->filename);
 					restore_edit();
 					kill_textring(&temp_ring);
 				}
-				else								/* Dateiinhalt einfgen */
+				else								/* Dateiinhalt einfgen */
 				{
 					TEXTP temp_ptr = new_text(TEMP_LINK);
 					short	antw;
@@ -1595,7 +1597,7 @@ abandon:	strcpy(name, t_ptr->filename);
 			erg = 1;
 			break;
 		case DO_UPDATE	:
-			/* Schreibschutz oder Datei ver„ndert? */
+			/* Schreibschutz oder Datei verndert? */
 			if (file_exists(t_ptr->filename))
 			{
 				bool	read_only = file_readonly(t_ptr->filename);
@@ -1620,7 +1622,7 @@ abandon:	strcpy(name, t_ptr->filename);
 					}
 				}
 			}
-			/* Krzel updaten */
+			/* Krzel updaten */
 			ch_kurzel(t_ptr->loc_opt->kurzel, FALSE);
 			erg = 1;
 			break;
@@ -1680,7 +1682,7 @@ static bool e_icon_drag(short icon, short source)
 
 	switch (source)
 	{
-		case DRAGDROP_FILE :						/* Inhalt von drag_filename einfgen */
+		case DRAGDROP_FILE :						/* Inhalt von drag_filename einfgen */
 			t_ptr = get_text(icon);
 			if (drag_filename[0] != EOS && t_ptr != NULL)
 			{
@@ -1705,7 +1707,7 @@ static bool e_icon_drag(short icon, short source)
 			drag_filename[0] = EOS;
 			break;
 
-		case DRAGDROP_PATH :						/* Text aus drag_filename einfgen */
+		case DRAGDROP_PATH :						/* Text aus drag_filename einfgen */
 			t_ptr = get_text(icon);
 			if (drag_filename[0] != EOS && t_ptr != NULL)
 			{
@@ -1734,7 +1736,7 @@ static bool e_icon_drag(short icon, short source)
 			drag_filename[0] = EOS;
 			break;
 
-		case DRAGDROP_DATA :						/* Textdaten einfgen */
+		case DRAGDROP_DATA :						/* Textdaten einfgen */
 			if (drag_data_size == DDS_RINGP)
 			{
 				RINGP	t;
@@ -1773,7 +1775,7 @@ debug("hier ist edit.DragDrop_DATA!!!\n");
 						col = new_col(zeile, (short)strlen(zeile));
 						col_insert(&temp_ring,lauf, col);
 						NEXT(lauf);
-						p1 = p2 + 2;						/* \r\n berspringen */
+						p1 = p2 + 2;						/* \r\n berspringen */
 						p2 = strchr(p1, '\r');
 						temp_ring.lines++;
 					}
@@ -1863,7 +1865,7 @@ void make_chg (short link, short change, long ypos)
 {
 /*
 	SCROLL_UP 		Alles unter der aktuellen Zeile wird hochgescrollt,
-						die letzte Zeile wird natrlich neu geschrieben.
+						die letzte Zeile wird natrlich neu geschrieben.
 		  				(Cntrl-Y, und Delete am Ende der Zeile).
 	SCROLL_DOWN		Alles unterhalb der aktuellen Zeile und diese Zeile werden
 						nach unten gescrollt, die aktuelle Zeile wird neu
@@ -1872,14 +1874,14 @@ void make_chg (short link, short change, long ypos)
 						(RETURN, last_out_klemm)
 	MOVE_UP,
 	MOVE_DOWN		Das Fenster wird hoch und runter gescrollt um anz Zeilen
-	BLK_CHANGE		Die Blockmarkierung wurde ge„ndert.
-	WT_CHANGE		Fenstertitel ('*') l”schen (nach save).
+	BLK_CHANGE		Die Blockmarkierung wurde gendert.
+	WT_CHANGE		Fenstertitel ('*') lschen (nach save).
 */
 	short i;
 
 	if (change==TOTAL_CHANGE)
 	{
-		for (i=chg_anz; (--i)>=0; )			/* unntze Žnderung */
+		for (i=chg_anz; (--i)>=0; )			/* unntze nderung */
 			if (chg[i].link==link)
 			{
 				if (chg[i].c==LINE_CHANGE && chg[i].y>=ypos)
@@ -1898,7 +1900,7 @@ void make_chg (short link, short change, long ypos)
 	}
 	if (change==LINE_CHANGE)
 	{	
-		for (i=chg_anz; (--i)>=0; )			/* gleiche Žnderung */
+		for (i=chg_anz; (--i)>=0; )			/* gleiche nderung */
 			if (chg[i].link==link && chg[i].c==change && chg[i].y==ypos)
 				return;			
 	}
@@ -1962,7 +1964,7 @@ static void restore_offdesk(WINDOWP window, TCHANGE *c, short c_anz, TEXTP t_ptr
 	{
 		switch (c->c)
 		{
-			case WT_CHANGE :	/* fr save(): nur '*' l”schen, sonst nix */
+			case WT_CHANGE :	/* fr save(): nur '*' lschen, sonst nix */
 				change_window(window, t_ptr->filename, (t_ptr->moved!=0));
 				break;
 
@@ -2022,7 +2024,7 @@ static void restore_indesk(WINDOWP window, TCHANGE *c, short c_anz, TEXTP t_ptr)
 		set_clip(TRUE, &(window->work));
 		switch (c->c)
 		{
-			case WT_CHANGE:				/* nur '*' „ndern, sonst nix */
+			case WT_CHANGE:				/* nur '*' ndern, sonst nix */
 				change_window(window, t_ptr->filename, (t_ptr->moved!=0));
 				break;
 
@@ -2139,7 +2141,7 @@ void restore_edit(void)
 		}
 	}
 	show_mouse();
-	chg_anz = 0;			/* Keine Žnderungen mehr */
+	chg_anz = 0;			/* Keine nderungen mehr */
 	setclr(chg_links);
 }
 
@@ -2231,7 +2233,7 @@ static void crt_edit(WINDOWP window)
 
 	if (window->work.g_w == 0 || window->work.g_h == 0)
 	{
-		/* Keine Gr”že bekannt. */
+		/* Keine Gre bekannt. */
 		initw  = min ((gl_desk.g_w / font_wcell) * font_wcell - 7 * font_wcell, 80 * font_wcell);
 		inith  = (gl_desk.g_h / font_hcell) * font_hcell - 7 * font_hcell;
 	
@@ -2259,7 +2261,7 @@ static void crt_edit(WINDOWP window)
 }
 
 /***************************************************************************/
-/* ™ffnen des Objekts																		*/
+/* ffnen des Objekts																		*/
 /***************************************************************************/
 static bool open_edit(short icon)
 {
@@ -2303,7 +2305,7 @@ bool info_edit (short icon)
 	if (t_ptr->text.ending != lns_binmode)
 		set_long(textinfo, INFZEILE, t_ptr->text.lines);
 	else
-		set_string(textinfo, INFZEILE, "--");		/* Bin„r: keine Zeilen */
+		set_string(textinfo, INFZEILE, "--");		/* Binr: keine Zeilen */
 
 	make_shortpath(t_ptr->filename, str, 30);
 	set_string (textinfo, INFNAME, str);		/* Name mit Pfad */
@@ -2322,7 +2324,7 @@ bool info_edit (short icon)
 	set_state(textinfo, INFMAC, OS_SELECTED, (t_ptr->text.ending == lns_apple));
 	ending = t_ptr->text.ending;
 
-	/* Dateien aus einem Projekt oder Bin„r -> kein Zeilenende */
+	/* Dateien aus einem Projekt oder Binr -> kein Zeilenende */
 	b = (!setin(used_info, icon) || (t_ptr->text.ending == lns_binmode));
 	set_state(textinfo, INFTOS, OS_DISABLED, b);
 	set_state(textinfo, INFUNIX, OS_DISABLED, b);

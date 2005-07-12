@@ -20,12 +20,12 @@
 #endif
 
 #ifndef SC_CHANGED
-#define SC_CHANGED		80			/* AES-Message: Klemmbrett wurde verÑndert */
+#define SC_CHANGED		80			/* AES-Message: Klemmbrett wurde verndert */
 #endif
 
 #define DTA					_DTA		/* Warum mit '_' in MiNT-Lib?? */
 
-#define TIMER_INTERVALL	500L		/* Pollzeit fÅr Timerevent */
+#define TIMER_INTERVALL	500L		/* Pollzeit fr Timerevent */
 
 #define MAX_TABWIDTH 99         /* Max. Tabweite */
 
@@ -33,13 +33,13 @@
 
 
 /****** global Variablen ******************************************************/
-
-extern short		fill_color;			/* aktuell eingestellte FÅllfarbe */
+extern short		wcmode;
+extern short		fill_color;			/* aktuell eingestellte Fllfarbe */
 
 extern bool		quick_close;		/* Sichern der Texte ohne Nachfrage */
 extern short		vdi_handle;			/* Virtuelles Workstation Handle */
 
-extern bool		done;					/* Ende gewÑhlt ? */
+extern bool		done;					/* Ende gewhlt ? */
 
 extern short		desire_x, return_code;
 extern long		desire_y, undo_y;

@@ -4,18 +4,19 @@
 #define CLASS_ALL			0			/* Alle Klassen */
 #define CLASS_EDIT		1			/* Textfenster */
 #define CLASS_PROJEKT	2			/* Projektfenster */
-#define CLASS_ICON		3			/* Iconifiziertes Fenster fÅr AllIconify */
+#define CLASS_ICON		3			/* Iconifiziertes Fenster fr AllIconify */
 
 #define WI_NONE			0x0000	/* Keine Flags */
 #define WI_OPEN			0x0001	/* Fenster ist offen */
-#define WI_TEXT			0x0002	/* Fenster enthÑlt Text mit TAB und CR */ 
-#define WI_FONTSIZE		0x0004	/* Bei FontÑnderung Grîûenanpassung */
+#define WI_TEXT			0x0002	/* Fenster enthlt Text mit TAB und CR */ 
+#define WI_FONTSIZE		0x0004	/* Bei Fontnderung Grenanpassung */
 #define WI_REDRAW			0x0008	/* Fenster ganz redrawen bei size */
 #define WI_NOTDRAWED 	0x0010	/* Eine redraw-Msg wird geschluckt */
 #define WI_ICONIFIED		0x0020	/* Fenster ist Icon */
-#define WI_FULLED			0x0040	/* Fenster auf voller Grîûe */
-#define WI_CHANGED		0x0080	/* Fenster wurde verÑndert '*' */
+#define WI_FULLED			0x0040	/* Fenster auf voller Gre */
+#define WI_CHANGED		0x0080	/* Fenster wurde verndert '*' */
 #define WI_SHADED			0x0100	/* Fenster wurde ge'shaded (MagiC, WINX) */
+#define WI_WCOWORK		0x0200
 
 /* Aktionen auf Icons */
 #define DO_UNDO			0
@@ -56,13 +57,13 @@
 #define DO_SORT			35
 #define DO_TOPLINE		36
 
-#define DO_ANZ				37		/* bei énderung -> menu_nr[MENU] anpassen */
+#define DO_ANZ				37		/* bei nderung -> menu_nr[MENU] anpassen */
 
 
-#define HORIZONTAL	0x01	/* FÅr Scrolling... */
+#define HORIZONTAL	0x01	/* Fr Scrolling... */
 #define VERTICAL		0x02	/* ...und Schieber setzen */
 
-#define SLPOS			0x01	/* FÅr Schieber setzen */
+#define SLPOS			0x01	/* Fr Schieber setzen */
 #define SLSIZE			0x02
 
 /*
@@ -82,18 +83,19 @@ extern WINDOWP get_window			(short handle);
 extern void 	do_all_window		(short class, WIN_DOFUNC func);
 extern WINDOWP winlist_top			(void);
 extern WINDOWP winlist_classtop	(short class);
-extern void 	get_realtop			(void);
-extern WINDOWP real_top				(void);
-extern bool 	rc_first				(short wh, GRECT *b, GRECT *r);
-extern bool 	rc_next				(short wh, GRECT *r);
-extern void 	clr_area 			(GRECT *area);
+extern void 	get_realtop		(void);
+extern WINDOWP real_top			(void);
+extern bool 	rc_first		(short wh, GRECT *b, GRECT *r);
+extern bool 	rc_next			(short wh, GRECT *r);
+extern void 	clr_area 		(GRECT *area);
 extern bool 	free_for_draw		(WINDOWP w);
 extern void 	redraw_window		(WINDOWP w, GRECT *area);
-extern void 	size_window			(WINDOWP w, GRECT *new, bool border);
-extern void 	full_window			(WINDOWP w);
+extern void 	size_window		(WINDOWP w, GRECT *new, bool border);
+extern void	repos_window		(WINDOWP w, GRECT *new);
+extern void 	full_window		(WINDOWP w);
 extern void 	iconify_window		(WINDOWP w, GRECT *new);
 extern void 	uniconify_window	(WINDOWP w, GRECT *new);
-extern void		all_iconify			(WINDOWP w, GRECT *new);
+extern void	all_iconify		(WINDOWP w, GRECT *new);
 extern void 	all_uniconify		(WINDOWP w, GRECT *new);
 extern void 	move_window			(WINDOWP w, GRECT *new);
 extern void 	ontop_window		(WINDOWP w);

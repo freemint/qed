@@ -254,7 +254,7 @@ static void handle_keybd(short kstate, short kreturn)
 {
 	WINDOWP window;
 
-	/* fÅr PC-Tastaturen wird Shift-Ctrl-8/9 nach KP-(/) gemappt */
+	/* fr PC-Tastaturen wird Shift-Ctrl-8/9 nach KP-(/) gemappt */
 	if (emu_klammer && kstate == 6)
 	{
 		if (kreturn == 0x908)		/* S-C-( */
@@ -360,7 +360,7 @@ void handle_msg(short *msg)
 	WINDOWP	window;
 
 	wake_mouse();
-	window= get_window(msg[3]);			/* Zugehîriges Fenster */
+	window= get_window(msg[3]);			/* Zugehriges Fenster */
 
 	switch ((unsigned short)msg[0])							/* Art der Nachricht */
 	{
@@ -406,6 +406,9 @@ void handle_msg(short *msg)
 			break;
 		case WM_MOVED	 :
 			move_window (window, (GRECT*)(msg+4));
+			break;
+		case WM_REPOSED:
+			repos_window(window, (GRECT *)(msg+4));
 			break;
 		case WM_NEWTOP	 : /* Fenster von qed ist irgendwie nach oben gekommen */
 		case WM_ONTOP	 :
@@ -489,7 +492,7 @@ void handle_msg(short *msg)
 			handle_olga(msg);
 			break;
 
-		case SH_WDRAW:				/* schickt Freedom stÑndig */
+		case SH_WDRAW:				/* schickt Freedom stndig */
 		case DHST_ACK:				/* SMU antwortet */
 			/* ignore */
 			break;
@@ -536,7 +539,7 @@ void main_loop(void)
 	bool	menu_chg;
 	long	as_timer = 0, t;
 	
-	/* Message-Handler fÅr Fenster-Dialoge und -Alerts */
+	/* Message-Handler fr Fenster-Dialoge und -Alerts */
 	set_mdial_wincb(handle_msg);
 	
 	update_menu();
@@ -577,7 +580,7 @@ void main_loop(void)
 			handle_keybd(ev.kstate, ev.kreturn);
 			menu_chg = TRUE;
 			onblink_edit();
-			while (idle()) 							/*	Auch fÅr Makro-Play-Abbruch */
+			while (idle()) 							/*	Auch fr Makro-Play-Abbruch */
 				;
 		}
 		if (ev.which & MU_BUTTON)					/* Mausknopf */
@@ -601,7 +604,7 @@ void main_loop(void)
 
 		if (menu_chg && !is_event())				/* Wenn Zeit */
 		{
-			update_menu();								/* Eine Aktion kann MenÅs verÑndern */
+			update_menu();								/* Eine Aktion kann Mens verndern */
 			menu_chg = FALSE;
 		}
 		end_undo_seq();

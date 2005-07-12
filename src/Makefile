@@ -24,6 +24,7 @@ all-here: $(TARGET)
 #INCLUDES += -I/usr/GEM/include
 CFLAGS += -funsigned-char $(INCLUDES) $(GENERAL)
 CFLAGS += $(OPTS) $(WARN)
+CFLAGS += -m68020-60 #-DONLY_XAAES
 #CFLAGS += -ggdb -O0 -DDEBUG_LOGFILE=\"i:\\\\qed.log\" -DPREDEF_DEBUG_LEVEL=255 $(WARN)
 
 # default definitions
