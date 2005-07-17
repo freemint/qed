@@ -36,17 +36,17 @@ UMLAUTENCODING 	umlaut_from, umlaut_to;
 
 #define SETANZ 		5
 
-#define M_CURSOR		0		/* Werte fr modus von start_suche */
+#define M_CURSOR		0		/* Werte fr modus von start_suche */
 #define M_TSTART		1
 #define M_TENDE		2
 
-static ZEILEP 	start;
+static LINEP 	start;
 static short		text_len, text_x,
 					last_op = -1;
 static long		text_y;
 static SET		wort_set;
 
-/* Variablen, die ber set_suchmode gesetzt werden */
+/* Variablen, die ber set_suchmode gesetzt werden */
 /* !!! muessen bei match gesichet werden !!! */
 static bool		quantor, vorw, grkl, wort, modus, round, line_start;
 static short		muster_len;
@@ -74,7 +74,7 @@ static void init_suche(TEXTP t_ptr, short mode)
 			if (text_len>0)
 			{
 /*
-	Muž das sein? Dann findet ^G n„mlich nichts, wenn der Cursor auf dem
+	Mu das sein? Dann findet ^G nmlich nichts, wenn der Cursor auf dem
 	gesuchten steht!?
 				text_x++;
 				text_len--;
@@ -95,7 +95,7 @@ static void init_suche(TEXTP t_ptr, short mode)
 			if (text_len>0)
 			{
 /*
-	Diese Zeile mžte eigentlich auch raus, damit das gefunden wird (rckw„rts)
+	Diese Zeile mte eigentlich auch raus, damit das gefunden wird (rckwrts)
 	wo der Cursor 'draufsteht. Dann klappt aber der ^G nicht, da dann der
 	Cursor (Blockmarkierung!) wieder hinter dem gefundenen steht und so immer
 	wieder das gleiche findet!
@@ -104,7 +104,7 @@ static void init_suche(TEXTP t_ptr, short mode)
 			}
 			else if (!IS_FIRST(start))
 			{
-				VORG(start);
+				PREV(start);
 				text_y--;
 				text_len = start->len;
 			}
@@ -127,7 +127,7 @@ static void init_suche(TEXTP t_ptr, short mode)
 	setcpy(wort_set,t_ptr->loc_opt->wort_set);
 }
 
-static short suche1(ZEILEP col, short x, short str_len, short *such_len,
+static short suche1(LINEP col, short x, short str_len, short *such_len,
 						char*(*call)(char*,short,char*,short*))
 /* vorw */
 {
@@ -160,7 +160,7 @@ static short suche1(ZEILEP col, short x, short str_len, short *such_len,
 	return (short)(str2 - ptr);
 }
 
-static short suche2(ZEILEP col, short x, short str_len, short *such_len,
+static short suche2(LINEP col, short x, short str_len, short *such_len,
 						char*(*call)(char*,short,char*,short*))
 /* rauf */
 {
@@ -172,7 +172,7 @@ static short suche2(ZEILEP col, short x, short str_len, short *such_len,
 		x2 = suche1(col, x, str_len, such_len, call);
 		if (x2==-1) break;
 		x2++; 								/* Weiter suchen */
-		str_len -= x2-x;					/* Restl„nge */
+		str_len -= x2-x;					/* Restlnge */
 		merk = x = x2;
 	}
 	return merk-1;
@@ -205,7 +205,7 @@ static char *STRSTR(char *str_anf, short str_len, char *mstr_anf, short *found_l
 			if ((--i)<=0) return(str); 			/* gefunden */
 		}
 		i = delta[(unsigned char)str_anf[-1]];
-		str_anf += i;										/* weiterrcken */
+		str_anf += i;										/* weiterrcken */
 		str_len -= i;
 	}
 	return(NULL);
@@ -231,9 +231,9 @@ static char *STRSTR1(char *str_anf, short str_len, char *mstr_anf, short *found_
 			s = *(--str);
 /*
 			if (s>='a' && s<='z') s-=32;
-			else if (s=='”') s = '™';
-			else if (s=='') s = 'š';
-			else if (s=='„') s = 'Ž';
+			else if (s=='') s = '';
+			else if (s=='') s = '';
+			else if (s=='') s = '';
 */
 			s = nkc_toupper(s);
 			if (*(--mstr)!=s) 
@@ -244,13 +244,13 @@ static char *STRSTR1(char *str_anf, short str_len, char *mstr_anf, short *found_
 		s = str_anf[-1];
 /*
 		if (s>='a' && s<='z') s-=32;
-		else if (s=='”') s = '™';
-		else if (s=='') s = 'š';
-		else if (s=='„') s = 'Ž';
+		else if (s=='') s = '';
+		else if (s=='') s = '';
+		else if (s=='') s = '';
 */
 		s = nkc_toupper(s);
 		i = delta[(unsigned char)s];
-		str_anf += i;										/* weiterrcken */
+		str_anf += i;										/* weiterrcken */
 		str_len -= i;
 	}
 	return(NULL);
@@ -300,9 +300,9 @@ static char *STRSTR2(char *str_anf, short str_len, char *mstr_anf, short *found_
 			{
 /*
 				if (s>='a' && s<='z') s-=32;
-				else if (s=='”') s = '™';
-				else if (s=='') s = 'š';
-				else if (s=='„') s = 'Ž';
+				else if (s=='') s = '';
+				else if (s=='') s = '';
+				else if (s=='') s = '';
 */
 				s = nkc_toupper(s);
 			}
@@ -340,7 +340,7 @@ static char *STRSTR2(char *str_anf, short str_len, char *mstr_anf, short *found_
 				if (m!=s && m!='?') break;
 
 			if (len==0) break;
-			str++; len--;									/* n„chstes Zeichen */
+			str++; len--;									/* nchstes Zeichen */
 		}
 		str_anf++;											/* String ein Zeichen weiter */
 		str_len--;
@@ -356,12 +356,12 @@ static short suchen2(short *such_len)
 {
 	char*	(*call)	(char*,short,char*,short*);
 	long	y;
-	ZEILEP lauf;
+	LINEP line;
 	short	step, x;
 
 	x = text_x;
 	y = text_y;
-	lauf = start;
+	line = start;
 	if (muster_len==0) return 0;
 	step = 70;
 	if (quantor)
@@ -374,14 +374,14 @@ static short suchen2(short *such_len)
 	{
 		while (TRUE)
 		{
-			if ((text_x=suche1(lauf,x,text_len,such_len,call))>=0)
+			if ((text_x=suche1(line,x,text_len,such_len,call))>=0)
 			{
 				text_y = y;
-				start = lauf;
+				start = line;
 				return 1;
 			}
-			NEXT(lauf); y++; x = 0; text_len = lauf->len;
-			if (IS_TAIL(lauf)) return 0;
+			NEXT(line); y++; x = 0; text_len = line->len;
+			if (IS_TAIL(line)) return 0;
 			if ((--step)==0)
 			{
 /*
@@ -396,17 +396,17 @@ static short suchen2(short *such_len)
 	{
 		while (TRUE)
 		{
-			if ((text_x=suche2(lauf,x,text_len,such_len,call))>=0)
+			if ((text_x=suche2(line,x,text_len,such_len,call))>=0)
 			{
 				text_y = y;
-				start = lauf;
+				start = line;
 				return 1;
 			}
-			VORG(lauf);
-			if (IS_HEAD(lauf)) return 0;
+			PREV(line);
+			if (IS_HEAD(line)) return 0;
 			y--;
 			x = 0;
-			text_len = lauf->len;
+			text_len = line->len;
 			if ((--step)==0)
 			{
 /*
@@ -451,9 +451,9 @@ static void set_suchmode(char *Muster, char *Replace, bool Grkl, bool Quantor,
 	char	*ptr, *d, help[HIST_LEN+1];
 	bool	invers;
 
-	/* Spezial fr '@' am Editfeld-Anfang! */
+	/* Spezial fr '@' am Editfeld-Anfang! */
 	if (Muster[0] == '\\' && Muster[1] == '@' && Quantor)
-		strcpy((char *)muster_txt, Muster+1);		/* \ berspringen */
+		strcpy((char *)muster_txt, Muster+1);		/* \ berspringen */
 	else
 		strcpy((char *)muster_txt, Muster);
 
@@ -520,7 +520,7 @@ static void set_suchmode(char *Muster, char *Replace, bool Grkl, bool Quantor,
 					if (invers)
 						setnot(group[setanz]);
 					setanz++;
-					*d++ = setanz; 				/* immer einen gr”žer (weil nie Null) */
+					*d++ = setanz; 				/* immer einen grer (weil nie Null) */
 				}
 				else
 				{
@@ -529,7 +529,7 @@ static void set_suchmode(char *Muster, char *Replace, bool Grkl, bool Quantor,
 				}
 			}
 		}
-		if (wort && d>help)						/* nur Worte und berhaupt ein Muster */
+		if (wort && d>help)						/* nur Worte und berhaupt ein Muster */
 		{
 			*d++ = '[';
 			*d++ = 0xFE;							/* Wortende */
@@ -656,7 +656,7 @@ short start_replace(TEXTP t_ptr)
 					}
 					continue;
 				}
-				else if (antw == RAENDE)			/* aufh”ren */
+				else if (antw == RAENDE)			/* aufhren */
 				{
 					erg = -1;
 					break;
@@ -769,7 +769,7 @@ bool filematch(char *str, char *m, short fs_typ)
 		return FALSE;
 	
 	if ((m[0] == '*') && (m[1] == '.'))		/* Ist m eine Extension? */
-		gk = FALSE;									/* dann Grož == klein! */
+		gk = FALSE;									/* dann Gro == klein! */
 	else
 	{
 		if (fs_typ == -1)
@@ -786,8 +786,8 @@ bool filematch(char *str, char *m, short fs_typ)
 	where = STRSTR2((char*)str, (short) strlen(str), muster_txt, &i);
 
 	/* 
-	 * Fr den Fall, das ein Projekt durchsucht wird, wird filematch() fr
-	 * die Zuordnung der lokalen Optionen fr jede durchsuchte Datei einmal
+	 * Fr den Fall, das ein Projekt durchsucht wird, wird filematch() fr
+	 * die Zuordnung der lokalen Optionen fr jede durchsuchte Datei einmal
 	 * aufgerufen. Damit danach die eigentlichen Such-Parameter wieder stimmen,
 	 * der folgende Befehl!
 	*/
@@ -862,7 +862,7 @@ static short circle_popup	(char h[HIST_ANZ][HIST_LEN+1], void *dial,
 
 /*
  * Suchen/Ersetzen in Texten
- * Rckgabe: 	0: Abbruch
+ * Rckgabe: 	0: Abbruch
  *					1: Suchen
  *					2: Ersetzen
 */
@@ -1128,7 +1128,7 @@ bool findfile_dial(char *ff_path, bool in_prj)
 */
 
 static char umlaute[8][7] =
-{	/* „	  Ž	  ”	  ™	  	  š	  ž	*/
+{	/* 	  	  	  	  	  	  	*/
 	{ 0x84, 0x8E, 0x94, 0x99, 0x81, 0x9A, 0x9E},	/* Atari */
 	{ 0xE4, 0xC4, 0xF6, 0xD6, 0xFC, 0xDC, 0xDF},	/* Latin */
 	{ 0x8A, 0x80, 0x9A, 0x85, 0x9F, 0x86, 0xA7},	/* Mac */
@@ -1141,14 +1141,14 @@ static char umlaute[8][7] =
 
 void change_umlaute(TEXTP t_ptr)
 {
-	ZEILEP	lauf;
+	LINEP	line;
 	short		x, update;
 	long		l;
 	bool		cont = TRUE;
 	bool		changed = FALSE;
 	
-	lauf = FIRST(&t_ptr->text);
-	if (lauf != NULL)
+	line = FIRST(&t_ptr->text);
+	if (line != NULL)
 	{
 		x = bild_pos(t_ptr->xpos, t_ptr->cursor_line, TRUE, t_ptr->loc_opt->tabsize);
 		start_aktion(rsc_string(UMLAUTSTR), TRUE, t_ptr->text.lines);
@@ -1160,17 +1160,17 @@ void change_umlaute(TEXTP t_ptr)
 
 		graf_mouse(HOURGLASS, NULL);
 
-		while (cont && !IS_TAIL(lauf))
+		while (cont && !IS_TAIL(line))
 		{
-			if (lauf->len > 0)
+			if (line->len > 0)
 			{
 				short	u, xpos, len;
 				char	c;
 					
 				xpos = 0;
-				while (xpos < lauf->len)
+				while (xpos < line->len)
 				{
-					c = TEXT(lauf)[xpos];
+					c = TEXT(line)[xpos];
 					if (((unsigned char)c) > 127)
 					{
 						for (u = 0; u <= 7; u++)
@@ -1182,25 +1182,25 @@ void change_umlaute(TEXTP t_ptr)
 							changed = TRUE;
 							if (umlaut_to == LaTeX)
 							{
-								if (lauf->len + 1 <= MAX_LINE_LEN)
+								if (line->len + 1 <= MAX_LINE_LEN)
 								{
-									TEXT(lauf)[xpos] = '"';
+									TEXT(line)[xpos] = '"';
 									xpos++;
-									*(REALLOC(&lauf, xpos, 1)) = umlaute[umlaut_to][u];
+									*(REALLOC(&line, xpos, 1)) = umlaute[umlaut_to][u];
 								}
 								else
 									inote(1, 0, TOOLONG, MAX_LINE_LEN);
 							}
 							else if (umlaut_to == ASCII)
 							{
-								if (lauf->len + 1 <= MAX_LINE_LEN)
+								if (line->len + 1 <= MAX_LINE_LEN)
 								{
-									TEXT(lauf)[xpos] = umlaute[umlaut_to][u];
+									TEXT(line)[xpos] = umlaute[umlaut_to][u];
 									xpos++;
 									if (u == 6)
-										*(REALLOC(&lauf, xpos, 1)) = 's';
+										*(REALLOC(&line, xpos, 1)) = 's';
 									else
-										*(REALLOC(&lauf, xpos, 1)) = 'e';
+										*(REALLOC(&line, xpos, 1)) = 'e';
 								}
 								else
 									inote(1, 0, TOOLONG, MAX_LINE_LEN);
@@ -1215,24 +1215,24 @@ void change_umlaute(TEXTP t_ptr)
 								else
 									new[0] = umlaute[umlaut_to][u];
 								len = (short)strlen(new);
-								if (lauf->len + len <= MAX_LINE_LEN)
+								if (line->len + len <= MAX_LINE_LEN)
 								{
-									TEXT(lauf)[xpos] = '&';
+									TEXT(line)[xpos] = '&';
 									xpos++;
-									INSERT(&lauf, xpos, len, new);
+									INSERT(&line, xpos, len, new);
 									xpos += len-1;
 								}
 								else
 									inote(1, 0, TOOLONG, MAX_LINE_LEN);
 							}
 							else
-								TEXT(lauf)[xpos] = umlaute[umlaut_to][u];
+								TEXT(line)[xpos] = umlaute[umlaut_to][u];
 						}
 					}
 					xpos++;
 				} /* while xpos */
-			} /* while lauf */
-			NEXT(lauf);
+			} /* while line */
+			NEXT(line);
 
 			l++;
 			if (l % update == 0)
@@ -1271,7 +1271,7 @@ bool umlaut_dial(void)
 	new_to = umlaut_to;
 	if (shift_pressed())				/* bei Shift: Quelle und Ziel vertauschen */
 	{
-		if (umlaut_to <= PC)			/* nur einbuchstabige k”nnen umgedreht werden! */
+		if (umlaut_to <= PC)			/* nur einbuchstabige knnen umgedreht werden! */
 		{
 			new_from = umlaut_to;
 			new_to = umlaut_from;

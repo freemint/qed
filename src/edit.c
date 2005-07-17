@@ -86,7 +86,7 @@ static short  	crt_new_text		(char *filename, bool bin);
 
 /***************************************************************************/
 
-static short col_lz2tab(ZEILEP col, char *t, short tab_size)
+static short col_lz2tab(LINEP col, char *t, short tab_size)
 {
 	char	*str, c;
 	short	i, tabH, lz, len;
@@ -133,24 +133,24 @@ static short col_lz2tab(ZEILEP col, char *t, short tab_size)
 
 static void lz2tab(TEXTP t_ptr)
 {
-	ZEILEP 	lauf;
+	LINEP 	line;
 	short	x, i, tabsize;
 	char	str[MAX_LINE_LEN + 1];
 
 	graf_mouse(HOURGLASS, NULL);
 	tabsize = t_ptr->loc_opt->tabsize;
 	x = bild_pos(t_ptr->xpos,t_ptr->cursor_line,TRUE,tabsize);
-	lauf = FIRST(&t_ptr->text);
-	while (!IS_TAIL(lauf))
+	line = FIRST(&t_ptr->text);
+	while (!IS_TAIL(line))
 	{
-		i = col_lz2tab(lauf, str, tabsize);
+		i = col_lz2tab(line, str, tabsize);
 		if (i != -1)									/* Zeile verndert */
 		{
-			REALLOC (&lauf, 0, i-lauf->len);
-			memcpy(TEXT(lauf), str, (short) strlen(str));
+			REALLOC (&line, 0, i-line->len);
+			memcpy(TEXT(line), str, (short) strlen(str));
 			t_ptr->moved++;
 		}
-		NEXT(lauf);
+		NEXT(line);
 	}
 	t_ptr->cursor_line = get_line(&t_ptr->text,t_ptr->ypos);
 	t_ptr->xpos = inter_pos(x,t_ptr->cursor_line,TRUE,tabsize);
@@ -159,7 +159,7 @@ static void lz2tab(TEXTP t_ptr)
 	graf_mouse(ARROW, NULL);
 }
 
-static short col_tab2lz(ZEILEP col, char *t, short tab_size)
+static short col_tab2lz(LINEP col, char *t, short tab_size)
 {
 	bool	with_tab = FALSE;
 	short	tabH, len, i;
@@ -200,24 +200,24 @@ static short col_tab2lz(ZEILEP col, char *t, short tab_size)
 
 static void tab2lz(TEXTP t_ptr)
 {
-	ZEILEP 	lauf;
+	LINEP 	line;
 	short	i, x, tabsize;
 	char	str[MAX_LINE_LEN + 1];
 
 	graf_mouse(HOURGLASS, NULL);
 	tabsize = t_ptr->loc_opt->tabsize;
 	x = bild_pos(t_ptr->xpos,t_ptr->cursor_line,TRUE,tabsize);
-	lauf = FIRST(&t_ptr->text);
-	while (!IS_TAIL(lauf))
+	line = FIRST(&t_ptr->text);
+	while (!IS_TAIL(line))
 	{
-		i = col_tab2lz (lauf,str,tabsize);
+		i = col_tab2lz (line,str,tabsize);
 		if (i != -1)									/* Zeile verndert */
 		{
-			REALLOC (&lauf, 0, i-lauf->len);
-			memcpy(TEXT(lauf), str, (short)strlen(str));
+			REALLOC (&line, 0, i-line->len);
+			memcpy(TEXT(line), str, (short)strlen(str));
 			t_ptr->moved++;
 		}
-		NEXT(lauf);
+		NEXT(line);
 	}
 	t_ptr->cursor_line = get_line(&t_ptr->text,t_ptr->ypos);
 	t_ptr->xpos = inter_pos(x,t_ptr->cursor_line,TRUE,tabsize);
@@ -556,7 +556,7 @@ static short get_xpos(WINDOWP window, long ypos, short mx)
 {
 	TEXTP	t_ptr = get_text(window->handle);
 	short	x;
-	ZEILEP	col;
+	LINEP	col;
 
 	col = get_line(&t_ptr->text, ypos);
 
@@ -622,7 +622,7 @@ static void set_cursor(WINDOWP window, short mx, short my)
 {
 	TEXTP 	t_ptr = get_text(window->handle);
 	long	y;
-	ZEILEP	col;
+	LINEP	col;
 
 	y = get_ypos(window, my);
 	col = get_line(&t_ptr->text, y);
@@ -1236,7 +1236,7 @@ static short e_icon_edit(short icon, short action)
 	WINDOWP	window;
 	short	erg;
 	bool	ok, bin, shift;
-	ZEILEP	lauf;
+	LINEP	line;
 
 	shift = shift_pressed();
 	window = get_window(icon);
@@ -1524,9 +1524,9 @@ abandon:	strcpy(name, t_ptr->filename);
 			if (strip_endings(t_ptr))
 			{
 				t_ptr->max_line = NULL;
-				lauf = t_ptr->cursor_line = get_line(&t_ptr->text, t_ptr->ypos);
-				if (t_ptr->xpos > lauf->len)
-					t_ptr->xpos = lauf->len;
+				line = t_ptr->cursor_line = get_line(&t_ptr->text, t_ptr->ypos);
+				if (t_ptr->xpos > line->len)
+					t_ptr->xpos = line->len;
 				make_chg(t_ptr->link, POS_CHANGE, 0);		/* '*' in Titel */
 			}
 			graf_mouse(ARROW, NULL);
@@ -1558,7 +1558,7 @@ abandon:	strcpy(name, t_ptr->filename);
 				if (shift)				/* Dateinamen einfgen */
 				{
 					RING		temp_ring;
-					ZEILEP	col;
+					LINEP	col;
 
 					init_textring(&temp_ring);
 					col = new_col(name, (short)strlen(name));
@@ -1714,7 +1714,7 @@ static bool e_icon_drag(short icon, short source)
 				if ((t_ptr->cursor_line->len + (short)strlen(drag_filename)) < MAX_LINE_LEN)
 				{
 					RING		temp_ring;
-					ZEILEP	col;
+					LINEP	col;
 						
 					init_textring(&temp_ring);
 					col = new_col(drag_filename, (short)strlen(drag_filename));
@@ -1753,15 +1753,15 @@ static bool e_icon_drag(short icon, short source)
 			if (drag_data_size > 0 && drag_data != NULL)
 			{
 				RING		temp_ring;
-				ZEILEP	col;
+				LINEP	col;
 				char		*p1, *p2, *zeile;
 				long		delta;
-				ZEILEP	lauf;
+				LINEP	line;
 
 debug("hier ist edit.DragDrop_DATA!!!\n");
 				t_ptr = get_text(icon);
 				init_textring(&temp_ring);
-				lauf = &temp_ring.head;
+				line = &temp_ring.head;
 				p1 = drag_data;
 				p2 = strchr(p1, '\r');
 				if (p2 != NULL)							/* mehrere Zeilen? */
@@ -1773,8 +1773,8 @@ debug("hier ist edit.DragDrop_DATA!!!\n");
 						strncpy(zeile, p1, delta);
 						zeile[delta] = EOS;
 						col = new_col(zeile, (short)strlen(zeile));
-						col_insert(&temp_ring,lauf, col);
-						NEXT(lauf);
+						col_insert(&temp_ring,line, col);
+						NEXT(line);
 						p1 = p2 + 2;						/* \r\n berspringen */
 						p2 = strchr(p1, '\r');
 						temp_ring.lines++;
@@ -1784,7 +1784,7 @@ debug("hier ist edit.DragDrop_DATA!!!\n");
 				else											/* nur eine Zeile ohne \r\n */
 				{
 					col = new_col(drag_data, (short)strlen(drag_data));
-					col_insert(&temp_ring,lauf, col);
+					col_insert(&temp_ring,line, col);
 				}
 				blk_paste(t_ptr, &temp_ring);
 				restore_edit();
@@ -1922,7 +1922,11 @@ void make_chg (short link, short change, long ypos)
 	chg_anz++;
 }
 
-void pos_korr(WINDOWP window, TEXTP t_ptr)
+/*
+ * Make sure cursor is visible in window
+ */
+void 
+cursor_visible(WINDOWP window, TEXTP t_ptr)
 {
 	short	x_new;
 	long	y_new;
@@ -1976,7 +1980,7 @@ static void restore_offdesk(WINDOWP window, TCHANGE *c, short c_anz, TEXTP t_ptr
 					redraw_window(window, &a);
 				}
 				change_window(window, t_ptr->filename, (t_ptr->moved!=0));
-				pos_korr(window, t_ptr);
+				cursor_visible(window, t_ptr);
 				break;
 
 			case LINE_CHANGE:
@@ -2032,7 +2036,7 @@ static void restore_indesk(WINDOWP window, TCHANGE *c, short c_anz, TEXTP t_ptr)
 				if (window->class == CLASS_EDIT)
 					head_out(window, t_ptr);
 				change_window(window, t_ptr->filename, (t_ptr->moved!=0));
-				pos_korr(window, t_ptr);
+				cursor_visible(window, t_ptr);
 				break;
 
 			case LINE_CHANGE:
@@ -2283,7 +2287,7 @@ static bool open_edit(short icon)
 		window->doc.x = 0;
 		window->doc.y = 0;
 		window->doc.h = t_ptr->text.lines;
-		pos_korr(window, t_ptr);
+		cursor_visible(window, t_ptr);
 		ok = open_window (window);
 		ch_kurzel(t_ptr->loc_opt->kurzel, FALSE);
 	}

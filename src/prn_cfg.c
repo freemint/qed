@@ -121,7 +121,7 @@ static bool sel_font(PRN_CFG *cfg)
 */
 
 /*
- * Callbacks fÅr Sub-Dialog
+ * Callbacks fr Sub-Dialog
 */
 static long CDECL init_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
 {
@@ -152,7 +152,8 @@ static long CDECL init_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
 	return 1;
 }
 
-static long CDECL do_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog, short exit_obj)
+static long CDECL
+do_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog, short exit_obj)
 {
 	OBJECT	*tree;
 	short		offset;
@@ -207,11 +208,11 @@ static long CDECL reset_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
 
 static bool pdlg_dial(PRN_CFG *cfg)
 {
-	PRN_DIALOG		*prn_dialog;
+	PRN_DIALOG	*prn_dialog;
 	PRN_SETTINGS	*new;
-	short				d, button, ret, handle;
-	EVNT				ev;
-	OBJECT			*tree;
+	short		d, button, ret, handle;
+	EVNT		ev;
+	OBJECT		*tree;
 	
 	new = malloc(sizeof(PRN_SETTINGS));
 	memcpy(new, cfg->pdlg, sizeof(PRN_SETTINGS));
@@ -223,7 +224,7 @@ static bool pdlg_dial(PRN_CFG *cfg)
 
 		disable_menu();
 
-		/* Unterdialog einhÑngen */
+		/* Unterdialog einhngen */
 		sub = malloc(sizeof(PDLG_SUB));
 		if (sub)
 		{
@@ -234,7 +235,7 @@ static bool pdlg_dial(PRN_CFG *cfg)
 			sub->sub_tree = printer_sub;			/* Zeiger auf den Unterdialog */
 			sub->init_dlg = init_qed_sub;			/* Initialisierungsfunktion */
 			sub->do_dlg = do_qed_sub;				/* Behandlungsfunktion */
-			sub->reset_dlg = reset_qed_sub;		/* ZurÅcksetzfunktion */
+			sub->reset_dlg = reset_qed_sub;		/* Zurcksetzfunktion */
 
 			sub->private1 = (long)cfg;
 
@@ -261,7 +262,7 @@ static bool pdlg_dial(PRN_CFG *cfg)
 					case WM_REDRAW :
 					case WM_MOVED :
 					case WM_SIZED:
-						if (ev.msg[3] != handle)	/* fÅr fremdes Fenster */
+						if (ev.msg[3] != handle)	/* fr fremdes Fenster */
 						{
 							handle_mdial_msg((short *)ev.msg);
 						}
@@ -540,7 +541,7 @@ static bool qed_start_dial(PRN_CFG *cfg)
 
 /* --------------------------------------------------------------------------- */
 /*
- * Schnittstelle nach drauûen
+ * Schnittstelle nach drauen
 */
 void prn_cfg_dial(void)
 {

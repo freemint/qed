@@ -54,8 +54,8 @@ void hl_exit(void)
 }
 
 
-/* Highlight-Cache fr aktuelle Cursor-Zeile updaten
- * (muž jedesmal aufgerufen werden, wenn die Zeile ver„ndert wird)
+/* Highlight-Cache fr aktuelle Cursor-Zeile updaten
+ * (mu jedesmal aufgerufen werden, wenn die Zeile verndert wird)
  */
 void hl_update(TEXTP t_ptr)
 {
@@ -67,14 +67,14 @@ void hl_update(TEXTP t_ptr)
 		make_chg(t_ptr->link,TOTAL_CHANGE,0);
 }
 
-/* Highlight-Cache fr einen kompletten Text updaten
+/* Highlight-Cache fr einen kompletten Text updaten
  * z.B. wenn Tabs durch Leerzeichen ersetzt werden,
- * _nicht_, wenn sich der Texttyp „ndert z.B. .txt -> .c,
- * dafr ist hl_change_text_type() zust„ndig.
+ * _nicht_, wenn sich der Texttyp ndert z.B. .txt -> .c,
+ * dafr ist hl_change_text_type() zustndig.
  */
 void hl_update_text(TEXTP t_ptr)
 {
-	ZEILEP curr_zeile = t_ptr->text.head.nachf;
+	LINEP curr_zeile = t_ptr->text.head.next;
 	
 	if (!syntax_active)
 		return;
@@ -84,7 +84,7 @@ void hl_update_text(TEXTP t_ptr)
 		Hl_Update(t_ptr->text.hl_anchor,
 	                  curr_zeile->hl_handle,
 	                  TEXT(curr_zeile), FALSE);
-	  curr_zeile = curr_zeile->nachf;
+	  curr_zeile = curr_zeile->next;
 		
 	}
 	
@@ -96,9 +96,9 @@ static void textredraw(TEXTP t_ptr)
 	make_chg(t_ptr->link,TOTAL_CHANGE,0);
 }
 
-/* alle Texte komplett updaten; wenn Žnderungen im
- * Syntaxdialog vorgenommen worden sind, mssen alle Texte
- * an evtl. Žnderungen angepasst werden.
+/* alle Texte komplett updaten; wenn nderungen im
+ * Syntaxdialog vorgenommen worden sind, mssen alle Texte
+ * an evtl. nderungen angepasst werden.
  */
 void hl_update_all(void)
 {
@@ -133,9 +133,9 @@ void hl_enable(void)
 	restore_edit();
 }
 
-/* Highlight-Cache fr eine Zeile updaten
+/* Highlight-Cache fr eine Zeile updaten
  */
-void hl_update_zeile(RINGP r_ptr, ZEILEP z_ptr)
+void hl_update_zeile(RINGP r_ptr, LINEP z_ptr)
 {
 	if (!syntax_active)
 		return;
@@ -148,11 +148,11 @@ void hl_update_zeile(RINGP r_ptr, ZEILEP z_ptr)
 	                TEXT(z_ptr), TRUE);
 }
 
-/* Highlight-Cache fr einen Block updaten
+/* Highlight-Cache fr einen Block updaten
  */
-void hl_update_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
+void hl_update_block(RINGP r_ptr, LINEP first, LINEP last)
 {
-	ZEILEP curr = first;
+	LINEP curr = first;
 	if (!syntax_active)
 		return;
 
@@ -166,23 +166,23 @@ void hl_update_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
 	                  TEXT(curr), FALSE);
 		if (curr == last)
 		{
-			if (curr->nachf && curr->nachf->hl_handle)
+			if (curr->next && curr->next->hl_handle)
 		  	Hl_Update(r_ptr->hl_anchor,
-			                  curr->nachf->hl_handle,
-			                  TEXT(curr->nachf), TRUE);
+			                  curr->next->hl_handle,
+			                  TEXT(curr->next), TRUE);
 			return;
 		}
-		curr = curr->nachf;
+		curr = curr->next;
 	}
 }
 
-/* Highlight-Cache fr eine Zeile entfernen
- * Muž immer aufgerufen werden, wenn eine Zeile gel”scht wird
- * (z.B. wenn tempor„re RINGs benutzt werden), sonst Speicherlecks!
- * Oder natrlich die anderen Funktionen (s.u.), um Syntax-Cache zu
+/* Highlight-Cache fr eine Zeile entfernen
+ * Mu immer aufgerufen werden, wenn eine Zeile gelscht wird
+ * (z.B. wenn temporre RINGs benutzt werden), sonst Speicherlecks!
+ * Oder natrlich die anderen Funktionen (s.u.), um Syntax-Cache zu
  * entfernen.
  */
-void hl_remove(RINGP r_ptr, ZEILEP z_ptr)
+void hl_remove(RINGP r_ptr, LINEP z_ptr)
 {
 	if (!syntax_active)
 		return;
@@ -190,9 +190,9 @@ void hl_remove(RINGP r_ptr, ZEILEP z_ptr)
 	assert(r_ptr);
 	assert(z_ptr);
 		
-	if (z_ptr->vorg)
+	if (z_ptr->prev)
 		Hl_RemoveLine(r_ptr->hl_anchor,
-	  	                  z_ptr->vorg->hl_handle, 
+	  	                  z_ptr->prev->hl_handle, 
 	  	                  &z_ptr->hl_handle,
 	  	                  TRUE);
 	else
@@ -202,9 +202,9 @@ void hl_remove(RINGP r_ptr, ZEILEP z_ptr)
 	  	                  TRUE);
 }
 
-/* Highlight-Cache fr eine Zeile einfgen
+/* Highlight-Cache fr eine Zeile einfgen
  */
-void hl_insert(RINGP r_ptr, ZEILEP z_ptr)
+void hl_insert(RINGP r_ptr, LINEP z_ptr)
 {
 	if (!syntax_active)
 		return;
@@ -215,9 +215,9 @@ void hl_insert(RINGP r_ptr, ZEILEP z_ptr)
 	if (z_ptr->hl_handle)
 		hl_remove(r_ptr, z_ptr);
 		
-	if (z_ptr->vorg)
+	if (z_ptr->prev)
 		Hl_InsertLine(r_ptr->hl_anchor,
-	  	                  z_ptr->vorg->hl_handle,
+	  	                  z_ptr->prev->hl_handle,
 	    	                TEXT(z_ptr),
 		                    &z_ptr->hl_handle,
 		                    TRUE);
@@ -230,16 +230,16 @@ void hl_insert(RINGP r_ptr, ZEILEP z_ptr)
 	                        
 }
 
-/* wie hl_remove(), nur daž kein Update der nachfolgenden
- * Zeilen durchgefhrt wird (fr Block einfgen/l”schen)
+/* wie hl_remove(), nur da kein Update der nachfolgenden
+ * Zeilen durchgefhrt wird (fr Block einfgen/lschen)
  */
-static void hl_remove_noupdate(RINGP r_ptr, ZEILEP z_ptr)
+static void hl_remove_noupdate(RINGP r_ptr, LINEP z_ptr)
 {
 	assert(z_ptr);
 
-	if (z_ptr->vorg)
+	if (z_ptr->prev)
 		Hl_RemoveLine(r_ptr->hl_anchor,
-	  	                  z_ptr->vorg->hl_handle, 
+	  	                  z_ptr->prev->hl_handle, 
 	  	                  &z_ptr->hl_handle,
 	  	                  TRUE);
 	else
@@ -249,17 +249,17 @@ static void hl_remove_noupdate(RINGP r_ptr, ZEILEP z_ptr)
 	  	                  TRUE);
 }
 
-/* wie hl_insert(), nur daž kein Update der nachfolgenden
- * Zeilen durchgefhrt wird (fr Block einfgen/l”schen)
+/* wie hl_insert(), nur da kein Update der nachfolgenden
+ * Zeilen durchgefhrt wird (fr Block einfgen/lschen)
  */
-static void hl_insert_noupdate(RINGP r_ptr, ZEILEP z_ptr)
+static void hl_insert_noupdate(RINGP r_ptr, LINEP z_ptr)
 {
 	if (z_ptr->hl_handle)
 		hl_remove_noupdate(r_ptr, z_ptr);
 		
-	if (z_ptr->vorg)
+	if (z_ptr->prev)
 		Hl_InsertLine(r_ptr->hl_anchor,
-	  	                  z_ptr->vorg->hl_handle,
+	  	                  z_ptr->prev->hl_handle,
 	    	                TEXT(z_ptr),
 		                    &z_ptr->hl_handle,
 		                    FALSE);
@@ -272,11 +272,11 @@ static void hl_insert_noupdate(RINGP r_ptr, ZEILEP z_ptr)
 	                        
 }
 
-/* Syntax-Highlighting fr Block einfgen
+/* Syntax-Highlighting fr Block einfgen
  */
-void hl_insert_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
+void hl_insert_block(RINGP r_ptr, LINEP first, LINEP last)
 {
-	ZEILEP curr = first;
+	LINEP curr = first;
 
 	if (!syntax_active)
 		return;
@@ -289,21 +289,21 @@ void hl_insert_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
 		hl_insert_noupdate(r_ptr, curr);
 		if (curr == last)
 		{
-			if (curr->nachf && curr->nachf->hl_handle)
+			if (curr->next && curr->next->hl_handle)
 		  	Hl_Update(r_ptr->hl_anchor,
-			                  curr->nachf->hl_handle,
-			                  TEXT(curr->nachf), TRUE);
+			                  curr->next->hl_handle,
+			                  TEXT(curr->next), TRUE);
 			return;
 		}
-		curr = curr->nachf;
+		curr = curr->next;
 	}
 }
 
-/* Syntax-Highlighting fr Block entfernen
+/* Syntax-Highlighting fr Block entfernen
  */
-void hl_remove_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
+void hl_remove_block(RINGP r_ptr, LINEP first, LINEP last)
 {
-	ZEILEP curr = first;
+	LINEP curr = first;
 	bool updateit = FALSE;
 
 	if (!syntax_active)
@@ -315,9 +315,9 @@ void hl_remove_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
 	{
 		if (curr == last)
 			updateit = TRUE;
-		if (first->vorg)
+		if (first->prev)
 			Hl_RemoveLine(r_ptr->hl_anchor,
-		  	                  first->vorg->hl_handle, 
+		  	                  first->prev->hl_handle, 
 		  	                  &curr->hl_handle, updateit);
 		else
 			Hl_RemoveLine(r_ptr->hl_anchor,
@@ -325,15 +325,15 @@ void hl_remove_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
 		  	                  &curr->hl_handle, updateit);
 		if (curr == last)
 			return;
-		curr = curr->nachf;
+		curr = curr->next;
 	}
 }
 
-/* Syntax-Highlighting fr kompletten Text erstellen */
+/* Syntax-Highlighting fr kompletten Text erstellen */
 void hl_init_text(TEXTP t_ptr)
 {
 	PATH tfilename, ext;
-	ZEILEP curr_zeile = t_ptr->text.head.nachf;
+	LINEP curr_zeile = t_ptr->text.head.next;
 
 	if (!syntax_active)
 	{
@@ -345,28 +345,28 @@ void hl_init_text(TEXTP t_ptr)
 	if ((t_ptr->text.hl_anchor = Hl_New(tfilename, 0)) == NULL) /* erst mal nachsehen, ob ggf ein ganzer Dateiname */
 	{
 		split_extension(tfilename, NULL, ext);      /* wenn nicht, probieren wirs mit dem Extender */
-		t_ptr->text.hl_anchor = Hl_New(ext, 0);       /* wenn das auch NULL zurckliefert, ist das o.k. */
+		t_ptr->text.hl_anchor = Hl_New(ext, 0);       /* wenn das auch NULL zurckliefert, ist das o.k. */
 	}
 	t_ptr->text.head.hl_handle = NULL;
 	
 	while (curr_zeile != &t_ptr->text.tail)
 	{
 		Hl_InsertLine(t_ptr->text.hl_anchor,
-		               curr_zeile->vorg->hl_handle,
+		               curr_zeile->prev->hl_handle,
 		               TEXT(curr_zeile),
 		               &curr_zeile->hl_handle,
 		               TRUE);
-		curr_zeile = curr_zeile->nachf;
+		curr_zeile = curr_zeile->next;
 	}
 }
 
-/* Syntax-Highlighting fr kompletten Text entfernen */
+/* Syntax-Highlighting fr kompletten Text entfernen */
 void hl_free(TEXTP t_ptr)
 {
 	if (!syntax_active)
 		return;
 		
-	hl_remove_block(&t_ptr->text, t_ptr->text.head.nachf, t_ptr->text.tail.vorg);
+	hl_remove_block(&t_ptr->text, t_ptr->text.head.next, t_ptr->text.tail.prev);
 	Hl_Free(t_ptr->text.hl_anchor);
 }
 
@@ -454,12 +454,12 @@ bool hl_write_syn(void)
 
 }
 
-/* Syntax-Highlighting-Cache fr eine Zeile abfragen.
+/* Syntax-Highlighting-Cache fr eine Zeile abfragen.
  * Anders als Hl_GetLine() liefert hl_get_zeile() nicht
- * NULL zurck, wenn es fr diesen Texttyp kein Syntax-Highlighting
+ * NULL zurck, wenn es fr diesen Texttyp kein Syntax-Highlighting
  * gibt, sondern eine Syntax-Cache-Zeile ohne Farb/Attributinformationen.
  */
-HL_LINE hl_get_zeile(ZEILEP z)
+HL_LINE hl_get_zeile(LINEP z)
 {
 	HL_LINE ret;
 	static HL_ELEM linefake[ 4 * (MAX_LINE_LEN / 255 + 2) ];
@@ -482,8 +482,8 @@ HL_LINE hl_get_zeile(ZEILEP z)
 	return linefake;
 }
 
-/* Žndert den Typ eines Textes, z.B. .txt->.c; in extension
- * muž der neue Extender bergeben werden.
+/* ndert den Typ eines Textes, z.B. .txt->.c; in extension
+ * mu der neue Extender bergeben werden.
  */
 void hl_change_text_type(TEXTP t_ptr, char *extension)
 {

@@ -38,7 +38,7 @@ static bool prn_ready (void)
 
 static bool prn_check (short wait_time)
 {
-	/* Schnittstelle nur bei !WDIALOG prfen */
+	/* Schnittstelle nur bei !WDIALOG prfen */
 	if (!prn->use_pdlg && prn->pruef_prn)
 	{
 		bool	ok = FALSE,
@@ -138,7 +138,7 @@ static void drucken(char *name, RINGP t, TEXTP t_ptr)
 	short		seite, lzeile, zeilen_pro_seite, update;
 	char		datum[11], *buffer = NULL, str[80];
 	long		zeile, buf_len;
-	ZEILEP	lauf;
+	LINEP	line;
 
 	/* Schnittstelle ermitteln */
 	channel = ((Setprt(-1) & 16) != 0);
@@ -201,13 +201,13 @@ static void drucken(char *name, RINGP t, TEXTP t_ptr)
 	else
 		update = 10;
 
-	/* Puffer fr eine komplette Zeile dynamisch anfordern */
+	/* Puffer fr eine komplette Zeile dynamisch anfordern */
 	if (t_ptr->max_line == NULL)		/* Projekt! */
 		buf_len = MAX_PATH_LEN + prn->rand_len;
 	else
 		buf_len = t_ptr->max_line->exp_len + prn->rand_len;
 	if (prn->num_zeilen)
-		buf_len += 6;						/* fr Zeilennummer */
+		buf_len += 6;						/* fr Zeilennummer */
 	buffer = malloc(buf_len);
 	
 	if (buffer == NULL)
@@ -217,7 +217,7 @@ static void drucken(char *name, RINGP t, TEXTP t_ptr)
 	}
 	
 	graf_mouse(HOURGLASS, NULL);
-	lauf = FIRST(t);
+	line = FIRST(t);
 	while (TRUE)
 	{
 		if (!prn_check(5))
@@ -265,11 +265,11 @@ static void drucken(char *name, RINGP t, TEXTP t_ptr)
 			strcat(buffer, str);
 		}
 		
-		expand_line(buffer, TEXT(lauf), t_ptr->loc_opt->tab, t_ptr->loc_opt->tabsize);
+		expand_line(buffer, TEXT(line), t_ptr->loc_opt->tab, t_ptr->loc_opt->tabsize);
 		plot_line(buffer);
 
-		NEXT(lauf);
-		if (IS_TAIL(lauf)) 
+		NEXT(line);
+		if (IS_TAIL(line)) 
 			break;
 	}
 	if (prn->use_gdos)

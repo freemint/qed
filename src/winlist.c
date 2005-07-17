@@ -1,20 +1,20 @@
 /*
- * Listenverwaltung fr die Fenster.
+ * Listenverwaltung fr die Fenster.
  *
  * Es gibt zwei verschiedene Listen:
- *		used_list: - enth„lt alle offenen Fenster
+ *		used_list: - enthlt alle offenen Fenster
  *					  - erstes Element ist das Top-Window
  *					  - einfach verkettet
  *
- *		free_list: - enth„lt die unbenutzten Fenster, deren Gr”že bekannt ist
+ *		free_list: - enthlt die unbenutzten Fenster, deren Gre bekannt ist
  *					  - einfach verkettet mit Reihenfolge des w->init
  *
- * Wird ein neues Fenster ben”tigt, wird in der free_list nach dem mit dem
+ * Wird ein neues Fenster bentigt, wird in der free_list nach dem mit dem
  * kleinsten init der entsprechenden Klasse gesucht. Wird keins gefunden,
- * wird in der free_list ein neues Element angeh„ngt.
- * Das Fenster aus der free_list wird dann in die used_list umgeh„ngt und in
- * der free_list gel”scht.
- * Wird ein Fenster nicht mehr ben”tigt, wird es in used_list gel”scht und in
+ * wird in der free_list ein neues Element angehngt.
+ * Das Fenster aus der free_list wird dann in die used_list umgehngt und in
+ * der free_list gelscht.
+ * Wird ein Fenster nicht mehr bentigt, wird es in used_list gelscht und in
  * free_list entsprechend seinem init einsortiert.
  * Das erste Fenster einer Klasse steht in free_list immer ganz vorne.
 */
@@ -52,7 +52,7 @@ void dump_winlist(void)
 #endif
 
 /*
- * free_list: Neues Element in die Liste einh„ngen.
+ * free_list: Neues Element in die Liste einhngen.
 */
 static WINDOWP new_list_elem(short class)
 {
@@ -69,7 +69,7 @@ static WINDOWP new_list_elem(short class)
 		{
 			p = free_list;
 
-			while (p->next != NULL)			/* Am Ende der Liste anh„ngen */
+			while (p->next != NULL)			/* Am Ende der Liste anhngen */
 				p = p->next;
 			p->next = new;
 		}
@@ -86,7 +86,7 @@ static WINDOWP new_list_elem(short class)
 
 #if 0
 /*
- * Ein Element l”schen.
+ * Ein Element lschen.
 */
 static void del_list_elem(WINDOWP w)
 {
@@ -96,16 +96,16 @@ static void del_list_elem(WINDOWP w)
 	{
 		WINDOWP	p = win_list;
 
-		while (p->next != w)				/* Vorg„nger suchen */
+		while (p->next != w)				/* PREVnger suchen */
 			p = p->next;
-		p->next = w->next;				/* und Aush„ngen */
+		p->next = w->next;				/* und Aushngen */
 	}
 	free(w);
 	w = NULL;
 }
 
 /*
- * Gesamte Listen l”schen
+ * Gesamte Listen lschen
 */
 static void kill_list(void)
 {
@@ -115,7 +115,7 @@ static void kill_list(void)
 #endif
 
 /*
- * Fenster aus einer Liste aush„nge, aber nicht l”schen!
+ * Fenster aus einer Liste aushnge, aber nicht lschen!
 */
 static void unlink_elem(WINDOWP *list, WINDOWP w)
 {
@@ -125,9 +125,9 @@ static void unlink_elem(WINDOWP *list, WINDOWP w)
 	{
 		WINDOWP	p = *list;
 
-		while (p->next != w)				/* Vorg„nger suchen */
+		while (p->next != w)				/* PREVnger suchen */
 			p = p->next;
-		p->next = w->next;				/* und Aush„ngen */
+		p->next = w->next;				/* und Aushngen */
 	}
 }
 
@@ -165,7 +165,7 @@ static void used_to_free(WINDOWP w)
 		free_list = w;
 		w->next = NULL;
 	}
-	else if (w->init < free_list->init)	/* vor dem ersten einfgen */
+	else if (w->init < free_list->init)	/* vor dem ersten einfgen */
 	{
 		w->next = free_list;
 		free_list = w;
@@ -198,7 +198,7 @@ void move_to_top(WINDOWP w)
 		return;
 
 	p = used_list;
-	while (p->next != w)						/* Vorg„nger suchen */
+	while (p->next != w)						/* PREVnger suchen */
 		p = p->next;
 	p->next = w->next;
 	w->next = used_list;
@@ -220,7 +220,7 @@ void move_to_end (WINDOWP w)
 	else											/* mitten drin */
 	{
 		p = used_list;
-		while (p->next != w)					/* Vorg„nger suchen */
+		while (p->next != w)					/* PREVnger suchen */
 			p = p->next;
 		p->next = w->next;
 	}
@@ -232,7 +232,7 @@ void move_to_end (WINDOWP w)
 }
 
 /*
- * Abmessungen eines Fensters aus der Konfig in die Liste einh„ngen
+ * Abmessungen eines Fensters aus der Konfig in die Liste einhngen
 */
 void add_winlist(short class, GRECT *r)
 {
@@ -285,7 +285,7 @@ WINDOWP get_new_window(short class)
 	WINDOWP	p;
 	
 	p = free_list;
-	while (p)								/* zun„chst unbenutzes suchen */
+	while (p)								/* zunchst unbenutzes suchen */
 	{
 		if ((p->handle == UNUSED) && (p->class == class))
 			break;

@@ -24,7 +24,7 @@
 
 static PATH	last_path; 						/* letzter Pfad der Dateiauswahl */
 
-/* Puffer-LÑnge zum Lesen/Schreiben */
+/* Puffer-Lnge zum Lesen/Schreiben */
 #define	BUFFERSIZE	4*1024L
 
 void open_error(char *filename, short error)
@@ -49,7 +49,7 @@ short load(TEXTP t_ptr, bool verbose)
 	antw = load_datei(t_ptr->filename, &t_ptr->text, verbose, &null_byte);
 	
 	
-	t_ptr->cursor_line = t_ptr->text.head.nachf;
+	t_ptr->cursor_line = t_ptr->text.head.next;
 	t_ptr->readonly = file_readonly(t_ptr->filename);
 	if (null_byte)
 		t_ptr->moved++;
@@ -69,14 +69,14 @@ short load_from_fd(short fd, char *name, RINGP t, bool verbose, bool *null_byte,
 	bool		nb = FALSE, 
 				ol = FALSE;
 	char		*buffer, *zeile;
-	ZEILEP 	start, next;
+	LINEP 	start, next;
 	long		l, p, bytes = 0L;
 	short		n;
 	bool		new_line, cr = FALSE, mem = TRUE;
 
 	/* Puffer anfordern */
 	buffer = (char *)malloc(BUFFERSIZE);
-	zeile = malloc(MAX_LINE_LEN + 2);				/* + 2 fÅr Zeilenende */
+	zeile = malloc(MAX_LINE_LEN + 2);				/* + 2 fr Zeilenende */
 
 	if (buffer == NULL || zeile == NULL)
 	{
@@ -102,7 +102,7 @@ short load_from_fd(short fd, char *name, RINGP t, bool verbose, bool *null_byte,
 
 
 	/* Liste vorbereiten */
-	start = t->tail.vorg;
+	start = t->tail.prev;
 
 	/* Einlesen */
 	l = Fread(fd, BUFFERSIZE, buffer);
@@ -137,7 +137,7 @@ short load_from_fd(short fd, char *name, RINGP t, bool verbose, bool *null_byte,
 						t->ending = lns_unix;
 					}
 				}
-				else if (n >= t->max_line_len)	/* öberlÑnge */
+				else if (n >= t->max_line_len)	/* berlnge */
 				{
 					ol = TRUE;
 					new_line = TRUE;
@@ -167,12 +167,12 @@ short load_from_fd(short fd, char *name, RINGP t, bool verbose, bool *null_byte,
 			if (new_line)
 			{
 				zeile[n] = EOS;
-				start->nachf = new_col(zeile, n);
-				if (start->nachf == NULL)
+				start->next = new_col(zeile, n);
+				if (start->next == NULL)
 					mem = FALSE;
 				else
 				{
-					start = start->nachf;
+					start = start->next;
 					if (ol)
 					{
 						start->info |= OVERLEN;
@@ -198,43 +198,43 @@ short load_from_fd(short fd, char *name, RINGP t, bool verbose, bool *null_byte,
 			if (n > 0)
 			{
 				zeile[n] = EOS;
-				start->nachf = new_col(zeile, n);
-				if (start->nachf == NULL)
+				start->next = new_col(zeile, n);
+				if (start->next == NULL)
 					mem = FALSE;
 				else
-					start = start->nachf;
+					start = start->next;
 			}
 
-			/* letzte Zeile hatte ZE -> ein Dummyzeile anhÑngen */
+			/* letzte Zeile hatte ZE -> ein Dummyzeile anhngen */
 			else if (n == 0)
 			{
-				start->nachf = new_col(zeile, 0);
-				if (start->nachf == NULL)
+				start->next = new_col(zeile, 0);
+				if (start->next == NULL)
 					mem = FALSE;
 				else
-					start = start->nachf;
+					start = start->next;
 			}
 		}
 	} /* while */
 
 	if (mem)
 	{
-		/* Ring schlieûen */
-		t->tail.vorg = start;
-		start->nachf = &t->tail;
+		/* Ring schlieen */
+		t->tail.prev = start;
+		start->next = &t->tail;
 
 		/* Anzahl der Zeilen ermitteln */
-		start = t->head.nachf;
-		next = start->nachf;
+		start = t->head.next;
+		next = start->next;
 		for (l = 0; !IS_TAIL(start); l++)
 		{
-			next->vorg = start;
+			next->prev = start;
 			start = next;
 			NEXT(next);
 		}
 		t->lines = l;
 		if (l > 1L)
-			col_delete(t, t->head.nachf);
+			col_delete(t, t->head.next);
 
 		antw = 0;
 	}
@@ -271,7 +271,7 @@ short load_datei(char *name, RINGP t, bool verbose, bool *null_byte)
 	short	antw, fd;
 	long	size;
 	
-	/* grîûe der Datei ermitteln */
+	/* gre der Datei ermitteln */
 	size = file_size(name);
 	if (size >= 0L)
 	{
@@ -292,7 +292,7 @@ short load_datei(char *name, RINGP t, bool verbose, bool *null_byte)
 
 
 /*
- * Ermittelt die anzahl der Bytes und Zeilen der Åbergebenen Datei.
+ * Ermittelt die anzahl der Bytes und Zeilen der bergebenen Datei.
  * Wird bei der Projektverwaltung (Info) benutzt.
  */
 short infoload(char *name, long *bytes, long *lines)
@@ -368,7 +368,7 @@ static void back_up(TEXTP t_ptr)
 		graf_mouse(HOURGLASS, NULL);
 		strcpy(new, t_ptr->filename);
 		backup_name(new, t_ptr->loc_opt->backup_ext);
-		if (file_exists(new))			/* Alte DUP-Datei lîschen */
+		if (file_exists(new))			/* Alte DUP-Datei lschen */
 			Fdelete(new);
 		err = Frename(0, t_ptr->filename, new);
 		graf_mouse(ARROW, NULL);
@@ -381,7 +381,7 @@ short save_to_fd(short fd, char *name, RINGP t, bool verbose)
 	short	e_len, z_len, antw;
 	long	bytes = 0L;
 	long	ret, b, rest, text_size;
-	ZEILEP	lauf;
+	LINEP	line;
 
 	/* Puffer anfordern */
 	buffer = (char *)malloc(BUFFERSIZE);
@@ -430,28 +430,28 @@ short save_to_fd(short fd, char *name, RINGP t, bool verbose)
 			break;
 	}
 	
-	lauf = FIRST(t);
-	if (lauf != NULL)
+	line = FIRST(t);
+	if (line != NULL)
 	{
 		b = 0L;
 		ret = 1;
 		ptr = buffer;
 		rest = BUFFERSIZE;
-		while ((!IS_TAIL(lauf)) && (ret > 0))
+		while ((!IS_TAIL(line)) && (ret > 0))
 		{
 			/* Zeile aus Text und Zeilenende zusammen setzen */
-			memcpy(zeile, TEXT(lauf), lauf->len);
-			z_len = lauf->len;
+			memcpy(zeile, TEXT(line), line->len);
+			z_len = line->len;
 
 			/*
-			 * Das Zeilenende wird nur dann angehÑngt, wenn lauf nicht letzte
+			 * Das Zeilenende wird nur dann angehngt, wenn line nicht letzte
 			 * Zeile ist. Gab es beim Laden der Datei in der letzten Zeile
 			 * ein ZE, gibt es die Dummyzeile. Gab es das ZE nicht, wird auch
-			 * kein ZE angehÑngt!
+			 * kein ZE angehngt!
 			 */
-			if (!IS_LAST(lauf) && (e_len > 0) && !IS_OVERLEN(lauf))
+			if (!IS_LAST(line) && (e_len > 0) && !IS_OVERLEN(line))
 			{
-				memcpy(zeile + lauf->len, end_str, e_len);
+				memcpy(zeile + line->len, end_str, e_len);
 				z_len += e_len;
 			}
 			
@@ -489,7 +489,7 @@ short save_to_fd(short fd, char *name, RINGP t, bool verbose)
 				
 				rest = BUFFERSIZE - b;
 			}
-			NEXT(lauf);
+			NEXT(line);
 		}
 
 		/* Befindet sich noch etwas im Puffer und ist kein Fehler aufgetreten? */
@@ -613,7 +613,7 @@ short save(TEXTP t_ptr)
 	if (!not_exists)
 	{
 		chmod(t_ptr->filename, (st.st_mode & 0x0000FFFF));
-		if (getuid() == 0)						/* nur root darf Owner Ñndern */
+		if (getuid() == 0)						/* nur root darf Owner ndern */
 			chown(t_ptr->filename, st.st_uid, st.st_gid);
 	}
 
@@ -711,7 +711,7 @@ bool select_single(char *filename, char *mask, char *title)
 		strcpy(path, last_path);
 
 	ok = select_file(path, name, mask, title, FSCB_NULL);
-	if (ok && name[0] != EOS)			/* fÅr den Fall, daû nur ein Verzeichnis kommt */
+	if (ok && name[0] != EOS)			/* fr den Fall, da nur ein Verzeichnis kommt */
 	{
 		strcpy(filename, path);
 		strcat(filename, name);
@@ -733,7 +733,7 @@ bool select_path(char *pathname, char *title)
 		strcpy(path, last_path);
 
 	ok = select_file(path, name, "", title, FSCB_NULL);
-	if (ok)							/* fÅr den Fall, daû nur ein Verzeichnis kommt */
+	if (ok)							/* fr den Fall, da nur ein Verzeichnis kommt */
 	{
 		strcpy(pathname, path);
 		store_path(path);
@@ -743,7 +743,7 @@ bool select_path(char *pathname, char *title)
 
 static int open_multi(char *path, char *name)
 {
-	if (name[0] != EOS)			/* fÅr den Fall, daû nur ein Verzeichnis kommt */
+	if (name[0] != EOS)			/* fr den Fall, da nur ein Verzeichnis kommt */
 	{
 		PATH	filename;
 		short	r;

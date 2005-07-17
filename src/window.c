@@ -154,7 +154,7 @@ static void snap_window(WINDOWP w, GRECT *new, short mode)
 // 			new->g_x += xdist;
 // 		new->g_w -= xdist;
 
-		if (w->work.g_y != new->g_y)
+		if (!(mode & WORK_MOVED) && w->work.g_y != new->g_y)
 			new->g_y += ydist;
 		new->g_h -= ydist;
 	}
@@ -416,9 +416,16 @@ void iconify_window(WINDOWP w, GRECT *new)
 
 		/* alte Gre merken */
 		wind_get_grect(w->handle, WF_CURRXYWH, &w->old_size);
-		wind_set_grect(w->handle, WF_ICONIFY, (GRECT*)new);
+#ifndef ONLY_XAAES
+		if (!wcmode)
+		{
+			wind_set_grect(w->handle, WF_ICONIFY, (GRECT*)new);
+			wind_get_grect(w->handle, WF_WORKXYWH, &r);
+		}
+		else
+#endif
+			wind_xset_grect(w->handle, WF_ICONIFY, (GRECT *)new, &r);
 
-		wind_get_grect(w->handle, WF_WORKXYWH, &r);
 		winicon[0].ob_x = r.g_x;
 		winicon[0].ob_y = r.g_y;
 		winicon[0].ob_width = r.g_w;
@@ -449,20 +456,29 @@ void uniconify_window(WINDOWP w, GRECT *new)
 		if (w->uniconify != NULL)
 			(*w->uniconify)(w);
 
-#ifdef N_ONLY_XAAES
-		wind_xget_grect(w->handle, WF_CALCW2F, &w->work, &r);
-#else
-		wind_calc_grect(WC_BORDER, w->kind, &w->work, &r);
-#endif
-
-		/* Wurde Font gewechselt whrend Fenster iconifiziert? */
-		if (w->old_size.g_w != r.g_w)
-			new = &r;
-
-		if (new == NULL)
-			wind_set_grect(w->handle, WF_UNICONIFY, &w->old_size);
+#ifndef ONLY_XAAES
+		if (!wcmode)
+		{
+			wind_calc_grect(WC_BORDER, w->kind, &w->work, &r);
+			/* Wurde Font gewechselt whrend Fenster iconifiziert? */
+			if (w->old_size.g_w != r.g_w)
+				new = &r;
+	
+			if (new == NULL)
+				wind_set_grect(w->handle, WF_UNICONIFY, &w->old_size);
+			else
+				wind_set_grect(w->handle, WF_UNICONIFY, (GRECT*)new);
+		}
 		else
-			wind_set_grect(w->handle, WF_UNICONIFY, (GRECT*)new);
+#endif
+		{
+			wind_set_grect(w->handle, WF_UNICONIFY, &w->work);
+		#if 0
+			if (w->old_size.g_w != w->work.g_w)
+				new = &w->work;
+			wind_set_grect(w->handle, WF_UNICONIFY, new ? (GRECT *)new : &w->old_size);
+		#endif
+		}
 
 		w->flags &= ~WI_ICONIFIED;
 		w->flags |= WI_OPEN;
@@ -470,7 +486,7 @@ void uniconify_window(WINDOWP w, GRECT *new)
 	}
 }
 
-void	all_iconify(WINDOWP w, GRECT *new)
+void all_iconify(WINDOWP w, GRECT *new)
 {
 	WINDOWP	p;
 
@@ -1118,15 +1134,19 @@ void do_font_change(WINDOWP w)
 
 	if (w->flags & WI_FONTSIZE)
 	{
+		short cw = w->work.g_w / w->xfac;
+		
 		w->xfac = font_wcell;
 		w->yfac = font_hcell;
 
 		r.g_x = w->work.g_x;
 		r.g_y = w->work.g_y;
-		r.g_w = w->work.g_w;
+		r.g_w = cw * w->xfac;
 		r.g_h = font_hcell * w->w_height;
 		if ((r.g_h + r.g_y) > gl_desk.g_h)
 			r.g_h = gl_desk.g_h - r.g_y;
+		if ((r.g_w + r.g_x) > gl_desk.g_w)
+			r.g_w = gl_desk.g_w - r.g_x;
 		size_window(w, &r, FALSE);
 		redraw_window(w, &w->work);
 	}

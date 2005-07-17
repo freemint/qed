@@ -393,8 +393,14 @@ void handle_msg(short *msg)
 			full_window (window);
 			break;
 		case WM_ARROWED :
-			arrow_window (window, msg[4], 1);
+		{
+			long amount = msg[4] >> 8;
+			if (!amount)
+				amount++;
+			
+			arrow_window (window, msg[4] & 0x0007, amount);
 			break;
+		}
 		case WM_HSLID	 :
 			h_slider (window, msg[4]);
 			break;

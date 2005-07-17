@@ -38,20 +38,20 @@ typedef struct
 static RING		kurz;
 /* Sortierte Zeilen 																*/
 /* Am Anfang in umgedrehter Reihenfolge die Zeichen 					*/
-/* des Krzel als Null-Terminierender String							 	*/
-/* davor noch die l„nge des Krzel (Pascal„hnlich)						*/
-/* 0 Krzell„nge, 1-9 Krzel, ab der 10 Position der Ersatzstring	*/
+/* des Krzel als Null-Terminierender String							 	*/
+/* davor noch die lnge des Krzel (Pascalhnlich)						*/
+/* 0 Krzellnge, 1-9 Krzel, ab der 10 Position der Ersatzstring	*/
 static RING	auto_kurz;
 
 static MARKE	Marken[MARKEN_ANZ];
 
-static PATH		krz_name;	/* Name der aktuellen Krzeldatei, oder leer */
+static PATH		krz_name;	/* Name der aktuellen Krzeldatei, oder leer */
 
 /***************************************************************************/
 
 static short  load_kurzel	(void);
 static void clr_kurzel	(void);
-static short  add_kurzel	(RINGP rp, ZEILEP col);
+static short  add_kurzel	(RINGP rp, LINEP col);
 
 /***************************************************************************/
 
@@ -207,7 +207,7 @@ void config_marken(TEXTP t_ptr)
 }
 
 /***************************************************************************/
-/* Verwaltung der Krzel																	*/
+/* Verwaltung der Krzel																	*/
 /***************************************************************************/
 
 void clr_kurzel(void)
@@ -222,7 +222,7 @@ void do_kurzel(TEXTP t_ptr, bool online)
 	bool		set_pos, save_insert;
 	short		xw, i, len;
 	char		*str, buffer[KRZ_MAX_LEN+1];
-	ZEILEP	col;
+	LINEP	col;
 	RINGP		k;
 
 	if (online)
@@ -251,8 +251,8 @@ void do_kurzel(TEXTP t_ptr, bool online)
 	{
 		if (IS_TAIL(col))
 		{
-			if (!online)			/* wenn man Auto-Krzel hat, pings sonst bei */
-				Bconout(2,7);		/* jedem Zeichen, das kein Krzel ist! */
+			if (!online)			/* wenn man Auto-Krzel hat, pings sonst bei */
+				Bconout(2,7);		/* jedem Zeichen, das kein Krzel ist! */
 			return;
 		}
 		len = strncmp(buffer,KRZ_TXT(col),KRZ_LEN(col));
@@ -267,9 +267,9 @@ void do_kurzel(TEXTP t_ptr, bool online)
 	}
 
 	/*
-	 * Damit w„hrend der Krzelexpandierung NICHT automatisch
-	 * eingerckt wird, merken wir uns die Einstellung und schalten es ab!
-	 * Krzel, die mehrzeilig sind und mit Blanks/TABs beginnen, erscheinen
+	 * Damit whrend der Krzelexpandierung NICHT automatisch
+	 * eingerckt wird, merken wir uns die Einstellung und schalten es ab!
+	 * Krzel, die mehrzeilig sind und mit Blanks/TABs beginnen, erscheinen
 	 * sonst nicht korrekt.
 	*/
 	save_insert = t_ptr->loc_opt->einruecken;
@@ -293,7 +293,7 @@ void do_kurzel(TEXTP t_ptr, bool online)
 			str++;
 			i--;
 		}
-		else if (*str!='~' || set_pos)		/* das erste '~'-Zeichen z„hlt */
+		else if (*str!='~' || set_pos)		/* das erste '~'-Zeichen zhlt */
 		{
 			char_insert(t_ptr, *str);
 			xw++;
@@ -316,11 +316,11 @@ void do_kurzel(TEXTP t_ptr, bool online)
 
 /* return 1 : kein Speicher mehr => abbruch */
 /*        0 : alles ok                      */
-short add_kurzel(RINGP rp, ZEILEP col)
+short add_kurzel(RINGP rp, LINEP col)
 {
 	short		len, i;
 	char		*str, buffer[MAX_LINE_LEN+1], *start;
-	ZEILEP	c;
+	LINEP	c;
 	bool		online;
 
 	krz_loaded = TRUE;
@@ -334,7 +334,7 @@ short add_kurzel(RINGP rp, ZEILEP col)
 	if (start==NULL)
 		return(0);
 	start++;
-	/* WS am Anfang berspringen */
+	/* WS am Anfang berspringen */
 	for (str=TEXT(col); *str==' ' || *str=='\t'; str++) ;
 	if (str[0]=='#' || str[0]=='=' ||
 	    (str[0]=='*' && str[1]=='='))
@@ -344,7 +344,7 @@ short add_kurzel(RINGP rp, ZEILEP col)
 	{
 		len++; str++;
 	}
-	if (start[-2]=='*')									/* auto. Krzel */
+	if (start[-2]=='*')									/* auto. Krzel */
 	{
 		online = TRUE;
 		if (*str=='=')
@@ -355,7 +355,7 @@ short add_kurzel(RINGP rp, ZEILEP col)
 	}
 	else
 		online = FALSE;
-	buffer[0] = len;										/* vorne L„nge */
+	buffer[0] = len;										/* vorne Lnge */
 	i = 1;
 	while (len>0)											/* umdrehen */
 	{
@@ -374,7 +374,7 @@ short add_kurzel(RINGP rp, ZEILEP col)
 	{
 		while (!IS_TAIL(c) && strcmp(KRZ_TXT(c),buffer+1)>0)
 			NEXT(c);
-		col_insert(rp, c->vorg,new_col(buffer,len));
+		col_insert(rp, c->prev, new_col(buffer,len));
 		kurz.lines++;
 	}
 	if (online)
@@ -386,7 +386,7 @@ short add_kurzel(RINGP rp, ZEILEP col)
 		{
 			while (!IS_TAIL(c) && strcmp(KRZ_TXT(c),buffer+1)>0)
 				NEXT(c);
-			col_insert(rp, c->vorg,new_col(buffer,len));
+			col_insert(rp, c->prev, new_col(buffer,len));
 			auto_kurz.lines++;
 		}
 	}
@@ -397,7 +397,7 @@ short load_kurzel(void)
 {
 	long		anz;
 	RING		t;
-	ZEILEP	lauf;
+	LINEP	line;
 	short		erg;
 
 	if (krz_name[0] == EOS)
@@ -408,15 +408,15 @@ short load_kurzel(void)
 	if (load_datei(krz_name, &t, FALSE, NULL) == 0)
 	{
 		anz = t.lines;
-		lauf = FIRST(&t);
+		line = FIRST(&t);
 		if (anz)
 		{
-			clr_kurzel();							/* alte Krzel l”schen */
+			clr_kurzel();							/* alte Krzel lschen */
 			while ((--anz)>=0)
 			{
-				if (add_kurzel(&t, lauf)) 
+				if (add_kurzel(&t, line)) 
 					break;
-				NEXT(lauf);
+				NEXT(line);
 			}
 		}
 		erg = 0;
