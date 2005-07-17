@@ -482,14 +482,15 @@ static void char_delete(TEXTP t_ptr)
 		}
 		clr_undo();
 		t_ptr->moved++;
-		col_concate(&t_ptr->text,&t_ptr->cursor_line);
+		col_concate(&t_ptr->text, &t_ptr->cursor_line);
 		t_ptr->text.lines--;
-		make_chg(t_ptr->link,SCROLL_UP,t_ptr->ypos+1);
-		make_chg(t_ptr->link,LINE_CHANGE,t_ptr->ypos);
-		make_chg(t_ptr->link,POS_CHANGE,0);
+		make_chg(t_ptr->link, SCROLL_UP, t_ptr->ypos + 1);
+		make_chg(t_ptr->link, LINE_CHANGE, t_ptr->ypos);
+		make_chg(t_ptr->link, POS_CHANGE, 0);
 	}
 	else
 		end_play(); 			/* Makro beenden */
+	
 	if (t_ptr->loc_opt->umbrechen)
 		umbruch(t_ptr);
 }
@@ -521,42 +522,51 @@ static void word_bs(TEXTP t_ptr)
 	}
 	blk_delete(t_ptr);
 }
+// how (does)  this behave
+// how (does)  this behave
 
 // this is a longonly
 static void ctrl_word_bs(TEXTP t_ptr)
 /* Lschen wortweise nach links */
 {
-	short	xpos = t_ptr->xpos - 1;
+	short	xpos = t_ptr->xpos;
+	bool in_word = FALSE;
 
-	t_ptr->blk_mark_mode = FALSE;
-	t_ptr->up_down = FALSE;
-	if (xpos >= 0 && !t_ptr->block)
+	if (!xpos)
 	{
-		if (xpos) xpos--;
+		if (t_ptr->ypos)
+		{
+			char_left(t_ptr);
+			char_delete(t_ptr);
+		}
+	}
+	else
+	{
+// 		xpos--;
+		t_ptr->blk_mark_mode = FALSE;
+		t_ptr->up_down = FALSE;
+		if (xpos >= 0 && !t_ptr->block)
+		{
+			if (xpos) xpos--;
 
-		blk_mark(t_ptr,0);
+			blk_mark(t_ptr, 0);
 
-		while (!setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]) && xpos > 0)
-			xpos--;
-		
-		while (setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]) && xpos > 0)
-			xpos--;
-		
-		if (xpos > 0 && !setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]))
-			xpos++;
-	#if 0
-		if (!in_word)
 			while (!setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]) && xpos > 0)
 				xpos--;
-		if (xpos == 0 && t_ptr->xpos == 1)		/* erstes Zeichen */
-			t_ptr->xpos = 0;
-		else
-			t_ptr->xpos = xpos + 1;
-	#endif	
-		t_ptr->xpos = xpos;
-		blk_mark(t_ptr,1);
+
+			while (setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]) && xpos > 0)
+			{
+				xpos--;
+				in_word = TRUE;
+			}
+			
+			if (in_word && !setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]))
+ 				xpos++;
+			t_ptr->xpos = xpos;
+			blk_mark(t_ptr,1);
+		}
+		blk_delete(t_ptr);
 	}
-	blk_delete(t_ptr);
 }
 
 // this is a longonly
@@ -566,40 +576,38 @@ static void ctrl_word_delete(TEXTP t_ptr)
 	short	xpos = t_ptr->xpos;
 	bool	in_whites = FALSE;
 
-	t_ptr->blk_mark_mode = FALSE;
-	t_ptr->up_down = FALSE;
-	if (xpos >= 0 && !t_ptr->block)
+	if (xpos == t_ptr->cursor_line->len)
 	{
-		blk_mark(t_ptr,0);
-
-		while (!setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]) && t_ptr->cursor_line->len > xpos)
+		if (!IS_LAST(t_ptr->cursor_line))
 		{
-			xpos++;
-			in_whites = TRUE;
+			char_delete(t_ptr);
 		}
-		if (!in_whites)
-		{
-			while (setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]) && t_ptr->cursor_line->len > xpos)
-				xpos++;
-			while (!setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]) && t_ptr->cursor_line->len > xpos)
-				xpos++;
-// 			if (xpos > 0 && setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]))
-// 				xpos--;
-		}
-		
-	#if 0
-		if (!in_word)
-			while (!setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]) && xpos > 0)
-				xpos--;
-		if (xpos == 0 && t_ptr->xpos == 1)		/* erstes Zeichen */
-			t_ptr->xpos = 0;
-		else
-			t_ptr->xpos = xpos + 1;
-	#endif	
-		t_ptr->xpos = xpos;
-		blk_mark(t_ptr,1);
 	}
-	blk_delete(t_ptr);
+	else
+	{
+		t_ptr->blk_mark_mode = FALSE;
+		t_ptr->up_down = FALSE;
+		if (xpos >= 0 && !t_ptr->block)
+		{
+			blk_mark(t_ptr,0);
+
+			while (!setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]) && t_ptr->cursor_line->len > xpos)
+			{
+				xpos++;
+				in_whites = TRUE;
+			}
+			if (!in_whites)
+			{
+				while (setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]) && t_ptr->cursor_line->len > xpos)
+					xpos++;
+				while (!setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]) && t_ptr->cursor_line->len > xpos)
+					xpos++;
+			}
+			t_ptr->xpos = xpos;
+			blk_mark(t_ptr,1);
+		}
+		blk_delete(t_ptr);
+	}
 }
 
 static void word_delete(TEXTP t_ptr)
