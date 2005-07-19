@@ -1192,8 +1192,8 @@ bool key_window(WINDOWP w, short kstate, short kreturn)
 */
 void arrange_window(short mode)
 {
-	short		count, xstep, ystep, k, diff;
-	GRECT		rect;
+	short	count, xstep, ystep, k, diff;
+	GRECT	rect;
 	WINDOWP	p = used_list;
 
 	count = num_openwin(CLASS_EDIT);
@@ -1235,6 +1235,9 @@ void arrange_window(short mode)
 						rect.g_h = ystep;
 						break;
 				}
+				if (wcmode)
+					wind_xget_grect(p->handle, WF_CALCF2W, &rect, &rect);
+				
 				size_window(p, &rect, TRUE);
 				k++;
 			}
