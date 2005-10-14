@@ -136,16 +136,16 @@ short bild_pos(short x, LINEP a, bool tabflag, short tabsize)
 */
 short cursor_xpos(TEXTP t_ptr, short position, bool *isitalicp)
 {
-    char *textptr;
-    HL_LINE cacheline;
-    HL_ELEM flags = 0;
-    HL_ELEM len;
-    short tabwidth;
-    short i;
-    short pxy[8];
-    short x = 0;
-    char *line, *start_line;
-    short done_expanded = 0;
+	char *textptr;
+	HL_LINE cacheline;
+	HL_ELEM flags = 0;
+	HL_ELEM len;
+	short tabwidth;
+	short i;
+	short pxy[8];
+	short x = 0;
+	char *line, *start_line;
+	short done_expanded = 0;
 
     if (isitalicp)
         *isitalicp = FALSE;
@@ -182,33 +182,36 @@ short cursor_xpos(TEXTP t_ptr, short position, bool *isitalicp)
     start_line = line = TEXT(t_ptr->cursor_line);
     tabwidth = t_ptr->loc_opt->tab ? t_ptr->loc_opt->tabsize : 1;
 
-    while (!(*cacheline & HL_CACHEEND) && (short)(line-start_line) < position)
-    {
-        flags = *(cacheline++);    /* Hole Lnge und Attribute aus dem Syntax-Cache */
-        len = *(cacheline++);
-        if (flags & HL_COLOR)     /* Farbinformationen sind irrelevant */
-            cacheline++;
-        if (flags & HL_SELCOLOR)
-            cacheline++;
-        for (textptr = text; len && (short)(line-start_line) < position; line++, len--)
-        {
-            if (*line == '\t') /* Tabs werden innerhalb der Kopierschleife expandiert */
-                for (i= ((short)(textptr-text)+done_expanded) % tabwidth; i<tabwidth; i++)
-                    *(textptr++) = ' ';
-            else
-                *(textptr++) = *line;
-        }
-        done_expanded += (short)(textptr-text);
-        *textptr = EOS;
-        vst_effects(vdi_handle, flags & (HL_BOLD | HL_LIGHT));
-        vqt_extent(vdi_handle, text, pxy);
-        x += pxy[2] - pxy[0];
-    }
+	while (!(*cacheline & HL_CACHEEND) && (short)(line - start_line) < position)
+	{
+		flags = *(cacheline++);    /* Hole Lnge und Attribute aus dem Syntax-Cache */
+		len = *(cacheline++);
+		if (flags & HL_COLOR)     /* Farbinformationen sind irrelevant */
+			cacheline++;
+		if (flags & HL_SELCOLOR)
+			cacheline++;
+	
+		for (textptr = text; len && (short)(line - start_line) < position; line++, len--)
+		{
+			if (*line == '\t') /* Tabs werden innerhalb der Kopierschleife expandiert */
+			{
+				for (i = ((short)(textptr - text) + done_expanded) % tabwidth; i < tabwidth; i++)
+					*(textptr++) = ' ';
+			}
+			else
+				*(textptr++) = *line;
+		}
+		done_expanded += (short)(textptr-text);
+		*textptr = EOS;
+		vst_effects(vdi_handle, flags & (HL_BOLD | HL_LIGHT));
+		vqt_extent(vdi_handle, text, pxy);
+		x += pxy[2] - pxy[0];
+	}
 
-    if (isitalicp)
-        *isitalicp = flags & HL_ITALIC;
+	if (isitalicp)
+		*isitalicp = flags & HL_ITALIC;
 
-    return x;
+	return x;
 
 }
 
