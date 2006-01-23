@@ -1,0 +1,123 @@
+; March 30, 2003 M.Tarenskeen <m.tarenskeen@zonnet.nl>
+; 
+;********************************************************
+[ABC+ music notation] 
+;********************************************************
+Txttype = "abc"
+Active = TRUE
+CaseSensitive = TRUE
+Token = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
+
+<Textblock>
+From = "%%begintext"
+To = "%%endtext"
+(Color16)
+Color = 14
+Selcolor = 6
+(Color256)
+Color = 14
+Selcolor = 6
+
+<Meta comment>
+From = "%%"
+To = EOL
+Firstcolumn = TRUE
+(Color2)
+Attribs = ITALIC
+(Color16)
+Color = 4
+Selcolor = 13
+(Color256)
+Color = 4
+Selcolor = 13
+
+<Comment>
+From = "%"
+To = EOL
+(Color2)
+Attribs = ITALIC
+(Color16)
+Color = 11
+Selcolor = 3
+(Color256)
+Color = 11
+Selcolor = 3
+
+<Information Field>
+From = "A:","B:","C:","D:","E:","F:","G:","H:","I:","J:","K:","L:","M:","N:","O:","P:","Q:","R:","S:","T:","U:","V:","W:","X:","Y:","Z:"
+To = EOL
+Firstcolumn = TRUE
+(Color2)
+Attribs = BOLD
+(Color16)
+Color = 2
+Selcolor = 7
+(Color256)
+Color = 2
+Selcolor = 7
+
+<Bar lines>
+Keyword = "|","::","|:",":|","[|","|]","[|]"
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+(Color256)
+Attribs = BOLD
+
+<Lyrics>
+From = "w:"
+To = EOL
+Firstcolumn = TRUE
+(Color2)
+Attribs = ITALIC
+(Color16)
+Attribs = ITALIC
+(Color256)
+Attribs = ITALIC
+
+<Chordsymbols>
+From = "\""
+To = "\""
+(Color2)
+Attribs = BOLD
+(Color16)
+Color = 13
+Selcolor = 5
+(Color256)
+Color = 13
+Selcolor = 5
+
+<Gracenotes>
+From = "{"
+To = "}"
+(Color16)
+Color = 15
+Selcolor = 7
+(Color256)
+Color = 15
+Selcolor = 7
+
+<Symbols>
+From = "!"
+To = "!"
+(Color2)
+Attribs = ITALIC
+(Color16)
+Color = 12
+Selcolor = 4
+(Color256)
+Color = 12
+Selcolor = 4
+
+<Miscelaneous>
+Keyword = "(",")","[","]","/","~","\\",">","<","-"
+Keyword = "x","y","z","^","_","=","-","~","@","*"
+(Color2)
+Attribs = BOLD
+(Color16)
+Color = 10
+Selcolor = 2
+(Color256)
+Color = 10
+Selcolor = 2

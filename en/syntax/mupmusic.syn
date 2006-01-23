@@ -1,0 +1,183 @@
+; QED (version 5.0 or higher) syntax file for Mup ( http://www.arkkra.com ) 
+; September 22, 2006 M.Tarenskeen <m.tarenskeen@zonnet.nl>
+; MUP version 5.2
+; It was more or less derived from the syntax file for Vim that can be 
+; downloaded from ftp://ftp.arkkra.com/pub/unix/user.pgms/mup.vim
+;***************************************************************************
+[MUP music publisher] 
+;***************************************************************************
+Txttype = "mup"
+Active = TRUE
+CaseSensitive = TRUE
+Token = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
+
+<String>
+From = "\""
+To = "\""
+Quotechar = "\\"
+(Color16)
+Color = 9
+Selcolor = 9
+(Color256)
+Color = 9
+Selcolor = 9
+
+<Statement>
+Keyword = "staffs","vscheme","defoct","lyricssize","sylposition"
+Keyword = "size","staffsep","scorepad","staffpad","chorddist","dyndist","dist","crescdist"
+Keyword = "division","panelsperpage","gridfret","restcombine","firstpage"
+Keyword = "scoresep","stafflines","ontheline","warn","numbermrpt","printmultnum"
+Keyword = "gridswhereused","gridsatend","tabwhitebox","timeunit"
+Keyword = "topmargin","botmargin","leftmargin","rightmargin","units"
+Keyword = "packfact","packexp","staffscale","gridscale","scale","beamslope","slope"
+Keyword = "transpose","addtranspose","lyricsalign","pageheight","pagewidth","units"
+Keyword = "endingstyle","rehstyle","pedstyle","release"
+Keyword = "brace","bracket","barstyle","aboveorder","beloworder","betweenorder"
+Keyword = "key","time","beamstyle","visible","measnum","cancelkey","label","label2"
+Keyword = "font","fontfamily","lyricsfont","lyricsfontfamily","clef"
+Keyword = "measnumfont","measnumfontfamily","measnumfontsize","whereused"
+Keyword = "pedal","mussym","phrase","til","octave","roll"
+Keyword = "noteheads","stemlen","swingunit","stemshorten"
+
+(Color2)
+Attribs = ITALIC
+(Color16)
+Color = 3
+Selcolor = 11
+(Color256)
+Color = 3
+Selcolor = 11
+
+<Type>
+Keyword = "header","header2","footer","footer2","music","grids","score","voice","staff","headshapes"
+Keyword = "dim","diminished","aug","augmented","per","perfect","min","minor","maj","major"
+Keyword = "cue","grace","xnote","diam","dotted","dashed"
+Keyword = "above","below","between","all","lyrics","multirest"
+Keyword = "tab","cm","inches","boxed","circled","plain","pedstar","barred","grouped"
+Keyword = "othertext","top","top2","bottom","bottom2","block"
+Keyword = "wide","medium","wavy","inches","cm"
+Keyword = "bass","treble","8treble","treble8","alto","soprano","mezzosoprano","tenor","baritone","drum"
+Keyword = "chord","analysis","figbass","dyn" 
+Keyword = "blank","diam","isostri","norm","pie","rect","righttri","semicirc","slash"," allslash","x","allx"
+Keyword = "4n","2n","1n","dblwhole","filldiamond","diamond","dwhdiamond"
+Keyword = "fillisostriangle","isostriangle","dwhisostriangle"
+Keyword = "fillpiewedge","piewedge","dwhpiewedge"
+Keyword = "fillrectangle","rectangle","dwhrectangle"
+Keyword = "fillrighttriangle","righttriangle","dwhrighttriangle"
+Keyword = "fillurighttriangle","urighttriangle","dwhurighttriangle"
+Keyword = "fillsemicircle","semicircle","dwhsemicircle"
+Keyword = "fillslashhead","slashhead","dwhslashhead","blankhead"
+Keyword = "hs"
+(Color2)
+Attribs = BOLD
+(Color16)
+Color = 2
+Selcolor = 7
+(Color256)
+Color = 2
+Selcolor = 7
+
+<Function>
+Keyword = "midi","rom","ital","bold","boldital"
+Keyword = "title","left","center","right","print","nl","paragraph","justified","ragged"
+Keyword = "ho","tie","slur","up","down","len","slash","alt","bm","ebm","esbm","pad"
+Keyword = "newscore","newpage"
+Keyword = "reh","rehearsal","num","let","mnum","ending","endending","hidechanges"
+Keyword = "line","curve","to","bulge"
+Keyword = "postscript"
+
+(Color2)
+Attribs = ITALIC
+(Color16)
+Color = 4
+Selcolor = 13
+(Color256)
+Color = 4
+Selcolor = 13
+
+<Identifier>
+Keyword= "times","avantgarde","courier","helvetica","bookman","newcentury","palatino"
+(Color2)
+Attribs = ITALIC
+(Color16)
+Color = 13
+Selcolor = 5
+(Color256)
+Color = 13
+Selcolor = 5
+
+<Include>
+Keyword= "include","fontfile"
+(Color2)
+Attribs = BOLD
+(Color16)
+Color = 12
+Selcolor = 4
+(Color256)
+Color = 12
+Selcolor = 4
+
+<Delimiter>
+Keyword = ";"
+Keyword= "bar","invisbar","dblbar","endbar","repeatstart","repeatend","repeatboth","restart"
+(Color2)
+Attribs = BOLD
+(Color16)
+Color = 10
+Selcolor = 2
+(Color256)
+Color = 10
+Selcolor = 2
+
+<Define>
+Keyword= "ifdef","ifndef","endif","define","if","then","else","@","undef"
+(Color2)
+Attribs = BOLD
+(Color16)
+Color = 15
+Selcolor = 7
+(Color256)
+Color = 15
+Selcolor = 7
+
+<MACRO>
+From = "A"-"Z"
+While = "A"-"Z","0"-"9","_"
+(Color2)
+Attribs = BOLD
+(Color16)
+Color = 15
+Selcolor = 7
+(Color256)
+Color = 15
+Selcolor = 7
+
+<Comment>
+From = "//"
+To = EOL
+(Color2)
+Attribs = LIGHT
+(Color16)
+Color = 11
+Selcolor = 3
+(Color256)
+Color = 11
+Selcolor = 3
+
+;The following lines from mup.vim 
+;have not been translated to QED syntax.
+; 
+;syn match Number "[0-9]\.*"
+;syn match Number "1/[24]"
+
+;syn match Operator "[-+,=:&()#xn!./*<>]"
+;syn match Operator "[][{}]"
+
+;syn match Function "[~^?]"
+
+;syn match String "\".*\""
+
+;syn match Identifier "[a-z]"
+;syn match Type "[\\/]n]" "n[\\/]"
+
+ 
