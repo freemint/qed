@@ -1,0 +1,206 @@
+
+;********************************************************
+[GFA-Basic source]
+;********************************************************
+Txttype = "lst"
+Active = TRUE
+CaseSensitive = TRUE
+Token = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
+
+<Comment>
+From = "'"
+To = EOL
+(Color16)
+Color = 8
+(Color256)
+Color = 8
+
+<Comment>
+From = " !"
+To = EOL
+(Color16)
+Color = 8
+(Color256)
+Color = 8
+
+<Comment>
+From = "REM "
+To = EOL
+(Color16)
+Color = 8
+(Color256)
+Color = 8
+
+<error>
+Keyword = "==>"
+(Color16)
+Color = 2
+(Color256)
+Color = 2
+
+<editor>
+Keyword = "TRON","TROFF","SYSTEM","STOP","SAVE","RUN","QUIT","PSAVE","NEW"
+Keyword = "LOAD","LLIST","LIST","END","EDIT","DEFWRD","DEFSTR","DEFLIST"
+Keyword = "DEFINT","DEFFLT","DEFBYT","DEFBIT","CONT"
+(Color16)
+Color = 3
+(Color256)
+Color = 3
+
+<branching>
+Keyword = "THEN","SELECT","IF","EXIT IF","ENDSELECT","ENDIF","ELSE IF","ELSE"
+Keyword = "DEFAULT","CASE"," CONT"
+(Color16)
+Color = 4
+(Color256)
+Color = 4
+
+<system>
+Keyword = "XBIOS(","GEMDOS(","BIOS("
+(Color16)
+Color = 5
+(Color256)
+Color = 5
+
+<linea>
+Keyword = "PTST(","PSET","HLINE","BITBLT","ATEXT","ARECT","APOLY","ALINE"
+Keyword = "ACLIP","ACHAR"
+(Color16)
+Color = 7
+(Color256)
+Color = 7
+
+<loop>
+Keyword = "WHILE","WEND","UNTIL","TO","STEP","REPEAT","NEXT","LOOP UNTIL"
+Keyword = "LOOP","FOR","DOWNTO","DO WHILE","DO"
+(Color16)
+Color = 9
+(Color256)
+Color = 9
+
+<function>
+Keyword = "XOR(","W_INDEX(","W_HAND(","WORD{","WORD(","W:","VOID","VARPTR("
+Keyword = "VARIAT(","VAL?(","VAL(","V:","UPPER$(","TYPE(","TRUNC(","TRIM$("
+Keyword = "TAN(","TAB(","SWAP(","SUCC(","SUB(","STRING$(","STRIG(","STR$("
+Keyword = "STICK(","SQR(","SPC(","SPACE$(","SINQ(","SINGLE{","SIN(","SHR|("
+Keyword = "SHR(","SHR&(","SHL|(","SHL(","SHL&(","SGN(","SCALE(","ROUND("
+Keyword = "ROR|(","ROR(","ROR&(","ROL|(","ROL(","ROL&(","RND(","RND","RINSTR("
+Keyword = "RIGHT$(","RC_INTERSECT(","RANDOM(","RAND(","RAD(","PRED(","POS("
+Keyword = "POINT(","PEEK(","PADY(","PADX(","PADT(","OUT?(","OR(","ODD(","OCT$("
+Keyword = "OB_Y(","OB_X(","OB_W(","OB_TYPE(","OB_TAIL(","OB_STATE(","OB_SPEC("
+Keyword = "OB_NEXT(","OB_HEAD(","OB_H(","OB_FLAGS(","OB_ADR(","MUL(","MSHRINK("
+Keyword = "MOD(","MKS$(","MKL$(","MKI$(","MKF$(","MKD$(","MIN(","MID$("
+Keyword = "MFREE(","MAX(","MALLOC(","LPOS(","LPEEK(","LONG{","LOG10(","LOG("
+Keyword = "LOF(","LOC(","LEN(","LEFT$(","L:","INT{","INT(","INSTR(","INP?("
+Keyword = "INP(","INP&(","INP%(","IMP(","HEX$(","GETSIZE(","FSNEXT(","FSFIRST("
+Keyword = "FSETDTA(","FRE(","FRAC(","FLOAT{","FIX(","FGETDTA(","FACT(","EXP("
+Keyword = "EXIST(","EXEC(","EVEN(","EQV(","EOF(","DRAW(","DPEEK(","DOUBLE{"
+Keyword = "DIV(","DIR$(","DIM?(","DFREE(","DEG(","CVS(","CVL(","CVI(","CVF("
+Keyword = "CVD(","COSQ(","COS(","COMBIN(","CINT(","CHR$(","CHAR{","CFLOAT("
+Keyword = "CARD{","CARD(","C:","BYTE{","BYTE(","BTST(","BSET(","BIN$(","BCLR("
+Keyword = "BCHG(","ATN(","ASIN(","ASC(","ARRPTR(","AND(","ADD(","ACOS(","ABS("
+(Color16)
+Color = 11
+(Color256)
+Color = 11
+
+<command>
+Keyword = "XOR ","WRITE","WITH","WAVE","VTAB","VSYNC","VSETCOLOR","VDISYS"
+Keyword = "VAR ","USING","TOUCH","TOPW","TITLEW","TEXT","SWAP ","SUB ","STORE"
+Keyword = "STICK ","SSORT","SPUT","SPRITE","SPOKE","SOUND","SLPOKE","SHOWM"
+Keyword = "SGET","SETTIME","SETMOUSE","SETDRAW","SETCOLOR","SEEK","SDPOKE"
+Keyword = "RSET","RMDIR","RETURN","RESUME NEXT","RESUME","RESTORE","RESERVE"
+Keyword = "RENAME","RELSEEK","RECORD","RECALL","READ","RC_COPY","RCALL","RBOX"
+Keyword = "RANDOMIZE","QSORT","PUT","PROCEDURE","PRINT AT","PRINT","PRBOX"
+Keyword = "POLYMARK","POLYLINE","POLYFILL","POKE","PLOT","PELLIPSE","PCIRCLE"
+Keyword = "PBOX","PAUSE","OUT&","OUT%","OUT ","OR ","OPTION BASE","OPENW"
+Keyword = "OPEN","ON MENU OBOX","ON MENU MESSAGE","ON MENU KEY","ON MENU IBOX"
+Keyword = "ON MENU BUTTON","ON MENU","ON ERROR GOSUB","ON ERROR"
+Keyword = "ON BREAK GOSUB","ON BREAK CONT","ON BREAK","ON BREAK","ON ","OFFSET"
+Keyword = "NOT ","NAME","MW_OUT","MUL ","MOUSE ","MONITOR","MODE","MOD "
+Keyword = "MKDIR","MENU OFF","MENU KILL","MENU ","MAT SET","MAT READ"
+Keyword = "MAT PRINT","MAT ONE","MAT CLR","MAT BASE","LSET","LPRINT","LPOKE"
+Keyword = "LOCATE","LOCAL","LINE INPUT","LINE","LET","KILL","KEYTEST"
+Keyword = "KEYPRESS","KEYPAD","KEYLOOK","KEYGET","KEYDEF","INSERT","INPUT"
+Keyword = "INLINE","INFOW","INC ","IMP ","HTAB","HIDEM","HARDCOPY","GRAPHMODE"
+Keyword = "GOTO","GOSUB ","GET","GEMSYS","FUNCTION","FULLW","FORM INPUT","FN "
+Keyword = "FILL","FILESELECT","FILES","FIELD","EXEC ","EVERY STOP"
+Keyword = "EVERY  CONT","EVERY","ERROR","ERASE","EQV ","ENDFUNC","ELLIPSE"
+Keyword = "DRAW  TO","DRAW ","DPOKE","DMASOUND","DMACONTROL","DIV ","DIR "
+Keyword = "DIM ","DELETE","DELAY","DEFTEXT","DEFNUM","DEFMOUSE","DEFMARK"
+Keyword = "DEFLINE","DEFFN","DEFFILL","DEC ","DATA","CURVE","COLOR","CLS","CLR"
+Keyword = "CLOSEW","CLOSE","CLIP","CLEARW","CLEAR","CIRCLE","CHDRIVE","CHDIR"
+Keyword = "CHAIN","CALL","BSAVE","BPUT","BOX","BOUNDARY","BMOVE","BLOAD","BGET"
+Keyword = "AS ","ARRAYFILL","AND ","ALERT","AFTER STOP","AFTER  CONT","AFTER"
+Keyword = "ADD ","ABSOLUTE"," OFF"," AT"
+(Color16)
+Color = 12
+(Color256)
+Color = 12
+
+<aes>
+Keyword = "WIND_UPDATE(","WIND_SET(","WIND_OPEN(","WIND_GET(","WIND_FIND("
+Keyword = "WIND_DELETE(","WIND_CREATE(","WIND_CLOSE(","WIND_CALC("
+Keyword = "SHEL_WRITE(","SHEL_READ(","SHEL_PUT(","SHEL_GET(","SHEL_FIND("
+Keyword = "SHEL_ENVRN(","SCRP_WRITE(","SCRP_READ(","RSRC_SADDR(","RSRC_OBFIX("
+Keyword = "RSRC_LOAD(","RSRC_GADDR(","RSRC_FREE(","OBJC_ORDER(","OBJC_OFFSET("
+Keyword = "OBJC_FIND(","OBJC_EDIT(","OBJC_DRAW(","OBJC_DELETE(","OBJC_CHANGE("
+Keyword = "OBJC_ADD(","MENU_TNORMAL(","MENU_TEXT(","MENU_REGISTER("
+Keyword = "MENU_IENABLE(","MENU_ICHECK(","MENU_BAR(","GRAF_WATCHBOX("
+Keyword = "GRAF_SLIDEBOX(","GRAF_SHRINKBOX(","GRAF_RUBBERBOX(","GRAF_MOVEBOX("
+Keyword = "GRAF_MOUSE(","GRAF_MKSTATE(","GRAF_HANDLE(","GRAF_GROWBOX("
+Keyword = "GRAF_DRAGBOX(","FSEL_INPUT(","FORM_KEYBD(","FORM_ERROR(","FORM_DO("
+Keyword = "FORM_DIAL(","FORM_CENTER(","FORM_BUTTON(","FORM_ALERT("
+Keyword = "EVNT_TIMER(","EVNT_MULTI(","EVNT_MOUSE(","EVNT_MESAG(","EVNT_KEYBD("
+Keyword = "EVNT_DCLICK(","EVNT_BUTTON(","APPL_WRITE(","APPL_TRECORD("
+Keyword = "APPL_TPLAY(","APPL_READ(","APPL_INIT(","APPL_FIND(","APPL_EXIT("
+(Color16)
+Color = 13
+(Color256)
+Color = 13
+
+<reserved>
+Keyword = "_Y","_X","_DATA","_C","WORK_OUT","WINDTAB","V~H","VDIBASE","TT?"
+Keyword = "TRUE","TRACE$","TIMER","TIME$","STE?","PTSOUT","PTSIN","PI","MOUSEY"
+Keyword = "MOUSEX","MOUSEK","MENU(","L~A","LPENY","LPENX","INTOUT","INTIN"
+Keyword = "INPMID$","INPAUX$","INKEY$","HIMEM","GINTOUT","GINTIN","GDOS?"
+Keyword = "GCONTRL","GB","FATAL","FALSE","ERR$","ERR","DATE$","CRSLIN","CRSCOL"
+Keyword = "CONTRL","BASEPAGE","ADDROUT","ADDRIN"
+(Color16)
+Color = 14
+(Color256)
+Color = 14
+
+<vdi>
+Keyword = "V_UPDWK(","V_OPNWK(","V_OPNVWK(","V_CLSWK(","V_CLSVWK(","V_CLRWK("
+Keyword = "VST_UNLOAD_FONTS(","VST_LOAD_FONTS(","VQT_NAME(","VQT_EXTENT("
+(Color16)
+Color = 15
+(Color256)
+Color = 15
+
+<bin>
+From = "&X"
+While = "0"-"1"
+(Color16)
+Color = 10
+(Color256)
+Color = 10
+
+<hex>
+From = "&H"
+While = "0"-"9","A"-"F"
+(Color16)
+Color = 10
+(Color256)
+Color = 10
+
+<oct>
+From = "&O"
+While = "0"-"7"
+(Color16)
+Color = 10
+(Color256)
+Color = 10
+
+;Created by Lonny Pursell and ENCOM  v1.00
