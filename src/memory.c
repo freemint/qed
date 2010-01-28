@@ -150,7 +150,7 @@ MALLOC(unsigned short size)
 
 			/* Rest in die free_list einhngen */
 			adr2 = MEM_ADD(adr,size);			/* Zeiger auf Restblock */
-			(char*)feld -= size;
+			feld = (BLOCK**)((char*)feld - size);
 			i -= size;					/* Restgre */
 			adr2->free.magic = MAGIC;			/* Einhngen */
 			adr2->free.size = i;
