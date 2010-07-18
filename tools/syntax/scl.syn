@@ -1,0 +1,110 @@
+
+;********************************************************
+[SCEleton]
+;********************************************************
+Txttype = "scl"
+Active = TRUE
+CaseSensitive = TRUE
+Token = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
+
+
+<Kommentar>
+From = "#"
+To = EOL
+(Color2)
+Attribs = LIGHT
+(Color16)
+Color = 11
+Selcolor = 3
+(Color256)
+Color = 11
+Selcolor = 3
+
+<Kommentar>
+From = "//"
+To = EOL
+
+<Zeichenkette>
+From = "\""
+To = "\""
+Quotechar = "\\"
+(Color16)
+Color = 9
+Selcolor = 9
+(Color256)
+Color = 9
+Selcolor = 9
+
+<Array>
+Keyword = "[","]"
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+(Color256)
+Attribs = BOLD
+
+<Zeichen>
+From = "'"
+To = "'"
+Quotechar = "\\"
+(Color16)
+Color = 9
+Selcolor = 9
+(Color256)
+Color = 9
+Selcolor = 9
+
+<Schlsselworte>
+Keyword = "begin","end"
+Keyword = "auto","break","continue","cdecl","case","default","do","extern"
+Keyword = "else","enum","for","goto","if","pascal","return","sizeof"
+Keyword = "switch","typedef","while"
+Keyword = "try","catch"
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+(Color256)
+Attribs = BOLD
+
+<Variablentypen>
+Keyword = "Ganzzahl","Gleitpunktzahl","Zeichenkette","Liste"
+Keyword = "global", "static"
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+(Color256)
+Attribs = BOLD
+
+<Pr„prozessor-Direktive>
+Keyword = "include"
+(Color2)
+Attribs = BOLD
+(Color16)
+Color = 15
+Selcolor = 15
+(Color256)
+Color = 15
+Selcolor = 15
+
+<Hex-Konstanten>
+From = "0x","0X"
+While = "0"-"9","A"-"F","a"-"f"
+(Color16)
+Color = 12
+Selcolor = 5
+(Color256)
+Color = 12
+Selcolor = 5
+
+<Dezimal-Konstanten>
+From = "0"-"9"
+While = ".","0"-"9"
+(Color16)
+Color = 12
+Selcolor = 5
+(Color256)
+Color = 12
+Selcolor = 5
