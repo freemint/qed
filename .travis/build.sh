@@ -5,7 +5,7 @@ OUT="$2"
 
 sed -e "s/\"\(\.5\)\"/\"\1-${SHORT_ID}\"/;" src/version.h > src/version.h.tmp && mv src/version.h.tmp src/version.h
 VERSION="$(grep QED_VERSION src/version.h | sed -e 's/^.*\"v\(.*\)\".*/\1/;')"."$(grep QED_REVISION src/version.h | sed -e 's/^.*\"\.\(.*\)\".*/\1/;')"
-make CROSS=yes
+make
 
 # TODO: generate HYP
 mkdir -p "${TMP}/qed"
