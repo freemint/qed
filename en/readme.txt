@@ -1,4 +1,4 @@
-Readme English
+Readme V.5.0.2 English
 
    From version 3.09 qed (including sources) will be in the public domain!
 

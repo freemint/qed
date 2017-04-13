@@ -1,0 +1,20 @@
+     Ab der Version 3.09 ist der GEM-Editor qed Public Domain!! 
+ 
+Auch die Sourcen sind PD, d.h. jeder, der sie haben will, kann sie haben, 
+darf sie ver„ndern und darf ver„nderte Versionen auch ver”ffentlichen. 
+ 
+Was der Autor allerdings untersagt, ist eine Verbreitung der Quellenbzw. des 
+lauff„higen Programmes gegen Gebhren irgendeiner Art! 
+ 
+Tom Quellenberg im Oktober 1994 
+ 
+========================================================================= 
+
+Von Version 3.20 bis Version 4.53 war Christian Felsch fr die Entwicklung von 
+QED zust„ndig.
+
+========================================================================= 
+
+Ab der Version 5.0 habe ich, Heiko Achilles, die Weiterentwicklung von QED 
+bernommen.
+Kontakt: heinisoft@atari-users.net

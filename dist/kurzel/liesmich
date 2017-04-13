@@ -1,0 +1,13 @@
+
+ Krzel-Dateien fr qed
+
+Ein Krzel darf max. 8 Buchstaben umfassen. Dieses Krzel wird durch drcken 
+der ESC zu dem Text nach dem '='-Zeichen expandiert. Hierbei werden alle 
+Zeichen bis zum Zeilenende benutz. 
+Wenn vor dem '=' ein '*' steht, wird das Krzel automatisch expandiert, 
+sobald es vollst„ndig eigegeben ist. Auerdem darf der Text hinter dem 
+'='-Zeichen eine Tilde ('~') enthalten. Sie gibt die Position an, an der 
+der Cursor nach dem expandieren stehen soll. Ist sie nicht angegeben, 
+befindet sich der Cursor anschlieend am Ende des Text.
+Mit ^^ kann ein Zeilenumbruch hervorgerufen werden. Damit sind auch 
+mehrzeilige Krzel m”glich!

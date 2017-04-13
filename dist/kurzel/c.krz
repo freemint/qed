@@ -1,0 +1,44 @@
+#
+# qed KÅrzel-Datei fÅr C
+#
+bl =BOOLEAN
+br =break;
+by =BYTE
+cb =CONST BYTE
+cs =case ~ :
+c  =char
+cn =CONST
+d  =DOUBLE
+db =Debug("~\n");
+df =default:^^	
+dn =#define 
+e  =else
+ei =#endif^^
+es =else if (~)
+ex =EXTERN
+f  =FALSE
+fl =FLOAT
+fo =for (~ = ; ;)
+g  =GLOBAL 
+i  =if (~)
+ic =#include <~.h>^^
+icl=#include "~.h"^^
+it =int
+i0 =#if 0^^
+l  =LONG
+lc =LOCAL 
+n  =NULL
+ob =OBJECT *
+pf =printf("~");
+r  =return ~;
+so =sizeof (~)
+st =struct
+sw =switch (~)
+t  =TRUE
+td =typedef 
+ub =UBYTE
+ul =ULONG
+uw =UWORD
+wh =while (~)
+w  =WORD
+v  =VOID

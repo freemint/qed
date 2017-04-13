@@ -1,0 +1,55 @@
+
+     Ab der Version 3.09 ist der GEM-Editor qed Public Domain!!
+
+Auch die Sourcen sind PD, d.h. jeder, der sie haben will, kann sie haben,
+darf sie verÑndern und darf verÑnderte Versionen auch verîffentlichen.
+
+Was der Autor allerdings untersagt, ist eine Verbreitung der Quellen
+bzw. des lauffÑhigen Programmes gegen GebÅhren irgendeiner Art!
+
+Tom Quellenberg im Oktober 1994
+
+=========================================================================
+
+Ab der Version 3.20 bin ich, Christian Felsch, fÅr qed zustÑndig.
+Ich habe zunÑchst die von Tom freigegebenen Turbo C Quellen an Pure C 1.1
+angepasst, anschlieûend einige Fehler korrigiert und noch einige Erweiterungen
+eingebaut. Was sich genau seit der Version 3.09 geÑndert hat, entnehme man
+bitte der Datei HISTORY.
+
+Ich werde auch in Zukunft qed erweitern und verîffentlichen.
+Die aktuelle Version von qed inklusive der Quelltexte liegen in der 
+Maus Hamburg (040 - 53897013) im Gruppenprogrammteil QED und auf der 
+WEB-Seite http://www.tu-harburg.de/~smcf1605/qed
+
+Die aktuelle Version von qed besteht aus den folgenden Dateien und darf
+nur komplett weitergegeben werden!
+
+   CONVERT/
+      CONVERT.GTP Das Programm zur Konvertierung der alten 'default.qed'
+      CONVERT.TXT (bis Version 3.97) in die 'qed.cfg' (ab Version 4.0).
+
+   HYP
+      QED.HYP
+      QED.REF     Der Hypertext fÅr ST-Guide.
+
+   KURZEL/
+      C.KRZ
+      LATEX.KRZ
+      MODULA.KRZ  Beispiele fÅr KÅrzeldateien
+
+   TREIBER/
+      ...         Eine Auswahl von Druckertreibern
+
+   QED.APP        Programmdatei
+   QED.RSC        Resourcedatei
+   QED.CFG        Parameterdatei
+   ICONS.RSC      Etwas fÅr die Icon-Sammlung 
+ 
+
+Christian Felsch
+Hamburg, 19.09.99
+
+Kontakt:
+  christian_felsch@hh.maus.de
+  felsch@tu-harburg.de
