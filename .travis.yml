@@ -22,6 +22,7 @@ before_install:
   
 before_script:
   - . ./.travis/setup_env.sh
+  - export SHORT_ID=$(git log -n1 --format="%H" | cut -c 1-3)
 
 script:
   - sh ./.travis/build.sh "${PWD}/.travis/tmp" "${PWD}/.travis/out"
