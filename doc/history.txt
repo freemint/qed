@@ -1,3 +1,29 @@
+Version 5.0.2 --> 5.0.5
+-------------------------------------------
+   ù Add syntax for SCEleton (JAnE, GSExec).
+     Update syntax for the new UDO version.
+     Printer driver for Canon BJ-200. Gerhard Stoll 07/18/2010
+   ù gfa.syn Commited by Lonny Pursell Adam Klobukowski 02/03/2006
+     abc.syn, mpmusic.syn Submited by Martin Tarenskeen Adam Klobukowski
+   ù Applied patch by Stefan that makes it possible to specify line
+     number within filename strings passed via VA_START protocol, see
+     line 369 in av.c for details Odd Skancke 10/14/2005
+   ù ctrl+backspace goes to next line and ctrl+delete merges next line
+     when at start/end of line.
+     ctrl-backspace and ctrl-delete added and behaves according to
+     requests made by Curly, hopefully. ctrl+up/dn arrows behaves as
+     arrow window widgets when not in ctrl_block mode.
+     Odd Skancke 07/17/2005
+   ù Added HYP_VIEW as help viewer in addition to ST-GUIDE. Contributed
+     by David Galvez Carles. Frank Naumann 07/04/2004
+   ù Fixing the resolution dependent configuration file save. It did save
+     an empty file when the "Save Windows" was off. The configuration
+     problems should be gone now. Standa Opichal 05/27/2004
+   ù No more coredumps when calling hl_*() with invalid (NULL) RINGP
+     value. Standa Opichal 05/17/2004
+   ù Shortcuts fixed in find/replace dialog and several others.
+     Standa Opichal 05/10/2004
+
 Version 5.0.2
 -------------------------------------------
 DEUTSCH:

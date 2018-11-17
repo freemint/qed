@@ -1,6 +1,4 @@
-Readme V.5.0.2 English
-
-   From version 3.09 qed (including sources) will be in the public domain!
+  From version 3.09 qed (including sources) will be in the public domain!
 
 Thus, both the program and the sources of version 3.09 may be copied 
 by everybody and may be freely distributed by bulletin board systems 
@@ -9,19 +7,14 @@ Yet the Tom has prohibited the charge of a fee of whatever kind.
 
 =========================================================================
 
-From Version 3.20 to Version 4.53 Christian Felsch was the maintainer of QED.
+From Version 3.20 to Version 4.53 Christian Felsch was the maintainer
+of QED.
 
 =========================================================================
 
+From Version 5.0 to 5.0.2 QED was developed by Heiko Achilles.
 
-From Version 5.0 on I, Heiko Achilles, have taken on the maintenance of QED.
+=========================================================================
 
-This archive only contains some preliminary English translations: this readme, 
-the resource file and the translated syntax.cfg.
-
-I am still working on the English translation of the hypertext. If you have
-any questions, please contact me:
-heinisoft@atari-users.net
-
-For the use of QED you will need to download the complete (German) version and 
-replace the files in this archive with the according English translations.
+Since 2002 QED is part of FreeMinT CVS/GitHub repository.
+Current version is 5.0.5.

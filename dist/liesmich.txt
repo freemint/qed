@@ -3,18 +3,22 @@
 Auch die Sourcen sind PD, d.h. jeder, der sie haben will, kann sie haben, 
 darf sie ver„ndern und darf ver„nderte Versionen auch ver”ffentlichen. 
  
-Was der Autor allerdings untersagt, ist eine Verbreitung der Quellenbzw. des 
-lauff„higen Programmes gegen Gebhren irgendeiner Art! 
+Was der Autor allerdings untersagt, ist eine Verbreitung der Quellen bzw.
+des lauff„higen Programmes gegen Gebhren irgendeiner Art! 
  
 Tom Quellenberg im Oktober 1994 
  
 ========================================================================= 
 
-Von Version 3.20 bis Version 4.53 war Christian Felsch fr die Entwicklung von 
-QED zust„ndig.
+Von Version 3.20 bis Version 4.53 war Christian Felsch fr die
+Entwicklung von QED zust„ndig.
 
 ========================================================================= 
 
-Ab der Version 5.0 habe ich, Heiko Achilles, die Weiterentwicklung von QED 
-bernommen.
-Kontakt: heinisoft@atari-users.net
+Von Version 5.0 bis 5.0.2 hat Heiko Achilles die Weiterentwicklung von
+QED bernommen.
+
+=========================================================================
+
+Seit 2002 ist QED im FreeMinT CVS/GitHub repository zu finden.
+Aktuelle Version ist 5.0.5.
