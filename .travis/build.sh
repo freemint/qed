@@ -34,5 +34,10 @@ mkdir -p "${TMP}/qed/de/doc"
 cp "doc/qed.hyp" "${TMP}/qed/de/doc"
 cp "doc/qed.ref" "${TMP}/qed/de/doc"
 
+mkdir -p "${TMP}/qed/fr"
+cp "fr/qed_fr.rsc" "${TMP}/qed/fr/qed.rsc"
+cp "fr/NdT.txt" "${TMP}/qed/fr"
+cp -r "fr/syntax" "${TMP}/qed/fr"
+
 find "${TMP}" -type f -perm -a=x -exec m68k-atari-mint-strip -s {} \;
 mkdir -p "${OUT}" && cd "${TMP}" && zip -r -9 "${OUT}/${PROJECT}-${VERSION}.zip" *

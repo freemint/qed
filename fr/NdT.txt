@@ -1,0 +1,27 @@
+Version 5.0
+Notes du Traducteur :
+
+Qed ne souligne pas les raccourcis dans les boutons, n‚anmoins ils existent. 
+Il s'agit en g‚n‚ral de la premiŠre lettre sauf :
+
+[  OK  ]       RETURN
+[Abandon]      UNDO
+[Choisir]      ALT+O	(C'est moi qui l'ai choisi.)
+
+Bien entendu, si un bouton est le bouton par d‚faut, le seul raccourci clavier 
+est RETURN quel que soit l'intitul‚ de ce bouton.
+
+Petit problŠme : Les raccourcis clavier utilisant un chiffre ne fonctionnent 
+pas. Ce n'est pas la faute du programmeur, ni la mienne (entre parenthŠses) 
+mais celle de l'abruti qui a d‚cid‚ que les chiffres des claviers fran‡ais (ou 
+francophones) devaient ˆtre accessibles avec SHIFT contrairement … tous les 
+claviers utilisant des caractŠres romans. (Paix … son ƒme. Il doit ˆtre mort 
+depuis longtemps d‚j….)
+
+Pour finir, n'oubliez pas que je ne suis qu'un Humain, je peux faire des 
+erreurs. Signalez-les-moi et je corrigerai.
+
+=====================
+Remi Villatel
+maxilys@normandnet.fr
+=====================
