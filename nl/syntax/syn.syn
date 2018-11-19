@@ -1,0 +1,93 @@
+
+;********************************************************
+[QED-syntaxbestand]
+;********************************************************
+Txttype = "syn","syn_cfg.qed"
+Active = TRUE
+CaseSensitive = FALSE
+Token = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+
+
+<Commentaar>
+From = ";"
+To = EOL
+(Color2)
+Attribs = LIGHT
+(Color16)
+Color = 11
+Selcolor = 3
+(Color256)
+Color = 11
+Selcolor = 3
+
+<String>
+From = "\""
+To = "\""
+Quotechar = "\\"
+(Color16)
+Color = 9
+Selcolor = 9
+(Color256)
+Color = 9
+Selcolor = 9
+
+<Keywords>
+Keyword = "attribs","active","bold","casesensitive","color","eol"
+Keyword = "firstcolumn","false","from","italic","keyword","light","nested"
+Keyword = "none","quotechar","selcolor","txttype","token","true","to"
+Keyword = "while"
+Keyword = "="
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+(Color256)
+Attribs = BOLD
+
+<Textbeschrijving>
+From = "["
+To = "]"
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+Color = 2
+Selcolor = 2
+(Color256)
+Attribs = BOLD
+Color = 2
+Selcolor = 2
+
+<Regelbeschrijving>
+From = "<"
+To = ">"
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+Color = 10
+Selcolor = 10
+(Color256)
+Attribs = BOLD
+Color = 10
+Selcolor = 10
+
+<Resolutie>
+From = "(color"
+To = ")"
+(Color2)
+Attribs = BOLD, ITALIC
+(Color16)
+Attribs = BOLD, ITALIC
+(Color256)
+Attribs = BOLD, ITALIC
+
+<Decimaal-constanten 0..9>
+From = "1"-"9"
+While = ".","0"-"9"
+(Color16)
+Color = 12
+Selcolor = 5
+(Color256)
+Color = 12
+Selcolor = 5

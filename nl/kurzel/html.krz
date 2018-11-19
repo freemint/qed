@@ -1,0 +1,117 @@
+#===================================================================#
+# HTML.krz                                               12.09.97   #
+# HTML-kortzetsels voor QED                                         #
+#                                                                   #
+# door: JÅrgen Koneczny                                             #
+# vertaling en uitbreidingen: Godfried Cobben                       #
+#===================================================================#
+
+# Diacritische tekens(umlaut, etc.) automatisch omzetten in ISO-Latin1
+
+Ñ	*=&auml;
+â	*=&euml;
+ã	*=&iuml;
+î	*=&ouml;
+Å	*=&uuml;
+é	*=&Auml;
+√	*=&Euml;
+∆	*=&Iuml;
+ô	*=&Ouml;
+ö	*=&Uuml;
+Ö	*=&agrave;
+ä	*=&egrave;
+ç	*=&igrave;
+ï	*=&ograve;
+ó	*=&ugrave; 
+†	*=&aacute;
+Ç	*=&eacute;
+°	*=&iacute;
+¢	*=&oacute;
+¢	*=&uacute; 
+É	*=&acirc;
+à	*=&ecirc;
+å	*=&icirc;
+ì	*=&ocirc;
+ñ	*=&ucirc; 
+∞	*=&atilde;
+±	*=&otilde;
+è	*=&aring;
+Ü	*=&Aring;
+í	*=&aelig;
+ë	*=&AElig;
+Ä	*=&ccedil;
+á	*=&Ccedil;
+≤	*=&oslash;
+≥	*=&Oslash;
+û	*=&szlig;
+&	*=&amp;
+
+# Speciale tekens
+
+"	=&quot; 
+&	*=&amp; 
+<	=&lt; 
+>	=&gt; 
+Ω	*=&copy; 
+æ	*=&reg;
+ø	*=&trade; 
+
+# Romp van een HTML-bestand
+
+HTML		=<HTML><HEAD>^^<TITLE>~</TITLE>^^</HEAD><BODY>^^^^</BODY>^^</BODY>^^</HTML>
+
+# Tekst; de layout
+
+++	=<BR>
+ADDRESS	=<ADRESS>~</ADRESS>
+QUOTE	=<BLOCKQUOTE>~</BLOCKQUOTE>
+CENTER	=<CENTER>~</CENTER>
+H1	=<H1>~</H1>
+H2	=<H2>~</H2>
+H3	=<H3>~</H3>
+H4	=<H4>~</H4>
+H5	=<H5>~</H5>
+H6	=<H6>~</H6>
+NOBR	=<NOBR>~</NOBR>
+P	=<P ALIGN="~"></P>
+__	=<HR>
+
+# Tekst; attributen
+
+B	=<B>~</B>
+BIG	=<BIG>~</BIG>
+CITE	=<CITE>~</CITE>
+CODE	=<CODE>~</CODE>
+DFN	=<DFN>~</DFN>
+EM	=<EM>~</EM>
+I	=<I>~</I>
+KBD	=<KBD>~</KBD>
+PRE	=<PRE>~</PRE>
+SAMP	=<SAMP>~</SAMP>
+SMALL	=<SMALL>~</SMALL>
+STRONG	=<STRONG>~</STRONG>
+SUB	=<SUB>~</SUB>
+SUP	=<SUP>~</SUP>
+TT	=<TT>~</TT>
+VAR	=<VAR>~</VAR>
+BLINK	=<BLINK>~</BLINK>
+
+# Opsomming, lijsten
+
+DIR	=<DIR>^^<LI>~^^<LI>^^</DIR>
+MENU	=<MENU>^^<LI>~^^<LI>^^</MENU>
+OL	=<OL>^^<LI>~^^<LI>^^</OL>
+UL	=<UL>^^<LI>~^^<LI>^^</UL>
+DL	=<DL>^^<DT>~^^<DD>^^<DT>^^<DD>^^</DL>
+
+# Tabellen
+
+TABLE	=<TABLE>^^<CAPTION>~</CAPTION>^^<TR><TD></TD><TD></TD></TR>^^</TABLE>
+TABLE22	=<TABLE>^^<CAPTION>~</CAPTION>^^<TR><TD></TD><TD></TD></TR>^^<TR><TD></TD><TD></TD></TR>^^</TABLE>
+
+# Overigen
+
+A	=<A HREF="~"></A>
+\a	=<A HREF="~">
+/a	=</A>
+IMG	=<IMG SRC="~" ALT=" ">

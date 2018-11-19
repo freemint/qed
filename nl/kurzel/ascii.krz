@@ -1,0 +1,140 @@
+#
+# QED-kortzetselbestand voor ASCII
+# door G. Cobben
+# ========================================================================
+#
+# Code mag max. 8 tekens bevatten; door het drukken van <ESC> wordt de
+# hele string na het '=' teken in de tekst ingevoegd.
+#
+# Bijzondere tekens met een functie:
+# ========================================================================
+# 	'*' direct voor het '=' teken; string wordt onmiddelijk ingevoegd,
+#                                      zonder op <ESC> te drukken.
+# 	'~' in de string;              zorgt er voor dat de cursor op de
+#                                      positie van de '~' wordt ingevoegd.
+# 	zonder tilde ('~');            de cursor staat dan aan het eind
+#                                      van de string.
+# 	'#' (hekje);                   leidt een commentaarregel in.
+#
+# ========================================================================
+"A      =é
+@A      =è
+AE      =í
+^a      =É
+"a      =Ñ
+`a      =Ö
+'a      =†
+@a      =Ü
+_a      =¶
+~a      =∞
+ae      =ë
+sz      =û
+,C      =Ä
+,c      =á
+|c      =õ
+'E      =ê
+^e      =à
+"e      =â
+`e      =ä
+'e      =Ç
+fl      =ü
+"i      =ã
+^i      =å
+`i      =ç
+'i      =°
+ij      =ò
+-L      =ú
+~N      =•
+~n      =§
+"O      =ô
+^o      =ì
+"o      =î
+`o      =ï
+'o      =¢
+_o      =ß
+^u      =ñ
+`u      =ó
+"U      =ö
+"u      =Å
+'u      =£
+-Y      =ù
+?       =®
+1/2     =´
+1/4     =¨
+!       =≠
+<<      =Æ
+>>      =Ø
+~o      =±
+/O      =≤
+/o      =≥
+oe      =¥
+OE      =µ
+`A      =∂
+~A      =∑
+~O      =∏
+alf     =‡
+bet     =·
+GAM     =‚
+pi      =„
+SIG     =‰
+sig     =Â
+mu      =Ê
+tau     =Á
+FI      =Ë
+THE     =È
+OME     =Í
+del     =Î
+phi     =Ï
+fi      =Ì
+EPS     =Ó
+PI      =Ô
+---     =
++-      =Ò
+<-      =Û
+>-      =Ú
+-:      =ˆ
+~~      =˜
+ˇo      =¯
+ˇ.      =˘
+.       =˙
+ˇ2      =˝
+ˇ3      =˛
+00      =ﬂ
+p.      =›
+del     =
+(c)     =Ω
+(r)     =æ
+TM      =ø
+@       =
+\a      =[ALT]
+\c      =[CTRL]
+\s      =[SHFT]
+\l      =[LSHIFT]
+\r      =[RSHIFT]
+\u      =[UNDO]
+\d      =[DEL]
+\h      =[HOME]
+\i      =[INSERT]
+^^       =
+#
+# ------E-mail adressen------------------ #
+#
+\\F	*=x:xxx/xxx.x@fidonet.org^^
+\\N	*=xx:xxx/xxx.x@nest.ftn^^
+\\A	*=xxx:xxx/xxx.x@fan.ftn^^
+\\T	*=xx:xxx/xxx.x@atarinet.ftn^^
+\\B 	*=xxx:xxx/xxx.x@bbstnet.ftn
+\\f	*=FIDO:     x:xxx/xxx.x@Fidonet.org
+\\n	*=NeST:     xx:xxx/xxx.x@Nest.ftn
+\\a	*=FAN:      xxx:xxx/xxx.x@Fan.ftn
+\\t	*=AtariNet: xx:xxx/xxx.x@atarinet.ftn
+\\b 	*=BBSTNet:  x:xxx/xxx.x@bbstnet.ftn
+#
+# ------User defined-(temp. codes)------- #
+#
+im		=~.IMG
+# ------andere
+#
+'''	=_/_/_/ ~
+''|	=|       ~
+''/	=( /~/ )|

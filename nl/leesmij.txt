@@ -1,0 +1,95 @@
+   QED versie 5.05 NL                                        (18.11.18)
+   ====================================================================
+
+   QED.RSC en deze tekst versie 5.0.2 --> 5.0.5 updated by Latz
+    mailto: latzmaster@gmx.de
+
+   ==============================================
+
+   Nadat Tom Quellenberg zo'n 2 jaar geleden de ontwikkeling van de 
+   editor bij versie 3.09 staakte, werden de sources door Robert 
+   Irrgang overgenomen.Robert deed een paar kleine wijzigingen en de 
+   versie 3.10ž zag het licht. Daarna werd Robert geplaagd door 
+   ernstige hardware problemen, met als gevolg het verlies van de 
+   sources van versie 3.10ž. Robert verkocht zijn Atari en schakelde (
+   beroepshalve) over op OS/2 en opnieuw zat QED zonder programmeur.
+   Christian Felsch heeft toen kontakt opgenomen met Tom, en deze 
+   besloot het volgende:
+
+   ====================================================================
+      qed is vanaf versie 3.09 inclusief alle sources Public Domain!
+   ====================================================================
+
+   Dit betekent, dat zowel het programma alsmede de C-sources door 
+   iedereen gekopieert en verspreid mag worden. De auteur verbiedt 
+   echter elke commerci‰le verspreiding. Hieronder worden ook PD-
+   bibliotheken verstaan waar men de software slechts tegen betaling 
+   kan verkrijgen!Voor deze versie is Christian Felsch verantwoordelijk.
+   Hij zal ook in de toekomst de verdere ontwikkeling van QED blijven 
+   doen. Hij is zeker ge‹nteresseerd in de idee‰n van andere gebruikers.
+
+   De door hem gepubliceerde versies (beginnend bij v3.20) zullen 
+   altijd in het openbare programma-gebied van de Maus Hamburg (tel. 
+   0049 40 53897013) en op de FTP-Server ftp.rz.tu-harburg.de in de 
+   directory /ATARI/qed te vinden zijn.De door Tom vrijgegeven sources 
+   van v3.09 en die van de aktuele versie zijn daar ook te vinden.
+
+   Vragen, problemen, bug-reports (altijd o.v.v. het versienummer) 
+   kunnen per e-mail gericht worden aan Christian Felsch
+
+   Deze volledige nederlandse release werd verzorgt door Godfried 
+   Cobben. Alle releases van QEDnl worden gedaan via:
+
+   Info over en download van QED-NL is ook mogelijk via Thing 
+   Webservices:
+   http://www.luna.nl/~gncobben/atari/qed.html
+
+   Inhoud:
+   ====================================================================
+
+      QED.RSC           de NL resource
+      LEES-MIJ.TXT      deze tekst
+
+      \Guide
+         QED.HYP        ST-Guide hypertext voor OnLine help bij de
+                        nederlandse versie.
+         QED.REF        Het bijbehorende referentie bestand
+
+      \kurzel           'kortzetsels' voor:
+         ASCII.KRZ      algemeen gebruik (ascii)
+         C.KRZ          C-sources
+         LATEX.KRZ      TeX
+         MODULA.KRZ     Megamax Modula2
+         STG.KRZ        ST-Guide broncode
+         HTML.KRZ       HTML-commando's
+
+      \Syntax           parameters voor de syntaxgevoeligheid
+         asm.syn        68k assembler
+         c.syn          C
+         cpp.syn        C++errdat.syn     pure C error.dat
+         html.syn       html
+         htmlphp.syn    HTML/PHP-brontekst
+         manitor.syn    Manitor-logfile
+         mup.syn        bash/Mupfel-Script
+         pas.syn        Pascal-brontekst
+         sic.syn        Scripter-script
+         stg.syn        ST-Guide-brontekst
+         syn.syn        QED-syntaxbestand
+         udo.syn        UDO-brontekst
+
+   ======================================================================
+
+   Installatie:
+
+   Kopieer de folder \kurzel\, \syntax\ en de bestanden QED.RSC naar de
+   folder \QED\ (programma folder).
+   Kopieer de inhoud van de folder \GUIDE\ naar de folder met de ST-GUIDE
+   hypertexten. Klaar.
+   Als men de environment-variabele QED definieert met het volledige pad
+   van de QED-folder dan wordt altijd de RSC gevonden. Indien de 
+   environment-variabele HOME gedefinieerd is dan wordt
+   QED.CFG ook op het pad $HOME/, $HOME/.qed/ en $HOME/DEFAULTS gezocht.
+   ======================================================================
+
+   Godfried Cobben
+   Rotterdam, 15 januari 2003.

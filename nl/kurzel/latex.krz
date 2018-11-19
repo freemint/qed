@@ -1,0 +1,30 @@
+#
+# QED-kortzetselbestand voor TeX-Sources (*.TEX)
+# door G. Cobben
+# ========================================================================
+#
+# Code mag max. 8 tekens bevatten; door het drukken van <ESC> wordt de
+# hele string na het '=' teken in de tekst ingevoegd.
+#
+# Bijzondere tekens met een functie:
+# ========================================================================
+# 	'*' direct voor het '=' teken; string wordt onmiddelijk ingevoegd,
+#                                      zonder op <ESC> te drukken.
+# 	'~' in de string;              zorgt er voor dat de cursor op de
+#                                      positie van de '~' wordt ingevoegd.
+# 	zonder tilde ('~');            de cursor staat dan aan het eind
+#                                      van de string.
+# 	'#' (hekje);                   leidt een commentaarregel in.
+#
+# ========================================================================
+#
+kop2 =\documentclass{article}^^\usepackage{german}^^\usepackage[atari]{umlaute}^^
+kop1 =\documentstyle[german]{article}^^
+$    =$~$
+a    =\author{~}
+b    =\begin{~}
+bb   =\begin{thebibliography}{~}
+bc   =\begin{center}
+bd   =\begin{document}
+be   =\begin{eqnarray*}
+bf   =\begin{figure}[h]

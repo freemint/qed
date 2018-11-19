@@ -1,0 +1,96 @@
+
+;********************************************************
+[UDO-brontekst]
+;********************************************************
+Txttype = "u","ui"
+Active = TRUE
+CaseSensitive = TRUE
+Token = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+
+
+<Commentaar>
+From = "#"
+To = EOL
+(Color2)
+Attribs = LIGHT
+(Color16)
+Color = 11
+Selcolor = 3
+(Color256)
+Color = 11
+Selcolor = 3
+
+<Keywords>
+Keyword = "!html_merge_subsubsubnodes","!html_merge_subsubnodes"
+Keyword = "!use_alias_inside_index","!use_auto_subsubsubtocs"
+Keyword = "!use_label_inside_index","!use_nodes_inside_index"
+Keyword = "!win_medium_compression","!no_toc_subsubsubnodes"
+Keyword = "!win_high_compression","!html_merge_subnodes"
+Keyword = "!ignore_subsubsubtoc","!no_verbatim_umlaute"
+Keyword = "!use_auto_subsubtocs","!no_toc_subsubnodes"
+Keyword = "!use_chapter_images","!win_inline_bitmaps","!begin_description"
+Keyword = "!ignore_bottomline","!universal_charset","!use_justification"
+Keyword = "!use_output_buffer","!begin_flushright","!begin_sourcecode"
+Keyword = "!html_merge_nodes","!ignore_subsubtoc","!sort_hyphen_file"
+Keyword = "!subsubsubheading","!use_auto_subtocs","!begin_enumerate"
+Keyword = "!begin_flushleft","!end_description","!htag_img_suffix"
+Keyword = "!html_img_suffix","!ignore_headline","!no_toc_subnodes"
+Keyword = "!psubsubsubnode*","!stg_no_database","!tableofcontents"
+Keyword = "!use_ansi_tables","!begin_appendix","!begin_document"
+Keyword = "!begin_verbatim","!end_flushright","!end_sourcecode"
+Keyword = "!html_use_xlist","!no_bottomlines","!psubsubsubnode"
+Keyword = "!subsubsubnode*","!table_caption*","!use_short_envs"
+Keyword = "!use_style_book","!win_background","!autoref_items"
+Keyword = "!begin_itemize","!end_enumerate","!end_flushleft"
+Keyword = "!html_backpage","!html_keywords","!html_nodesize"
+Keyword = "!ignore_subtoc","!image_counter","!listoffigures"
+Keyword = "!rtf_charwidth","!rtf_no_tables","!subsubheading"
+Keyword = "!subsubsubnode","!table_caption","!table_counter"
+Keyword = "!use_about_udo","!use_justified","!use_short_toc"
+Keyword = "!win_charwidth","!begin_center","!chapterimage","!end_appendix"
+Keyword = "!end_document","!end_verbatim","!ignore_index","!ignore_links"
+Keyword = "!listoftables","!no_headlines","!programimage","!psubsubnode*"
+Keyword = "!rtf_monofont","!rtf_propfont","!subsubsubtoc","!use_formfeed"
+Keyword = "!verbatimsize","!win_propfont","!authorimage","!begin_blist"
+Keyword = "!begin_ilist","!begin_quote","!begin_table","!begin_tlist"
+Keyword = "!begin_xlist","!end_itemize","!no_preamble","!psubsubnode"
+Keyword = "!subsubnode*","!tex_lindner","!end_center","!no_effects"
+Keyword = "!no_numbers","!no_umlaute","!subheading","!subsubnode"
+Keyword = "!tex_strunk","!toc_offset","!begin_raw","!end_blist"
+Keyword = "!end_ilist","!end_quote","!end_table","!end_tlist","!end_xlist"
+Keyword = "!html_name","!maketitle","!no_images","!no_quotes","!no_xlinks"
+Keyword = "!psubnode*","!smallskip","!subsubtoc","!tex_emtex","!use_xlist"
+Keyword = "!code_dos","!code_hp8","!code_iso","!code_mac","!code_tos"
+Keyword = "!item [ ]","!language","!man_type","!no_index","!parwidth"
+Keyword = "!psubnode","!rinclude","!subnode*","!tabwidth","!tex_verb"
+Keyword = "!vinclude","!autoref","!bigskip","!country","!end_raw"
+Keyword = "!heading","!ifndest","!ifnlang","!include","!man_lpp"
+Keyword = "!medskip","!newpage","!program","!subnode","!tex_dpi"
+Keyword = "!version","!author","!define","!hyphen","!hyphen","!hyphen"
+Keyword = "!ifdest","!ifdest","!iflang","!ifnset","!image*","!pnode*"
+Keyword = "!sloppy","!street","!subtoc","!tex_2e","!=htag","!=html"
+Keyword = "!=info","!=ldoc","!alias","!break","!email","!endif","!fussy"
+Keyword = "!hline","!ifnos","!ifset","!image","!index","!label","!macro"
+Keyword = "!node*","!pnode","!short","!title","!title","!unset","!=aqv"
+Keyword = "!=asc","!=man","!=pch","!=rtf","!=stg","!=tex","!=win","!date"
+Keyword = "!else","!htag","!html","!ifos","!info","!item","!ldoc","!node"
+Keyword = "!town","!aqv","!asc","!man","!nop","!pch","!rtf","!set","!stg"
+Keyword = "!tex","!toc","!win","!if"
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+(Color256)
+Attribs = BOLD
+
+<Format-Information>
+From = "(!"
+To = ")"
+(Color16)
+Attribs = BOLD
+Color = 12
+Selcolor = 5
+(Color256)
+Attribs = BOLD
+Color = 12
+Selcolor = 5

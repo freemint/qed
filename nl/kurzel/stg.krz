@@ -1,0 +1,202 @@
+#
+# QED-Code bestand voor ST-Guide Sources (*.STG)
+# versie 4. (05/12/95)
+# door G. Cobben
+#
+# Code mag max. 8 tekens bevatten; door het drukken van <ESC> wordt de
+# hele string na het '=' teken in de tekst ingevoegd.
+#
+# Bijzondere tekens met een functie:
+# ----------------------------------
+# 	'*' direct voor het '=' teken; string wordt onmiddelijk ingevoegd,
+#                                      zonder op <ESC> te drukken.
+# 	'~' in de string;              zorgt er voor dat de cursor op de
+#                                      positie van de '~' wordt ingevoegd.
+# 	zonder tilde ('~');            de cursor staat dan aan het eind
+#                                      van de string.
+# 	'#' (hekje);                   leidt een commentaarregel in.
+#
+# Soms moeten er nog parameters ingevuld worden bij de commando's:
+# ----------------------------------------------------------------
+#	xxx		<name>|<string>|<text>
+#	lll		<labelname>
+#	nnn		<number>
+#	ttt		<title>
+#
+# -----------------------------------------------------
+# 0. door gebruiker gedefinieerde commando's
+# -----------------------------------------------------
+new:	=## ST-Guide source^^##^^@database "~"^^@subject "Documentatie/xx"^^@author "MyNameIsNobody"^^@$VER: xxx.HYP n.nn (@:"__DATE__")^^@options -d12 +gfxy +zz -t4 -j30^^@uses fff.hyp|.ref^^
+BBST	=BearBoard Atari BBS te Rotterdam, 010-4840224
+# -----------------------------------------------------
+# 1. struktuurcommando's
+# -----------------------------------------------------
+dflt	=@default "~"
+((	*=@node "~"
+//	*=@pnode "~"
+))	*=@endnode
+hlp	=@help "~"
+lbl	=@label
+nxt	=@next "~"
+prv	=@prev "~"
+inh	=@toc "~"
+regel	=@width ~75
+if	=@if ~ [op xxx]
+else	=@else
+if.	=@endif
+xref	=@xref ~ ttt
+# -----------------------------------------------------
+# 2. sturing van automatische referenties
+# -----------------------------------------------------
+>lbl	=@alabel "~"
+>ook	=@alias "~"
+>-	=@autorefoff^^
+>+	=@autorefon^^
+>x	=@extern ~ fff/xxx nnn
+>0	=@noref^^
+use	=@uses ~
+usehyp	=@uses ~.hyp
+useref	=@uses ~.ref
+sym	=@symbol "~"
+idx+	*=@indexon^^
+idx-	*=@indexoff^^
+# -----------------------------------------------------
+# 3. Grafikkommandos
+# -----------------------------------------------------
+box0	=@box ~X B H 0
+box12	=@box ~X B H 1
+box25	=@box ~X B H 2
+box50	=@box ~X B H 4
+box75	=@box ~X B H 6
+box100	=@box ~X B H 8
+IMG	=@image ~.img X
+ICN	=@image ~.icn X
+IFF	=@image ~.iff X
+IMG_	=@limage ~.img X
+ICN_	=@limage ~.icn X
+IFF_	=@limage ~.iff X
+line	=@line ~X Lx Ly 0 s
+l-----	=@line ~X Lx Ly 0 1
+l-- --	=@line ~X Lx Ly 0 2
+l . .	=@line ~X Lx Ly 0 3
+l-.-.-	=@line ~X Lx Ly 0 4
+l- - -	=@line ~X Lx Ly 0 5
+l..-..	=@line ~X Lx Ly 0 6
+l.....	=@line ~X Lx Ly 0 7
+rbox0	=@rbox ~X B H 0
+rbox12	=@rbox ~X B H 1
+rbox25	=@rbox ~X B H 2
+rbox50	=@rbox ~X B H 4
+rbox75	=@rbox ~X B H 6
+rbox100	=@rbox ~X B H 8
+horz	=........1........2........3........4........5........6........7....^^
+vert	=.^^.^^.^^.^^_^^
+# -----------------------------------------------------
+# 4. commentaar en dokumentatie-commando's
+# -----------------------------------------------------
+over:	=@database "~"
+over;	*=@database "
+door:	*=@author "~"
+door;	*=@author "
+rem	=@remark
+subj	=@subject "~"
+;;	=## opm: ~ ##
+;;v	=~^^###  duits  /  nederl  ###^^
+versie	=@$VER: ~.HYP n.nn (@:"__DATE__")
+# -----------------------------------------------------
+# 5. overige commando's
+# -----------------------------------------------------
+incl	=@include ~
+idx	=@index "~"
+titel	=@title "~"
+# some link options
+link	=@{ ~ link xxx lll}
+(*	*=@{ "~
+*)	*=" link "~" }
+alink	=@{ <text> alink <name> [<line>]}
+sys	=@{ ~ system $xxx}
+rx	=@{ ~ rx xxx}
+rxs	=@{ ~ rxs xxx}
+quit	=@{ ~ quit}
+ignore	=@{ ~ ignore}
+@	=@{~}
+opt	=@options ~
+opt+	=@options -d12 +gfxy +zz -t4 -j30
+host	=@hostname ~
+tab	=@tabsize 4
+tree	=@tree
+tree.	=@endtree
+def	=@define
+# -----------------------------------------------------
+# 6. tekst attributen
+# -----------------------------------------------------
+u+	=@{U}
+u-	=@{u}
+b+	=@{B}
+b-	=@{b}
+i+	=@{I}
+i-	=@{i}
+g+	=@{G}
+g-	=@{g}
+o+	=@{O}
+o-	=@{o}
+s+	=@{S}
+s-	=@{s}
+bi+	=@{BI}
+bi-	=@{bi}
+bg+	=@{BG}
+bg-	=@{bg}
+"	=@{0}
+# -----------------------------------------------------
+# 7. commando's t.b.v. de compatibiliteit
+# -----------------------------------------------------
+#	=@(c)
+#	=@dnode
+#	=@font
+#	=@height
+ook	=@keywords ~
+#	=@master
+#	=@wordwrap
+# -----------------------------------------------------
+# 8. Beschikbare categorie‰n
+# -----------------------------------------------------
+/stg	=Documentatie/ST-Guide
+/utl	=Documentatie/Utilities
+/ed	=Documentatie/Editors
+/gr	=Documentatie/Grafisch
+/sh	=Documentatie/Shells
+/mt	=Documentatie/MultiTOS¿
+/tel	=Documentatie/Telecom
+/prg	=Documentatie/Programmeeromgeving
+/muz	=Documentatie/Muziek
+/no	=Documentatie/NoHyp
+/nob	=Documentatie/NoHyp/Binaries
+/noc	=Documentatie/NoHyp/Control Panel
+/no	=Documentatie/NoHyp/Overigen...
+\aip	=Atari Infopages
+\comp	=Computer
+\na	=Naslagwerken
+\enc	=Encyclopedie
+Paa	=Programmeren/Atari
+Prr	=Programmeren/Richtlijnen
+Phh	=Programmeren/Hardware
+Pcc	=Programmeren/C
+P++	=Programmeren/C++
+Ppp	=Programmeren/Pascal
+Haa	=Hardware/Atari
+Hkk	=Hardware/Kaarten
+Hdd	=Hardware/Drives
+Hmm	=Hardware/Monitoren
+Hpp	=Hardware/Printers
+Hss	=Hardware/Standaards
+Hii	=Hardware/ICs
+\ont	=Ontspanning
+\prv	=Priv‚
+# -----------------------------------------------------
+# tijdelijke codes
+# -----------------------------------------------------
+qim	=@image QED.IMG 65^^~^^@Line 1 63 0 0 7^^
+btn	=@rbox 5 24 1 0^^     @{ "~ ^^
+# -----------------------------------------------------
+# Einde
+# -----------------------------------------------------

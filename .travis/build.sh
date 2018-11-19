@@ -39,5 +39,15 @@ cp "fr/qed_fr.rsc" "${TMP}/qed/fr/qed.rsc"
 cp "fr/NdT.txt" "${TMP}/qed/fr"
 cp -r "fr/syntax" "${TMP}/qed/fr"
 
+mkdir -p "${TMP}/qed/nl"
+cp "nl/qed_nl.rsc" "${TMP}/qed/nl/qed.rsc"
+cp "nl/leesmij.txt" "${TMP}/qed/nl"
+cp -r "nl/syntax" "${TMP}/qed/nl"
+cp -r "nl/kurzel" "${TMP}/qed/nl"
+
+mkdir -p "${TMP}/qed/nl/doc"
+cp "doc/qed-nl.hyp" "${TMP}/qed/nl/doc/qed.hyp"
+cp "doc/qed-nl.ref" "${TMP}/qed/nl/doc/qed.ref"
+
 find "${TMP}" -type f -perm -a=x -exec m68k-atari-mint-strip -s {} \;
 mkdir -p "${OUT}" && cd "${TMP}" && zip -r -9 "${OUT}/${PROJECT}-${VERSION}.zip" *

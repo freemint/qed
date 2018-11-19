@@ -1,0 +1,47 @@
+
+;********************************************************
+[ST-Guide-brontekst]
+;********************************************************
+Txttype = "stg"
+Active = TRUE
+CaseSensitive = TRUE
+Token = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
+
+
+<Commentaar>
+From = "#"
+To = EOL
+(Color2)
+Attribs = LIGHT
+(Color16)
+Color = 11
+Selcolor = 3
+(Color256)
+Color = 11
+Selcolor = 3
+
+<Keywords>
+Keyword = "@autorefoff","@autorefon","@indexoff","@database","@hostname"
+Keyword = "@keywords","@wordwrap","@default","@endnode","@indexon"
+Keyword = "@subject","@include","@options","@tabsize","@endtree","@alabel"
+Keyword = "@extern","@symbol","@limage","@author","@remark","@define"
+Keyword = "@height","@master","@label","@pnode","@width","@endif","@alias"
+Keyword = "@noref","@image","@$VER:","@index","@title","@dnode","@help"
+Keyword = "@next","@node","@prev","@else","@xref","@uses","@line","@rbox"
+Keyword = "@tree","@font","@toc","@box","@(c)","@if"
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+(Color256)
+Attribs = BOLD
+
+<Formaat-informatie>
+From = "@{"
+To = "}"
+(Color2)
+Attribs = BOLD
+(Color16)
+Attribs = BOLD
+(Color256)
+Attribs = BOLD
