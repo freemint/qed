@@ -9,7 +9,7 @@ srcdir = .
 top_srcdir = ..
 subdir = src
 
-installdir = /tmp/qed
+installdir = /opt/GEM
 
 default: all-here
 
@@ -37,13 +37,62 @@ all-targets:
 	done && test -z "$$fail"
 
 strip:
-	$(STRIP) $(TARGET)
-	
+	@set -x; \
+	for i in $(qedtargets); do \
+		$(STRIP) .compile_$$i/qed_new.app; \
+	done
+
 install: all
-	$(top_srcdir)/mkinstalldirs $(installdir)
-	cp $(TARGET) $(srcdir)/qed.rsc $(srcdir)/qed.hrd $(installdir)
-	chmod 755 $(installdir)/$(TARGET)
-	$(STRIP) $(installdir)/$(TARGET)
+	$(MKDIR) -p $(installdir)
+
+	@set -x; \
+	for i in $(qedtargets); do \
+		cd .compile_$$i/; \
+		$(CP) qed_new.app $(installdir)/qed$$i.app; \
+		chmod 755 $(installdir)/qed$$i.app; \
+		$(STRIP) $(installdir)/qed$$i.app; \
+		cd ..; \
+	done
+
+	$(CP) "$(top_srcdir)/en/qed_en.rsc" "$(installdir)/qed.rsc"
+	$(CP) "$(top_srcdir)/en/readme.txt" "$(installdir)"
+	$(CP) "$(top_srcdir)/en/readme.old" "$(installdir)"
+	$(CP) -r "$(top_srcdir)/en/syntax" "$(installdir)"
+	$(CP) "$(top_srcdir)/dist/qed.cfg" "$(installdir)"
+	$(CP) "$(top_srcdir)/dist/icons.rsc" "$(installdir)"
+	$(CP) -r "$(top_srcdir)/dist/kurzel" "$(installdir)"
+	$(CP) -r "$(top_srcdir)/dist/treiber" "$(installdir)"
+	$(MKDIR) -p "$(installdir)/doc"
+# TODO: generate HYP
+	$(CP) "$(top_srcdir)/doc/qed-e.hyp" "$(installdir)/doc/qed.hyp"
+	$(CP) "$(top_srcdir)/doc/qed-e.ref" "$(installdir)/doc/qed.ref"
+
+	$(MKDIR) -p "$(installdir)/de"
+	$(CP) "$(top_srcdir)/src/qed.rsc" "$(installdir)/de"
+	$(CP) -r "$(top_srcdir)/tools/syntax" "$(installdir)/de"
+	$(CP) "$(top_srcdir)/dist/liesmich.txt" "$(installdir)/de"
+	$(CP) "$(top_srcdir)/dist/liesmich.old" "$(installdir)/de"
+
+	$(MKDIR) -p "$(installdir)/de/doc"
+# TODO: generate HYP
+	$(CP) "$(top_srcdir)/doc/qed.hyp" "$(installdir)/de/doc"
+	$(CP) "$(top_srcdir)/doc/qed.ref" "$(installdir)/de/doc"
+
+	$(MKDIR) -p "$(installdir)/fr"
+	$(CP) "$(top_srcdir)/fr/qed_fr.rsc" "$(installdir)/fr/qed.rsc"
+	$(CP) "$(top_srcdir)/fr/NdT.txt" "$(installdir)/fr"
+	$(CP) -r "$(top_srcdir)/fr/syntax" "$(installdir)/fr"
+
+	$(MKDIR) -p "$(installdir)/nl"
+	$(CP) "$(top_srcdir)/nl/qed_nl.rsc" "$(installdir)/nl/qed.rsc"
+	$(CP) "$(top_srcdir)/nl/leesmij.txt" "$(installdir)/nl"
+	$(CP) -r "$(top_srcdir)/nl/syntax" "$(installdir)/nl"
+	$(CP) -r "$(top_srcdir)/nl/kurzel" "$(installdir)/nl"
+
+	$(MKDIR) -p "$(installdir)/nl/doc"
+	$(CP) "$(top_srcdir)/doc/qed-nl.hyp" "$(installdir)/nl/doc/qed.hyp"
+	$(CP) "$(top_srcdir)/doc/qed-nl.ref" "$(installdir)/nl/doc/qed.ref"
+
 
 $(qedtargets):
 	$(MAKE) buildqed qed=$@
