@@ -1,0 +1,48 @@
+#
+# Makefile for QED
+#
+
+SHELL = /bin/sh
+SUBDIRS =
+
+srcdir = ..
+top_srcdir = ../..
+subdir = $(compile_dir)
+
+default: all
+
+include $(srcdir)/QEDDEFS
+
+include $(top_srcdir)/CONFIGVARS
+include $(top_srcdir)/RULES
+include $(top_srcdir)/PHONY
+
+all-here: build
+
+# default overwrites
+#INCLUDES += -I/usr/GEM/include
+CFLAGS += -funsigned-char $(INCLUDES) $(GENERAL)
+CFLAGS += $(OPTS) $(WARN)
+CFLAGS += #-m68020-60 #-DONLY_XAAES
+#CFLAGS += -ggdb -O0 -DDEBUG_LOGFILE=\"i:\\\\qed.log\" -DPREDEF_DEBUG_LEVEL=255 $(WARN)
+
+# default definitions
+OBJS = $(COBJS:.c=.o)
+# LIBS += -L/usr/GEM/lib
+LIBS += -lcflib -lgem
+LIBS += -liio
+GENFILES = $(TARGET)
+
+VPATH = ..
+
+# $(OBJS): Makefile
+
+build: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS)
+	$(STACK) --fix 32k $@
+
+# default dependencies
+# must be included last
+include $(top_srcdir)/DEPENDENCIES

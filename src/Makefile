@@ -1,7 +1,6 @@
 #
 # Makefile for QED
 #
-TARGET = qed_new.app
 
 SHELL = /bin/sh
 SUBDIRS = 
@@ -12,35 +11,30 @@ subdir = src
 
 installdir = /tmp/qed
 
-default: all
+default: all-here
+
+include $(srcdir)/QEDDEFS
 
 include $(top_srcdir)/CONFIGVARS
 include $(top_srcdir)/RULES
 include $(top_srcdir)/PHONY
 
-all-here: $(TARGET)
+all-here: all-targets
 
 # default overwrites
-#INCLUDES += -I/usr/GEM/include
-CFLAGS += -funsigned-char $(INCLUDES) $(GENERAL)
-CFLAGS += $(OPTS) $(WARN)
-CFLAGS += #-m68020-60 #-DONLY_XAAES
-#CFLAGS += -ggdb -O0 -DDEBUG_LOGFILE=\"i:\\\\qed.log\" -DPREDEF_DEBUG_LEVEL=255 $(WARN)
 
 # default definitions
-OBJS = $(COBJS:.c=.o)
-# LIBS += -L/usr/GEM/lib
-LIBS += -lcflib -lgem
-LIBS += -liio
-GENFILES = $(TARGET)
+compile_all_dirs = .compile_*
+GENFILES = $(compile_all_dirs)
 
-$(OBJS): Makefile
 
-$(TARGET): $(OBJS)
-	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS)
-	$(STACK) --fix 32k $@
-
-include $(top_srcdir)/DEPENDENCIES
+all-targets:
+	@set fnord $(MAKEFLAGS); amf=$$2; \
+	for i in $(qedtargets); do \
+		echo "Making $$i"; \
+		($(MAKE) $$i) \
+		|| case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+	done && test -z "$$fail"
 
 strip:
 	$(STRIP) $(TARGET)
@@ -50,3 +44,31 @@ install: all
 	cp $(TARGET) $(srcdir)/qed.rsc $(srcdir)/qed.hrd $(installdir)
 	chmod 755 $(installdir)/$(TARGET)
 	$(STRIP) $(installdir)/$(TARGET)
+
+$(qedtargets):
+	$(MAKE) buildqed qed=$@
+
+#
+# multi target stuff
+#
+
+ifneq ($(qed),)
+
+compile_dir = .compile_$(qed)
+qedtarget = _stmp_$(qed)
+realtarget = $(qedtarget)
+
+$(qedtarget): $(compile_dir)
+	cd $(compile_dir); $(MAKE) all
+
+$(compile_dir): Makefile.objs
+	$(MKDIR) -p $@
+	$(CP) $< $@/Makefile
+
+else
+
+realtarget =
+
+endif
+
+buildqed: $(realtarget)
