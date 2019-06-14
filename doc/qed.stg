@@ -1,13 +1,22 @@
+@if VERSION >= 6
+@os Atari
+@charset atarist
+@inputenc atarist
+@lang de
+@endif
 @database "qed - Ein Editor"
 @author "H. Achilles/C. Felsch/R. Wiesenfeller"
+@options "+i -s +z -t4"
 @$VER: 5.0.5 (@:"__DATE__")
 @subject "Dokumentation/Editoren"
-@options "+z-s"
+@width 73
 
-@node "Titel"
+
+@node "Main"
+@title "Titel"
 @{U}Titel                                                                 qed@{0}
 
-@image logo.img 33
+@image "logo.img" 33
 
 
 
@@ -66,7 +75,7 @@ und/oder des lauff„higen Programmes gegen Gebhren irgendeiner Art!
 Christian Felsch bernahm die Entwicklung von QED von Version 3.20
 bis 4.53.
 
-Von Version 5.0 bis 5.0.2 hat Heiko Achilles die Pflege bernommen.
+Von Version 5.0 bis 5.0.2 hat @{"Heiko Achilles" LINK "Heiko Achilles"} die Pflege bernommen.
 
 Seit 2002 ist QED im FreeMinT CVS/GitHub repository.
  
@@ -92,8 +101,8 @@ jedoch ist der Editor nicht optimal dafr geeignet, und somit werden
 in dieser Hinsicht wnschenswerte Funktionen, wie z.B. Blocksatz nicht
 angeboten. Fr solche Aufgaben sei auf die einschl„gige Software verwiesen.
 
-@alabel Systemvoraussetzungen
-@index Systemvoraussetzungen
+@symbol ar "Systemvoraussetzungen"
+@index "Systemvoraussetzungen"
 qed sollte auf jeder Atari ST(E)/TT/Falcon-Konfiguration laufen, die
 mindestens 1 MByte Hauptspeicher hat. Fr ein sinnvolles Arbeiten ist
 eine Bildschirmaufl”sung 640 x 400 Pixeln n”tig, qed l„t sich aber
@@ -110,9 +119,9 @@ qed wurde erfolgreich auf den folgenden Systemen getestet:
    ù STonX
    ù Tos2Win
 
-@alabel Installation
-@index Installation
-Die @{Installation ignore} ist denkbar einfach. Ab Version 3.97 besteht die
+@symbol ar "Installation"
+@index "Installation"
+Die Installation ist denkbar einfach. Ab Version 3.97 besteht die
 Dokumentation nur noch aus einem Hypertext, der der Bin„r-Distribution
 beiliegt:
 
@@ -157,7 +166,7 @@ installieren, da ST-Guide/HYPView in findet.
 @{U}Entwicklungsgeschichte                                                qed@{0}
 
 @autorefoff
-@{0U}Version 5.0.2 --> 5.0.5@{0}
+@{U}Version 5.0.2 --> 5.0.5@{0}
 
    ù Add syntax for SCEleton (JAnE, GSExec).
      Update syntax for the new UDO version.
@@ -195,14 +204,14 @@ installieren, da ST-Guide/HYPView in findet.
      haben; es sieht in anderen Editoren genauso aus. In einer der
      n„chsten Versionen wird die H”he einer Zeile vermutlich anpassbar
      sein.
-   ù Im udo.syn waren ein paar Eintr„ge doppelt.     
+   ù Im udo.syn waren ein paar Eintr„ge doppelt.
    ù Neue Hyp-Dateien von Tobias Jung: php.syn und htm.syn (ersetzt die
      bisherige htm.syn). Die Syn-Datei fr UDO-Dateien ist von Thomas
      Kerkloh - habe ich bisher leider vergessen zu erw„hnen - 
      Entschuldigung.
    ù Franz”sische Resource von Remy Villatel und tschechische Resource von
      Martin Musil verfgbar.
-        
+
 @{U}Version 5.0.1 vom 10.06.02@{0}
    ù Bugfix: Nicht expandierte TABs funktionieren wieder. Im Bin„rmodus
      h„lt sich die Darstellung an die lokalen Optionen.
@@ -284,8 +293,8 @@ installieren, da ST-Guide/HYPView in findet.
      verschiedenen Einfgem”glichkeiten. Shift-Drag (Pfad einfgen)
      entfernt, da es ber Popup verfgbar ist.
    ù Vorder- und Hintergrundfarbe sind einstellbar.
-   ù Neuen Such-Quantor eingebaut: bei '\@' wird das '\' ignoriert, so
-     da die GEM-Panne mit '@' im Editfeld umschifft wird!
+   ù Neuen Such-Quantor eingebaut: bei '\@@' wird das '\' ignoriert, so
+     da die GEM-Panne mit '@@' im Editfeld umschifft wird!
    ù šberflssige Leerzeilen werden aus Projekten beim Laden entfernt.
    ù Behandlung der Shift-Taste bei Makros korrigiert.
    ù Dateinamen mit ' werden ge”ffnet (lag am Startpcode der MiNT-Lib). 
@@ -338,7 +347,7 @@ installieren, da ST-Guide/HYPView in findet.
      Lib verlegt worden. Dialoge teilweise redesigned und alle app-
      modal im Fenster. Alerts auch im Fenster.
      Einiges an der Dialog-Funktionalit„t ge„ndert, bitte die 
-     @{"Hinweise zu den neuen Dialogen" link "Die Dialoge"} lesen!
+     @{"Hinweise zu den neuen Dialogen" LINK "Die Dialoge"} lesen!
    ù Die Fenster-Daten (Position, Gr”e und Font) sowie geladene Dateien 
      werden in einer extra Datei (xxxxyyyy.qed) gesichert, so da fr 
      verschiedene Bildschirmaufl”sungen unterschiedliche Einstellungen 
@@ -434,7 +443,7 @@ installieren, da ST-Guide/HYPView in findet.
      Stringverwaltung durcheinander kommt. qed gibt dann eine Warnung aus.
    ù Diverse kleine Bugs beseitigt.
 @autorefon
- 
+
 @endnode
 
 @node "Die Dialoge"
@@ -477,14 +486,14 @@ dargestellt werden. Damit ist die Eingabe von Sonderzeichen m”glich.
 @node "Die Menleiste"
 @{U}Die Menleiste                                                        qed@{0}
 
-  @{qed link "Men qed"}  @{Datei link "Men Datei"}  @{Bearbeiten link "Men Bearbeiten"}  @{Fenster link "Men Fenster"}  @{Suchen link "Men Suchen"}  @{Spezial link "Men Spezial"}  @{Optionen link "Men Optionen"}  Shell
+  @{"qed" LINK "Men qed"}  @{"Datei" LINK "Men Datei"}  @{"Bearbeiten" LINK "Men Bearbeiten"}  @{"Fenster" LINK "Men Fenster"}  @{"Suchen" LINK "Men Suchen"}  @{"Spezial" LINK "Men Spezial"}  @{"Optionen" LINK "Men Optionen"}  Shell
 
 šber die Menleiste k”nnen alle Funktionen aufgerufen werden. Dabei sind
 nur die Punkte anw„hlbar, die zu dem jeweiligen Zeitpunkt eine sinnvolle
 Funktion ausfhren k”nnen. Man kann z.B. einen Block nur ausschneiden,
 wenn vorher auch einer markiert wurde.
 
-@index Men-Shortcuts
+@index "Men-Shortcuts"
 Hinter den Meneintr„gen befinden sich Tastaturkrzel, mit denen die
 Funktion auch ohne den Umweg ber die Maus aufgerufen werden kann.
 Die Shortcuts werden aus der Resource ermittelt, so da sie dort auch
@@ -504,7 +513,7 @@ vorangestellt werden (auch kombiniert):
    ^ fr Control
     fr Alternate
 
-@index Men-Hilfe
+@index "Men-Hilfe"
 Wird ein Menpunkt mit gedrckter Control-Taste angeklickt, wird die
 entsprechende Position im Hyptertext angesprungen. Damit das
 funktioniert mu ST-Guide oder HYPView als Hilfeprogramm
@@ -573,9 +582,9 @@ Ein- und Ausgabe von Daten zu tun haben.
 
 @autorefoff
 Mit diesem Menpunkt legt man einen neuen Text an. Es wird ein leeres
-Fenster mit dem Titel 'Namerlos' ge”ffnet.
+Fenster mit dem Titel 'Namenlos' ge”ffnet.
 @autorefon
- 
+
 @endnode
 
 
@@ -595,7 +604,7 @@ durch Leerzeichen ersetzt und qed gibt eine Warnung aus.
 Soll qed solch eine Datei trotzdem verarbeiten, ohne die Nullbytes zu
 ersetzen, mu sie mit Bin„r ”ffnen geladen werden. 
 
-@{"Versteckte Funktion" link "Versteckte Funktionen" s-”ffnen}
+@{"Versteckte Funktion" LINK "Versteckte Funktionen" "s-”ffnen"}
  
 @endnode
 
@@ -611,7 +620,7 @@ eine Suchfunktion Dateinamen gesucht und in die Projektdatei eingetragen
 werden.
 @autorefon
 
-@{"Versteckte Funktion" link "Versteckte Funktionen" s-hinzu}
+@{"Versteckte Funktion" LINK "Versteckte Funktionen" s-hinzu}
  
 @endnode
 
@@ -787,7 +796,7 @@ Speicher befindlichen Texte, die noch nicht gesicherte nderungen
 beinhalten.
 @autorefon
 
-@{"Versteckte Funktion" link "Versteckte Funktionen" s-beenden}
+@{"Versteckte Funktion" LINK "Versteckte Funktionen" s-beenden}
  
 @endnode
 
@@ -801,7 +810,7 @@ Texte explizit nachgefragt, ob die nderungen gesichert oder verworfen
 werden sollen.
 @autorefon
 
-@{"Versteckte Funktion" link "Versteckte Funktionen" s-beenden}
+@{"Versteckte Funktion" LINK "Versteckte Funktionen" s-beenden}
  
 @endnode
 
@@ -879,7 +888,7 @@ Mit Ausschneiden wird der im aktuellen Fenster markierte Block aus dem
 Text entfernt und auf das Klemmbrett kopiert, welches zuvor gel”scht wird.
 @autorefon
 
-@{"Versteckte Funktion" link "Versteckte Funktionen" s-klemmbrett}
+@{"Versteckte Funktion" LINK "Versteckte Funktionen" s-klemmbrett}
  
 @endnode
 
@@ -894,7 +903,7 @@ kopiert.
 Sollte ein Block markiert sein, wird dieser auf das Klemmbrett kopiert.
 @autorefon
 
-@{"Versteckte Funktion" link "Versteckte Funktionen" s-klemmbrett}
+@{"Versteckte Funktion" LINK "Versteckte Funktionen" s-klemmbrett}
  
 @endnode
 
@@ -940,7 +949,7 @@ richtig formatiert ist, wieder in "maximal" gefllte Zeilen formatieren
 lassen.
 @autorefon
 
-@{"Versteckte Funktion" link "Versteckte Funktionen" s-umbruch}
+@{"Versteckte Funktion" LINK "Versteckte Funktionen" s-umbruch}
  
 @endnode
 
@@ -1064,9 +1073,9 @@ Fenstern.
   @{G}---------------------@{0}
    Zeile toppen     T
   @{G}---------------------@{0}
-   @{"Alle hintereinander" link "Fenster anordnen"}
-   @{"Alle nebeneinander" link "Fenster anordnen"}
-   @{"Alle untereinander" link "Fenster anordnen"}
+   @{"Alle hintereinander" LINK "Fenster anordnen"}
+   @{"Alle nebeneinander" LINK "Fenster anordnen"}
+   @{"Alle untereinander" LINK "Fenster anordnen"}
  
 @endnode
 
@@ -1078,11 +1087,11 @@ Fenstern.
 Mit Fenster wechseln kann man durch die ge”ffneten Text-Fenster bl„ttern.
 @autorefon
 
-Ist @{"Fensterwechsel global" link Globales} aktiviert, werden ber das VA-Protokol auch
+Ist @{"Fensterwechsel global" LINK "Globales"} aktiviert, werden ber das VA-Protokol auch
 die Fenster anderer Applikationen beim Bl„ttern mit einbezogen, sofern
 die betroffenen Programme dieses auch untersttzen.
 
-@{"Versteckte Funktion" link "Versteckte Funktionen" s-wechseln}
+@{"Versteckte Funktion" LINK "Versteckte Funktionen" s-wechseln}
  
 @endnode
 
@@ -1199,9 +1208,9 @@ Text gleich:
                               ^xyz   : xyz am Anfang einer Zeile
                               xyz$   : xyz am Ende einer Zeile
                               [^ak]  : ein Zeichen aber NICHT a oder k
-                              \@     : Beginnt Such- oder Ersetz-Text
+                              \@@     : Beginnt Such- oder Ersetz-Text
                                        damit, wird das '\' ignoriert,
-                                       da das GEM '@' als erstes Zeichen 
+                                       da das GEM '@@' als erstes Zeichen 
                                        in einem Editfeld nicht zul„t!
    Als Wort:                 Es werden nur ganze W”rter gefunden.
    Richtung:                 Stellt die Suchrichtung ein. Es kann
@@ -1230,7 +1239,7 @@ Ist vor dem ™ffnen des Dialogs im Text ein Block markiert, wird die
 erste Zeile dieses Blocks als Suchtext in den Dialog bernommen.
 
 @autorefon
-@{"Suche im Projekt bzw. nach Dateien" link "Dateien suchen"}
+@{"Suche im Projekt bzw. nach Dateien" LINK "in Dateien"}
  
 @endnode
 
@@ -1275,7 +1284,7 @@ auf Texten verfgbar. Es wird die im Suchdialog eingestellte Such-
 richtung verwendet.
 @autorefon
 
-@{"Versteckte Funktion" link "Versteckte Funktionen" s-weiter}
+@{"Versteckte Funktion" LINK "Versteckte Funktionen" s-weiter}
  
 @endnode
 
@@ -1316,7 +1325,7 @@ steht stattdessen der Dateiname im Men.
 Mit diesen fnf Menpunkten kann man die festgelegten Marken anspringen.
 Der Text, auf den sich die Marke bezieht, wird ggf. geladen.
 
-@{"Versteckte Funktion" link "Versteckte Funktionen" s-marke}
+@{"Versteckte Funktion" LINK "Versteckte Funktionen" s-marke}
  
 @endnode
 
@@ -1395,7 +1404,7 @@ des Textes hinaus zu bewegen, bricht das Makro ab. Dies ist besonders
 bei Makros mit einer Endlosschleife sinnvoll. Man kann so leicht das
 Makro auf alle Zeilen eines Textes anwenden.
 
-@{"Versteckte Funktion" link "Versteckte Funktionen" s-makro}
+@{"Versteckte Funktion" LINK "Versteckte Funktionen" s-makro}
  
 @endnode
 
@@ -1435,7 +1444,7 @@ Man erreicht so von qed aus z.B. die bei Thing angemeldeten Tools.
 
 
 @node "Zeichentabelle"
-@index Sonderzeichen
+@index "Sonderzeichen"
 @{U}Zeichentabelle...                                                     qed@{0}
 
 @autorefoff
@@ -1497,7 +1506,7 @@ nur als Zielkodierung benutzt werden k”nnen:
    ù ASCII    („ -> ae)
 @autorefon
 
-@{"Versteckte Funktion" link "Versteckte Funktionen" s-umlaute}
+@{"Versteckte Funktion" LINK "Versteckte Funktionen" s-umlaute}
  
 @endnode
 
@@ -1601,7 +1610,7 @@ Unter diesem @{Titel ignore} findet man alles. was mit der Konfiguration von qed
 zu tun hat.
 
 @box 3 25 15 0
-   @{Einfgen link šberschreiben}            INS
+   @{"Einfgen" LINK "šberschreiben"}            INS
    šberschreiben       INS
   @{G}-------------------------@{0}
    Schrift...           Z
@@ -1640,7 +1649,7 @@ gerade befindet.
 
 
 @node "Schrift"
-@index WDIALOG-Fontauswahl
+@index "WDIALOG-Fontauswahl"
 @{U}Schrift...                                                            qed@{0}
 
 @autorefoff
@@ -1658,12 +1667,12 @@ Dabei berprft qed die folgende M”glichkeiten:
 Aus programmtechnischen Grnden steht bei der Auswahl des Drucker-Fonts
 das FontProtokoll nicht zur Verfgung!
 
-@index Font-Protokoll
+@index "Font-Protokoll"
 Ist eine Fontauswahl installiert, die das Font-Protokoll untersttzt 
 (z.B. Thing), kann der Font auch aus der Auswahl auf ein qed-Fenster 
 gezogen werden und wird dann von qed bernommen.
 @autorefon
- 
+
 @endnode
 
 
@@ -1674,7 +1683,7 @@ In diesem Dialog werden globale, d.h. fr alle ge”ffneten Fenster und
 Dateien gltige Optionen eingestellt, auf die ja schon teilweise im Text
 zuvor hingewiesen wurde.
 
-   @{0U}Bin„r laden:@{0}
+   @{U}Bin„r laden:@{0}
 
       Zeilen:                       Bin„re Dateien werden mit der hier 
                                     eingestellten festen Zeilenl„nge dar
@@ -1683,8 +1692,8 @@ zuvor hingewiesen wurde.
                                     angegeben werden, die immer bin„r
                                     ge”ffnet werden. Fest definiert sind
                                     'prg', 'app', 'tos' und 'ttp'.
-                                    
-   @{0U}Hilfe-Server:@{0}                    Hilfeprogramm, ber das die Online-
+
+   @{U}Hilfe-Server:@{0}                    Hilfeprogramm, ber das die Online-
                                     Hilfe angezeigt wird. Hier kann sowohl
                                     ein Programm als auch ein Accessory an-
                                     gemeldet werden!
@@ -1692,7 +1701,7 @@ zuvor hingewiesen wurde.
                                     man auf jeden Fall ST-GUIDE or HYPView
                                     verwenden!
 
-   @{0U}AV-Server:@{0}
+   @{U}AV-Server:@{0}
 
       Fensterwechsel weiterleiten:  qed kann den Fensterwechsel an den
                                     AV-Server weiterleiten, so da dabei
@@ -1703,7 +1712,7 @@ zuvor hingewiesen wurde.
       F-Tasten weiterleiten:        Nicht mit Makros belegte F-Tasten
                                     werden an den AV-Server weitergereicht.
 
-   @{0U}Oberfl„che:@{0}
+   @{U}Oberfl„che:@{0}
 
       Parameter autom. sichern:     Beim Beenden werden die Parameter
                                     (offene Fenster...) gesichert.
@@ -1730,7 +1739,7 @@ zuvor hingewiesen wurde.
       Vordergrundfarbe (normal)/    šber diese Popups k”nnen die
       Hintergrundfarbe (normal)/    Farben fr die Fensterdarstellung
       Vordergrundfarbe (Block)/     fr normale Schrift und selektierte
-      Hintergrundfarbe (Block):     Schrift einstellen.      
+      Hintergrundfarbe (Block):     Schrift einstellen.
  
 @endnode
 
@@ -1750,7 +1759,7 @@ in den Dialog, in dem man die bis zu 18 Masken angeben kann.
 
 Fr jede einzelne Dateimaske kann folgendes eingestellt werden:
 
-   @{0U}Tabulator:@{0}
+   @{U}Tabulator:@{0}
 
     echte Tabulatoren,         Wenn keine echten TABs benutzt werden,
     Breite                     werden beim Drcken der [Tab]-Taste
@@ -1759,7 +1768,7 @@ Fr jede einzelne Dateimaske kann folgendes eingestellt werden:
                                benutzt, wird die Breite zur Darstellung
                                im Fenster benutzt.
 
-   @{0U}Formatierung:@{0}
+   @{U}Formatierung:@{0}
 
     autom. Einrcken           Wenn eine Zeile eingerck war und man
                                am Ende Return drckt, wird der Cursor
@@ -1779,7 +1788,7 @@ Fr jede einzelne Dateimaske kann folgendes eingestellt werden:
     Formatieren beim Einfgen  Wird ein Block eingefgt, werden die
                                Zeilen automatisch umbrochen.
 
-   @{0U}Sonstiges:@{0}
+   @{U}Sonstiges:@{0}
 
     Sicherheitskopie,          Beim Sichern wird eine Sicherheits-
     Extension                  kopie mit der eingegebenen Extension
@@ -1806,8 +1815,8 @@ schrift unterscheidet, bleibt die Maske so wie sie ist.
 Wenn man also alle Masken in Kleinschrift eintr„gt, sollten die Dateien
 immer richtig erkannt werden!
 
-@index Mengensymbol
-@index Zeichenmenge
+@index "Mengensymbol"
+@index "Zeichenmenge"
 @{U}Zeichenmengen@{0}
 Bei den Einstellungen 'Umbruch bei' und 'Wort besteht aus' k”nnen 
 ganze Mengen von Zeichen angegeben werden. Um eine solche Menge zu
@@ -1818,7 +1827,7 @@ M”chte man das '-' als normales Zeichen benutzen, mu man es als erstes
 in dem Editfeld eintragen, da es dann nicht als Mengensymbol inter-
 pretiert wird.
 @autorefon
- 
+
 @endnode
 
 
@@ -1827,7 +1836,7 @@ pretiert wird.
 
 @autorefoff
 In diesem Dialog k”nnen Sie die Farben und Attribute fr das
-@{"Syntax-Highlighting" link "Syntax-Highlighting"} einstellen.
+@{"Syntax-Highlighting" LINK "Syntax-Highlighting"} einstellen.
 
 Im oberen Popup-Men k”nnen Sie den Texttyp ausw„hlen, fr welchen Sie
 Farben und Attribute einstellen m”chten. Falls QED im obersten Fenster
@@ -1847,7 +1856,7 @@ selektierten Block haben soll. In den Farb-Popups k”nnen Sie statt einer
 Farbe auch ein Feld mit einem kleinen Kreuzchen ausw„hlen; In diesem
 Falle wird der Text nicht mit einer eigens eingestellten Farbe, sondern
 mit der Standard-Textfarbe bzw. der Textfarbe in Bl”cken dargestellt.
-(Siehe auch @{"Globales" link "Globales"})
+(Siehe auch @{"Globales" LINK "Globales"})
 
 Wenn Sie "fr alle gleichnamigen Regeln setzen" ankreuzen, werden
 Textfarbe und Attribute fr in gleichnamigen Regeln fr @{U}alle@{0}
@@ -1859,7 +1868,7 @@ angekreuzt, gelten die Einstellungen nur fr den angezeigten Texttyp.
 Die in diesem Dialog get„tigten Einstellungen werden mit
 @{"Parameter sichern" link "Parameter sichern"} gespeichert. Die Einstellungen werden
 dabei fr verschiedene Farbaufl”sungen getrennt gespeichert. N„here
-Informationen finden Sie im Kapitel @{"Syntax-Highlighting" link "Syntax-Highlighting"}. Dort erfahren
+Informationen finden Sie im Kapitel @{"Syntax-Highlighting" LINK "Syntax-Highlighting"}. Dort erfahren
 Sie auch, wie Sie das Syntax-Highlighting an von ihnen verwendete
 Programmiersprachen angepassen k”nnen.
 @autorefon
@@ -1898,7 +1907,7 @@ der Regel sollte man hier die verschiedenen Klammersymbole eintragen:
                      ( { [ <  und  ) } ] >
 
 Wird ein Klammersymbol im Text ausgew„hlt (Doppelklick oder ^TAB), sucht
-qed das passende Gegenstck und markiert den dazwischen liegenden Text  
+qed das passende Gegenstck und markiert den dazwischen liegenden Text
 als Block. Dabei wird eine eventuelle Klammerschachtelung beachtet.
 
 Es k”nnen s„mtliche Zeichen eingetragen werden, man mu nur darauf achten,
@@ -1946,11 +1955,11 @@ werden:
 Als Alternative zur Ausgabe ber das GEMDOS kann qed auch ber GDOS
 drucken. Dazu prft qed zun„chst die beim GDOS angemeldeten Drucker 
 (Ger„t 21 bis 30) und nutzt dann das als erstes gefundene Ger„t.
-@alabel Druckerfont
+@symbol ar "Druckerfont"
 Bei GDOS-@{Drucken ignore} ist ledeglich der zu verwendende Zeichensatz ber den
 entsprechenden Button einstellbar.
 
-@index WDIALOG-Druckdialog
+@index "WDIALOG-Druckdialog"
 Sollte die Systemerweiterung WDIALOG installiert sein und man die Nutzung
 der Druckdialoge aktiviert hat (-> Globales), benutzt qed die Druckdialoge 
 zur Konfiguration. Dabei werden die qed-eigenen Einstellungen in einer 
@@ -1976,7 +1985,7 @@ Dies hat den Vorteil, da man die Projektdatei, die man st„ndig braucht,
 direkt und ohne Umwege ber die Dateiauswahl, greifbar hat.
 @autorefon
 
-@{"Versteckte Funktion" link "Versteckte Funktionen" s-default}
+@{"Versteckte Funktion" LINK "Versteckte Funktionen" s-default}
  
 @endnode
 
@@ -2023,7 +2032,7 @@ Bin„redatei 'pdlg.qed' gesichert.
 
 
 @node "Shell"
-@alias "SE-Protokoll"
+@symbol ar "SE-Protokoll"
 @{U}Shell                                                                 qed@{0}
 
 @autorefoff
@@ -2076,10 +2085,10 @@ eine der beiden [Shift]-Tasten gedrckt h„lt:
 @label s-”ffnen
 Datei/™ffnen..
    Ausgew„hlte Projektdateien werden als normaler Text ge”ffnet.
-   
+
 @label s-hinzu
 Datei/Hinzufgen...
-   Der ausgew„hlte @{I}Dateiname@{0} wird an der Cursorposition eingefgt.
+   Der ausgew„hlte @{I}Dateiname@{i} wird an der Cursorposition eingefgt.
 
 @label s-beenden
 Datei/Sichern & Beenden...
@@ -2170,7 +2179,7 @@ folgenden, nicht sichtbaren Tastaturkommandos:
 
  @{U}Sonstiges:@{0}
 
-   ^TAB              Wort/@{Klammer link Klammerpaare} unter dem Cursor markieren.
+   ^TAB              Wort/@{"Klammer" LINK "Klammerpaare"} unter dem Cursor markieren.
    HELP              Online-Hilfe aktivieren.
                      Ist ein Block markiert, wird dieser an das Hilfe-
                      programm geschickt. Ist nichts markiert, wird
@@ -2178,12 +2187,12 @@ folgenden, nicht sichtbaren Tastaturkommandos:
                      Ansonsten gelangt man in den Hypertext von qed.
                      Online-Hilfe zu den Meneintr„gen erh„lt man, wenn
                      man den Eintrag mit gedrckter Ctrl-Taste anw„hlt.
-@index Returnwert
+@index "Returnwert"
    Alt-F??           qed verh„lt sich wie bei Sichern & Beenden und 
                      gibt den Wert der Funktionstaste an das aufrufende
                      Programm als Returnwert zurck.
-@index Alt-Zehnerblock
-   Alt-Ziffer        šber die Ziffern des Zehnerblock k”nnen @{Sonderzeichen link Zeichentabelle}
+@index "Alt-Zehnerblock"
+   Alt-Ziffer        šber die Ziffern des Zehnerblock k”nnen @{"Sonderzeichen" LINK "Zeichentabelle"}
                      eingegeben werden.
 @autorefon
  
@@ -2201,7 +2210,7 @@ markieren.
 Zun„chst die Methoden mit der Maus:
 
    ù Mit einfach gedrckter linken Maustaste wird buchstabenweise markiert.
-   ù Mit einem Doppelklick kann ein Wort oder eine @{Klammer link Klammerpaare} markiert werden.
+   ù Mit einem Doppelklick kann ein Wort oder eine @{"Klammer" LINK "Klammerpaare"} markiert werden.
      Wird die Taste gedrckt gehalten, wird wortweise weitermarkiert.
    ù Shift-Einzelklick markiert von der aktuellen Cursorposition bis zur
      angeklickten Stelle.
@@ -2216,7 +2225,7 @@ Zun„chst die Methoden mit der Maus:
      angeklickten Position markiert.
 
 šber die Tastatur stehen zwei verschiedene Methoden zur Verfgung. Welche
-benutzt wird, kann ber einen Schalter bei den @{"globalen Optionen" link Globales}
+benutzt wird, kann ber einen Schalter bei den @{"globalen Optionen" LINK "Globales"}
 eingestellt werden.
 
 Die erste M”glichkeit ist der Menpunkt Markieren. Wird die Funktion
@@ -2308,13 +2317,13 @@ qed beherrscht sogenanntes Syntax-Highlighting; dies bedeutet, da
 Teile eines (Quell-)Textes verschieden dargestellt werden,
 z.B. Kommentare, Kennworte, Variablentypen etc.
 
-Im Menpunkt Optionen/@{"Syntax..." link "Syntax"} kann man die Farben
+Im Menpunkt Optionen/@{"Syntax..." LINK "Syntax"} kann man die Farben
 und Attribute dieser Textteile einstellen.
 
 Die Syntaxinformationen sind in den *.syn-Dateien im syntax/-Verzeichnis
 gespeichert. Zus„tzlich legt qed eine Datei syn_cfg.qed an, in welcher
 die benutzerdefinierten Einstellungen (Farben und Attribute), die im
-@{"Syntax-Dialog" link "Syntax"} eingestellt werden k”nnen.
+@{"Syntax-Dialog" LINK "Syntax"} eingestellt werden k”nnen.
 
 Fr eine Anpassung an Ihre bevorzugte Programmier- oder Hypertextsprache
 ist es n”tig, eine Datei zu erstellen, in welcher die Regeln fr das
@@ -2323,51 +2332,51 @@ im qed-Verzeichnis liegen und auf .syn enden.
 
 H„ufig mssen Angaben in Anfhrungsstrichen geschrieben werden und es
 k”nnen mehrere Angaben durch Kommas getrennt angegeben werden, z.B.
-@{B}Keyword = "if","then","else"@{0}
+@{B}Keyword = "if","then","else"@{b}
 Wenn sie die Zeichen \ und " eintragen m”chten, mssen sie gequotet
 werden, z.B.
 @{B}From="\""
-To="\\"@{0}
+To="\\"@{b}
 
 Hier der Aufbau dieser Datei:
 
-@{B};Dies ist ein Kommentar@{0}
+@{B};Dies ist ein Kommentar@{b}
 Kommentare beginnen mit einem Semikolon und gehen bis ans Ende 
 der Zeile.
-     
-@{B}[C-Quelltext]@{0}
+
+@{B}[C-Quelltext]@{b}
 Ein Eintrag in rechteckigen Klammern leitet einen neuen Texttyp ein.
 Dieser Eintrag wird auch im qed-Syntax-Options-Dialog angezeigt.
 Jeder Texttyp darf in allen .syn-Dateien nur einmal vorkommen.
-     
+
 Nach dem Eintrag in rechteckigen Klammern mssen folgende Eintr„ge
 folgen:
-   
-@{B}Txttype = "syntax.cfg"@{0} oder
-@{B}Txttype = "c", "h"@{0}
+
+@{B}Txttype = "syntax.cfg"@{b} oder
+@{B}Txttype = "c", "h"@{b}
 Der Textname(n) bzw die Text-Extension(s). Kennwort dafr ist
 "Txttype".
 
-@{B}Token = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"@{0}
+@{B}Token = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"@{b}
 Die Buchstaben eines Wortes, Kennwort ist "Token". Alle Buchstaben
 mssen hierbei ausgeschrieben werden und k”nnen nicht - wie bei
 den anderen Eintr„gen - abgekrzt werden. Auch Quotes sind nicht
 erlaubt.
 
-@{B}Active = FALSE@{0} oder
-@{B}Active = TRUE@{0}
+@{B}Active = FALSE@{b} oder
+@{B}Active = TRUE@{b}
 legt fest, ob das Syntax-Highlighting fr diesen Texttyp aktiv ist.
 
-@{B}CaseSensitive = FALSE@{0} oder
-@{B}CaseSensitive = TRUE@{0}
+@{B}CaseSensitive = FALSE@{b} oder
+@{B}CaseSensitive = TRUE@{b}
 Es mu festgelegt werden, ob der Text Case-sensitiv (gro- und
 Kleinschreibung werden unterschieden) ist. Kennwort ist
 "CaseSensitive".
-     
+
 Nach diesen Eintr„gen folgen dann die Eintr„ge fr die einzelnen
 Syntax-Regeln. 
-   
-@{B}<Kommentar>@{0}
+
+@{B}<Kommentar>@{b}
 Der Name der Regel in spitzen Klammern.
 Dieser Eintrag wird auch im qed-Syntax-Dialog angezeigt.
 Regeln k”nnen mehrfach vorkommen. Z.B. kann in C++ ein Kommentar
@@ -2380,17 +2389,17 @@ sich nach den in dieser ersten Regel angegebenen Farben und
 Attribute.
 
 Fr die Bedingungen fr die Regel gibt es 3 verschiedene M”glichkeiten:
-   
-   ù @{B}Keyword = "if","then","else","case"@{0}
+
+   ù @{B}Keyword = "if","then","else","case"@{b}
      Die Kennwort-Regel:
      Mit dieser Regel werden Kennworte wie z.B. "if", "else", "case"
      festgelegt. Kennwort ist "Keyword". Es k”nnen auch mehrere Zeilen
      mit "Keyword" geschrieben werden.
-     
+
    ù @{B}From = "/*"
-     To = "*/"@{0} oder
+     To = "*/"@{b} oder
      @{B}From = "//"
-     To = EOL@{0}
+     To = EOL@{b}
      Die Von-Bis-Regel:
      Mit dieser Regel werden Einf„rbungen beschrieben, die ber mehrere
      W”rter oder Zeilen gehen, z.B. Strings oder C-Kommentare. Hierzu
@@ -2401,13 +2410,13 @@ Fr die Bedingungen fr die Regel gibt es 3 verschiedene M”glichkeiten:
      Fr die Von-Bis-Regel k”nnen Sie noch weitere Eigenschaften
      angeben: 
 
-     @{B}Nested = FALSE@{0} oder
-     @{B}Nested = TRUE@{0}
+     @{B}Nested = FALSE@{b} oder
+     @{B}Nested = TRUE@{b}
      Legt fest, ob die Regel verschachtelt ist. Z.B. lassen manche
      C-Compiler verschachtelte Kommentare zu. (Ein Kommntar kann
      innerhalb eines anderen stehen)
 
-     @{B}Quotechar = "\\"@{0}
+     @{B}Quotechar = "\\"@{b}
      Quote-Zeichen. Das Quote-Zeichen fr C-Strings ist z.B. \.
      (Anderenfalls wrde bei dem C-String "\"" das Syntax-Highlighting
      v”llig durcheinanderkommen. Um die Verwirrung komplett zu machen
@@ -2415,15 +2424,15 @@ Fr die Bedingungen fr die Regel gibt es 3 verschiedene M”glichkeiten:
      fr C, n„mlich \.
      Da qed jedoch selbst auch Quote-Zeichen benutzt, mu dieses doppelt
      eingetragen werden (siehe oben).
-     
-     @{B}Firstcolumn = FALSE@{0} oder
-     @{B}Firstcolumn = TRUE@{0}
+
+     @{B}Firstcolumn = FALSE@{b} oder
+     @{B}Firstcolumn = TRUE@{b}
      Ein Spezialfall. Die Regel ist nur dann gltig, wenn sie in der
      ersten Spalte gefunden wird. Z.B. leitet beim Pure Assembler
      ein * einen Kommentar ein, wenn er in der ersten Spalte steht.
 
    ù @{B}From = "0"
-     While = "0"-"7"@{0}
+     While = "0"-"7"@{b}
      Die W„hrend-Regel:
      Mit dieser Regel werden Einf„rbungen beschrieben, die gelten,
      w„hrend bestimmte Zeichen in beliebiger Anordnung dargestellt
@@ -2433,10 +2442,10 @@ Fr die Bedingungen fr die Regel gibt es 3 verschiedene M”glichkeiten:
      Zahlen eingef„rbt, die mit 0 beginnen, und solange eingef„rbt,
      wie Zeichen zwischen 0 und 7 dargestellt werden, z.B. wrde
      0347 komplett eingef„rbt werden, nicht aber 0xff oder 0815.
-     
-@{B}(Color2)@{0}   oder
-@{B}(Color16)@{0}  oder
-@{B}(Color256)@{0}
+
+@{B}(Color2)@{b}   oder
+@{B}(Color16)@{b}  oder
+@{B}(Color256)@{b}
 Zu guter Letzt folgen auf die Regelbeschreibung die eigentlichen
 Stil-Informationen, und zwar fr die Aufl”sungen 2-8 Farben, 16-128
 Farben und >=256 Farben getrennt. Es mssen nicht fr jede Aufl”sung
@@ -2448,17 +2457,17 @@ Regeln holen sich ihren Stil dann aus der ersten Regel.
 
 In den einzelnen Abschnitten k”nnen jeweils stehen:
 
-	ù @{B}Attribs = BOLD,ITALIC,LIGHT@{0}
-	  die Attribute, Kennwort "Attribs". Es kann "BOLD", "ITALIC" und
-	  "LIGHT" angegeben werden.
+    ù @{B}Attribs = BOLD,ITALIC,LIGHT@{b}
+      die Attribute, Kennwort "Attribs". Es kann "BOLD", "ITALIC" und
+      "LIGHT" angegeben werden.
 
-	ù @{B}Color = 15@{0}
-	  die normale Farbe. Kennwort "Color". Diese sollte natrlich
-	  der entsprechenden Aufl”sung gem„ sein! Unter 2 Farben sollte
-	  also gar keine Farbe angegeben werden und unter 16 Farben nur die
-	  Farben von 0-15.
-	  
-	ù @{B}Selcolor = 2@{0}
+    ù @{B}Color = 15@{b}
+      die normale Farbe. Kennwort "Color". Diese sollte natrlich
+      der entsprechenden Aufl”sung gem„ sein! Unter 2 Farben sollte
+      also gar keine Farbe angegeben werden und unter 16 Farben nur die
+      Farben von 0-15.
+
+    ù @{B}Selcolor = 2@{b}
      Die selektierte Farbe, Kennwort "Selcolor": Diese Farbe wird
      dargestellt, wenn ein Block dargestellt wird.
 @autorefon
@@ -2538,8 +2547,8 @@ Soll eine Projektdatei als normaler Text ge”ffnet werden, mu man beim
 @node "Kommandozeile"
 @{U}Kommandozeile                                                         qed@{0}
 
-@alabel ARGV-Verfahren
-@index ARGV-Verfahren
+@symbol ar "ARGV-Verfahren"
+@index "ARGV-Verfahren"
 qed untersttzt das ARGV-Verfahren. Dadurch k”nnen beim Start beliebig
 viele Dateinamen bergeben werden, allerdings nur wenn das aufrufende
 Programm das Verfahren auch untersttzt.
@@ -2562,7 +2571,7 @@ qed untersttzt diverse Protokolle und Nachrichten zur Kommunikation
 mit anderen Applikationen:
 
 
-@{U}Messages@{0}
+@{U}Messages@{u}
    ù VA_START:     Wenn qed diese Meldung empf„ngt, wird die bergeben
                    Datei ge”ffnet und qed antwortet mit AV_STARTED.
                    qed verschickt diese Message fr die Onlinehilfe an
@@ -2582,8 +2591,8 @@ mit anderen Applikationen:
 
    ù FONT_CHANGED: Meldung ber das Font-Protokoll.
 
-@{U}Protokolle@{0}
-@index AV-Protokoll
+@{U}Protokolle@{u}
+@index "AV-Protokoll"
    ù AV-Protokoll  qed liet beim Start die Environmentvariable $AVSERVER
                    aus. Wird ein AV-f„higer Desktop gefunden, meldet sich
                    qed dort an und untersttzt folgende AV-Funktionen:
@@ -2593,17 +2602,17 @@ mit anderen Applikationen:
                            Verzeichniss-Fenster aktualisiert werden kann.
                      AV_SENDKEY
                            Wird beim Fensterwechsel verschickt, wenn
-                           @{"Fensterwechsel global" link Globales} aktiv ist.
+                           @{"Fensterwechsel global" LINK "Globales"} aktiv ist.
                      AV_DRAG_TO_WINDOW
                            Dateien aus Projekten k”nnen auch dem Desktop
                            abgelegt, auf andere Laufwerke kopiert oder
                            aus dem Projekt entfernt werden.
                      VA_DRAGACCWIND
-                           Ist @{"Fensterwechsel global" link Globales} aktiv,
+                           Ist @{"Fensterwechsel global" LINK "Globales"} aktiv,
                            wird dieses Meldung vom AV-Server fr D&D
                            verschickt.
 
-@index Drag&Drop
+@index "Drag&Drop"
    ù Drag&Drop     qed arbeit sowohl als Empf„nger als aus als Sender des 
                    Drag&Drop-Protokolls von MultiTOS und MagiC3. 
                    qed reagiert auf die folgenden Datentypen:
@@ -2623,34 +2632,34 @@ mit anderen Applikationen:
                    qed verschickt einen markierten Textblock als .TXT
                    an fremde Fenster bzw. fgt den Text in einem eigenen
                    Textfenster an der aktuellen Cursoposition ein.
-                   
-@index DHST
+
+@index "DHST"
    ù DHST          Ist StartMeUp installiert, meldet qed dorthin alle
                    von ihm ge”ffnete Dokumente.
 
-@index OLGA
+@index "OLGA"
    ù OLGA          Ist ein OLGA-Manager installiert, meldet sich qed dort
                    als Server an.
 
 @autorefoff
-@index SE-Protokoll
+@index "SE-Protokoll"
    ù SE-Protokoll  qed untersttzt das SE-Protokoll Version 1.05 zur
                    Kommunikation zwischen einer Programmier-Shell und
                    einem Editor.
 @autorefon
 
-@alabel Cookies
-@index Cookies
-@{U}Cookies@{0}
+@symbol ar "Cookies"
+@index "Cookies"
+@{U}Cookies@{u}
    ù xFSL:        Zeichensatzauswahl.
 
    ù FSEL:        Externe Dateiauswahl. šber das SELECTRIC-Protokoll kann
                   qed mehrer Dateien (maximal 10) gleichzeitig ”ffnen.
 
 
-@alabel Environment
-@index Environment
-@{U}Environment@{0}
+@symbol ar "Environment"
+@index "Environment"
+@{U}Environment@{u}
 
 qed sucht seine Parameterdatei qed.cfg, die Resource qed.rsc
 und verschiedene andere Konfigurationsdateien, die auf .qed enden,
@@ -2701,8 +2710,8 @@ kurze Zusammenstellung:
      Cookie gesteuert werden, keinerlei Probleme haben. Es k”nnte also 
      auch an HuGo liegen.
 
-@index Debug-Level
-@{U}Debug-Modus@{0}
+@index "Debug-Level"
+@{U}Debug-Modus@{u}
 
 In qed sind an verschiedenen Stellen Ausgaben einbaut, die durch eine
 spezielle Option beim Start aktiviert werden k”nnen.
@@ -2718,7 +2727,7 @@ Folgende Level stehen zur Verfgung:
    1     Debug-Modus generell aktivieren.
 
    2     Angaben zum Betriebssystem.
-   
+
    4     Ausgabe der Start-Parameter.
 
    8     Initialisierung/Terminierung der einzelnen Module. Dieser
@@ -2726,21 +2735,21 @@ Folgende Level stehen zur Verfgung:
          sollte.
 
   26     Alle Aktionen, die mit dem AV-Protokoll zu tun haben. 
-         
-  32     Alle Aktionen, die mit dem SE-Protokoll zu tun haben.
+
+  32     Alle Aktionen, die mit dem @{"SE-Protokoll" LINK "Shell"} zu tun haben.
 
   64     Alle Aktionen, die mit OLGA zu tun haben.
 
 Die Level ab 16 sind im wesentlichen nur fr Programme interessant, die 
 mit qed ber das jeweilige Protokoll kommunizieren wollen.
-   
+
 Sollen verschiedene Level aktiviert werden, mssen die einzelnen Werte
 per ODER verknpft werden, um also s„mtliche Ausgaben zu bekommen, mu
 qed mit '--debug63' gestartet werden.
 
 
-@index Fatale Fehler
-@{U}Fatale Fehler@{0}
+@index "Fatale Fehler"
+@{U}Fatale Fehler@{u}
 
 Wenn schwere Fehler auftreten, gibt es folgende Alertbox:
 
@@ -2754,11 +2763,11 @@ reproduzieren und mich dann ber die Umst„nde zu unterrichten!
 
 
 @node "Autoren"
-@{0U}Autoren                                                                  qed@{0}
+@{U}Autoren                                                                  qed@{0}
 
 - Programmentwicklung begonnen von Tom Quellenberg
 - weiterentwickelt von Christian Felsch (Version 3.20 bis 4.53)
-- weiterentwickelt von Heiko Achilles (Version 5.0 bis 5.0.2)
+- weiterentwickelt von @{"Heiko Achilles" LINK "Heiko Achilles"} (Version 5.0 bis 5.0.2)
 
 - Deutscher Hilfetext editiert von @{"Latzmaster" LINK "Adresse"}.
  
@@ -2772,5 +2781,5 @@ Keine Kontaktinformation
 
 @pnode "Adresse"
 Mailto:
-latzmaster@gmx.de
+latzmaster@@gmx.de
 @endnode

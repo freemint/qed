@@ -1,13 +1,22 @@
+@if VERSION >= 6
+@os Atari
+@charset atarist
+@inputenc atarist
+@lang en
+@endif
 @database "qed - An Editor"
 @author "H. Achilles/C. Felsch/R. Wiesenfeller"
+@options "+i -s +z -t4"
 @$VER: 5.0.5 (@:"__DATE__")
 @subject "Documentation/Editors"
-@options "+z-s"
+@width 75
 
-@node "Title"
+
+@node "Main"
+@title "Title"
 @{U}Title                                                                   qed@{0}
 
-@image logo.img 32
+@image "logo.img" 32
 
 
 
@@ -18,19 +27,19 @@
                                  Authors
 
 
-   @{U}Contents:@{0}
+   @{U}Contents:@{u}
 
       Preface
       General, System-Requirements and Installation
-      @{"What's New?" link "What's new?"}
-      @{"Hints for Dialog Boxes" link "Hints for dialog boxes"}
-      @{"Menu Functions" link "Menu functions"}
-      @{"Hidden Functions" link "Hidden functions"}
-      @{"Block Marking Functions" link "Block marking functions"}
-      @{"Keystroke Commands" link "Keystroke commands"}
-      @{"Tag Files" link "Tag file"}
+      @{"What's New?" LINK "What's new?"}
+      @{"Hints for Dialog Boxes" LINK "Hints for dialog boxes"}
+      @{"Menu Functions" LINK "Menu functions"}
+      @{"Hidden Functions" LINK "Hidden functions"}
+      @{"Block Marking Functions" LINK "Block marking functions"}
+      @{"Keystroke Commands" LINK "Keystroke commands"}
+      @{"Tag Files" LINK "Tag file"}
       Syntax-Highlighting
-      @{"Project Files" link "Project file"}
+      @{"Project Files" LINK "Project file"}
       Commandline
       Supported Protocols, Cookies and Environment
       First aid
@@ -53,7 +62,7 @@ running OS/2. Qed was an orphan.
 
 Christian Felsch contacted Tom and he decided:
    @{B}From version 3.09 qed (including sources) will be in the
-   public domain!@{0}
+   public domain!@{b}
 
 Thus, both the program and the sources of version 3.09 may be copied
 by everybody and may be freely distributed by bulletin board systems
@@ -63,7 +72,7 @@ Yet the Tom has prohibited the charge of a fee of whatever kind.
 
 Christian Felsch maintained QED versions from 3.20 to 4.53.
 
-QED 5.0 to 5.0.2 was developed by Heiko Achilles.
+QED 5.0 to 5.0.2 was developed by @{"Heiko Achilles" LINK "Heiko Achilles"}.
 
 Since 2002 QED is part of FreeMinT CVS/GitHub repository.
  
@@ -90,11 +99,11 @@ for this purpose like justified paragraphs are not offered by qed. For
 these documents you should rather trust on other well-known software
 products.
 
-@alabel System-Requirements
-@index System-Requirements
+@symbol ar "System-Requirements"
+@index "System-Requirements"
 qed should work with any Atari ST(E)/TT/Falcon configuration with
 a minimum of 1MByte RAM.
-qed works on screen resolutions lower than 640x400 but the menu and some  
+qed works on screen resolutions lower than 640x400 but the menu and some
 dialog boxes need 640x400 for displaying them completely!
 
 qed had been succesfully tested on the following systems:
@@ -107,8 +116,8 @@ qed had been succesfully tested on the following systems:
    ù STonX
    ù Tos2Win
 
-@alabel Installation
-@index Installation
+@symbol ar "Installation"
+@index "Installation"
 The @{installation ignore} is more than simple. From version 3.97 on the
 documentation exclusively consists of a hypertext in ST-Guide format,
 included to the binary distributions:
@@ -153,7 +162,7 @@ it someplace that ST-Guide/HYPView can find it.
 @{U}History                                                                 qed@{0}
 
 @autorefoff
-@{0U}Version 5.0.2 --> 5.0.5@{0}
+@{U}Version 5.0.2 --> 5.0.5@{u}
 
    ù Add syntax for SCEleton (JAnE, GSExec).
      Update syntax for the new UDO version.
@@ -179,7 +188,7 @@ it someplace that ST-Guide/HYPView can find it.
    ù Shortcuts fixed in find/replace dialog and several others.
      Standa Opichal 05/10/2004
 
-@{0U}Version 5.0.2 (19.06.02)@{0}
+@{U}Version 5.0.2 (19.06.02)@{u}
 
    ù Loading of Syntax files is faster now, qed starts faster.
    ù Font ID and size are always saved correctly now, no matter if
@@ -188,20 +197,20 @@ it someplace that ST-Guide/HYPView can find it.
      Only drawback is the height of the different fonts, but i am sure that
      i didn't make any mistakes here; it looks the same in other editors.
      Perhaps the height of lines will be configurable in next versions.
-   ù Removed double entries in udo.syn file.     
+   ù Removed double entries in udo.syn file.
    ù New syn-files from Tobias Jung: php.syn and htm.syn (replace the old
      htm.syn). The syn-file for UDO files is from Thomas Kerkloh - sorry,
      i forgot to mention this.
    ù French resource from Remy Villatel and cesky resource from
      Martin Musil are available.
 
-@{0U}Version 5.0.1 (10.06.02)@{0}
+@{U}Version 5.0.1 (10.06.02)@{u}
 
    ù Bugfix: Unexpanded TABs now work again. In binary mode a TAB is expanded 
      or not according to local options
    ù Bugfix: Redraw problems while expanding tags
 
-@{0U}Version 5.0 (07.06.02)@{0}
+@{U}Version 5.0 (07.06.02)@{u}
 
    ù Syntax Config now in different files (c.syn, cpp.syn, pas.syn...)
    ù Another config file "syn_cfg.qed" is created. In this file the user 
@@ -238,7 +247,7 @@ it someplace that ST-Guide/HYPView can find it.
    ù Bugfix: Crash when cutting a block in the first line
    ù Bugfix: Crash when pasting a block in the last line
 
-@{0U}Version 5.0 Beta 2 (15.05.02)@{0}
+@{U}Version 5.0 Beta 2 (15.05.02)@{u}
 
    ù changed the order of searching for the resource file. It is searched now 
      1. in the own directory, 2. in $QED, 3. via shel_find in the search path. 
@@ -270,12 +279,12 @@ it someplace that ST-Guide/HYPView can find it.
      error and report it, if it happens again.
    ù Bugfix: The archives are now lzh and lower case again.
 
-@{0U}Version 5.0 Beta (09.05.02)@{0}
+@{U}Version 5.0 Beta (09.05.02)@{u}
 
    ù Added syntax highlighting.
    ù supporting 256 colors for paper, text and block colors.
 
-@{U}Version 4.53 (Sep 19 1999)@{0}
+@{U}Version 4.53 (Sep 19 1999)@{u}
 
    ù Behaviour of Search (^F) and Again (^G) have been changed:
       - ^F opens the search dialog and paste the marked text into
@@ -290,7 +299,7 @@ it someplace that ST-Guide/HYPView can find it.
    ù You can turn off the auto-start of OLGA.
    ù Various bug fixes.
 
-@{U}Version 4.52 (Nov 17 1998)@{0}
+@{U}Version 4.52 (Nov 17 1998)@{u}
 
    ù qed now saves the file permitions/ownership (on MinixFS) when 
      saving a file.
@@ -301,17 +310,17 @@ it someplace that ST-Guide/HYPView can find it.
      pops up. Shift-Drag (insert path at cursor) have been removed 
      because the popup includes this function.
    ù Fore- and background color now adjustable.
-   ù New search wildcard: '\@' at the beginning of search/replace 
+   ù New search wildcard: '\@@' at the beginning of search/replace 
      text ignores the '\'.
    ù Various bug fixes.
-   
-@{U}Version 4.51 (Aug 31 1998)@{0}
+
+@{U}Version 4.51 (Aug 31 1998)@{u}
 
    ù Various bug fixes: german Umlaut conversion (HTML), DHST server 
      name, all-iconify, MagiC font selection.
    ù qed now checks the version of the resource file. 
 
-@{U}Version 4.50 (Jul 31 1998)@{0}
+@{U}Version 4.50 (Jul 31 1998)@{u}
 
    ù New function "Top cursor line"
    ù MiNT-Lib PL48.
@@ -324,7 +333,7 @@ it someplace that ST-Guide/HYPView can find it.
    ù Redesigned to use CF-Lib instead of MyDials.
      Dialogs, alerts, extern font- and file-selection now comes in 
      window (application-modal). Some dialog-functionality have been 
-     changed, please read @{"Hints for dialog boxes" link "Hints for dialog boxes"}
+     changed, please read @{"Hints for dialog boxes" LINK "Hints for dialog boxes"}
    ù Split printer config into two seperated dialogs: one for the dayly
      printout and one for the global config (GDOS/GEMDOS).
      Remove the GDOS device popup, qed uses the first printer he founds
@@ -346,13 +355,13 @@ it someplace that ST-Guide/HYPView can find it.
    Older versions
  
 @endnode
-  
+
 
 @node "Older versions"
 @{U}News in older version                                                   qed@{0}
 
 @autorefoff
-@{U}Version 4.10 (Feb 19 1998)@{0}
+@{U}Version 4.10 (Feb 19 1998)@{u}
 
    ù SE protocol 1.05 
    ù If a label name contains a ' ', it wasn't load correctly form config.
@@ -378,7 +387,7 @@ it someplace that ST-Guide/HYPView can find it.
    ù DHST now for files over menu, VA_START, D&D and from config
    ù Various small bugs fixed and some new inserted :-) 
 
-@{U}Version 4.00 (Sep 23 1997)@{0}
+@{U}Version 4.00 (Sep 23 1997)@{u}
 
    ù qed emulates input of special characters via ALT-XXX (ASCII value
      on keypad) if the OS lacks this feature.
@@ -436,6 +445,7 @@ it someplace that ST-Guide/HYPView can find it.
 
 @endnode
 
+
 @node "Hints for dialog boxes"
 @{U}Hints for Dialog Boxes                                                  qed@{0}
 
@@ -450,12 +460,12 @@ or F-keys: F1 for the first (left) button, F2 for the second and so on
 Some dialogs contains a HELP button which can be accessed via the HELP-
 key for jumping into the online help.
 If a dialog box uses popups, you can access a 'cycle'-function by mouse-
-click on the text @{I}left@{0} of the popup or use the keyboard shortcut 
-(the underlined character @{I}left@{0} of the popup).
+click on the text @{I}left@{i} of the popup or use the keyboard shortcut
+(the underlined character @{I}left@{i} of the popup).
 
 There are two special ways for inserting text in editable text fields:
 qed supports cut/copy/paste from/to GEM clipboard into text fields.
-For this function it is necessary to use the GEM clipboard (cf. @{Global link Global}).
+For this function it is necessary to use the GEM clipboard (cf. @{Global LINK Global}).
 
 Another goodie: Press the insert key and a box with the complete char
 set will pop up. You can select a character and it will be inserted into
@@ -469,13 +479,13 @@ containing special characters.
 @node "Menu functions"
 @{U}Menu functions                                                          qed@{0}
 
-   @{qed link "Menu qed"}  @{File link "Menu File"}  @{Edit link "Menu Edit"}  @{Window link "Menu Window"}  @{Search link "Menu Search"}  @{Special link "Menu Special"}  @{Options link "Menu Options"}  Shell
+   @{"qed" LINK "Menu qed"}  @{"File" LINK "Menu File"}  @{"Edit" LINK "Menu Edit"}  @{"Window" LINK "Menu Window"}  @{"Search" LINK "Menu Search"}  @{"Special" LINK "Menu Special"}  @{"Options" LINK "Menu Options"}  Shell
 
 All functions can be invoked from the menu bar. Only those entries are
 selectable that can call a function that makes sense for the current
 state. E. g. you can only cut a block if you've marked one before.
 
-@{U}Menu shortcuts@{0}
+@{U}Menu shortcuts@{u}
 @index "Menu shortcuts"
 
 You will find the keyboard shortcuts that let you call the function
@@ -493,7 +503,7 @@ Each shortcut can start with one or more 'modification key':
     ^ for Control
      for Alternate
 
-@{U}Menu help@{0}
+@{U}Menu help@{u}
 @index "Menu help"
 
 If you hold down the control key when selecting a menu item with mouse 
@@ -516,6 +526,7 @@ all other programs running parallel to qed.
    About qed...
  
 @endnode
+
 
 @node "About qed"
 @{U}About qed...                                                            qed@{0}
@@ -541,15 +552,15 @@ This @{title ignore} contains all entries that you need for file I/O.
    Merge...       ^R
    New project    N
    Open binary... B
-  @{G}-------------------@{0}
+  @{G}-------------------@{g}
    Save           ^S
    Save as...     ^M
    Last version   ^H
    Delete         ^D
-  @{G}-------------------@{0}
+  @{G}-------------------@{g}
    Print...       ^P
    Info...        ^I
-  @{G}-------------------@{0}
+  @{G}-------------------@{g}
    Save & Quit    Q
    Quit           ^Q
  
@@ -588,7 +599,7 @@ automatically as binary.
 At Global you can specify other extensions which were opened always as 
 binary.
 
-@{"Hidden function" link "Hidden functions" s-open}
+@{"Hidden function" LINK "Hidden functions" s-open}
  
 @endnode
 
@@ -604,7 +615,7 @@ When applied to an opened project you can search file names via a search
 function and insert them into the project file.
 @autorefon
 
-@{"Hidden function" link "Hidden functions" s-merge}
+@{"Hidden function" LINK "Hidden functions" s-merge}
  
 @endnode
 
@@ -627,7 +638,7 @@ If a file gets opened with this menu entry qed will never convert any
 line breaks or the like. The data gets interpreted as a text with a
 fixed line length (-> Global).
 
-@{B}Warning:@{0}
+@{B}Warning:@{b}
    If you want to modify programs with this function you should really
    know what you are doing!
  
@@ -758,7 +769,7 @@ You will see some information about the various windows.
 Quits qed after saving all modified text files.
 @autorefon
 
-@{"Hidden function" link "Hidden functions" s-quit}
+@{"Hidden function" LINK "Hidden functions" s-quit}
  
 @endnode
 
@@ -771,7 +782,7 @@ Before quitting you will be prompted for every modified text whether you
 want to save it or not.
 @autorefon
 
-@{"Hidden function" link "Hidden functions" s-quit}
+@{"Hidden function" LINK "Hidden functions" s-quit}
  
 @endnode
 
@@ -786,22 +797,22 @@ This @{title ignore} contains several functions for text editing.
 
 @box 3 20 21 0
    Undo          UNDO
-  @{G}--------------------@{0}
+  @{G}--------------------@{g}
    Cut             ^X
    Copy line       ^C
    Paste           ^V
-  @{G}--------------------@{0}
+  @{G}--------------------@{g}
    Select block    ^B
    Select all      ^A
-  @{G}--------------------@{0}
+  @{G}--------------------@{g}
    Format paragraph
    Swap characters ^T
-  @{G}--------------------@{0}
+  @{G}--------------------@{g}
    Shift left      ^J
    Shift right     ^K
-  @{G}--------------------@{0}
+  @{G}--------------------@{g}
    Sort            S
-  @{G}--------------------@{0}
+  @{G}--------------------@{g}
    UPPER<=>lower   ^~
    All to UPPER    ^+
    All to lower    ^-
@@ -845,7 +856,7 @@ the clipboard.  The former contents of the clipboard will be lost after
 it.
 @autorefon
 
-@{"Hidden function" link "Hidden functions" s-clipboard}
+@{"Hidden function" LINK "Hidden functions" s-clipboard}
  
 @endnode
 
@@ -859,7 +870,7 @@ The current line will be copied to the clipboard.  In case you have
 selected a block, only the block will be copied to the clipboard.
 @autorefon
 
-@{"Hidden function" link "Hidden functions" s-clipboard}
+@{"Hidden function" LINK "Hidden functions" s-clipboard}
  
 @endnode
 
@@ -901,7 +912,7 @@ This function re-formats a paragraph by filling up lines that are not
 completely filled and wrapping long lines at the appropriate positions.
 @autorefon
 
-@{"Hidden function" link "Hidden functions" s-wrap}
+@{"Hidden function" LINK "Hidden functions" s-wrap}
  
 @endnode
 
@@ -937,7 +948,7 @@ When using real (hard) TABs, one TAB will be deleted.
 
 @autorefoff
 This function shifts the marked block by one tabwidth to the right (cf.
-Shift @{"Shift left" link "Shift left"}).
+Shift @{"Shift left" LINK "Shift left"}).
 
 When using real (hard) TABs, one TAB will be inserted.
 @autorefon
@@ -952,7 +963,7 @@ You can sort a marked block linewise. Of course this function only makes
 sense if you have selected at least two lines as a block.
 The dialog displays all affected lines. 
 The switch 'Upper before lower' defines the value of the upper lettes:
-Either @{i}all@{0} upper letters handled less than all lower letters 
+Either @{I}all@{i} upper letters handled less than all lower letters 
 (sort result: ABC...abc) or each upper letter handled less than the 
 corresponding lower letter (result: AaBbCc...Zz).
 
@@ -1013,12 +1024,12 @@ This submenu contains functions dealing with open windows.
 @box 3 21 8 0
     Cycle           ^W
     Close           ^U
-  @{G}---------------------@{0}
+  @{G}---------------------@{g}
     Top cursor line T
-  @{G}---------------------@{0}
-    @{"Pile" link "Arrange windows"}
-    @{"Column" link "Arrange windows"}
-    @{"Row" link "Arrange windows"}
+  @{G}---------------------@{g}
+    @{"Pile" LINK "Arrange windows"}
+    @{"Column" LINK "Arrange windows"}
+    @{"Row" LINK "Arrange windows"}
  
 @endnode
 
@@ -1028,10 +1039,10 @@ This submenu contains functions dealing with open windows.
 
 `Cycle windows' lets you browse through open text windows.
 
-@{"Window cycle global" link Global}: Active other applications' windows get included
+@{"Window cycle global" LINK "Global"}: Active other applications' windows get included
 via the VA-protocol if the corresponding programs support the protocol.
 
-@{"Hidden function" link "Hidden functions" s-cycle}
+@{"Hidden function" LINK "Hidden functions" s-cycle}
  
 @endnode
 
@@ -1103,11 +1114,11 @@ cursor positioning.
 @box 3 26 11 0
    Search/Replace...     ^F
    Again                 ^G
-  @{G}--------------------------@{0}
+  @{G}--------------------------@{g}
    Search for files...  ^F
-  @{G}--------------------------@{0}
+  @{G}--------------------------@{g}
    Goto...               ^L
-  @{G}--------------------------@{0}
+  @{G}--------------------------@{g}
    Set bookmark...       S
    => (Jump to bookmark) ^1
       ...
@@ -1147,9 +1158,9 @@ for:
                              [a-z] : any character between a and z
                              [^akn]: exactly one character EXCEPT a, k
                                      or n.
-                             \@    : Search for @, without producing the 
+                             \@@    : Search for @@, without producing the 
                                      GEM bug that deletes the editfield
-                                     if '@' is the first character.
+                                     if '@@' is the first character.
    Whole words:         Only complete words are recognized as a match.
    Direction:           Selects the search direction.
    Wrap to top:         When the end of the text buffer is reached, the
@@ -1162,7 +1173,7 @@ for:
                         the text buffer.
 
 
-@{U}Search/Replace in texts@{0}
+@{U}Search/Replace in texts@{u}
 You can specify a pattern to be inserted for the match and select whether
 to replace the first only, some, or all occurences of the pattern.  When
 selecting ``Ask'' be prompted for an individual decision at every match:
@@ -1177,7 +1188,7 @@ If a text region was marked before opening the dialog the first line
 of this text will be inserted into the search text edit field.
 @autorefon
 
-@{"Search for files or in projects" link "Search for files"}
+@{"Search for files or in projects" LINK "Search for files"}
  
 @endnode
 
@@ -1216,7 +1227,7 @@ only available for searching in texts. It uses the search direction
 as specified in the dialog box for Search/Replace.
 @autorefon
 
-@{"Hidden function" link "Hidden functions" s-again}
+@{"Hidden function" LINK "Hidden functions" s-again}
  
 @endnode
 
@@ -1254,7 +1265,7 @@ These five menu items place the cursor at the bookmark selected earlier.
 If the file containing the bookmark is not already in memory it will be
 loaded.
 
-@{"Hidden function" link "Hidden functions" s-bookmark}
+@{"Hidden function" LINK "Hidden functions" s-bookmark}
  
 @endnode
 
@@ -1271,13 +1282,13 @@ This @{title ignore} contains qed's special features.
    Record macro         ^(
    Replay macro         A
    Function keys...     F
-  @{G}-------------------------@{0}
+  @{G}-------------------------@{g}
    Character set...     ^Z
    Convert 'umlaute'... U
-  @{G}-------------------------@{0}
+  @{G}-------------------------@{g}
    Error templates...   E
    Jump to error        ^E
-  @{G}-------------------------@{0}
+  @{G}-------------------------@{g}
    Strip trailing blanks
    TABs => Blanks
    Blanks => TABs
@@ -1329,7 +1340,7 @@ beyond the first or last line of the text will also cause the replay to
 stop. This effect can be used for endless loops as it easily allows you
 to apply a macro to each line of a text.
 
-@{"Hidden function" link "Hidden functions" s-macro}
+@{"Hidden function" LINK "Hidden functions" s-macro}
  
 @endnode
 
@@ -1425,7 +1436,7 @@ only:
    ù ASCII    („ -> ae)
 @autorefon
 
-@{"Hidden function" link "Hidden functions" s-umlaute}
+@{"Hidden function" LINK "Hidden functions" s-umlaute}
  
 @endnode
 
@@ -1522,9 +1533,9 @@ is only applicable when working with real tabs.
 Everything that has to do with qed's configuration can be found here.
 
 @box 3 23 15 0
-   @{"Insert mode" link "Overwrite mode"}       INS
+   @{"Insert mode" LINK "Overwrite mode"}       INS
    Overwrite mode    INS
-  @{G}-----------------------@{0}
+  @{G}-----------------------@{g}
    Font...            Z
    Global...          G
    Local...           O
@@ -1532,10 +1543,10 @@ Everything that has to do with qed's configuration can be found here.
    Autosave...
    Brackets...
    Printer...
-  @{G}-----------------------@{0}
+  @{G}-----------------------@{g}
    Default project... P
    Insert             Y
-  @{G}-----------------------@{0}
+  @{G}-----------------------@{g}
    Save setup...      W
  
 @endnode
@@ -1561,7 +1572,7 @@ characters covered by this block will be replaced by every input.
 
 @node "Font"
 @index "WDIALOG font-selection"
-@index Font-protocol
+@index "Font-protocol"
 @{U}Font...                                                                 qed@{0}
 
 @autorefoff
@@ -1592,7 +1603,7 @@ behavior, i. e. options that apply to all open windows and files.  Most
 of them are mentioned or described elsewhere in this document.
 
 @autorefoff
-   @{0U}Open binary:@{0}
+   @{U}Open binary:@{u}
 @autorefon
 
       Lines:                Binary files will open with a fixed
@@ -1600,13 +1611,13 @@ of them are mentioned or described elsewhere in this document.
       Extender:             The file extender always will be opened
                             as binary.
 
-   @{0U}Help program:@{0}        Help program that is used to display
+   @{U}Help program:@{u}        Help program that is used to display
                             the online-help.  You can either
                             assign a program or an accessory! To
                             use the online-help you definitely
                             have to use ST-Guide or HYPView.
 
-   @{0U}AV-Server:@{0}
+   @{U}AV-Server:@{u}
 
       Send window cycle:    qed can pass the window cycle through
                             the AV-server.  As a result other
@@ -1616,7 +1627,7 @@ of them are mentioned or described elsewhere in this document.
       Send F-keys:          Function keys not bound to a macro
                             will be passed through to the AV-server.
 
-   @{0U}Gui:@{0}
+   @{U}Gui:@{u}
 
       Auto-save setup:      Parameters (open windows...) are
                             saved automatically on program-
@@ -1647,7 +1658,7 @@ of them are mentioned or described elsewhere in this document.
 @{U}Local...                                                                qed@{0}
 
 @autorefoff
-Local are options that individually apply to certain files.   
+Local are options that individually apply to certain files.
 The selected parameters will apply to all files whose names match 
 the pattern. The first two entrys cannot be modified. The asterisk
 represents all files that don't match any of the defined patterns and
@@ -1656,14 +1667,14 @@ The last entry in the popup "edit" opens the dialog for specify up
 18 file-matching patterns.
 For each pattern you can specify the following parameters:
 
-  @{0U}Tabs:@{0}
+  @{U}Tabs:@{u}
 
     real tabs,                 When no real tabs are being used pressing
     width                      the TAB-key will insert the selected
                                amount of spaces at the cursor position.
                                When using real tabs the width is used
                                for displaying in the window.
-  @{0U}Formatting:@{0}
+  @{U}Formatting:@{u}
 
     auto indent                After pressing Return the new line is
                                indented by the same amount of spaces as
@@ -1682,7 +1693,7 @@ For each pattern you can specify the following parameters:
     Break at                   The characters that allow a line-break
                                within a word (e. g. '-').
 
-  @{0U}Misc:@{0}
+  @{U}Misc:@{u}
 
     Backup,                    When saving, qed will create a backup
     Extension                  file with the selected extension.
@@ -1708,11 +1719,11 @@ loading a file from a partition with case-sensitive file names the mask
 remains unchanged.
 Exclusive use of lowercase letters thus will normally work best.
 
-@index Word delimiters
-@index Word elements
-@index Character ranges
-@index Range operator
-@{U}Word elements:@{0}
+@index "Word delimiters"
+@index "Word elements"
+@index "Character ranges"
+@index "Range operator"
+@{U}Word elements:@{u}
 
 For the setting `Wrap at' and `Word consists of' you can specify 
 entire sets of characters that a word possibly consists of. To define
@@ -1752,7 +1763,7 @@ if you select this, the default colours for text/blocks will be used.
 See Global settings.
 
 With "set for all rules of the same name", these text colours and
-attributes are used for all rules with this name in @{U}all@{0} texts.
+attributes are used for all rules with this name in @{U}all@{u} texts.
 E.g. in all text types, all rules named "Comment" are coloured in
 the same way. If not set, attributes and colours are valid only
 for the selected text type.
@@ -1792,11 +1803,11 @@ of this special characters.
 In the dialog these special characters can be edited. In addition a 
 character of start and end must be defined in each case. Usually you 
 should enter the different bracket symbols here: 
-                     
+
                       ( { [ <  and  ) } ] >
 
 If a bracket symbol is selected (by doubleclick or ^TAB), qed looks up 
-and marks the text which is situated between them as block.  
+and marks the text which is situated between them as block.
 All characters can be entered, you only must make certain that for each 
 start symbol also an end symbol is input (-> in the first editfield always
 exactly as many characters to be, as in second).
@@ -1861,7 +1872,7 @@ This gives you shorthand access to the project file without using the
 file selector box.
 @autorefon
 
-@{"Hidden function" link "Hidden functions" s-default}
+@{"Hidden function" LINK "Hidden functions" s-default}
  
 @endnode
 
@@ -1947,7 +1958,7 @@ File/Open..
 
 @label s-merge
 File/Merge...
-   The selected file @{I}name@{0} will be inserted at the cursor
+   The selected file @{I}name@{i} will be inserted at the cursor
    position..
 
 @label s-quit
@@ -2001,6 +2012,7 @@ Special/Default project...
  
 @endnode
 
+
 ## *************************************************************************
 ##  Keystroke commands
 ## *************************************************************************
@@ -2012,7 +2024,7 @@ following "invisible" keystroke commands
 @autorefoff
 
 
- @{U}Cursor positioning:@{0}
+ @{U}Cursor positioning:@{u}
 
    , , ,         Move by one line resp. column
    shift , shift   Page up/down
@@ -2026,7 +2038,7 @@ following "invisible" keystroke commands
    switched on.
 
 
- @{U}Deleting text:@{0}
+ @{U}Deleting text:@{u}
 
    ^Y                Delete line (replace clipboard)
    shift ^Y          Delete line (append to clipboard)
@@ -2036,9 +2048,9 @@ following "invisible" keystroke commands
                      left
 
 
- @{U}Miscellaneous:@{0}
+ @{U}Miscellaneous:@{u}
 
-   ^TAB              Select word or @{brackets link Bracktes} under cursor.
+   ^TAB              Select word or @{"brackets" LINK "Brackets"} under cursor.
    HELP              Activate online help.
                      If you have selected a block its contents will be
                      send entirely to the help program.  If you haven't
@@ -2047,10 +2059,10 @@ following "invisible" keystroke commands
                      hypertext.  You can see the online help for menu
                      entries if you select the entry with the CTRL-key
                      being pressed.
-@index Return value
+@index "Return value"
    Alt-F??           qed does the same as with `Save and exit' but returns
                      the value of the function key to the calling program.
-   Alt-Digits        You can insert special @{characters link "Character Set"} on the numerical
+   Alt-Digits        You can insert special @{"characters" LINK "Character set"} on the numerical
                      keypad.
  
 @autorefon
@@ -2148,7 +2160,7 @@ using '*=' instead of '=' in the assignments in the tag file. Whenever
 the specified text is typed the tag will be expanded. Please note that
 these tags are always expanded, even if they occur inside a word.
 
-@{U}Examples:@{0}
+@{U}Examples:@{u}
 
     simple tag:
       bc      =\begin{center}
@@ -2183,7 +2195,7 @@ such text parts.
 The global syntax definition files for the different text types are saved
 in folder /qed/syntax/.
 Additionally qed creates a file "syn_cfg.qed" where the user-defined
-colour- and attribute settings from @{"syntax dialog" link "Syntax..."} are saved.
+colour- and attribute settings from @{"syntax dialog" LINK "Syntax..."} are saved.
 
 For every programmer- or hypertextcode that you want "highlighted",
 an according definition file containing the rules must exist/be created.
@@ -2192,67 +2204,67 @@ extension ".syn".
 
 Most entries must be quoted, more than one parameter can be edited in
 a comma-separated list, e.g.:
-@{B}Keyword = "if","then","else"@{0}
+@{B}Keyword = "if","then","else"@{b}
 The characters \ and " must always be quoted, e.g.
 @{B}From="\""
-To="\\"@{0}
+To="\\"@{b}
 
 
-@{0U}Here is the structure of a .syn definition file:@{0}
+@{U}Here is the structure of a .syn definition file:@{u}
 
-@{B};This is a comment@{0}
+@{B};This is a comment@{b}
 Comments are beginning with a semicolon and are valid until EOL.
-     
-@{B}[C-sourcecode]@{0}
+
+@{B}[C-sourcecode]@{b}
 An entry in square brackets starts the definitions for the text type.
 It's a describing name and listed in qed syntax dialog then.
 This name must be unique for all .syn files.
-     
+
 The entry in square brackets must be followed by the filename- or
 extension definition, the keyword is "Txttype":
-   
-@{B}Txttype = "syntax.cfg"@{0} or
-@{B}Txttype = "c", "h"@{0}
 
-@{B}Token = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"@{0}
+@{B}Txttype = "syntax.cfg"@{b} or
+@{B}Txttype = "c", "h"@{b}
+
+@{B}Token = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"@{b}
 All characters a word can contain, keyword is "Token". All characters
 must be written one-by-one, definition ranges like "a-z" in other
 entries are NOT allowed here!
 
-@{B}Active = FALSE@{0} or
-@{B}Active = TRUE@{0}
+@{B}Active = FALSE@{b} or
+@{B}Active = TRUE@{b}
 determines if Syntax-Highlighting for this text type is active or not.
 
-@{B}CaseSensitive = FALSE@{0} or
-@{B}CaseSensitive = TRUE@{0}
+@{B}CaseSensitive = FALSE@{b} or
+@{B}CaseSensitive = TRUE@{b}
 It MUST be set if the text is to be handled case-sensitive or not,
 keyword is "CaseSensitive".
-     
+
 
 Now following the entries for the different syntax rules:
-   
-@{B}<Comment>@{0}
+
+@{B}<Comment>@{b}
 The name of the rule in angle brackets, this entry is listed in qed
 syntax dialog then.
 Rules can be defined more than once; e.g. in C++ a comment can be
 written between /* and */ or everything in a line after //.
 In this case <Comment> can be declared more than once, but with
 different conditions. Note: Colours and attributes can only be defined
-in the @{0B}first rule@{0}, all following rules with the same name use these colours
+in the @{B}first rule@{b}, all following rules with the same name use these colours
 and attributes then.
 
 There are three ways rule conditions can be defined:
-   
-   ù @{B}Keyword = "if","then","else","case"@{0}
+
+   ù @{B}Keyword = "if","then","else","case"@{b}
      The keyword condition:
      Keywords like e.g. "if", "else", "case" will be highlighted in text.
      You can edit more lines with "Keyword".
-     
+
    ù @{B}From = "/*"
-     To = "*/"@{0}   or
+     To = "*/"@{b}   or
 
      @{B}From = "//"
-     To = EOL@{0}
+     To = EOL@{b}
      The from-to condition:
      This condition describe highlightings with more than one word/line,
      e.g. strings or C-comments. For that you have to edit a "From" and
@@ -2261,37 +2273,37 @@ There are three ways rule conditions can be defined:
 
      The from-to condition can contain additional parameters:
 
-     @{B}Nested = FALSE@{0} or
-     @{B}Nested = TRUE@{0}
+     @{B}Nested = FALSE@{b} or
+     @{B}Nested = TRUE@{b}
      Defines if this condition is handled nested, e.g. some C-compilers
      support nested comments (a comment is written
      inside another comment).
 
-     @{B}Quotechar = "\\"@{0}
+     @{B}Quotechar = "\\"@{b}
      Quote character. The quote character for C-strings is e.g. \.
      Without setting this parameter, Syntax-Highlighting would completely
      screw up e.g. by the C-string "\"".
      But qed itself uses this quote character too, so you have to enter
      "\\" (double backslash) here.
 
-     @{B}Firstcolumn = FALSE@{0} or
-     @{B}Firstcolumn = TRUE@{0}
+     @{B}Firstcolumn = FALSE@{b} or
+     @{B}Firstcolumn = TRUE@{b}
      A special case for this condition: With TRUE the condition will be
      only valid when found in the first column in text, e.g. in Pure
      Assembler, a "*" defines a comment when written in the first column.
 
    ù @{B}From = "0"
-     While = "0"-"7"@{0}
+     While = "0"-"7"@{b}
      The while condition:
      This condition highlight ranges of characters/numbers in any order,
      e.g. constants. You have to edit "From" and "While" parameters.
      The given example would highlight all numbers beginning with 0,
      and as long as numbers from 0-7 are written, e.g. "0347" would be
      completely highlighted but not "0xff" or "0815".
-     
-@{B}(Color2)@{0}   or
-@{B}(Color16)@{0}  or
-@{B}(Color256)@{0}
+
+@{B}(Color2)@{b}   or
+@{B}(Color16)@{b}  or
+@{B}(Color256)@{b}
 At last the style informations will be defined, separate definitions
 for the different colour resolutions 2-8 colours, 16-128 colours and
 >=256 colours. If no definitions are set for a resolution, default
@@ -2302,17 +2314,17 @@ name use this definitions!
 
 The possible style definitions are:
 
-	ù @{B}Attribs = BOLD,ITALIC,LIGHT@{0}
-	  The attributes, keyword "Attribs". Allowed attributes are "BOLD",
+    ù @{B}Attribs = BOLD,ITALIC,LIGHT@{b}
+      The attributes, keyword "Attribs". Allowed attributes are "BOLD",
       "ITALIC" and "LIGHT".
 
-	ù @{B}Color = 15@{0}
-	  The colour of unselected text, keyword "Color". This parameter
-	  must be set according the colour resolution! So for 2 colours, no
-	  colour definition should be set; for 16 colours only colour
-	  index from 0-15 is allowed...
-	  
-	ù @{B}Selcolor = 2@{0}
+    ù @{B}Color = 15@{b}
+      The colour of unselected text, keyword "Color". This parameter
+      must be set according the colour resolution! So for 2 colours, no
+      colour definition should be set; for 16 colours only colour
+      index from 0-15 is allowed...
+
+    ù @{B}Selcolor = 2@{b}
       The colour of selected text (block), keyword "Selcolor".
 @autorefon
 
@@ -2390,7 +2402,7 @@ while opening.
 @node "Commandline"
 @{U}Commandline                                                             qed@{0}
 
-@alabel ARGV
+@symbol ar "ARGV"
 @index ARGV
 qed supports ARGV. This allows you to pass an arbitrary number of file
 names to qed at program startup (of course only if the calling program
@@ -2413,7 +2425,7 @@ qed supports various protocols and messages to communicate with other
 applications:
 
 
-@{U}Messages@{0}
+@{U}Messages@{u}
 
    ù VA_START:       When receiving this message the specified file will
                      be loaded and qed answer with AV_STARTED.
@@ -2433,8 +2445,8 @@ applications:
 
    ù FONT_CHANGED:   Message from the @{font ignore} server (font-protocol).
 
-@{U}Protocols@{0}
-@index AV-Protocol
+@{U}Protocols@{u}
+@index "AV-Protocol"
    ù AV-Protocol  qed reads the envariable $AVSERVER at start up time.  If
                   it recognizes an AV capable desktop, it enregisters at
                   the desktop and supports the following AV functions:
@@ -2444,16 +2456,16 @@ applications:
                            opened clipboard window can thus be updated.
                     AV_SENDKEY
                            When cycling windows, qed will send this
-                           message if @{"Global window cycle" link Global}
+                           message if @{"Global window cycle" LINK "Global"}
                            is active.
                     AV_DRAG_TO_WINDOW
                            You can drag files from projects to the system
                            desktop.
                     VA_DRAGACCWIND
                            This message will send by the AV-server for D&D
-                           if @{"Global window cycle" link Global} is active.
+                           if @{"Global window cycle" LINK "Global"} is active.
 
-@index Drag&Drop
+@index "Drag&Drop"
    ù Drag&Drop:    qed acts as receiver to MultiTOS' and MagiC's
                    Drag & Drop protocol.
                    qed currently reacts upon two file types:
@@ -2473,23 +2485,23 @@ applications:
                      .TXT (e. g. text from a CAT window):
                         Text will be inserted at cursor position.
 
-@index DHST
+@index "DHST"
    ù DHST          If StartMeUp is installed, qed will report all document
                    names that got loaded.
 
-@index OLGA
+@index "OLGA"
    ù OLGA:         If an OLGA manager has been installed, qed will
                    announce itself as a server.
 
-@index SE-Protocol
-   ù SE-Protocol:  qed supports the SE-protocol (version 1.05) that
+@index "SE-Protocol"
+   ù @{"SE-Protocol" LINK "Shell"}:  qed supports the SE-protocol (version 1.05) that
                    controls the communication between a programming shell
                    and an editor.
 
 
-@alabel Cookies
+@symbol ar "Cookies"
 @index Cookies
-@{U}Cookies@{0}
+@{U}Cookies@{u}
 
    ù xFSL:        Font selection.
 
@@ -2497,9 +2509,9 @@ applications:
                   to open multiple (max 10) files.
 
 
-@alabel Environment
-@index Environment
-@{U}Environment@{0}
+@symbol ar "Environment"
+@index "Environment"
+@{U}Environment@{u}
 
 qed looks for the parameterfiles qed.cfg, pdlg.qed, display info file and 
 the resource file qed.rsc on several paths.
@@ -2550,7 +2562,7 @@ these bugs, I know them:
    ù There are some problems with font selection "HuGO" and the 
      printer setup dialog of WDAILOG.
 
-@{U}Debug mode@{0}
+@{U}Debug mode@{u}
 @index "Debug level"
 
 On several places in qed are debug message inserted which can be 
@@ -2567,13 +2579,13 @@ first argument on the command line. 'XX' specified the debug level:
    26    Show all actions via AV protocol. 
    32    Show all actions via SE protocol. 
    64    Show all actions via OLGA.
-        
+
 For get more than one information the levels had to be ORed (e.g. 7 for
 OS infos and argv-list).
 
 
 @index "Fatal error"
-@{U}Fatal errors@{0}
+@{U}Fatal errors@{u}
 
 In some cases qed crashes with an alert like this:
 
@@ -2591,29 +2603,32 @@ alert and contact me!
 
 - Program development started by Tom Quellenberg
 - continued by Christian Felsch (Version 3.20 to 4.53)
-- continued by Heiko Achilles (from Version 5.0 to 5.02)
+- continued by @{"Heiko Achilles" LINK "Heiko Achilles"} (from Version 5.0 to 5.02)
 
-- English hypertext by Guido Flohr/Heiko Achilles
+- English hypertext by @{"Guido Flohr" LINK "Guido Flohr"}/@{"Heiko Achilles" LINK "Heiko Achilles"}
 - continued by @{"Latzmaster" LINK "Adresse"}.
  
 @endnode
+
 
 @pnode "Heiko Achilles"
 No contact information
 @endnode
 
+
 @pnode "Guido Flohr"
 (outdated)
 Guido Flohr
 
-mailto:gufl0000@stud.uni-sb.de
+mailto:gufl0000@@stud.uni-sb.de
 http://stud.uni-sb.de/~gufl0000
 
 For comments on the english version
 of this document only!
 @endnode
 
+
 @pnode "Adresse"
 Mailto:
-latzmaster@gmx.de
+latzmaster@@gmx.de
 @endnode
