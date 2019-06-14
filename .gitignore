@@ -1,4 +1,5 @@
 .deps
+.compile_*
 *.app
 *.o
 *~
