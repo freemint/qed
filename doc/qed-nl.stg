@@ -1,0 +1,4597 @@
+@if VERSION >= 6
+@os Atari
+@charset atarist
+@inputenc atarist
+@lang nl
+@endif
+@database "qed - Een Editor"
+@default "NO_GO"
+@author "Godfried Cobben (vert.)"
+@help "HELP"
+@options "+g +i -s +x +y +z -t4 -d24 -j40"
+@define QEDVERSION 5.02
+@$VER: qed.hyp @:"QEDVERSION" (@:"__DATE__")
+@subject "Documentatie/Applicaties"
+@width 75
+
+
+@node "Main" "Inhoud"
+@symbol ar "Inhoud"
+@next "Voorwoord"
+@box 1 75 6 0
+
+@limage "logo.bmp" 35
+
+@rbox 35 9 1 0
+@rbox 45 9 1 0
+@rbox 55 9 1 0
+@rbox 65 9 1 0
+   On-Line help voor QED v@:"QEDVERSION"      NIEUW    HISTORY    HELP       @{"???" LINK "LEESDIT"}
+
+   @{I}een PD editor voor Atari @{i}
+
+   begonnen door Tom Quellenberg
+   verder ontwikkeld door @{"Christian Felsch" LINK "Christian Felsch"}
+   vervolgens door @{"Heiko Achilles" LINK "Heiko Achilles"}
+   support nederlandse versie door @{"Godfried Cobben" LINK "Godfried Cobben"} 
+
+ 
+   @{U}Inhoud:                                  @{u}
+
+      Voorwoord
+      @{"QED, een ASCII-editor" LINK "QED"}
+      Systeemvereisten
+      Installatie
+      Tekstvenster
+      Menufuncties
+      Kortzetsels
+      Projecten
+      Verborgen functies
+      QED en het Operating System
+      @{"Ondersteunde protocollen" LINK "protocollen"}
+
+   @{U}                                         @{u}
+
+
+@endnode
+
+
+@pnode "LEESDIT"
+@{G}Omdat de gebruiker niet gediend is met een helpsysteem
+waar fouten in zitten, is deze ST-Guide help gecontroleerd
+in combinatie met ST-Guide release van 10/12/96.
+Hij is alleen bruikbaar met de officiâle nederlandse versie
+van QED v@:"QEDVERSION".
+
+NET ALS QED ZELF IS OOK DEZE HYPERTEKST @{B}PD@{b}!@{g}
+@endnode
+
+
+@pnode "Christian Felsch"
+Christian Felsch
+Bevenser Weg 18
+21079 Hamburg
+Tel: 040 - 769 102 31
+
+email: Christian Felsch @@ HH
+       felsch@@tu-harburg.d400.de
+@endnode
+
+
+@pnode "Heiko Achilles"
+  Heiko Achilles
+  @{U}e-Mail:@{u}
+  heinisoft@@atari-users.net
+@endnode
+
+
+@pnode "Godfried Cobben"
+  Godfried Cobben
+  @{U}Te bereiken via:                       @{u}
+   E-mail:   gncobben@@luna.nl
+
+ De meest recente versie van QEDnl is altijd te vinden op:
+ @{B}http://www.gncobben.luna.nl/qed.html@{b}
+@endnode
+
+
+@node "Voorwoord"
+@prev "Main"
+@image "logo-small.bmp" 65
+Voorwoord
+@line 1 63 0 0 7
+
+Nadat Tom Quellenberg in 1993 de ontwikkeling van zijn editor bij versie 
+3.09 staakte, werden de sources door Robert Irrgang overgenomen. Robert 
+deed een paar kleine wijzigingen en de versie 3.10û zag het licht. Daarna 
+werd Robert geplaagd door ernstige hardware problemen, met als gevolg het 
+verlies van de sources van versie 3.10û. Robert verkocht zijn Atari en 
+schakelde (beroepshalve) over op OS/2 en opnieuw zat QED zonder 
+programmeur.
+
+@{"Christian Felsch" LINK "Christian Felsch"} heeft toen kontakt opgenomen 
+met Tom, en deze besloot het volgende:
+
+@{B}qed is vanaf versie 3.09 inclusief alle sources Public Domain!@{b}
+
+Dit betekent, dat zowel het programma alsmede de C-sources door iedereen 
+gekopieerd en verspreid mogen worden. De auteur verbiedt echter elke 
+commerciâle verspreiding. Hieronder worden ook PD-bibliotheken verstaan 
+waar men de software slechts tegen betaling kan verkrijgen!
+
+Van versie 3.09 tot versie 4.53 was @{"Christian Felsch" LINK "Christian Felsch"} 
+verantwoordelijk.
+
+Vanaf versie 5 is @{"Heiko Achilles" LINK "Heiko Achilles"} verantwoordelijk voor de verdere
+ontwikkeling van van QED.
+
+
+@box 44 21 4 0
+
+                                            @{"Godfried Cobben" LINK "Godfried Cobben"}
+                                            (support NL-versie)
+
+@endnode
+
+
+@node "QED"
+@image "logo-small.bmp" 65
+QED, een ASCII-editor
+@line 1 63 0 0 7
+
+QED is een pure ASCII-editor voor alle Atari- en andere TOS-computers, die 
+de voordelen van de GEM-interface, zoals DropDown menu's, dialoogboxen en 
+ikonen, etc. gebruikt. Naast de bediening met de muis, kunnen nagenoeg 
+alle functies m.b.v. @{"shortcuts" LINK "Shortcut"} ook via het 
+toetsenbord gebruikt worden. De keuze is aan de gebruiker.
+
+QED is in de eerste plaats bedoeld voor het maken van bronteksten, dus 
+voor het programmeren alsmede voor TeX/LaTeX (vandaar de doorlopende tekst-
+modus). Belangrijke features in dit verband zijn de echte tabulatoren, de 
+zoekfunkties met reguliere uitdrukkingen en de zg. "Kortzetsels".
+
+Nieuw in QED v@:"QEDVERSION" is de @{"syntax-gevoeligheid" LINK "Syntax-gevoeligheid"} waarmee meer overzicht 
+bij het schrijven van broncode mogelijk is.
+
+Uiteraard kunnen met QED ook brieven en andere teksten gemaakt worden, de 
+editor is echter niet voor dat doel gedacht en men zal tevergeefs @{"zoeken" LINK "Zoeken"} 
+naar in dit verband wenselijke @{"opties" LINK "Opties"} zoals bijvoorbeeld blokzetsel.
+Voor deze taken kan men terecht bij andere, @{"speciaal" LINK "Speciaal"} hiervoor toegeruste 
+software, tekstverwerkers dus.
+
+@{IU}NB.@{iu}
+Natuurlijk is geprobeerd QED v@:"QEDVERSION" van alle fouten te ontdoen. Omdat software 
+vanaf een zekere complexiteit i.h.a. nooit helemaal bugvrij kan zijn, is 
+het niet uit te @{"sluiten" LINK "Sluiten"} dat ook in QED v@:"QEDVERSION" nog enkele foutjes aanwezig zijn.
+
+De programmeur neem geen enkele verantwoordelijkheid voor eventuele schade 
+die voortkomt uit het gebruik van QED. Men dient de software te accepteren 
+"zoals hij is".
+
+Evenzo kunnen in deze handleiding nog fouten zitten. Voor elke opmerking 
+terzake heb ik een open oor...
+
+De in deze handleiding genoemde soft- en hardware zijn doorgaans 
+gedeponeerde handelsmerken en moeten als zodanig gezien worden.
+
+@endnode
+
+
+@node "Systeemvereisten"
+@image "logo-small.bmp" 65
+Systeemvereisten
+@line 1 63 0 0 7
+
+QED zou op elke ATARI ST(E)/TT/Falcon-configuratie moeten werken, 
+met tenminste 512 KByte werkgeheugen en die beschikt over een beeldscherm-
+resolutie van minimaal 640*400 pixels of meer.
+
+QED werd met succes op de volgende systemen getest:
+
+ - TOS 1.0, 1.4, 2.06, 3.06, 4.x
+ - Mag!C 2, Mag!C 3, Mag!C 4, Mag!C 5
+ - Mag!CMac
+ - Mag!CPC
+ - MultiTOS 1.04, 1.08
+ - FreeMiNT met AES4
+ - N.AES 1.x, N.AES 2.x
+ - Geneva
+ - STonX
+ - Tos2Win
+ - STEmulator 1.68 (met en zonder MiNT)
+
+@endnode
+
+
+@node "Installatie"
+@next "Tekstvenster"
+@image "logo-small.bmp" 65
+Installatie
+@line 1 63 0 0 7
+
+@rbox 18 45 1 0
+Basisbeginselen   ... onder MiNTø
+
+@rbox 18 45 1 0
+                  ... de dialogen
+
+Om de editor te kunnen gebruiken, hoeft er alleen voor gezorgd te worden 
+dat het RSC-@{"bestand" LINK "Bestand"} QED.RSC zich bevindt op een plaats waar deze bij de 
+start van het programma gevonden wordt. Het meest zinvol is in dezelfde 
+folder, dus naast het programma.
+Omdat het denkbaar is, dat men alle resources gescheiden van de 
+programma's wil opslaan, wordt dit bestand ook gevonden als het op een van 
+de paden staat die met de environment-variabele 'PATH' zijn aangegeven. 
+Tenslotte wordt ook nog gezocht op de environment-variabele 'QED', dit 
+omdat er programma's bestaan, die een editor op zo'n manier starten, dat 
+deze niet kan vaststellen waar zijn resource is.
+
+Mocht QED zijn resource niet vinden dan wordt een alert gegeven en het 
+programma beâindigd.
+
+De gebruiker kan de gemaakte instellingen van QED opslaan zodat bij een 
+volgende start wederom dezelfde configuratie ter beschikking staat. Het 
+bestand dat daarvoor gebruikt wordt krijgt de naam
+@{"'QED.CFG'" LINK "qed.cfg"}.
+
+Natuurlijk is het ook mogelijk om bestandsnamen als parameter bij de start 
+mee te geven. De bestanden worden dan automatisch geopend. Volgt als 
+tweede paremeter achter de bestandsnaam een getal, dan wordt de @{"cursor" LINK "Cursor"} na 
+het laden in de betreffende regel gezet. Volgt daarna nog een getal dan 
+wordt de cursor ook nog in de betreffende kolom gezet.
+
+@endnode
+
+
+@node "... onder MiNTø"
+@toc "Installatie"
+@image "logo-small.bmp" 65
+... onder MiNTø
+@line 1 63 0 0 7
+
+Wordt QED v@:"QEDVERSION" onder het TOS-vervangende MiNT geãnstalleerd, dan
+zijn geen bijzondere maatregelen nodig, het draait dan in het zg.
+MiNT-domain. Programma's kunnen dan gebruik maken van enkele functies
+uit de UNIX-omgeving, maar de gebruiker merkt hier nauwelijks iets van.
+Het enige opvallende is, dat bij een geãnstalleerde MinixFS of EXT2fs
+de bestandsnamen niet langer uit 8+3 tekens hoeven te bestaan, maar dat
+deze veel langer mogen zijn (paden 1024 tekens, bestandsnamen
+256 tekens) en dat er onderscheid gemaakt wordt tussen kleine- en hoofd-
+letters.
+In QED worden lange bestandsnamen bij de desktop ikonen echter na het
+twaalfde teken afgesneden zodat deze ikonen allemaal even breed zijn.
+Intern wordt vanzelfsprekend de volledige naam gebruikt.
+
+@endnode
+
+
+@node "... de dialogen"
+@symbol ar "nieuwe dialogen!"
+@toc "Installatie"
+@image "logo-small.bmp" 65
+...de dialogen
+@line 1 63 0 0 7
+
+Alle dialogen en alerts worden in vensters weergegeven. Het gaat hierbij 
+om applicatie-modale dialogen; d.w.z. dat zolang een dialoog open is, QED 
+weliswaar stilstaat, maar er kan naar een ander applicatie overschakelen.
+
+Als bij een knop of schakelaar een letter onderstreept is dan kan de 
+betreffende functie ook opgeroepen worden door te drukken op een 
+toetscombinatie van deze letter en @{"ALT" LINK "ALT"}.
+
+Bij alle dialoog- en alert-boxen die een 'Terug'-knop bevatten kan deze 
+behalve via een mogelijk shortcut ook bediend worden met de UNDO-knop. De 
+knoppen in alerts kunnen, net als bij Mag!C, bediend worden met de 
+@{"functietoetsen" LINK "Functietoetsen"} F1 tot F3.
+Enkele dialogen hebben een HELP-knop waarmee men op de betreffende pagina 
+van de OnLine Help belandt. Is de HELP-knop aanwezig dan kan ook op de 
+Help-toets gedrukt worden voor hetzelfde resultaat.
+
+Worden in een dialoog PopUp's gebruikt dan kan de shortcut gevonden worden 
+in de tekst bij de PopUp; deze shortcut schakelt telkens naar het volgende 
+item van de PopUp.
+
+QED ondersteunt het GEM-clipbord op de invulregels van de dialogen. Via de 
+toetsencombinaties @{"CTRL" LINK "CTRL"}-C, CTRL-X en CTRL-V kunnen teksten van en naar het 
+clipbord gekopieerd worden. opdat het werkt moet QED natuurlijk wel het 
+clipbord gebruiken (zie: Globale parameters).
+
+Met behulp van de INSERT-toets wordt een box opgeroepen met bijzondere 
+karakters die niet direct via het toetsenbord bereikbaar zijn. Zo is het 
+ook mogelijk om bijv. naar deze bijz. karakters te @{"zoeken" LINK "Zoeken"}.
+
+@{U}Nieuwe dialoogroutines@{u}
+Vanaf versie 4.50 gebruikt QED niet meer de MyDials van Olaf Meisiek maar 
+de nieuwe CF-Lib dialogen. Deze Library gebruikt volledig het shortcut-
+mechanisme en de nieuwe object-typen van Mag!C (ronde radio-buttons, 
+aankruis-knoppen, functiegroep-titels, functiegroep-kaders etc.). De van 
+de MyDials bekende 3D-weergave is hierdoor verdwenen en alleen beschikbaar 
+bij systemen waarvan het AES deze effecten ondersteunt (Mag!C, N.AES, 
+MultiTOS). Is Mag!C niet geãnstalleerd, dan wordt de Mag!C functionaliteit 
+nagenoeg identiek nagedaan.
+
+In de CF-Lib wordt geprobeerd, de behandeling van objecten zo veel 
+mogelijk aan het AES over te laten. Optimaal loopt e.e.a. dus onder Mag!C 
+omdat daar de meeste functies door het AES uitgevoerd worden, zodat bijv. 
+geen problemen ontstaan met proportionele systeem-fonts.
+
+@{U}Mag!C shortcut-mechanisme@{u}
+
+De shortcut wordt vastgelegd in de resource en kan dus aan de persoonlijke 
+voorkeur worden aangepast met een resource-editor. Enige beperking onder 
+N.AES is dat de streepjes onder de shortcut niet zichtbaar zijn in Exit-
+buttons. Ze werken overigens wel!
+
+@rbox 5 30 1 0
+     @{"Dialogen en het GEM-clipbord" LINK "Blok: ...in dialogen"}
+
+@endnode
+
+
+@node "Tekstvenster"
+@next "Cursor"
+@prev "Installatie"
+@image "logo-small.bmp" 65
+Het tekstvenster
+@line 1 63 0 0 7
+
+De tekstvensters van QED v@:"QEDVERSION" bieden naast de gebruikelijke be-
+dieningselementen ook @{"informatie" LINK "Informatie"} over de plaats van 
+de @{"cursor" LINK "Cursor"}, ev. kenmerken van het tekstbestand en of de 
+tekst gewijzigd werd maar nog niet opgeslagen.
+
+@rbox 28 3 1 0
+@rbox 2 24 1 0
+  @{"Cursorbesturing        " LINK "Cursor"}  @{" ? " LINK "TEXTWIN1"}
+@line 29 0 11 2 1
+
+@rbox 30 3 1 0
+@rbox 2 24 1 0
+  @{"Speciale toetsfuncties " LINK "Toetsfuncties"}    @{" ? " LINK "TEXTWIN2"}
+@line 31 0 9 2 1
+
+@rbox 33 3 1 0
+@rbox 45 3 1 0
+@rbox 56 3 1 0
+@rbox 2 24 1 0
+  @{"Tekstblokken           " LINK "Tekstblokken"}       @{" ? " LINK "TEXTWIN3"}         @{" ? " LINK "TEXTWIN4"}        @{" ? " LINK "TEXTWIN5"}
+@line 34 0 7 2 1
+@line 46 0 7 2 1
+@line 57 0 6 2 1
+
+@limage "qed-nl_textwindow.bmp" 14
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ..m
+
+
+
+
+
+@endnode
+
+
+@pnode "TEXTWIN1"
+Als het geopende bestand @{B}Read-only@{b}
+is dan wordt in de inforegel het
+''-symbool gezet.
+@endnode
+
+
+@pnode "TEXTWIN2"
+Als het geopende bestand een
+@{B}UNIX-bestand@{b} is dan wordt in
+de inforegel het 'CR'-symbool
+gezet.
+@endnode
+
+
+@pnode "TEXTWIN3"
+Hier wordt de @{B}regel@{b} waar de
+cursor zich bevindt weergegeven.
+@endnode
+
+
+@pnode "TEXTWIN4"
+Hier wordt de @{B}kolom@{b} waar de
+cursor zich bevindt weergegeven.
+@endnode
+
+
+@pnode "TEXTWIN5"
+Door een '*' wordt aangegeven dat de tekst
+werd gewijzigd, maar nog niet bewaard is.
+@endnode
+
+
+@node "Cursor"
+@prev "Tekstvenster"
+@toc "Tekstvenster"
+@image "logo-small.bmp" 65
+Cursorbesturing
+@line 1 63 0 0 7
+
+@{B}
+@rbox 10 3 1 0
+@rbox 3 6 1 0
+   @{"CTRL" LINK "CTRL"}   @{"" LINK ""}           @{b}˙ Verplaatst de cursor naar het begin van het
+                        volgende woord.
+@{B}
+@rbox 10 3 1 0
+@rbox 3 6 1 0
+   @{"CTRL" LINK "CTRL"}   @{"" LINK ""}           @{b}˙ Verplaatst de cursor naar het begin van heth*
+                        voorgaande woord.
+@{B}
+@rbox 10 3 1 0
+@rbox 3 6 1 0
+   @{"SHFT" LINK "SHFT"}   @{"" LINK ""}           @{b}˙ Verplaatst de cursor naar het einde van det.ï⁄
+                        regel.
+@{B}
+@rbox 10 3 1 0
+@rbox 3 6 1 0
+   @{"SHFT" LINK "SHFT"}   @{"" LINK ""}           @{b}˙ Verplaatst de cursor naar het begin van de
+                        regel.
+@{B}
+@rbox 10 3 1 0
+@rbox 3 6 1 0
+   SHFT   @{"" LINK ""}           @{b}˙ 'Bladert' een heel @{"venster" LINK "Venster"} naar boven.
+                        (De cursor blijft hierbij, net als bij de vol-
+                        gende functie, relatief t.o.v. het venster op
+                        dezelfde positie, d.w.z. hij verandert slechts
+                        van plaats in de tekst omdat de tekst als het
+                        ware onder de cursor wordt verschoven).
+@{B}
+@rbox 10 3 1 0
+@rbox 3 6 1 0
+   SHFT   @{"" LINK ""}           @{b}˙ 'Bladert' een heel venster naar onderen.
+@{B}
+@rbox 10 5 1 0
+@rbox 3 6 1 0
+   SHFT   @{"Ret" LINK "Ret"}         @{b}˙ Verplaatst de cursor naar het begin van de
+                        volgende regel. Dit is identiek aan [Return],
+                        er wordt echter gÇÇn nieuwe regel ingevoegd.
+@{B}
+@rbox 3 6 1 0
+   HOME               @{b}˙ Verplaatst de cursor naar het begin van de
+                        tekst.
+@{B}
+@rbox 10 6 1 0
+@rbox 3 6 1 0
+   SHFT   HOME        @{b}˙ Verplaatst de cursor naar het einde van de
+                        tekst.
+
+@endnode
+
+
+@node "Toetsfuncties"
+@toc "Tekstvenster"
+@image "logo-small.bmp" 65
+Toetsfuncties
+@line 1 63 0 0 7
+
+Behalve de normale @{"cursor" LINK "Cursor"}-verplaatsing (dwz. lettergewijs in alle vier
+richtingen) en de 'Menufuncties' zijn er in QED nog een aantal functies
+beschikbaar die alleen met het toetsenbord op te roepen zijn. Het gaat
+hier om functies die betrekking hebben op het pure schrijven/wijzigen
+van de tekst.
+
+@{B}
+@rbox 10 3 1 0
+@rbox 3 6 1 0
+   @{"CTRL" LINK "CTRL"}   Y           @{b}˙ Hiermee wordt de actuele regel, dwz. de re-
+                        gel waarop de @{"cursor" LINK "Cursor"} zich bevind, in zijn geheel
+                        gewist. De gewiste regel wordt daarbij naar het
+                        Clipbord gekopiâerd. Op het clipbord aanwezige
+                        tekst wordt hiermee overschreven.
+@rbox 48 6 1 0
+@rbox 54 3 1 0
+@rbox 66 7 1 0
+                        Houdt men tegelijk met  @{"CTRL" LINK "CTRL"}  Y  ook nog  SHIFT
+                        ingedrukt, dan wordt het clipbord niet gewist
+                        maar de regel wordt aan de aanwezige tekst toe-
+                        gevoegd.
+                        Omdat deze functie ook gebruikt kan worden om
+                        hele regels eenvoudig te wissen, waarbij telkens
+                        op schijf geschreven zou worden als men van het
+                        GEM-clipbord gebruik maakt, wordt het opslaan van
+                        de gewiste regel onderdrukt als deze functie kort
+                        achter elkaar herhald wordt. Dus als men de
+                        toetsen ingedrukt houdt dan wordt de regel niet
+                        steeds naar het clipbord geschreven. Dit gebeurd
+                        alleen met de laatst gewiste regel.
+@{B}
+@rbox 10 5 1 0
+@rbox 3 6 1 0
+   @{"SHFT" LINK "SHFT"}   DEL         @{b}˙ Hiermee worden alle tekens v.a. de cursorpo-
+                        sitie tot aan het einde van de regel gewist.
+@{B}
+@rbox 10 5 1 0
+@rbox 3 6 1 0
+   CTRL   DEL         @{b}˙ Hiermee worden alle tekens v.a. de cursorpo-
+                        sitie tot aan het begin van het volgende woord
+                        gewist.
+@{B}
+@rbox 10 11 1 0
+@rbox 3 6 1 0
+   @{"CTRL" LINK "CTRL"}   Backspace   @{b}˙ Hiermee worden alle tekens v.a. de cursorpo-n
+                        sitie tot aan het begin van het vorige woord
+                        gewist.
+@{B}
+@rbox 3 6 1 0
+   Undo               @{b}˙ Een druk op de @{"Undo" LINK "Herstellen"}-toets heeft dezelfde
+                        uitwerking als het menu-item 'Herstellen', de
+                        laatst uitgevoerde @{"bewerking" LINK "Bewerking"} wordt ongedaan ge-
+                        maakt.
+@rbox 10 5 1 0
+@rbox 3 6 1 0
+@{B}   @{"CTRL" LINK "CTRL"}   TAB         @{b}˙ Woord onder de @{"cursor" LINK "Cursor"} markeren als 
+                        tekstblok.
+@rbox 3 6 1 0
+@{B}   HELP               @{b}˙ OnLine Help activeren.
+                        Is er een blok gemarkeerd, dan wordt dit blok 
+                        aan het Help-programma doorgegeven.
+                        Is er niets gemarkeerd dan wordt geprobeerd 
+                        het woord onder de cursor door te geven; lukt 
+                        dit niet dan komt men in de hypertext van QED 
+                        terecht.
+@{B}
+@rbox 10 5 1 0
+@rbox 3 6 1 0
+   @{"ALT" LINK "ALT"}    F??         @{b}˙ QED gedraagt zich als bij het menu-
+                        item Bewaar & Stop en geeft de waarde van de 
+                        functie-toets terug aan het oproepende 
+                        programma.
+
+@endnode
+
+
+@node "Tekstblokken"
+@next "Menufuncties"
+@toc "Tekstvenster"
+@xref "Blok selecteren"
+@xref "Alles selecteren"
+@image "logo-small.bmp" 65
+Werken met tekstblokken
+@line 1 63 0 0 7
+
+De eigenlijke blokfuncties (Knip, Kopie en Plak) zijn al beschreven 
+bij de @{"menufuncties" LINK "Menufuncties"}. Op deze plaats worden 
+de minder in het oog vallende mogelijkheden van het werken met 
+tekstblokken beschreven.
+
+@rbox 5 30 1 0
+     @{"...met de muis              " LINK "Blok: ...met de muis"}
+
+@rbox 5 30 1 0
+     @{"...met de toetsen           " LINK "Blok: ...met de toetsen"}
+
+@rbox 5 30 1 0
+     @{"...woord selecteren         " LINK "Blok: ...woord selecteren"}
+
+@rbox 5 30 1 0
+     @{"...regel selecteren         " LINK "Blok: ...regel selecteren"}
+
+@rbox 5 30 1 0
+     @{"...in dialogen              " LINK "Blok: ...in dialogen"}
+@endnode
+
+
+@node "Blok: ...met de muis"
+@toc "Tekstblokken"
+@image "logo-small.bmp" 65
+Blok: ...met de muis
+@line 1 63 0 0 7
+
+Om een willekeurig blok te selecteren met de muis, volstaat het om de 
+muiswijzer aan het begin cq. eind van het gewenste tekstblok te zetten. 
+Druk dan de linker muisknop in en beweeg de muiswijzer met ingedrukte 
+muisknop naar het eind cq. begin van het gewenste tekstblok. De zo ge- 
+selecteerde tekst wordt direct 'gemarkeerd', de tekst wordt invers 
+weergegeven.
+
+Is het tekstblok eenmaal gedefinieerd dan kunnen daarop alle blokfunc-
+ties worden losgelaten.
+
+Wordt bij het selecteren per ongeluk de muisknop losgelaten, of is er een 
+andere reden om het tekstblok te vergroten of te verkleinen, dan is dat 
+geen enkel probleem. Houdt de Shift-toets ingedrukt en klik of sleep met 
+de muis over het gewenste deel van de tekst.
+
+U zult zien dat bij een Shift-muisklik het tekstblok nu loopt vanaf de 
+cursorpositie tot aan de plaats waar geklikt werd. Bij een reeds aanwezig 
+tekstblok is de cursorpositie bet beginpunt van het blok.
+
+@endnode
+
+
+@node "Blok: ...met de toetsen"
+@toc "Tekstblokken"
+@image "logo-small.bmp" 65
+Blok: ...met de toetsen
+@line 1 63 0 0 7
+
+Via het toetsenbord zijn er twee mogelijkheden om een tekstblok te 
+selecteren. Tussen beide mogelijkheden kan worden gekozen bij de 
+instelling van de 'Globale parameters'.
+
+De eerste mogelijkheid is middels het menu-item 'Blok selecteren'. 
+Wordt deze functie geactiveerd dan wordt een tekstblok gemarkeerd met 
+het bewegen van de @{"cursor" LINK "Cursor"}.
+
+De tweede mogelijkheid is de zg. @{"CTRL" LINK "CTRL"}-Blokfunctie, die zich laat 
+bedienen op de manier die onder SM-DOS gebruikelijk is.
+
+- Blok met CTRL-up/down/left/right teken- of regelgewijs markeren,
+  met CTRL-Shift blad- cq woordgewijs.
+- Blok @{"kopiâren" LINK "Kopiâren"} met CTRL-HOME
+- Blok wissen met CTRL-DEL
+- Blok @{"plakken" LINK "Plakken"} met CTRL-INSERT
+
+Is de CTRL-blokfunctie actief dan is het menu-item 'Blok selecteren' 
+buiten werking.
+
+@endnode
+
+
+@node "Blok: ...woord selecteren"
+@toc "Tekstblokken"
+@image "logo-small.bmp" 65
+Blok: ...woord selecteren
+@line 1 63 0 0 7
+
+Door een dubbelklik met de muis op een woord in de actieve tekst wordt dit 
+woord als blok geselecteerd. Wordt de muiswijzer direkt na de dubbelklik 
+verplaatst dan wordt daardoor het tekstblok woord-gewijs vergroot danwel 
+verkleind.
+
+@endnode
+
+
+@node "Blok: ...regel selecteren"
+@toc "Tekstblokken"
+@image "logo-small.bmp" 65
+Blok: ...regel selecteren
+@line 1 63 0 0 7
+
+In plaats van een @{"woord selecteren" LINK "Blok: ...woord selecteren"} 
+kan ook een hele regel geselecteerd worden door bij het dubbelklikken de 
+Shift-toets ingedrukt te houden.
+Wordt de muiswijzer direkt na de dubbelklik verplaatst dan wordt daardoor 
+het tekstblok regel-gewijs vergroot danwel verkleind.
+
+@{I}De eenvoudigste manier om een regel te selecteren is echter door een 
+dubbelklik uit te voeren @{U}voorbij@{u} het einde van de 
+regel.@{i}
+
+@endnode
+
+
+@node "Blok: ...in dialogen"
+@next "Menufuncties"
+@toc "Tekstblokken"
+@image "logo-small.bmp" 65
+Blok: ...in dialogen
+@line 1 63 0 0 7
+
+@rbox 5 6 1 0
+@rbox 11 3 1 0
+Met  @{"CTRL" LINK "CTRL"}  V  kan de eerste regel van de tekst in het 
+clipbord wordenh ingevoegd op de invulregel van een dialoog.
+
+Dit is met name handig als men elders wil @{"zoeken" LINK "Zoeken"} naar een woord dat 
+voorkomt in dat deel van de tekst die men net voor zich heeft. Selecteer 
+het woord met een dubbelklik, kopieer het naar het clipbord open de 
+dialoog Zoeken/Vervangen en voeg het woord in op de invulregel.
+
+@{B}N.B.@{b}
+Aangezien QED inmiddels met de MyDials van Olaf Meisiek werkt is het 
+noodzakelijk om het @{"GEM-clipbord" LINK "Globale parameters" "GEM-clipbord gebruiken"} (op 
+schijf) te gebruiken. Alleen dan kunnen de MyDials aan het gekopieerde 
+blok komen.
+@box 1 8 1 0
+ @{"Update" LINK "CFlib"}
+
+De MyDials 2.19 ondersteunen het als @{"blok selecteren" LINK "Blok selecteren"} van tekst op de 
+invulregel. Wordt met de muis zo'n blok geselecteerd dan zijn de knip- en 
+plakfuncties alleen werkzaam op dat blok. De tekst op de invulregel kan 
+bovendien voorgeselecteerd worden (zoals bij MacOS/Win95) zodat de regel 
+niet eerst gewist hoeft te worden maar meteen een @{"nieuwe tekst" LINK "Nieuwe tekst"} kan worden 
+ingevoerd. Ook deze functie kan onder 'Globale parameters...' naar 
+believen worden ingeschakeld.
+@endnode
+
+
+@pnode "CFlib"
+Vanaf versie 4 wordt voor QED de CF-lib van 
+Christian Felsch gebruikt i.p.v. de MyDials.
+Hierdoor worden de dialogen o.m. in vensters
+weergegeven en kunnen de hoge ASCII-tekens
+gekozen worden via de insert-toets, als de
+cursor op een invulregel staat.
+@endnode
+
+
+@pnode "SHFT"
+SHIFT-toets
+@endnode
+
+
+@pnode "CTRL"
+CONTROL-toets
+@endnode
+
+
+@pnode "ALT"
+ALTERNATE-toets
+@endnode
+
+
+@pnode "Ret"
+RETURN-toets
+@endnode
+
+
+@pnode "Del"
+DELETE-toets
+@endnode
+
+
+@pnode "Enter"
+ENTER-toets op
+het numerieke blok
+@endnode
+
+
+@pnode ""
+Cursor-UP
+@endnode
+
+
+@pnode ""
+Cursor-DOWN
+@endnode
+
+
+@pnode ""
+Cursor-RIGHT
+@endnode
+
+
+@pnode ""
+Cursor-LEFT
+@endnode
+
+
+@node "Menufuncties"
+@prev "Tekstvenster"
+@image "logo-small.bmp" 65
+Menufuncties
+@line 1 62 0 0 7
+
+Nagenoeg alle menufuncties kunnen met behulp van een toetscombinatie, 
+de zg. @{"Shortcut" LINK "Shortcut"}, worden opgeroepen.
+
+@{I}Sommige menu-functies kunnen een andere uitwerking hebben als ze met 
+een ingedrukte shift-toets worden opgeroepen.@{i}
+
+  QED  Bestand  Bewerking  Venster  Zoeken  Speciaal  Opties  Shell
+@line 1 70 0 0 1
+@box 3 15 9 0
+    over QED...
+  @{G}--------------@{g}
+   @{G}Accessoire 1@{g}
+   @{G}Accessoire 2@{g}
+   @{G}Accessoire 3@{g}
+   @{G}Accessoire 4@{g}
+   @{G}Accessoire 5@{g}
+   @{G}Accessoire 6@{g}
+
+@endnode
+
+
+@node "Bestand"
+@next "Bewerking"
+@prev "Tekstvenster"
+@image "logo-small.bmp" 65
+Menu: Bestand
+@line 1 63 0 0 7
+
+Nagenoeg alle @{"menufuncties" LINK "Menufuncties"} kunnen met behulp van 
+een toetscombinatie, de zg. @{"Shortcut" LINK "Shortcut"}, worden 
+opgeroepen.
+
+@{I}Sommige menu-functies kunnen een andere uitwerking hebben als ze met 
+een ingedrukte shift-toets worden opgeroepen.@{i}
+
+  QED  Bestand  Bewerking  Venster  Zoeken  Speciaal  Opties  Shell
+@line 1 70 0 0 1
+@box 7 19 17 0
+        Nieuwe tekst...
+        Openen...
+        Toevoegen...
+        Nieuw project
+        Binair openen...
+      @{G}-------------------@{g}
+        Bewaren
+        Bewaren als...
+        Heropenen
+        Sluiten
+      @{G}-------------------@{g}
+        Afdrukken...
+        Informatie...
+      @{G}-------------------@{g}
+        Bewaar & Stop
+        Stop
+
+@endnode
+
+
+@pnode "Shortcut"
+@{U} Shortcuts in QED @{u} 
+
+De in de menu's aangegeven toetscombinaties hebben dezelfde
+uitwerking als het aanklikken van het menu-item waar hij
+bij staat. Hierbij staat '^' voor CTRL en '' voor ALT.
+
+De in deze hypertekst vermelde Shortcuts zijn die uit de
+standaard instellingen van QED. Met elke resource-editor is
+het echter mogelijk om ze aan te passen aan eigen wensen
+@{B}(Alleen CTRL-Y kan niet gewijzigd worden!!)@{b}.
+Let er echter op dat alleen hoofdletters in combinatie met
+'^' en '' gebruikt mogen worden.
+@endnode
+
+
+@node "over QED"
+@prev "Bestand"
+@toc "Menufuncties"
+@image "logo-small.bmp" 65
+over QED...
+@line 1 63 0 0 7
+
+Onder deze menu-titel vindt men de geãnstalleerde accessoires, waarover 
+wij eigenlijk nix weten, alleen het menu-item 'over QED...'. Hier achter 
+verbergt zich een kleine info-box met @{"informatie" LINK "Informatie"} over de actuele versie 
+van QED.
+
+@limage "qed-nl_about.bmp" 10
+@endnode
+
+
+@node "Nieuwe tekst"
+@toc "Bestand"
+@xref "Bestand"
+@image "logo-small.bmp" 65
+Nieuwe tekst...
+@line 1 63 0 0 7
+
+Met dit menu-item kan een nieuwe tekst aangemaakt worden. Na aanklikken 
+wordt een leeg @{"tekstvenster" LINK "Tekstvenster"} geopend met de titel 'Naamloos'
+@endnode
+
+
+@node "Openen"
+@toc "Bestand"
+@xref "Bestand"
+@xref "fileselector" "Fileselector"
+@image "logo-small.bmp" 65
+Openen...
+@line 1 63 0 0 7
+
+Openen... dient om een @{"bestand" LINK "Bestand"} te openen.
+De @{"fileselector" LINK "fileselector"} verschijnt, en men kan 
+het gewenste bestand uitkiezen danwel een bestandsnaam invullen. Als het 
+bestand (nog) niet bestaat dan wordt een nieuw aangemaakt. Er verschijnt 
+dan een mededeling op het scherm.
+
+QED onderscheidt aan de hand van de extensie of het om een projectbestand 
+[*.QPJ] of om een tekstbestand gaat.
+
+Mocht er een bestand geopend worden dat nul-bytes bevat, dan worden deze 
+door spaties vervangen. In dat geval geeft QED wel een waarschuwing.
+Is het niet de bedoeling dat de nul-bytes vervangen worden dan dient men 
+het bestand te laden met 'Binair openen'
+
+@{"Verborgen functie" LINK "vf: Bestand/Openen..."}
+
+@endnode
+
+
+@node "Toevoegen"
+@toc "Bestand"
+@xref "Bestand"
+@xref "fileselector" "Fileselector"
+@image "logo-small.bmp" 65
+Toevoegen...
+@line 1 63 0 0 7
+
+Met het menu-item 'Toevoegen...' kunnen in een actieve tekst andere 
+bestanden op de cursorpositie worden ingevoegd.
+Wordt deze functie gebruikt bij een actief project, dan kan middels een 
+zoekfunctie gezocht worden naar bestanden. Gevonden bestanden worden aan 
+het project toegevoegd.
+
+@{"Verborgen functie" LINK "vf: Toevoegen"}
+
+
+@endnode
+
+
+@node "Nieuw project"
+@toc "Bestand"
+@xref "Bestand"
+@image "logo-small.bmp" 65
+Nieuw project
+@line 1 63 0 0 7
+
+Met dit menu-item wordt een nieuw project aangemaakt. Na aanklikken wordt 
+een leeg projectvenster geopend met de titel 'Naamloos'
+@endnode
+
+
+@node "Binair openen"
+@toc "Bestand"
+@xref "Bestand"
+@image "logo-small.bmp" 65
+Binair @{"openen" LINK "Openen"}...
+@line 1 63 0 0 7
+
+Wordt een @{"bestand" LINK "Bestand"} met dit menu-item geopend dan wordt op geen enkele wijze 
+iets veranderd aan regeleinden e.d. Het bestand wordt als tekst met een 
+vaste regellengte (zie 'Globale parameters') geãnterpreteerd en getoond.
+
+@{B}NB @{b}
+Wil men deze functie gebruiken om programma's te editten dan dient men 
+EXACT te weten wat men doet!
+
+@endnode
+
+
+@node "Bewaren"
+@toc "Bestand"
+@xref "Bestand"
+@image "logo-small.bmp" 65
+Bewaren
+@line 1 63 0 0 7
+
+Met 'Bewaren' wordt de tekst in het actieve @{"tekstvenster" LINK "Tekstvenster"} bewaard onder de 
+bestandsnaam waarmee de tekst werd geladen. Deze naam is zichtbaar in de 
+titelbalk van het @{"venster" LINK "Venster"}.
+Bij teksten met de titel 'Naamloos' wordt automatisch 'Bewaren als...' 
+gebruikt.
+
+@endnode
+
+
+@node "Bewaren als"
+@toc "Bestand"
+@xref "Bestand"
+@image "logo-small.bmp" 65
+Bewaren als...
+@line 1 63 0 0 7
+
+Met 'Bewaren als...' kan een tekst, een tekstblok, of een project bewaard 
+worden onder een nieuwe naam.
+Is in de tekst een tekstblok gemarkeerd dan heeft 'Bewaren als...' be-
+trekking op dit blok.
+
+Kiest men een naam die al bestaat, dan wordt men gewaarschuwd voor het 
+overschrijven van een @{"bestand" LINK "Bestand"}.
+
+@endnode
+
+
+@node "Heropenen"
+@toc "Bestand"
+@xref "Bestand"
+@image "logo-small.bmp" 65
+Heropenen
+@line 1 63 0 0 7
+
+'Heropenen' is bedoeld om alle wijzigingen, die zijn aangebracht in een 
+tekst of een project, sinds de laatste keer dat er bewaard is, te 
+herroepen. De tekst wordt gewist uit het werkgeheugen en opnieuw van 
+opslagmedium geladen.
+
+@endnode
+
+
+@node "Verwijderen"
+@toc "Bestand"
+@xref "Bestand"
+@image "logo-small.bmp" 65
+Verwijderen
+@line 1 63 0 0 7
+
+
+Hiermee wordt een tekst of project uit het werkgeheugen verwijderd. In het 
+geval dat het geselecteerde @{"venster" LINK "Venster"} wijzigingen ondergaan heeft, vraagt 
+QED of deze bewaard moeten worden.
+
+Zijn er bestanden in een project geselecteerd dan worden deze bestanden 
+uit het project verwijderd.
+
+@endnode
+
+
+@node "Afdrukken"
+@toc "Bestand"
+@xref "Bestand"
+@xref "Printer instellingen"
+@image "logo-small.bmp" 65
+Afdrukken...
+@line 1 63 0 0 7
+
+De dialoog waarmee men de afdruk van een tekst beheert, verschijnt:
+
+@rbox 10 24 1 0
+          @{"Algemene instellingen  " LINK "Printer instellingen" "Algemene instellingen  "}
+
+@rbox 10 24 1 0
+          @{"GEMDOS-modus           " LINK "Printer instellingen" "GEMDOS-modus           "}
+
+@rbox 10 24 1 0
+          @{"GDOS-modus             " LINK "Printer instellingen" "GDOS-modus             "}
+
+@limage "qed-nl_print.bmp" 10
+
+In deze dialoog kan men meerdere instellingen doen. Enerzijds kan men 
+kiezen hoe er afgedrukt wordt, al of niet met regel- en/of paginanummers, 
+anderzijds wÖt er afgedrukt moet worden, de tekst of een tekstblok. Dit 
+laatste is natuurlijk alleen mogelijk als tevoren een tekstblok werd 
+gemarkeerd.
+
+Er kan gekozen worden tussen twee printprocedures, nl. via 
+GEMDOS-modus of via GDOS-modus.
+
+Met de knop 'Afdrukken' wordt de tekst naar de printer gestuurd, met 
+'Terug' wordt de dialoog afgesloten zonder dat er afgedrukt wordt, de 
+instellingen blijven ongewijzigd.
+
+De 'OK'-knop bewerkstelligt dat de dialoog wordt afgesloten en dat 
+de instellingen worden overgenomen zonder dat er iets afgedrukt wordt.
+
+@endnode
+
+
+@node "Informatie"
+@next "Dialoog: Tekst-info"
+@toc "Bestand"
+@image "logo-small.bmp" 65
+Informatie...
+@line 1 63 0 0 7
+
+Informatie over de objecten in QED kan verkregen worden door dit menu-
+item aan te klikken. De objecten zijn natuurlijk de vensters en ikonen.
+
+@rbox 1 2 1 4
+@{"" LINK "over QED"}  Als er geen enkel object actief is krijgt men dezelfde informatie
+    als bij het menu-item 'over QED...'
+
+@rbox 1 2 1 4
+@{"" LINK "Dialoog: Tekst-info"}  Is er een tekst actief, dan krijgt men informatie over bestandsnaam,e}
+    grootte in bytes en in regels, en de ingestelde wijze van regel be-
+    eindigen.
+
+    Dit laatste kan hier ook gewijzigd worden. Men heeft de keuze tussen
+    het op Atari-TOS en PC-DOS gebruikelijke CR/LF of de enkele LF die
+    onder UNIX gebruikt wordt.
+    Gewoonlijk moet hier CR/LF ingesteld zijn, tenzij men het @{"bestand" LINK "Bestand"}
+    op een UNIX-systeem verder wil gebruiken. In dit geval zijn deze
+    teksten niet meer correct te verwerken in sommige Atari-applicaties.
+    (Bijv. de editor van Pure C)
+
+
+@rbox 1 2 1 4
+@{"" LINK "Dialoog: Blok-info"}  Is in het @{"tekstvenster" LINK "Tekstvenster"} een tekstblok gemarkeerd, dan wordt daar in-
+    formatie over gegeven. Nu zijn dit de bestandsnaam en het aantal
+    gemarkeerde bytes cq. regels.
+
+@rbox 1 2 1 4
+@{"" LINK "Dialoog: Project-info"}  Is het actieve @{"venster" LINK "Venster"} een project,
+    dan wordt de bestandsnaam en -datum, en het aantal bestanden dat het 
+    project omvat getoond.
+
+    Wordt de knop 'Scan' aangeklikt, dan worden alle bestanden in het
+    project kort ingelezen en vervolgens het totaal aantal regels en de
+    grootte in bytes van al deze bestanden weergegeven.
+
+@rbox 22 2 1 4
+Wat doet die knop? Ø @{"" LINK "WasDa?"}
+@endnode
+
+
+@pnode "WasDa?"
+Deze knop toont de bij de tekst
+horende dialoogbox...
+@endnode
+
+
+@node "Dialoog: Tekst-info"
+@prev "Informatie"
+@toc "Bestand"
+@image "logo-small.bmp" 65
+Dialoog: Tekst Informatie
+@line 1 63 0 0 7
+
+@limage "qed-nl_textinfo.bmp" 8
+@endnode
+
+
+@node "Dialoog: Project-info"
+@toc "Bestand"
+@image "logo-small.bmp" 65
+Dialoog: Project Informatie
+@line 1 63 0 0 7
+
+@limage "qed-nl_prjinfo.bmp" 8
+@endnode
+
+
+@node "Dialoog: Blok-info"
+@toc "Bestand"
+@image "logo-small.bmp" 65
+Dialoog: Blok Informatie
+@line 1 63 0 0 7
+
+@limage "qed-nl_blockinfo.bmp" 8
+@endnode
+
+
+@node "Bewaar & Stop"
+@toc "Bestand"
+@image "logo-small.bmp" 65
+Bewaar & Stop
+@line 1 63 0 0 7
+
+Het programma wordt hiermee beâindigd, maar eerst worden alle teksten met 
+niet-opgeslagen wijzigingen alsnog bewaard.
+
+@{"Verborgen functie" LINK "vf: Stoppen"}
+
+@endnode
+
+
+@node "Stop"
+@toc "Bestand"
+@image "logo-small.bmp" 65
+Stop
+@line 1 63 0 0 7
+
+Het programma wordt hiermee beâindigd, voor alle teksten met niet-
+opgeslagen wijzigingen wordt expliciet gevraagd of deze bewaard moeten 
+worden.
+
+@{"Verborgen functie" LINK "vf: Stoppen"}
+
+@endnode
+
+
+@node "Bewerking"
+@next "Kortzetsels"
+@prev "Tekstvenster"
+@image "logo-small.bmp" 65
+Menu: Bewerking
+@line 1 63 0 0 7
+
+Nagenoeg alle @{"menufuncties" LINK "Menufuncties"} kunnen met behulp van 
+een toetscombinatie, de zg. @{"Shortcut" LINK "Shortcut"}, worden 
+opgeroepen.
+
+@{I}Sommige menu-functies kunnen een andere uitwerking hebben als ze met 
+een ingedrukte shift-toets worden opgeroepen.@{i}
+
+  QED  Bestand  Bewerking  Venster  Zoeken  Speciaal  Opties  Shell
+@line 1 70 0 0 1
+@box 16 22 22 0
+                 Herstellen
+               @{G}----------------------@{g}
+                 Knippen
+                 @{"Kopiâren" LINK "Regel kopiâren"}
+                 Plakken
+               @{G}----------------------@{g}
+                 Blok selecteren
+                 Alles selecteren
+               @{G}----------------------@{g}
+                 Alinea indelen
+                 Teken wisselen
+               @{G}----------------------@{g}
+                 Schuif naar links
+                 Schuif naar rechts
+               @{G}----------------------@{g}
+                 Sorteren...
+               @{G}----------------------@{g}
+                 GROOT ÆØ klein
+                 Alles GROOT
+                 Alles klein
+                 Hoofdletters
+
+@endnode
+
+
+@node "Herstellen"
+@toc "Bewerking"
+@image "logo-small.bmp" 65
+Herstellen
+@line 1 63 0 0 7
+
+De functie 'Herstellen' is bedoeld om een handeling, die men bijv. per 
+ongeluk heeft uitgevoerd of waarvan het resultaat achteraf niet bevalt, 
+ongedaan te maken.
+
+Met 'Herstellen' kan alleen de meest recente handeling ongedaan gemaakt
+worden! Bovendien laten zich niet alle acties herstellen.
+
+'Herstellen' gaat alleen bij operaties als het wissen van regels, het 
+wissen van @{"tekstblokken" LINK "Tekstblokken"}, @{"knippen" LINK "Knippen"} en @{"plakken" LINK "Plakken"}. Hierbij wordt dan altijd de 
+toestand hersteld zoals die was vlak voordat een van de genoemde functies 
+werd uitgevoerd. Ook op 'Zoeken en vervangen' werkt het 'Herstellen', 
+wanneer echter meerdere vervangingen in een keer plaatsvonden, dan wordt 
+alleen de laatste daarvan ongedaan gemaakt.
+
+Werd geen van de functies waarop 'Herstellen' toegepast wordt, onmiddel-
+lijk voorafgaand opgeroepen, dan wordt de laatst geschreven regel wegge-
+haald of ingevoegd.
+
+De 'UNDO' functie werkt overigens als een 'toggle', er kan heen en weer
+geschakeld worden.
+
+@endnode
+
+
+@node "Knippen"
+@toc "Bewerking"
+@image "logo-small.bmp" 65
+Knippen
+@line 1 63 0 0 7
+
+Met 'Knippen' wordt een in het actieve @{"venster" LINK "Venster"} gemarkeerd tekstblok uit de 
+tekst verwijderd en tijdelijk op het clipbord opgeslagen. Was er al een 
+tekst op het clipbord aanwezig dan wordt deze eerst gewist.
+
+@{"Verborgen functie" LINK "vf: Knippen"}
+
+@endnode
+
+
+@node "Kopiâren"
+@toc "Bewerking"
+@image "logo-small.bmp" 65
+Kopiâren
+@line 1 63 0 0 7
+
+Zonder gemarkeerd tekstblok wordt met de functie 'Kopiâren' de regel 
+waarop de @{"cursor" LINK "Cursor"} staat, naar het clipbord gekopieerd. 
+Is er wel een tekstblok gemarkeerd, dan wordt @{B}dit tekstblok@{b} naar 
+het clipbord gekopieerd.
+
+@{"Verborgen functie" LINK "vf: Knippen"}
+
+@endnode
+
+
+@node "Regel kopiâren"
+@toc "Bewerking"
+@image "logo-small.bmp" 65
+Regel @{"kopiâren" LINK "Kopiâren"}/Kopiâren
+@line 1 63 0 0 7
+
+Zonder gemarkeerd tekstblok wordt met de functie 'Kopiâren' de regel 
+waarop de @{"cursor" LINK "Cursor"} staat, naar het clipbord gekopieerd. 
+Is er wel een tekstblok gemarkeerd, dan wordt @{B}dit tekstblok@{b} naar 
+het clipbord gekopieerd.
+
+@{"Verborgen functie" LINK "vf: Knippen"}
+
+@endnode
+
+
+@node "Plakken"
+@toc "Bewerking"
+@image "logo-small.bmp" 65
+Plakken
+@line 1 63 0 0 7
+
+Met deze fuctie wordt de tekst op het clipbord weer in de de actieve tekst 
+ingevoegd. Dit gebeurt dan op de cursorpositie.
+
+@endnode
+
+
+@node "Blok selecteren"
+@toc "Bewerking"
+@xref "Tekstblokken"
+@image "logo-small.bmp" 65
+Blok selecteren
+@line 1 63 0 0 7
+
+Het markeren van een tekstblok kan, behalve met de muis, ook via het 
+toetsenbord geschieden. Hiertoe moet de tekstcursor geplaatst worden op 
+het beginpunt van het gewenste blok, kiest de hier beschreven functie en 
+verplaatst daarna de @{"cursor" LINK "Cursor"} met de pijltoetsen naar het 
+beoogde eindpunt van het blok.
+
+Met een 'vinkje' wordt aangeduid dat deze functie actief is
+
+De functie 'Blok selecteren...' werkt als een 'toggle', met een volgende 
+klik of @{"CTRL" LINK "CTRL"}-B wordt de functie weer uitgezet.
+
+@endnode
+
+
+@node "Alles selecteren"
+@toc "Bewerking"
+@image "logo-small.bmp" 65
+Alles selecteren
+@line 1 63 0 0 7
+
+De gehele tekst van het actieve @{"tekstvenster" LINK "Tekstvenster"} wordt als tekstblok 
+gemarkeerd.
+
+@endnode
+
+
+@node "Alinea indelen"
+@toc "Bewerking"
+@image "logo-small.bmp" 65
+Alinea indelen
+@line 1 63 0 0 7
+
+De functie "Alinea indelen" kan alleen gebruikt worden als de lokale optie 
+@{"Regels omslaan" LINK "Lokale parameters" "Regels omslaan"} actief is. Een niet goed 
+geformateerde alinea kan hiermee opnieuw worden ingedeeld, zodat de regels 
+weer in overeenstemming met de max. regellengte gevuld zijn.
+
+@{"Verborgen functie" LINK "vf: Alinea indelen"}
+
+@endnode
+
+
+@node "Teken wisselen"
+@toc "Bewerking"
+@image "logo-small.bmp" 65
+Teken @{"wisselen" LINK "Wisselen"}
+@line 1 63 0 0 7
+
+Een veel gemaakte typefout is, het niet in de juiste volgorde aanslaan van 
+letters. Met deze functie wordt het teken v¢¢r de @{"cursor" LINK "Cursor"} verwisseld met 
+het teken er achter.
+Het menu-item kan alleen gekozen worden als het actieve @{"venster" LINK "Venster"} een 
+@{"tekstvenster" LINK "Tekstvenster"} is en er gÇÇn blok gemarkeerd is.
+
+@endnode
+
+
+@node "Schuif naar links"
+@toc "Bewerking"
+@image "logo-small.bmp" 65
+Schuif naar links
+@line 1 63 0 0 7
+
+Met 'Schuif naar links wordt een gemarkeerd tekstblok naar links 
+opgeschoven. Hoeveel tekens naar links hangt af van de ingestelde TAB-
+breedte en of er ter linkerzijde nog dat aantal TAB's voorhanden is.
+
+Worden er echte TAB's gebruikt, dan wordt een tabulatorteken gewist.
+
+@endnode
+
+
+@node "Schuif naar rechts"
+@toc "Bewerking"
+@image "logo-small.bmp" 65
+Schuif naar rechts
+@line 1 63 0 0 7
+
+Met 'Schuif naar rechts' wordt een gemarkeerd tekstblok naar rechts 
+opgeschoven. Hoeveel tekens naar rechts hangt af van de ingestelde TAB-
+breedte en of er ter rechterzijde nog dat aantal TAB's voorhanden is.
+
+Worden er echte TAB's gebruikt, dan wordt een tabulatorteken toegevoegd.
+
+@endnode
+
+
+@node "Sorteren..."
+@toc "Bewerking"
+@image "logo-small.bmp" 65
+Sorteren...
+@line 1 63 0 0 7
+
+Een gemarkeerd blok kan regelgewijs gesorteerd worden. Daarvoor 
+dienen tenminste @{B}twee@{b} regels als blok gemarkeerd te zijn.
+In de dialoog die verschijnt worden de betrokken regels getoond 
+(middels hun regelnummer) en kan het volgende worden ingesteld:
+
+˘ onderscheid maken tussen GROTE en kleine letters;
+˘ oplopend sorteren, van a...z;
+˘ aflopend sorteren, van z...a;
+
+Gewoonlijk wordt de hele regel tekst in de sortering betrokken (in 
+de dialoog: kolom 0..0). Moet echter alleen op een deel van de regel 
+gesorteerd worden, bijvoorbeeld de eerste 5 letters, dan kan men de 
+knop 'Bereik' kiezen waarna men met een tekstblok het gewenste bereik 
+aangeeft in ÇÇn van de regels. Nu kan het sorteren beginnen door 
+nogmaals de sorteerfunctie te kiezen en de knop Sorteren aan te 
+klikken.
+
+Bij het sorteren zijn taalspecifieke accenttekens gelijk aan de 
+gewone letters (bijv. Ñ = a, Ä = C).
+
+@endnode
+
+
+@node "GROOT ÆØ klein"
+@toc "Bewerking"
+@image "logo-small.bmp" 65
+GROOT ÆØ klein
+@line 1 63 0 0 7
+
+Met deze 'toggle' worden alle letters in een gemarkeerd tekstblok 
+omgezet in de bijbehorende grote- danwel kleine letters. D.w.z. 
+kleine letters worden grote, en omgekeerd.
+
+@endnode
+
+
+@node "Alles GROOT"
+@toc "Bewerking"
+@image "logo-small.bmp" 65
+Alles GROOT
+@line 1 63 0 0 7
+
+In een gemarkeerd tekstblok worden alle tekens omgezet in grote letters.
+
+@endnode
+
+
+@node "Alles klein"
+@toc "Bewerking"
+@image "logo-small.bmp" 65
+Alles klein
+@line 1 63 0 0 7
+
+In een gemarkeerd tekstblok worden alle tekens omgezet in kleine letters.
+
+@endnode
+
+
+@node "Hoofdletters"
+@toc "Bewerking"
+@image "logo-small.bmp" 65
+Hoofdletters
+@line 1 63 0 0 7
+
+In een gemarkeerd tekstblok wordt de eerste letter van de alle 
+gemarkeerde woorden omgezet in hoofdletters, terwijl de overige 
+letters in kleine letters worden omgezet.
+
+@endnode
+
+
+@node "Venster"
+@next "Zoeken"
+@prev "Tekstvenster"
+@image "logo-small.bmp" 65
+Menu: Venster
+@line 1 63 0 0 7
+
+Nagenoeg alle @{"menufuncties" LINK "Menufuncties"} kunnen met behulp van 
+een toetscombinatie, de zg. @{"Shortcut" LINK "Shortcut"}, worden 
+opgeroepen.
+
+@{I}Sommige menu-functies kunnen een andere uitwerking hebben als ze met 
+een ingedrukte shift-toets worden opgeroepen.@{i}
+
+  QED  Bestand  Bewerking  Venster  Zoeken  Speciaal  Opties  Shell
+@line 1 70 0 0 1
+@box 27 18 9 0
+                            Wisselen
+                            Sluiten
+                          @{G}------------------@{g}
+                            Top cursorregel
+                          @{G}------------------@{g}
+                            @{"Stapelen" LINK "Vensters ordenen"}
+                            @{"Naast elkaar" LINK "Vensters ordenen"}
+                            @{"Onder elkaar" LINK "Vensters ordenen"}
+
+@endnode
+
+
+@node "Wisselen"
+@toc "Venster"
+@image "logo-small.bmp" 65
+Venster wisselen
+@line 1 63 0 0 7
+
+Alle geopende vensters worden hiermee gerouleerd, dat wil zeggen dat het 
+actieve @{"venster" LINK "Venster"} (=bovenste) wordt onderop gelegd terwijl het 'volgende' 
+venster actief wordt gemaakt, dus boven komt te liggen.
+Afhankelijk van de instelling onder 'Globale parameters...' heeft deze 
+menu-optie uitwerking op alle vensters of alleen op de vensters van QED.
+
+@endnode
+
+
+@node "Sluiten"
+@toc "Venster"
+@image "logo-small.bmp" 65
+Sluiten
+@line 1 63 0 0 7
+
+Het actieve (het bovenste) @{"venster" LINK "Venster"} wordt dan gesloten. De werking is 
+dus hetzelfde als die van het aanklikken van de close-box van het venster.
+
+@endnode
+
+
+@node "Top cursorregel"
+@toc "Venster"
+@image "logo-small.bmp" 65
+Top cursorregel
+@line 1 63 0 0 7
+
+Met dit menupunt wordt bewerkstelligd dat het @{"venster" LINK "Venster"} zodanig gescrolld 
+wordt dat de regel waarop zich de @{"cursor" LINK "Cursor"} bevindt de bovenste regel van het
+@{"tekstvenster" LINK "Tekstvenster"} wordt.
+
+@endnode
+
+
+@node "Vensters ordenen"
+@toc "Venster"
+@image "logo-small.bmp" 65
+Vensters ordenen
+@line 1 63 0 0 7
+
+QED ondersteund drie manieren om de geopende tekstvensters op het 
+beeldscherm te ordenen:
+
+˘ Stapelen
+@limage "qed-nl_pile.bmp" 8
+
+˘ Naast elkaar
+@limage "qed-nl_column.bmp" 8
+
+˘ Onder elkaar
+@limage "qed-nl_row.bmp" 8
+
+@{I}De gebruikte routines zijn afkomstig uit de sources van de editor 
+7Up van Michael ThÑnitz.@{i}
+
+@endnode
+
+
+@node "Zoeken"
+@next "Speciaal"
+@prev "Tekstvenster"
+@image "logo-small.bmp" 65
+Menu: Zoek
+@line 1 63 0 0 7
+
+Nagenoeg alle @{"menufuncties" LINK "Menufuncties"} kunnen met behulp van 
+een toetscombinatie, de zg. @{"Shortcut" LINK "Shortcut"}, worden 
+opgeroepen.
+
+@{I}Sommige menu-functies kunnen een andere uitwerking hebben als ze met 
+een ingedrukte shift-toets worden opgeroepen.@{i}
+
+  QED  Bestand  Bewerking  Venster  Zoeken  Speciaal  Opties  Shell
+@line 1 70 0 0 1
+@box 36 22 14 0
+                                     Zoeken/Vervangen...
+                                     ...opnieuw
+                                   @{G}----------------------@{g}
+                                     Bestanden zoeken...
+                                   @{G}----------------------@{g}
+                                     Ga naar...
+                                   @{G}----------------------@{g}
+                                     Bladwijzer...
+                                     @{"1>" LINK "vf: Bladwijzer gebruiken"}
+                                     @{"2>" LINK "vf: Bladwijzer gebruiken"}
+                                     @{"3>" LINK "vf: Bladwijzer gebruiken"}
+                                     @{"4>" LINK "vf: Bladwijzer gebruiken"}
+                                     @{"5>" LINK "vf: Bladwijzer gebruiken"}
+
+@endnode
+
+
+@node "Zoeken/Vervangen"
+@toc "Zoeken"
+@image "logo-small.bmp" 65
+Zoeken/Vervangen...
+@line 1 63 0 0 7
+
+@rbox 4 30 1 0
+     @{"Zoeken/Vervangen in teksten " LINK "In tekst zoeken"}
+
+@rbox 4 30 1 0
+     @{"Zoeken in een project       " LINK "In project zoeken"}
+
+@rbox 4 30 1 0
+     @{"Zoeken van/in bestand(en)   " LINK "Bestanden zoeken"}
+
+@rbox 4 30 1 0
+     @{"Zie ook: ...opnieuw         " LINK "...opnieuw"}
+
+In teksten kan men @{I}Zoeken@{i} of @{I}Zoeken en vervangen@{i}.
+In @{"projecten" LINK "Projecten"} kan daarentegen alleen in de aanwezige bestanden naar 
+een zoekcriterium gezocht worden. Daarnaast kan een volledig zoekpad 
+doorzocht worden op een zoekcriterium.
+
+Is voordat de functie Zoeken wordt gestart een tekstblok geselecteerd,
+dan wordt de geselecteerde tekst automatisch op de zoekregel ingevuld.
+
+Bij alle drie de zoekmethoden zijn de parameters voor de te @{"zoeken" LINK "Zoeken"} 
+tekst hetzelfde:
+
+    Zoekcriterium           Hier wordt de te zoeken tekst ingevuld.
+                            In de PopUp worden de laatste tien begrip-
+                            pen bewaard.
+    v.a. @{"cursor" LINK "Cursor"}, globaal:   Er wordt gezocht vanaf
+                            de cursorpositie, of vanaf het begin van
+                            de tekst.
+    rouleren:               Wanneer het einde van de tekst is bereikt,v
+                            dan wordt vanaf het begin verder gezocht.
+    vooruit, achteruit:     Hier wordt de zoekrichting mee vastgelegd.
+    GROOT/klein             Er wordt onderscheid gemaakt tussen grote
+                            en kleine letters.
+    wildcards               Het zoekcriterium bevat wildcards. QED kent
+                            de volgende wildcards:
+                            *       = willekeurige tekenreeks
+                            ?       = exact ÇÇn willekeurig teken
+                            ^@{G}xyz@{g}    = xyz aan het begin van een regelge
+                            @{G}xyz@{g}$    = xyz aan het eind van een regel
+                            [@{G}a-f@{g}]   = de letter a t/m fe
+                            [@{G}agp@{g}]   = de letter a, g, of p
+                            [^@{G}akn@{g}]  = een letter maar NIET a, k of n
+    hele woorden            Er worden alleen hele woorden gevonden.
+                            (De tekens waaruit een woord kan bestaan
+                            worden vastgelegd onder Lokale parameters.)
+
+@endnode
+
+
+@node "In tekst zoeken"
+@toc "Zoeken/Vervangen"
+@image "logo-small.bmp" 65
+In tekst @{"zoeken" LINK "Zoeken"}
+@line 1 63 0 0 7
+
+@limage "qed-nl_replace.bmp" 5
+
+Behalve de al beschreven parameters, kan bij het zoeken naar tekst ook
+nog een tekst opgegeven worden, die een gevonden zoekcriterium moet
+vervangen.
+Hierbij heeft men de keuze tussen:
+
+    - alleen op de @{U}eerste@{u} vindplaats vervangen,
+    - bij elke vindplaats @{U}vragen@{u} of er vervangen moet worden,
+    - zonder meer @{U}alle@{u} gevonden tekst vervangen.
+
+@endnode
+
+
+@node "In project zoeken" "Zoeken in een project"
+@symbol ar "Zoeken in een project"
+@toc "Zoeken/Vervangen"
+@image "logo-small.bmp" 65
+In project @{"zoeken" LINK "Zoeken"}
+@line 1 63 0 0 7
+
+@limage "qed-nl_findfile.bmp" 5
+
+Bij het zoeken in @{"projecten" LINK "Projecten"} kunnen dezelfde parameters worden opgegeven
+als bij het zoeken in een tekst. Wanneer de zoekactie wordt gestart dan
+wordt een @{"nieuw project" LINK "Nieuw project"} geopend, hierin komen dan alle bestanden die
+het zoekcriterium bevatten.
+
+@endnode
+
+
+@node "Bestanden zoeken"
+@toc "Zoeken/Vervangen"
+@image "logo-small.bmp" 65
+Zoeken van/in @{"bestand" LINK "Bestand"}(en)
+@line 1 63 0 0 7
+
+@limage "qed-nl_replace.bmp" 5
+
+In het bovenste deel van deze dialoog kan het pad worden opgegeven,
+waar cq. vanaf waar gezocht moet worden.
+
+Klikt men de knop 'Pad vastleggen' aan, dan verschijnt de @{"fileselector" LINK "fileselector"}
+en kan men de gewenste folder uitkiezen. Een ev. gekozen bestandsnaam
+wordt hier genegeerd, alleen het pad wordt gebruikt.
+
+Onder de regel met het actieve pad is een invulregel voor de bestands-
+naam. Hier zijn alleen GemDOS wildcards toegestaan, dus '*' of '?'. De
+schakeloptie 'Pad recursief doorzoeken' biedt de mogelijkheid om ook de
+dieper gelegen folders (subdirectories) te doorzoeken.
+
+In de onderste helft van de dialoog wordt het zoekcriterium voor de
+tekst vastgelegd. Wordt hier iets ingevuld dan worden de gevonden be-
+standen ook nog doorzocht op het voorkomen van het ingevulde criterium
+in de tekst.
+
+Het resultaat is altijd een @{"nieuw project" LINK "Nieuw project"} dat de bestanden bevat die
+aan alle opgegeven criteria voldoen.
+
+@{"Verborgen functie" LINK "vf: Zoeken in bestand"}
+
+@endnode
+
+
+@node "...opnieuw"
+@toc "Zoeken"
+@image "logo-small.bmp" 65
+...opnieuw
+@line 1 63 0 0 7
+
+De onder Zoeken/Vervangen... gedefinieerde operatie wordt met deze 
+functie opnieuw uitgevoerd. Opnieuw @{"zoeken" LINK "Zoeken"} werkt altijd vanaf de 
+cursorpositie en is alleen beschikbaar voor het zoeken in tekst. De 
+zoekrichting is die die in de zoekdialoog werd ingesteld.
+
+@{"Verborgen functie" LINK "vf: Opnieuw zoeken"}
+
+@endnode
+
+
+@node "Ga naar"
+@toc "Zoeken"
+@image "logo-small.bmp" 65
+Ga naar...
+@line 1 63 0 0 7
+
+Een bepaalde regel in de tekst kan men met dit menu-item bereiken 
+door in de dialoog het gewenste regelnummer en/of kolomnummer in te 
+vullen. Als het ingevulde getal niet groter is dan het aantal regels 
+in de tekst dan wordt de @{"cursor" LINK "Cursor"} op deze regel 
+gezet. Is het ingevulde nummer te hoog dan wordt naar de laatste 
+regel van de tekst gesprongen.
+
+@endnode
+
+
+@node "Bladwijzer"
+@next "Macro opnemen"
+@toc "Zoeken"
+@image "logo-small.bmp" 65
+Bladwijzer...
+@line 1 63 0 0 7
+
+Met 'Bladwijzer...' kunnen tot vijf markeringen in de tekst gezet wor-
+den die middels het betreffende menu-item direct bereikt kunnen worden.
+Een bladwijzer is in de tekst onzichtbaar aanwezig; bij het plaatsen
+ervan wordt door QED het regel- en kolomnummer van de cursorpositie
+onthouden.
+
+In de dialoogbox kan men een van de vijf bladwijzers instellen door de
+betreffende knop te kiezen en deze van een naam te voorzien. De inge-
+vulde naam verschijnt daarna in het menu 'Zoek'. Wordt er geen naam
+opgegeven dan is in het menu de bestandsnaam te zien.
+
+Indien nodig wordt de tekst waarop de bladwijzer zich bevind
+nageladen.
+
+    @{"Verborgen functie" LINK "vf: Bladwijzer gebruiken"}
+
+@endnode
+
+
+@node "Speciaal"
+@next "Opties"
+@prev "Tekstvenster"
+@image "logo-small.bmp" 65
+Menu: Speciaal
+@line 1 63 0 0 7
+
+Nagenoeg alle @{"menufuncties" LINK "Menufuncties"} kunnen met behulp van 
+een toetscombinatie, de zg. @{"Shortcut" LINK "Shortcut"}, worden 
+opgeroepen.
+
+@{I}Sommige menu-functies kunnen een andere uitwerking hebben als ze met 
+een ingedrukte shift-toets worden opgeroepen.@{i}
+
+  QED  Bestand  Bewerking  Venster  Zoeken  Speciaal  Opties  Shell
+@line 1 70 0 0 1
+@box 44 21 14 0
+                                             Macro opnemen
+                                             Macro afspelen
+                                             Functietoetsen...
+                                           @{G}---------------------@{g}
+                                             Lettertekens...
+                                             Tekens omzetten...
+                                           @{G}---------------------@{g}
+                                             Foutmeldingen...
+                                             Fout zoeken
+                                           @{G}---------------------@{g}
+                                             Regels zuiveren
+                                             TAB  spaties
+                                             Spaties  TAB
+
+@endnode
+
+
+@node "Macro opnemen"
+@prev "Bladwijzer"
+@toc "Speciaal"
+
+@image "logo-small.bmp" 65
+Macro opnemen
+@line 1 63 0 0 7
+
+In QED kunnen vaak gebruikte toetsaanslagen vastgelegd worden in een
+macro. Dergelijke macro's kunnen naar believen worden 'afgespeeld'.
+
+Een macro wordt opgenomen door dit menu-item aan te klikken, waarna men
+een of meer toetsen aanslaat. Tijdens de opname is rechtsboven in de
+menubalk "Macro-Rec" te lezen. De opname wordt beâindigd door het menu-
+item opnieuw aan te klikken. Het opgenomen macro staat nu onmiddellijk
+ter beschikking.
+
+    @{U}Een klein voorbeeld:@{u}
+
+    Wil men voor iedere regel van de tekst een ':' invullen, dan zijn
+    de volgende stappen nodig.
+
+    1   Menu/Macro opnemenot
+    2   Toetsen aanslaan:
+
+@rbox 10 3 1 0
+          :
+
+@rbox 10 3 1 0
+          @{"" LINK ""}
+
+@rbox 10 3 1 0
+          @{"" LINK ""}
+
+@rbox 10 3 1 0
+@rbox 14 3 1 0
+         @{"ALT" LINK "ALT"}  A
+
+    3   Opname stoppen
+
+Zet men nu de @{"cursor" LINK "Cursor"} aan het begin van de eerste 
+regel en start het af spelen van het macro, dan wordt het ':'-teken 
+ingevoegd en de @{"cursor" LINK "Cursor"} springt aansluitend naar het begin van de 
+volgende regel. Omdat als laatste toetsaanslag in het macro
+@rbox 1 5 1 0
+@rbox 6 3 1 0
+ @{"ALT" LINK "ALT"}  A  staat (d.i. het starten van een macro) wordt hetzelfde 
+steeds herhaalt.
+
+@endnode
+
+
+@node "Macro afspelen"
+@toc "Speciaal"
+@image "logo-small.bmp" 65
+Macro afspelen
+@line 1 63 0 0 7
+
+Met dit menu-item wordt het opgenomen macro afgespeeld.
+
+@rbox 38 5 1 0
+Macros kunnen door het indrukken van  ESC  onderbroken worden. Ook 
+als een macrofunctie ertoe zou leiden dat de @{"cursor" LINK "Cursor"} over de eerste of 
+de laatste regel gaat, wordt het macro onderbroken. Vooral bij 
+macro's met een eindeloze lus is dit nuttig, men kan dus het macro 
+toepassen op alle regels van een tekst.
+
+@{"Verborgen functie" LINK "vf: Macro afspelen"}
+
+@endnode
+
+
+@node "Functietoetsen"
+@toc "Speciaal"
+@image "logo-small.bmp" 65
+Functietoetsen...
+@line 1 63 0 0 7
+
+QED biedt de mogelijkheid om de functie-toetsen (al dan niet 
+'shifted') met macro's te bezetten.
+
+In de dialoog moet eerst de F-toets, waaronder men het macro wil 
+zetten of wil wissen, geselecteerd worden middels de pop-up. Wil men 
+het macro wissen dan is het voldoende om de knop 'Wissen' aan te 
+klikken.
+Is het de boedoeling om het actieve macro onder een bepaalde F-toets 
+te zetten, dan dient men de F-toets eerst van een naam te voorzien, 
+waarna de knop 'Macro' aangeklikt wordt.
+Wordt daarentegen de knop '@{"Blok" LINK "Tekstblokken"}' aangeklikt, 
+dan wordt de actuele inhoud van het clipbord onder de F-toets gezet.
+
+    @{U}Voor een 'blok-macro' geldt bovendien:                 @{u}
+
+    ˘   dat deze macro's niet met de parameters worden op-
+        geslagen! Ze zijn op te roepen totdat QED beâindigd
+        wordt.
+    ˘   dat bij het uitvoeren de inhoud van het clipbord
+        wordt overschreven door de in het macro opgeslagen
+        tekst. Dit betekent dat een eventueel v¢¢rafgaand
+        aan de oproep van het macro gekopieerd tekstblok
+        verloren gaat.
+
+Is een F-toets niet door een macro bezet, dan kan deze F-toets 
+middels het AV-protocol aan de AV-server worden doorgegeven. Zie 
+ook: 'Globale paprameters'.
+Hierdoor is het bijvoorbeeld mogelijk om vanuit QED de bij Thing 
+aangemelde utilities op te roepen.
+
+@endnode
+
+
+@node "Lettertekens"
+@toc "Speciaal"
+@image "logo-small.bmp" 65
+Lettertekens...
+@line 1 63 0 0 7
+
+@limage "qed-nl_chartable.bmp" 4
+
+Vanaf versie 3.90 gebruikt QED de karaktertabel van de MyDials. 
+Hierin zijn alleen de tekens opgenomen die @{B}niet@{b} via het 
+toetsenbord zijn te bereiken. Voor de weergave van de lettertekens 
+wordt het ingestelde GDOS-font gebruikt.
+
+De dialoog is volledig met de muis en/of het toetsenbord te bedienen:
+
+    ˘ Met de cursortoetsen kan men een teken uitkiezen;
+    ˘ Return voegt het teken in op de cursorpositie;
+    ˘ Ook een muisklik op een teken voegt het teken in;
+    ˘ Muisklik buiten een teken of UNDO sluit de dialoog.
+
+In het onderste deel van de dialoog wordt de ASCII-waarde van het 
+teken getoond in decimaal-, hexadecimaal-, en octaal-formaat.
+
+Het teken ASCII-0 (NUL of nul-byte) kan alleen worden ingevoegd in 
+teksten die als binair werden geopend.
+
+Behalve met de karaktertabel kunnen vreemde tekens ook worden 
+ingevoerd door @{"ALT" LINK "ALT"}-nummer combinaties. Dwz. door de ALT-toets 
+ingedrukt te houden en tegelijk het ASCII-nummer (decimaal) in te 
+toetsen op het numerieke toetsenbord.
+Onder N.AES (en latere TOS-versies) wordt deze functie door het OS 
+uitgevoerd, onder MagiC en andere systemen die deze manier van 
+vreemde tekens kiezen niet ondersteunen, zorgt QED daarvoor.
+
+@endnode
+
+
+@node "Tekens omzetten"
+@toc "Speciaal"
+@image "logo-small.bmp" 65
+Tekens omzetten...
+@line 1 63 0 0 7
+
+Iedereen die teksten tussen verschillende computersystemen wil 
+uitwisselen zal deze optie weten te waarderen.
+
+QED biedt de mogelijkheid om de ASCII-set te converteren naar de 
+belangrijkste formaten. Bijvoorbeeld om de duitse 'umlaut' om te 
+zetten. De volgende ASCII-coderingen kunnen heen en weer 
+geconverteerd worden:
+
+@box 3 64 6 0
+
+   ˘ Atari:       Standaard Atari-formaat
+   ˘ ISO-Latin1:  ISO 8859 8-Bit, voor UNIX of Linux
+   ˘ Mac:         Apple Macintosh
+   ˘ PC:          IBM-PC 8-Bit
+
+
+Naast bovenstaande vier formaten kan QED nog drie omzettingen plegen, 
+maar dan alleen als doelkodering. Er is dus geen weg terug.
+
+@box 3 64 5 0
+
+   ˘ LaTeX    (Ñ -> "a)
+   ˘ HTML     (Ñ -> &auml;)
+   ˘ ASCII    (Ñ -> ae)
+
+
+De functie wordt op de hele tekst toegepast, of als een tekstblok is
+gemarkeerd, alleen op dit tekstblok.
+
+@{"Verborgen functie" LINK "vf: Tekens omzetten"}
+
+@endnode
+
+
+@node "Foutmeldingen"
+@toc "Speciaal"
+@image "logo-small.bmp" 65
+Foutmeldingen
+@line 1 63 0 0 7
+
+QED biedt een mogelijkheid om foutbestanden, zoals ze door enkele 
+compilers aangemaakt worden, te gebruiken. Zo'n @{"bestand" LINK "Bestand"} moet @{B}per 
+regel@{b} ten minste een bestandsnaam en een regelnummer bevatten. 
+Als de @{"cursor" LINK "Cursor"} op een regel met een foutmelding staat kan via het menu-
+item 'Fout zoeken' of door deze met de rechter muisknop aan te 
+klikken, het betreffende bestand geopend worden. Daarbij wordt de 
+cursor op de aangegeven positie gezet en de foutmelding in de 
+inforegel van het @{"venster" LINK "Venster"} getoond.
+
+In de dialoog die na aanklikken van dit menu-item verschijnt, moet 
+eerst de opbouw van een foutmeldingsregel aangegeven worden. De hier 
+aan te geven opbouw moet exact gelijk zijn aan de regel die de 
+compiler maakt en kan de volgende variabelen bevatten:
+
+   %f    Bestandsnaam. Geeft de compiler slechts een naam zonder pad
+         (bijv. GNU C), dan wordt het pad van het foutmeldingenbestand
+         gebruikt.
+   %z    Regelnummer. Alleen positieve, hele getallen zijn toegestaan.
+   %s    Kolomnummer. Alleen positieve, hele getallen zijn toegestaan.
+   %t    De foutmeldingstekst. (Optioneel) QED gaat er van uit dat dit
+         de tekst tot aan het regeleinde is!
+
+   @{U}Enkele voorbeelden:@{u}
+   STJ Oberon2 :  Error %f %z, %s: %t
+   GNU C/C++   :  %f:%z: %t
+   Pure C      :  Error %f %z: %t
+                  Warning %f %z: %t
+   @{"HCP" LINK "hcp.hyp/Main"}         :  error: %f, line %z: %t
+                  warning: %f, line %z: %t
+
+Worden meerdere regels opgegeven dan worden ze na elkaar afgewerkt.
+
+@endnode
+
+
+@node "Fout zoeken"
+@toc "Speciaal"
+@image "logo-small.bmp" 65
+Fout @{"zoeken" LINK "Zoeken"}
+@line 1 63 0 0 7
+
+Via dit menu-item kan, als het aktieve @{"venster" LINK "Venster"} een 
+foutmeldingsbestand bevat en de @{"cursor" LINK "Cursor"} zich op een 
+foutmelding bevindt, het @{"bestand" LINK "Bestand"} geopend worden 
+waarop de gemelde fout betrekking heeft. QED zet bovendien de @{"cursor" LINK "Cursor"} 
+op de 'foutpositie' in het @{"bestand" LINK "Bestand"} en toont ev. de foutmelding in de 
+inforegel van het venster. Een klik met de rechter muisknop op de 
+foutmeldingsregel geeft hetzelfde resultaat als dit menu-item.
+
+@endnode
+
+
+@node "Regels zuiveren"
+@toc "Speciaal"
+@image "logo-small.bmp" 65
+Regels zuiveren
+@line 1 63 0 0 7
+
+Met 'Regels zuiveren' wordt bedoeld dat alle spaties en TAB-tekens op
+de regeleindes van de actieve tekst verwijderd. Deze functie is alleen
+beschikbaar als bij 'Lokale parameters...' de optie automatische regel-
+omslag ingeschakeld is.
+
+@endnode
+
+
+@node "TAB  spaties"
+@toc "Speciaal"
+@image "logo-small.bmp" 65
+TAB Ø spaties
+@line 1 63 0 0 7
+
+Alle tabulatortekens (ASCII 9) van een geladen tekst kunnen hiermee ver-
+wijderd worden en door een passend aantal spaties vervangen, zodat de
+tekst optisch niet veranderd.
+
+Deze functie is alleen te gebruiken als QED met echte TAB's werkt.
+(zie onder 'Lokale parameters...')
+
+@endnode
+
+
+@node "Spaties  TAB"
+@toc "Speciaal"
+@image "logo-small.bmp" 65
+Spaties Ø TAB
+@line 1 63 0 0 7
+
+Overal in de tekst waar een passend aantal spaties voor komt, worden
+deze vervangen door een tabulatorteken (ASCII 9).
+
+Deze functie is alleen te gebruiken als QED met echte TAB's werkt.
+(zie onder 'Lokale parameters...')
+
+@endnode
+
+
+@node "Opties"
+@next "Shell"
+@prev "Tekstvenster"
+@image "logo-small.bmp" 65
+Menu: Opties
+@line 1 63 0 0 7
+
+Nagenoeg alle @{"menufuncties" LINK "Menufuncties"} kunnen met behulp van 
+een toetscombinatie, de zg. @{"Shortcut" LINK "Shortcut"}, worden 
+opgeroepen.
+
+@{I}Sommige menu-functies kunnen een andere uitwerking hebben als ze met 
+een ingedrukte shift-toets worden opgeroepen.@{i}
+
+  QED  Bestand  Bewerking  Venster  Zoeken  Speciaal  Opties  Shell
+@line 1 70 0 0 1
+@box 48 26 15 0
+                                                 Invoegen
+                                                 @{"Overschrijven" LINK "Invoegen"}
+                                               @{G}-------------------------@{g}
+                                                 Fontselector...
+                                                 Globale parameters...
+                                                 Lokale parameters...
+                                                 Syntax...
+                                                 Automatisch bewaren...
+                                                 Tussen haakjes... 
+                                                 @{"Printer..." LINK "Printer instellingen"}
+                                               @{G}-------------------------@{g}
+                                                 Default project...
+                                                 in project opnemen
+                                               @{G}-------------------------@{g}
+                                                 Parameters bewaren...
+
+@endnode
+
+
+@node "Invoegen" "Invoegen/Overschrijven"
+@symbol ar "Invoegen/Overschrijven"
+@symbol ar "Overschrijven"
+@toc "Opties"
+@image "logo-small.bmp" 65
+Invoegen/Overschrijven
+@line 1 63 0 0 7
+
+Beide menu-items ("Invoegen/Overschrijven") stellen de schrijfmodus van
+QED in. Welke modus aktief is wordt aangegeven door een vinkje voor het
+betreffende menu-item.
+
+Is 'Invoegen' aktief, dan wordt de @{"cursor" LINK "Cursor"} als een smal vertikaal
+streepje weergegeven en alle tekst wordt op de cursorpositie tussen de
+aanwezige tekst gevoegd. Daarbij wordt ev. tekst rechts van de @{"cursor" LINK "Cursor"}
+opgeschoven.
+
+Is daarentegen 'Overschrijven' aktief, dan wordt de cursor als een
+blokje weergegeven en nieuwe tekens worden over aanwezige tekens heen-
+geschreven.
+
+@endnode
+
+
+@node "Fontselector"
+@toc "Speciaal"
+@image "logo-small.bmp" 65
+Font...
+@line 1 63 0 0 7
+
+Met QED v@:"QEDVERSION" is men niet zonder meer op het systeemfont aangewezen, maar 
+kan men alle via GDOS aangemelde fonts gebruiken.
+
+@limage "qed-nl_fontsel.bmp" 1
+
+In de dialoog 'Fontselectie...' zijn alle via GDOS geãnstalleerde 
+fonts beschikbaar. De lijst met fonts kan met behulp van de 
+pijlknoppen doorlopen worden. Daaronder kan de fontgrootte, eveneens 
+met pijlknoppen, worden ingesteld. In het kader wordt dan direct het 
+font in de gekozen grootte weergegeven.
+
+De fontselectie van QED is zeer eenvoudig uitgevoerd. Daar staat 
+tegenover dat QED het @{"UFSL" LINK "xfsl.hyp/Einleitung"}- en 
+@{"xFSL" LINK "xfsl.hyp/Einleitung"}-protocol ondersteunt. Hiermee is 
+het mogelijk om een @{"systeemfontselector" LINK "Fontselector"} 
+vanuit QED te gebruiken. Om deze functie te activeren kan bij de 
+'Globale parameters' de schakeloptie 'Externe fontselector' aangezet 
+worden.
+
+    @{U}De volgende fontselectors werden met succesvol met QED getest:@{u}
+      ˙ xUFSL 1.05 von Stefan Rogel
+      ˙ @{"Calvino" LINK "calvino.hyp/Einleitung"} 1.0 von Dirk Haune.
+      ˙ @{"HuGo!" LINK "hugo.hyp/Einleitung"} 1.0 von Stefan Rogel
+
+@rbox 7 24 1 0
+      @{"...meer over QED & GDOS " LINK "QED en GDOS"}
+
+
+@endnode
+
+
+@node "QED en GDOS"
+@xref "Fontselector"
+@image "logo-small.bmp" 65
+QED en GDOS
+@line 1 63 0 0 7
+
+Als GDOS is geãnstalleerd en in het @{"bestand" LINK "Bestand"} ASSIGN.SYS zijn fonts 
+voor het beeldscherm aangemeld, dan kunnen deze fonts in het 
+@{"tekstvenster" LINK "Tekstvenster"} gebruikt worden.
+
+Afdrukken van GDOS-fonts is alleen mogelijk als er een GDOS is 
+geãnstalleerd. Bij de 'Printer instellingen' kan dan de GDOS-modus 
+gekozen worden.
+
+De fonts die onder GDOS/SpeedoGDOS/NVDI gebruikt worden kan men 
+onderverdelen in proportionele fonts en monospaced fonts.
+
+   @{U}Monospaced fonts@{u}o% n
+   Deze niet-proportionele fonts bestaan uit tekens die allemaal de-
+   zelfde breedte hebben. Ze kunnen door QED zonder problemen gebruikt
+   worden. Als hiermee fouten optreden dan zijn dit fouten in het font
+   zelf m.b.t. de hoogte van de tekens in het font. Dergelijke fouten
+   @{I}in bitmapped fonts @{i}kunnen verholpen worden met het programma
+   FONTFIX.TTP van Julian Reschke (freeware).
+
+   @{U}Proportionele fonts@{u}
+   De afstand tussen de @{"lettertekens" LINK "Lettertekens"} cq. de 
+   breedte ervan is bij een dergelijk font niet voor alle tekens 
+   identiek. In QED kunnen ze gebruikt worden maar m.n. bij het scrollen
+   moet rekening gehouden worden met 
+
+@endnode
+
+
+@node "Globale parameters"
+@toc "Speciaal"
+@image "logo-small.bmp" 65
+Globale parameters...
+@line 1 63 0 0 7
+
+In deze dialoog worden de globale parameters ingesteld. Dat betekent
+dat ze gelden voor alle geopende vensters/bestanden.
+
+@limage "qed-nl_globalop.bmp" 1
+
+   @{U}Parameters @{"automatisch bewaren" LINK "Automatisch bewaren"}@{u}
+   Bij het verlaten van QED worden de parameters zoals ze op dat mo 
+   ment staan ingesteld bewaard. Onder meer de geopende vensters en 
+   geladen bestanden...
+
+@label "GEM-clipbord gebruiken"
+   @{U}GEM-clipbord gebruiken@{u}
+   De CLIPBRD-folder van GEM wordt gebruikt voor kopieer-, knip- en 
+   plak-operaties in plaats van het interne clipbord. Gegevens 
+   kunnen zo met andere applicaties worden uitgewisseld.
+
+   @{U}Vensters globaal @{"wisselen" LINK "Wisselen"}@{u}
+   Staat deze optie aan dan wordt de vensterwisseling aan de AV-
+   server overgelaten zodat ook vensters van andere applicaties 
+   worden gewisseld. Staat deze optie uit dan worden alleen de 
+   vensters van QED gewisseld.
+
+   @{U}Knipperende @{"cursor" LINK "Cursor"}@{u}
+   Spreekt voor zich... ;-)
+
+   @{U}Externe @{"fontselector" LINK "Fontselector"}@{u}
+   Externe fontselectie via het UFSL- of xFSL-protocol gebruiken.
+
+   @{U}@{"CTRL" LINK "CTRL"}-blokfuncties@{u}
+   Blok markeren op DOS-manier
+
+   @{U}3D-Dialogen@{u}
+   Vanaf 16 kleuren worden de dialogen met grijze achtergrond en 3D-
+   effect weergegeven.
+
+   @{U}Mac editvelden@{u}
+   Als deze functie actief is dan wordt de tekst van het editveld bij 
+   @{"openen" LINK "Openen"} van de dialoog voorgeselecteerd. Een @{"nieuwe tekst" LINK "Nieuwe tekst"} kan dan 
+   meteen ingetypt worden zonder het editveld eerst te wissen.
+
+   @{U}F-toetsen naar AV-server@{u}
+   Onbezette @{"functietoetsen" LINK "Functietoetsen"} worden aan de AV-server doorgegeven.
+
+   @{U}Transfermelding v.a. @{G}???@{g} kBytes@{u}
+   Hiermee kan ingesteld worden vanaf welke bestandsgrootte een 
+   vorderingenbalk moet worden getoond tijdens het laden/@{"bewaren" LINK "Bewaren"}.
+@limage "qed-nl_aktion.bmp" 6
+
+   @{U}Binaire regellengte @{G}??@{g} @{u}
+   Binaire bestanden worden met de hier ingestelde regellengte 
+   weergegeven.
+
+@box 5 16 1 0
+     Help-programma  @{G}STGUIDE.ACC@{g}
+
+   Met deze knop kan het programma worden uitgekozen dat voorziet in reg
+   on-line help. @{"ST-GUIDE" LINK "st-guide.hyp/Main"} is hiervoor de
+   meest geschikte keuze!
+
+@endnode
+
+
+@node "Lokale parameters"
+@next "Automatisch bewaren"
+@toc "Speciaal"
+@image "logo-small.bmp" 65
+Lokale parameters...
+@line 1 63 0 0 7
+
+In tegenstelling tot de @{"globale parameters" LINK "Globale parameters"} hebben de lokale 
+parameters slechts betrekking op bepaalde bestanden/bestandstypen. 
+Hiertoe heeft deze dialoog een pop-up waarmee deze geselecteerd 
+kunnen worden. Met een dubbelklik op de pop-up wordt een dialoog 
+geopend, waarin de gewenste bestandstypen vastgelegd kunnen worden.
+De regel met '*' (alle overige bestanden) kan niet gewijzigd worden, 
+de andere 9 wel.
+
+@limage "qed-nl_localop.bmp" 5
+
+Voor elk bestandstype kan het volgende ingesteld worden:
+
+@line 4 14 0 0 1
+@line 4 0 1 0 1
+@line 18 0 1 0 1
+    @{B}Tabulator@{b}
+@box 2 65 7 0
+    echte tabulatoren:   Bij het indrukken van de TAB-toets
+                         worden echte TAB's (ASCII 9) gebruikt.
+                         Is deze optie uitgeschakeld dan worden
+                         spaties gebruikt.
+    breedte:             Stelt de grootte in waarmee echte
+                         TAB's op het scherm worden weergegeven
+                         cq. hoeveel spaties worden ingevoegd.
+
+@line 4 14 0 0 1
+@line 4 0 1 0 1
+@line 18 0 1 0 1
+    @{B}Overigen@{b}
+@box 2 65 9 0
+    back-up @{"bestand" LINK "Bestand"}:     Bij 'Bewaren' wordt automatisch een
+                         back-up aangemaakt met de opgegeven
+                         extensie.
+    extensie:            de gewenste extensie voor het backup
+                         bestand (bijv. BAK, DUP, OLD).
+@symbol a "Regels omslaan"
+@box 5 7 1 0
+     @{"KRZ" LINK "KRZ"} @{"" LINK ""}               Met deze knop kan het gewenste kortzet-
+                         selbestand worden gekozen. Een aangemeld
+                         kortzetselbestand kan met een dubbelklik
+                         op deze knop weer afgemeld worden.
+
+@line 4 14 0 0 1
+@line 4 0 1 0 1
+@line 18 0 1 0 1
+    @{B}Formatering@{b}
+@box 2 65 15 0
+    autom. inspringen:   Bij een inspringende regel zal naar
+                         RETURN de volgende regel ook inspringen.
+    regels afbreken:     Bij het bereiken van de ingestelde
+                         regellengte wordt woordgewijs naar
+                         de volgende regel gesprongen.
+    ... bij laden:       het laden van een tekst worden regels
+                         automatisch omgeslagen.
+    ... bij @{"invoegen" LINK "Invoegen"}:    Bij het invoegen van een blok worden
+                         regels automatisch omgeslagen.
+    regellengte:         De max. regellengte die gebruikt wordt
+                         bij het omslaan van regels.
+    omslaan bij:         De tekens, waarbij ook naar de volgende
+                         regel gesprongen mag worden als ze mid-
+                         den in een woord staan.
+                         Bijvoorbeeld: '-'
+
+  Woord bestaat uit:     De tekens die als onderdeel van een woord
+                         beschouwd moeten worden door QED. Bij het
+                         woordgewijze markeren van een tekstblok
+                         wordt hier rekening mee gehouden.
+
+@{B}Meerdere tekens@{b}
+Bij de instelling voor 'regels afbreken bij' en 'Woord bestaat uit' 
+kunnen hele reeksen van tekens worden opgegeven door het koppelteken 
+'-' te gebruiken. Wil men bijvoorbeeld alle kleine letters als deel 
+van een woord laten herkennen dan is het voldoende om @{B}a-z@{b} in 
+te vullen.
+Wil men ook het koppelteken zelf opgeven dan dient dit als eerste op 
+de invulregel te staan.
+
+@{B}NB@{b}
+Als een alternatief File-systeem gebruikt wordt dat onderscheidt maakt
+tussen grote en kleine letters moet bij de zoekmaskers rekening worden
+gehouden met het volgende:
+@{I}Als een @{"bestand" LINK "Bestand"} van een TOS-partitie wordt geladen dan wordt het 
+bestandsmasker vooraf in @{"hoofdletters" LINK "Hoofdletters"} omgezet. Alleen hoofdletters 
+zijn daar immers toegestaan. Wordt echter echter van een partitie 
+geladen waar wäl onderscheiden wordt tussen groot en klein dan blijft 
+het masker zoals het is.
+Worden alle maskers in kleine letters opgegeven dan worden de 
+bestanden doorgaans correct herkend.
+
+@{i}
+@endnode
+
+
+@pnode "KRZ"
+@{U}Kortzetsel                               @{u}
+ De term 'Kortzetsel' is een nieuw woord
+ in het nederlands. Het is eigenlijk een
+ vertaling van het duitse 'KÅrzel'.
+ Bedoeld is een soort verkorte schrijf-
+ wijze, een soort stenografie.
+@endnode
+
+
+@node "Syntax"
+@prev "Lokale parameters"
+@toc "Speciaal"
+@image "logo-small.bmp" 65
+Syntax
+@line 1 63 0 0 7
+
+In de dialoog kunnen de kleuren en tekstattributen voor de 
+@{"syntax-gevoeligheid" LINK "Syntax-gevoeligheid"} worden ingesteld.
+
+In het bovenste pop-up menu kan het type tekst worden gekozen waarvoor u
+kleuren en attributen wilt instellen. In het geval QED in het actieve 
+@{"venster" LINK "Venster"} een tekst herkent met een bepaalde syntax (dwz. er bestaat een 
+syntaxbeschrijving in de map 'SYNTAX), dan wordt deze voorgeselecteerd.
+@box 5 1 1 0
+Met x actief wordt de syntax-gevoeligheid voor dit teksttype
+in- of uitgeschakeld.
+
+@limage "qed-nl_syntaxop.bmp" 5
+
+In het onderste pop-up menu worden de verschillende syntaxregels gekozen, 
+afhankelijk van het teksttype. Bijv. "Commentaar", "Variabele" etc.
+Per syntaxregel kan daaronder het gewenste attribuut (vet, cursief, grijs)
+worden gekozen en indien gewenst en beschikbaar ook de kleuren.
+Met "kleur" kiest u de tekstkleur voor deze regel, met "blok" de kleur, 
+die de tekst moetkrijgen in een geselecteerd blok.
+In de kleuren-popup kunt u in plaats van een kleur ook een veld met een 
+kruis kiezen; in dat geval wordt de tekst weergegeven in de standaard-
+kleur die u bij 'Globale parameters...' heeft ingesteld.
+
+Wanneer "voor alle identieke regels" aangezet wordt, dan worden de 
+ingestelde tekstkleur en attributen voor alle regels met dezelfde benaming
+van toepassing.
+
+@{U}Voorbeeld@{u}
+Is voor 'ST-Guide brontekst' bij de regel die 'commentaar' heet de kleur 
+grijs en het attribuut cursief ingesteld, en "voor alle identieke regels"
+wordt aan gezet, dan zal ook voor de ander teksttypen (Pascal-, C, C++, etc.)
+gelden dat het 'commentaar' grijs en cursief wordt weergegeven.
+
+De instellingen in deze dialoog worden bewaard via de menu-opdracht
+'Parameters bewaren'. De instellingen worden voor de verschillende 
+resoluties apart bewaard.
+Meer @{"informatie" LINK "Informatie"} is te vinden bij 'Syntax-gevoeligheid van qed'
+Daar kunt u ook nalezen hoe u zelf @{"eigen syntaxregels" LINK "eigen syntaxregels" 15} aan de eigen wensen
+cq. eigen programmeertalen kan worden aangepast.
+
+@endnode
+
+
+@node "Syntax-gevoeligheid"
+@symbol ar "eigen syntaxregels"
+@toc "Speciaal"
+@image "logo-small.bmp" 65
+Syntax-gevoeligheid van qed
+@line 1 63 0 0 7
+
+QED v@:"QEDVERSION" beheerst zogenoemde Syntax-gevoeligheid; d.w.z. dat delen 
+van een (bron-)tekst op een herkenbare manier anders dan de hoofd-
+tekst weergegeven worden. Bijv. commentaar, steekwoorden, 
+variabelen, etc.
+
+Via het menu 'Opties/Syntax...' kan men de kleuren en attributen van deze
+tekstdelen instellen.
+
+De syntaxinformatie wordt in de *.SYN-bestanden in de map SYNTAX
+bewaard. Bovendien maakt QED een @{"bestand" LINK "Bestand"} SYN_CFG.QED aan, waarin de
+gebruikersinstellingen zoals kleuren en attributen, die via de Syntax 
+dialoog zijn aangegeven, worden bewaard.
+
+@{B}Syntax-gevoeligheid aan eigen voorkeur aanpassen@{b}
+Om de gevoeligheid voor een bepaalde @{"syntax" LINK "Syntax"} van een programmeer- of
+hyperteksttaal te bewerkstelligen moet een bestand gemaakt worden 
+waarin de syntaxrgels worden beschreven. Dit bestand *.SYN moet zich 
+in de folder '/QED/SYNTAX/' bevinden.
+
+De gegevens moeten tussen aanhalingstekens worden geschreven en er 
+mogen meerdere gegevens op ÇÇn regel staan, gescheiden door komma's. 
+Bijv.: 
+ 
+ @{I}Keyword = "if","then","else"@{i}
+ 
+Wanneer tekens als \ en " gebruikt worden , moeten ze ook tussen
+aanhalingstekens geplaatst worden. 
+Bijv.:
+
+ @{I}From="\""
+ To="\\"@{i}
+
+@{B}Het bestandsformaat van het *.SYN-bestand:@{b}
+@line 1 60 0 0 7
+; Dit is een commentaar
+; Commentaren beginnen met een semicolon en gelden 
+; tot het einde van de regel.
+;
+@{I}[C-brontekst]@{i}
+;
+; Dit gegeven tussen rechthoekige haken bevat de naam van 
+; het teksttype. Deze naam wordt ook in de qed-Syntax-
+; dialoog getoond. Een teksttype mag in alle *.@{"syntax" LINK "Syntax"}-
+; bestanden @{B}maar ÇÇn keer voorkomen@{b}.
+; De volgende regels zijn verplicht.
+; 
+; Txttype
+; =======
+; De tekstnaam (bijv. @{I}Txttype = "syntax.cfg" @{i}) of de
+; extensie.
+;
+@{I}Txttype = "c", "h"@{i}
+;
+; Token
+; =====
+; Met 'Token' worden alle tekens van een woord aangeduid. 
+; Alle tekens moeten hier volledig opgegeven worden en 
+; kunnen niet afgekort worden zoals bij de andere gegevens.
+;
+@{I}Token = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"@{i}
+;
+; Active
+; ======
+; De syntaxgevoeligheid wordt aan (=TRUE) of uit (=False)
+; gezet.
+@{I}Active = TRUE@{i}
+;
+;CaseSensitive
+;=============
+; De syntaxgevoeligheid kan onderscheid maken tussen grote
+; en kleine letters (=TRUE) of niet (=FALSE)
+@{I}CaseSensitive = FALSE@{i}
+;
+; De volgende gegevens beschrijven de @{"syntax" LINK "Syntax"}-regels.
+;
+; De naam van de syntax-regel komt tussen puntige haken.
+; Bijv.
+;
+@{I}<Commentaar>@{i}
+;
+; Deze naam wordt in de syntaxdialoog getoond.
+; Regels kunnen meermaals voorkomen. Zo kan in C++ een 
+; commentaar zowel tussen /* en */ staan, alsook alles
+; wat in na // volgt. In dit geval kan men eenvoudig
+; <Commentaar> meedere keren invullen met telkens verschil-
+; ende voorwaarden.
+; N.B!: Alleen voor de eerste regel kunnen kleur en 
+; attribuut ingesteld worden. Alle volgende met dezelfde 
+; naam krijgen ook dezelfde kleur en attribuut als de 
+; eerste.
+; 
+; Voorwaarden kunnen op 3 verschillende manieren aangegeven
+; worden.
+;
+; @{U}1. Een sleutelwoord-regel:@{u}
+;
+@{I}Keyword = "if","then","else","case"@{i}
+;
+;    Er kunnen meerdere regels met sleutelwoorden gemaakt
+;    worden, maar ze beginnen telkens met 'Keyword ='
+;
+; @{U}2. Een van/tot-regel:@{u}
+;
+@{I}From = "/*"
+To = "*/"@{i}
+;
+;    of
+;
+@{I}From = "//"
+To = EOL
+;
+;    Alles vanaf hetgeen achter 'From =' staat, wordt weer-
+;    gegeven met de ingestelde kleur tot aan hetgeen achter
+;    'To =' staat ingevuld. De syntaxgevoeligheid kan zo op
+;    meerdere regels worden toegepast.
+;    Na 'To =' kan ook 'EOL' staan (End Of Line) .
+;
+;    Mogelijke eigenschappen van de van/tot-regel zijn:
+;
+Nested = FALSE@{i}
+;
+@{I}Quotechar = "\\"@{i}
+;
+;    Omdat '\' ook het quote-teken van qed is, is het hier 
+;    dubbel, dus als '\\', geschreven.
+;
+@{I}Firstcolumn = FALSE@{i}
+;
+;    Voor het speciale geval dat de gewenste regel alleen
+;    moet gelden als de te herkennen tekenreeks in de 
+;    eerste kolom staat, moet 'Firstcolumn = TRUE' ingevuld
+;    worden.
+;
+; @{U}3. Een terwijl-regel:@{u}
+;
+@{I}From = "0"
+While = "0"-"7"@{i}
+;
+;    Hiebij geldt de syntaxgevoeligheid voor de aangegeven 
+;    tekens in willekeurige volgorde, bijv. constanten.
+;    In dit voorbeeld worden getallen in een andere kleur 
+;    weergegeven, die met 0 beginnen zolang er tekens 
+;    tussen 0 en 7 in voorkomen.
+;    Dus '0347' wel, maar '0xFF' of '0815' niet.
+;
+; @{B}Na de syntaxregels volgt de gewenste weergave@{b}
+; En wel voor drie verschillende resoluties apart.
+; '(Color2)' of '(Color16)' of
+;
+@{I}(Color256)@{i}
+;
+; Het is niet nodig dat hier alle resoluties vermeld zijn.
+; Bij ontbreken worden voor de kleur, de standaardkleuren
+; gebruikt en geen atributen gezet.
+; N.B! Bij meerdere syntaxregels met dezelfde naam, mag de
+; weergave-stijl alleen na de eerste staan. De andere
+; syntaxregels met deze naam krijgt dezelfde stijl als de 
+; eerste!
+; 
+; Per onderdeel kan telkens het volgende worden aangeduid:
+;
+@{I}Attribs = BOLD,ITALIC,LIGHT@{i}
+;
+; de attributen "BOLD", "ITALIC" en "LIGHT" worden gezet.
+;
+@{I}Color = 15@{i}
+;
+; De kleur van de gewone tekst wordt op 15 gezet. Let op,
+; de kleur moet wel bij de resolutie passen, onder de 2 
+; kleuren moet dus helemaal geen kleur aangegeven worden.
+;
+@{I}Selcolor = 2@{i}
+;
+; De kleur voor de geselecteerde tekst wordt op 2 gezet.
+;
+
+@endnode
+
+
+@node "Automatisch bewaren"
+@prev "Syntax"
+@toc "Speciaal"
+@image "logo-small.bmp" 65
+Automatisch @{"bewaren" LINK "Bewaren"}...
+@line 1 63 0 0 7
+
+QED heeft de mogelijkheid om gewijzigde teksten en @{"projecten" LINK "Projecten"} na een 
+bepaalde tijd automatisch op te slaan. In de dialoog kan voor teksten 
+en projecten afzonderlijk hiervoor een tijd instellen. Is de optie 
+navragen geactiveerd dan verschijnt na de ingestelde tijd een dialoog 
+die de mogelijkheid geeft om het @{"bestand" LINK "Bestand"} al of niet te @{"bewaren" LINK "Bewaren"}, 
+danwel de AutoSave uit te schakelen.
+
+@endnode
+
+
+@node "Tussen haakjes..."
+@toc "Speciaal"
+@image "logo-small.bmp" 65
+Tussen haakjes...
+@line 1 63 0 0 7
+
+Hier kunnen de begin- en eind-'haakjes' worden vastgelegd. Na een 
+dubbelklik op een begin- of eind-haakje wordt de hele tekst ertussen 
+geselecteerd. Staat de @{"cursor" LINK "Cursor"} op zo'n haakje dan kan ook geselecteerd 
+worden met @{"CTRL" LINK "CTRL"}-TAB.
+
+@endnode
+
+
+@node "Default project"
+@toc "Speciaal"
+@xref "Projecten"
+@image "logo-small.bmp" 65
+Default project...
+@line 1 63 0 0 7
+
+Met dit menu-item kan een projectbestand gekozen worden. Dit 
+projectbestand is daarna via dit menu te @{"openen" LINK "Openen"}. De naam van het 
+projectbestand verschijnt dan op deze plaats in het menu.
+
+Het voordeel is dat het project dat men veelvuldig nodig heeft direkt
+
+@{"Verborgen functie" LINK "vf: Default project"}
+
+@endnode
+
+
+@node "in project opnemen"
+@toc "Speciaal"
+@image "logo-small.bmp" 65
+in project opnemen
+@line 1 63 0 0 7
+
+Hiermee wordt het @{"bestand" LINK "Bestand"} uit het aktieve @{"venster" LINK "Venster"} in het default-
+project opgenomen.
+
+
+@endnode
+
+
+@node "Parameters bewaren"
+@toc "Speciaal"
+@image "logo-small.bmp" 65
+Parameters @{"bewaren" LINK "Bewaren"}...
+@line 1 63 0 0 7
+
+Met deze menufunctie worden de actuele instellingen van QED 
+opgeslagen in het configuratiebestand (qed.cfg). Dit @{"bestand" LINK "Bestand"} is een 
+leesbare ASCII-tekst, waarin per regel een variabele is gedefinieerd.
+Het met de hand veranderen van dit bestand is niet aan te raden; in 
+elk geval dient men precies te weten wat men doet!
+
+QED v@:"QEDVERSION" kan het oude formaat configuratiebestand 'default.qed' niet 
+meer lezen. Om bestaande configuraties over te nemen kan het oude 
+'default.qed' met het meegeleverde 'convert.gtp' in het nieuwe 
+formaat 'qed.cfg' omgezet worden.
+
+@endnode
+
+
+@node "Shell"
+@next "Kortzetsels"
+@prev "Tekstvenster"
+@image "logo-small.bmp" 65
+Menu: Shell
+@line 1 63 0 0 7
+
+Nagenoeg alle @{"menufuncties" LINK "Menufuncties"} kunnen met behulp van 
+een toetscombinatie, de zg. @{"Shortcut" LINK "Shortcut"}, worden 
+opgeroepen.
+
+@{I}Sommige menu-functies kunnen een andere uitwerking hebben als ze met 
+een ingedrukte shift-toets worden opgeroepen.@{i}
+
+  QED  Bestand  Bewerking  Venster  Zoeken  Speciaal  Opties  Shell
+@line 1 70 0 0 1
+@box 50 23 13 0
+                                                   Shell @{"zoeken" LINK "Zoeken"}... 
+                                                   Communicatie stoppen
+                                                 @{G}--------------------@{g}
+                                                   Makefile...
+                                                 @{G}--------------------@{g}
+                                                   Compiler
+                                                   Make
+                                                   Make all
+                                                   Link
+                                                   Execute
+                                                   Make + Exec
+                                                   @{"Shell toppen" LINK "Shell toppen"}
+
+@endnode
+
+
+@node "SE-parameters"
+@next "Printer instellingen"
+@toc "Shell"
+@image "logo-small.bmp" 65
+Shell @{"zoeken" LINK "Zoeken"}...
+@line 1 63 0 0 7
+
+Alleen in een multitasking omgeving is dit menu-item interessant, 
+aangezien er paralel aan QED een ontwikkelomgeving moet draaien die 
+het zg. @{"SE-protocol" LINK "seproto.hyp/Main"} ondersteunt.
+Dit protocol regelt de communicatie tussen een programmeershell en 
+een editor. De editor wordt daarmee het besturingsorgaan van de 
+@{"shell" LINK "Shell"} waar-door mogelijke stappen bij het 
+programmeren (compile, link, make en run) vanuit de editor geregeld 
+kunnen worden.
+
+Vanuit QED wordt met dit menu-item naar de @{"shell" LINK "Shell"} gezocht, en als deze
+gevonden is worden de andere @{"opties" LINK "Opties"} in dit menu selecteerbaar, voor
+zover de gevonden shell ze verstaat, en begint de communicatie.
+QED ondersteunt het gehele SE-protocol van versie 1.04 van 8 jan 
+1997. Als er toch enkele opties niet selecteerbaar zijn dan ligt dat 
+aan de shell en niet aan QED.
+
+Als de shell bijzondere Makefiles nodig heeft, kunnen deze met het 
+daarvoor bedoelde menu-item uitgekozen worden. Aangemelde Makefiles 
+kunnen met ditzelfde menu-item weer afgemeld worden door bij het 
+aanklikken van het menu-item de SHIFT-toets ingedrukt te houden.
+
+De communicatie hoeft niet altijd van QED te komen. Het is ook 
+mogelijk dat QED v@:"QEDVERSION" vanuit de shell wordt bereikt.
+
+   @{U}Shell-applicaties die het SE-protocol ondersteunen:@{u}
+   ˘ MM2-Shell van Thomas Tempelmann cq. Dirk Steins
+   ˘ Chatwin van Dirk Haun
+   ˘ PC-Shell van Frank Storm
+
+@endnode
+
+
+@pnode "Shell toppen"
+De shell wordt hiermee naar boven gehaald.
+@endnode
+
+
+@node "Printer instellingen"
+@prev "Main"
+@image "logo-small.bmp" 65
+Printer instellingen
+@line 1 63 0 0 7
+
+QED kent twee afdrukroutines, via GEMDOS en via GDOS. Afhankelijk van
+de modus die in de @{"afdrukken" LINK "Afdrukken"}-dialoog wordt gekozen.
+
+Tijdens het @{"afdrukken" LINK "Afdrukken"} verschijnt op het scherm een vorderingenbalkje.
+@rbox 22 5 1 0
+De afdruk kan met de  ESC -toets worden onderbroken. Er verschijnt dan
+@symbol a "Algemene instellingen  "
+een dialoog waarin men kan kiezen of men daadwerkelijk het afdrukken
+wil stoppen of niet.
+
+@limage "qed-nl_printer.bmp" 6
+
+   @{U}Voor beide modi gelden de volgende parameters:@{u}
+
+   - Object:             Wat moet afgedrukt worden? De hele tekst ofdd
+                         alleen een evt. gemarkeerd tekstblok.
+   - Regels nummeren:    QED voegt voor elke regel het regelnummer in.
+   - Pagina's nummeren:  QED nummert de bladzijden en er wordt een kop-
+                         regel met bestandsnaam en datum toegevoegd.
+   - FormFeed:           QED stuurt aan het einde van de afdruk een FF.
+   - Check printer:      Moet QED testen of de printer gereed is?
+                         Gewoonlijk dient men deze optie aan te zetten,
+                         opdat QED herkent of de printer onLine is.
+                         Als men echter een andere aansluiting dan de
+                         paralelle- of seriâle poort gebruikt (bijv.
+@symbol a "GEMDOS-modus           "
+                         een laserprinter aan de ACSI-poort of een
+                         Apple-printer onder MagiCMac), kan het zijn dat
+                         de printer herkent wordt als 'niet gereed'.
+   - Linker marge:       QED voegt een opgegeven aantal spaties in zo-
+                         dat er een linker marge ontstaat.
+
+   @{U}GEMDOS-modus@{u} 
+
+Als men via GEMDOS afdrukt, worden de afzonderlijke tekens via een 
+zg.GEMDOS-functie naar de printer gestuurd en daar met een printer-
+intern font van de printer afgedrukt. In de dialoog "Printer instellen"
+zijn de volgende instellingen mogelijk:
+
+   - Driver:             Met deze knop kan een WordPlusø printerdriver
+                         worden geselecteerd. Deze driver zorgt voor het
+                         op juiste wijze @{"afdrukken" LINK "Afdrukken"} van tekens met
+                         accenten e.d.
+   - Bladlengte:         Hier kan het aantal regels per pagina
+                         worden ingesteld.
+   - Regellengte:        Hier kan het aantal tekens per regel
+@symbol a "GDOS-modus             "
+                         worden ingesteld.
+   - NLQ:                Afdruk in hoge kwaliteit.
+   - Lettersoort:        Bepaald het aantal tekens per regel:
+                          Pica:      10 cpi (80 tekens bij A4-formaat) 
+                          Elite:     12 cpi (96 tekens bij A4-formaat)
+                          Condensed: 17 cpi (147 tekens bij A4-formaat)
+
+
+   @{U}GDOS-modus@{u}
+
+Deze modus is alleen beschikbaar, als een @{"GDOS" LINK "gdos.hyp/Main"} 
+geãnstalleerd is (bijv. SpeedoGDOS of NVDI >3.0). Als de GDOS-modus 
+wordt gekozen dan wordt eerst gekeken welke drivers beschikbaar zijn 
+en deze worden vervolgens geladen. Alleen drivers waarvoor fonts 
+aangemeld zijn kunnen gebruikt worden.
+
+@rbox 5 13 1 0
+     QED en GDOS
+
+   - Device:             Via een popup kan het uitvoer-apparaat worden
+                         ingesteld.
+   - Bestand:            Hiermee wordt de bestandsnaam voor een GDOS-
+                         device vastgelegd. Wordt niets ingesteld dan 
+                         worden de bestanden op het actieve pad bewaard.
+   - Fontselectie        Voor het geselecteerde apparaat kan een font
+                         gekozen worden.
+
+@endnode
+
+
+@node "Kortzetsels"
+@next "Projecten"
+@prev "Menufuncties"
+@image "logo-small.bmp" 65
+Kortzetsels
+@line 1 63 0 0 7
+
+QED kent een zg. @{"Kortzetsel" LINK "KRZ"}-systeem. Hiermee is het 
+mogelijk om afkortingen van ÇÇn tot acht letters te gebruiken om ÇÇn 
+of meer woorden of tekstregels te zetten. De afkortingen kunnen door 
+de gebruiker zelf worden gedefinieerd in een Kortzetsel-@{"bestand" LINK "Bestand"}. Dit 
+is een ASCII-bestand.
+
+@rbox 5 30 1 0
+     @{"Kortzetsels gebruiken        " LINK "Kortzetsels: gebruiken"}
+
+@rbox 5 30 1 0
+     @{"Kortzetsels aanmaken         " LINK "Kortzetsels: aanmaken"}
+
+@rbox 5 30 1 0
+     @{"Voorbeeld Kortzetsel-bestand " LINK "Kortzetsels: voorbeeldbestand"}
+
+Kortzetsel-bestanden moeten de extensie '.@{"KRZ" LINK "KRZ"}' krijgen. De naam van 
+het actieve Kortzetsel-bestand wordt in de configuratie opgeslagen met
+@{"Parameters bewaren..." LINK "Parameters bewaren"} , zodat dit 
+Kortzetsel-bestand bij de volgende sessie met dezelfde instellingen 
+weer ter beschikking staat.
+
+@endnode
+
+
+@node "Kortzetsels: aanmaken"
+@toc "Kortzetsels"
+@image "logo-small.bmp" 65
+Kortzetsels aanmaken
+@line 1 63 0 0 7
+
+Het @{"Kortzetsel" LINK "Kortzetsels"}-@{"bestand" LINK "Bestand"} bestaat uit de regels 
+waarin links de code staat en daarachter de tekst die in plaats van 
+deze code gezet moet worden.
+
+De code en de vervangingstekst worden van elkaar gescheiden door het
+'=' -teken.
+
+V¢¢r het '=' -teken mag een willekeurig aantal spaties staan. De code
+zelf mag max. 8 tekens (letters e/o cijfers) bevatten en @{B}alles@{b} na het
+@symbol a "zonder  ESC "
+'=' -teken wordt als vervangingstekst beschouwd.
+
+@{U}Tekens met een speciale functie:@{u}
+
+   '*' direct voor het '=' teken; vervangingstekst wordt automatisch
+@symbol a "met een tilde"
+@rbox 56 5 1 0
+                                  ingevoegd, zonder op  ESC  te
+                                  drukken.
+   '~' in de string;              zorgt er voor dat de @{"cursor" LINK "Cursor"} op de
+                                  positie van de '~' wordt ingevoegd,
+                                  zonder tilde ('~') staat de cursor,
+                                  aan het eind van de string.
+   '#' (hekje);                   leidt een commentaarregel in.
+
+   '^^'                           er wordt een enkele CR in de tekst
+                                  gezet. In een @{"KRZ" LINK "KRZ"}-bestand kan '^^'
+                                  gebruikt worden om meerregelige
+                                  vervangingsteksten te realiseren.
+
+@rbox 5 30 1 0
+     @{"Voorbeeld Kortzetsel-bestand " LINK "Kortzetsels: voorbeeldbestand"}
+
+@endnode
+
+
+@node "Kortzetsels: voorbeeldbestand"
+@toc "Kortzetsels"
+@image "logo-small.bmp" 65
+Een voorbeeld van een @{"Kortzetsel" LINK "Kortzetsels"}-@{"bestand" LINK "Bestand"}.
+@line 1 63 0 0 7
+
+Als voorbeeld een greep uit het @{"kortzetsel" LINK "KRZ"}-bestand 
+voor ST-Guide bronteksten (STG.@{"KRZ" LINK "KRZ"}) dat met de nederlandse versie 
+wordt meegeleverd.
+
+# Soms moeten er nog parameters ingevuld worden bij de commando's:
+# ----------------------------------------------------------------
+#  xxx   @@{"@{"" LINK ""}" LINK ""}  <name>|<string>|<text>
+#  lll     <labelname>
+#  nnn     <number>
+#  ttt     <title>
+#
+# -----------------------------------------------------
+# 0. door gebruiker gedefinieerde commando's
+# -----------------------------------------------------
+QED   *=QED^^Een fantastische editor^^---------^^   ~^^---------^^(vul in: ja of nee
+BBST  =BearBoard Atari BBS te Rotterdam, 010-2900490
+# -----------------------------------------------------
+# 1. struktuurcommando's
+# -----------------------------------------------------
+dflt  =@@default "~"-
+((    *=@@node "~"
+//    *=@@pnode "~"
+))    *=@@endnode
+hlp   =@@help "~"
+lbl   =@@label"
+nxt   =@@next "~"
+prv   =@@prev "~"
+inh   =@@toc "~""
+regel =@@width ~75
+if    =@@if ~ [op xxx]
+else  =@@else
+if.   =@@endifoπ
+xref  =@@xref ~ ttt
+# -----------------------------------------------------
+# 2. sturing van automatische referenties
+# -----------------------------------------------------
+>lbl  =@@alabel "~"
+>ook  =@@alias "~"
+>-    =@@autorefoff
+>+    =@@autorefon
+>x    =@@extern ~ fff/xxx nnn
+>0    =@@noref
+use   =@@uses ~
+usehyp=@@uses ~.hyp
+useref=@@uses ~.ref
+sym   =@@symbol "~"
+idx+  *=@@indexon
+idx-  *=@@indexoff
+
+@endnode
+
+
+@node "Kortzetsels: gebruiken"
+@toc "Kortzetsels"
+@image "logo-small.bmp" 65
+Kortzetsels gebruiken
+@line 1 63 0 0 7
+
+Om een @{"Kortzetsel" LINK "Kortzetsels"} in de tekst te gebruiken, 
+moet  ESC  ingedrukt worden op het moment dat de @{"cursor" LINK "Cursor"} direkt 
+(zonder spaties ertussen) achter de Kortzetsel-code staat. QED zoekt 
+dan in het kortzetsel-@{"bestand" LINK "Bestand"} de betreffende code op en vervangt deze 
+in de tekst door de aangegeven vervangingstekst. Gewoonlijk wordt de 
+cursor achter de vervangingstekst gezet na deze actie, tenzij 
+er @{"met een tilde" LINK "Kortzetsels: aanmaken" "met een tilde"} een andere 
+positie werd gedefinieerd.
+Er wordt telkens de langste van de passende codes gebruikt.
+
+Ook @{"zonder  ESC " LINK "Kortzetsels: aanmaken" "zonder  ESC "} in te drukken 
+kunnen kortzetsel geplaatst worden.
+NB.: Automatische Kortzetsels worden @{B}altijd@{b} uitgevoerd, ook 
+midden in een woord!
+
+@endnode
+
+
+@node "Projecten"
+@prev "Kortzetsels"
+@image "logo-small.bmp" 65
+Projecten
+@line 1 63 0 0 7
+
+Projecten bieden de mogelijkheid, een reeks van bestanden die nodig 
+zijn voor een bepaalde klus te groeperen. De bestanden die in een 
+project zijn gezet verschijnen als bestandenlijst in een zg. project-
+@{"venster" LINK "Venster"}. Het voordeel hiervan is dat bepaalde functies op de hele 
+groep bestanden in het project toegepast kunnen worden.
+
+@{U}@{"Zoeken in een project" LINK "In project zoeken"}@{u}
+Het is mogelijk om naar tekst te @{"zoeken" LINK "Zoeken"} in meerdere bestanden. Het 
+volstaat om de zoekfunctie toe te passen op een project. Hierbij 
+worden alle bestanden in het project doorzocht naar de opgegeven 
+tekst.
+
+@{U}Aanleggen van een project@{u}
+Er zijn verscheidene mogelijkheden om een project aan te leggen. Ten 
+eerste kan dit handmatig door bestanden via @{"Drag&Drop" LINK "protocollen"} van bijv. de 
+desktop naar een geopend projectvenster te slepen.
+Ten tweede kan een project aangelegd worden door te zoeken in een pro-
+ject of door te @{"zoeken in bestanden" LINK "vf: Zoeken in bestand"}.
+
+Bovendien kan onder het menu-item een 'Default project' opgegeven 
+worden, waaraan men vervolgens het @{"bestand" LINK "Bestand"} uit het actieve venster 
+kan @{"toevoegen" LINK "Toevoegen"} met 'in project opnemen'.
+
+@{U}Gebruik van projecten@{u}
+Een in een project opgenomen bestand kan geopend worden met een dubbele
+klik op de bestandsnaam in het projectvenster, of door deze bestands-
+naam te selecteren en het menu-item 'Openen...' te kiezen.
+
+Elementen uit projecten kunnen via drag&drop op andere vensters 
+gesleept worden:
+   ˘ Invoegen van bestandsnamen in een ander project
+   ˘ Invoegen van de bestandsnaam in een tekst; bij ingedrukte shift-
+     toets.
+   ˘ Invoegen van de inhoud van een tekstbestand in een tekst; bij 
+     ingedrukte @{"ALT" LINK "ALT"}-toets.
+   ˘ Bestand op de desktop plaatsen (als de desktop het AV-protocol 
+     ondersteund
+
+Behalve met de muis zijn in een actief projectvenster ook enkele
+functies te gebruiken via het toetsenbord:
+
+   ˘ Met de cursortoetsen kan een @{"cursor" LINK "Cursor"} geactiveerd worden, waarmee
+     dan een bestand geselecteerd kan worden.
+   ˘ Met Shift-Cursor kan venstergewijs door de bestandenlijst 
+     gesprongen worden.
+   ˘ Met RETURN wordt een geselecteerd @{"bestand" LINK "Bestand"} in een @{"tekstvenster" LINK "Tekstvenster"}
+     geopend.
+   ˘ Met HOME resp. SHIFT-HOME springt de cursor naar het begin resp.
+     het einde van de lijst.
+   ˘ Met behulp van het intypen van letter(s) wordt een autolocator
+     geactiveerd. De ingetypte letters worden gewist zodra er een
+     toets zonder letter ingedrukt wordt.
+
+Ook de project-bestanden zijn gewone ASCII-tekst. QED herkent ze als 
+project via de extensie, deze @{B}moet@{b} op '.qpj' eindigen.
+
+@{"Verborgen functie" LINK "vf: Bestand/Openen..."}
+
+@endnode
+
+
+@node "Verborgen functies"
+@next "QED en het Operating System"
+@image "logo-small.bmp" 65
+Verborgen functies van QED
+@line 1 63 0 0 7
+
+Van enkele menu-items wijzigt de functie als deze aangeklikt worden
+@rbox 13 7 1 0
+terwijl een  SHIFT  -toets wordt ingedrukt.
+
+   @{U}Het gaat om de volgende menu-items:@{u}
+
+    @{"Bestand/Openen..." LINK "vf: Bestand/Openen..."}
+    @{"Bestand/Toevoegen" LINK "vf: Toevoegen"}
+    @{"Bestand/Stoppen" LINK "vf: Stoppen"}
+    @{"Bewerking/Knippen" LINK "vf: Knippen"}
+    @{"Bewerking/Kopiâren" LINK "vf: Knippen"}
+    @{"Bewerking/Alinea indelen" LINK "vf: Alinea indelen"}
+    @{"Zoek/Bladwijzer gebruiken" LINK "vf: Bladwijzer gebruiken"}
+    @{"Zoek/...opnieuw" LINK "vf: Opnieuw zoeken"}
+    @{"Zoek/Zoeken in bestand" LINK "vf: Zoeken in bestand"}
+    @{"Speciaal/Tekens omzetten" LINK "vf: Tekens omzetten"}
+    @{"Speciaal/Macro afspelen" LINK "vf: Macro afspelen"}
+    @{"Opties/Default project" LINK "vf: Default project"}
+
+@endnode
+
+
+@pnode "vf: Bestand/Openen..."
+@{U}... met ingedrukte SHIFT-toets                             @{u}
+
+   Projectbestand @{B}als tekst@{b} openen.
+
+@endnode
+
+
+@pnode "vf: Alinea indelen"
+@{U}... met ingedrukte SHIFT-toets                             @{u}
+
+    De @{B}hele tekst@{b} wordt opnieuw ingedeeld.
+
+@endnode
+
+
+@pnode "vf: Zoeken in bestand"
+@{U}... met ingedrukte SHIFT-toets                             @{u}
+
+    Ongeacht het actieve venster wordt het zoeken in bestand
+    en gestart.
+
+@endnode
+
+
+@pnode "vf: Opnieuw zoeken"
+@{U}... met ingedrukte SHIFT-toets                             @{u}
+
+    Het zoeken (of vervangen) vindt nu plaats in de tegenge-
+    stelde richting. De richtingsverandering is alleen geldi
+    voor deze ene operatie. De zoekrichting die in de zoek-
+    dialoog werd ingesteld blijft dus ongewijzigd.
+    Wordt de functie '...opnieuw' weer zonder Shift opgeroep
+    dan wordt wederom de ingestelde richting gebruikt.
+@endnode
+
+
+@pnode "vf: Bladwijzer gebruiken"
+@{U}... met ingedrukte SHIFT-toets                             @{u}
+
+    De betreffende bladwijzer wordt gewist.
+
+@endnode
+
+
+@pnode "vf: Macro afspelen"
+@{U}... met ingedrukte SHIFT-toets                             @{u}
+
+    Er verschijnt nu een dialoog, waarin men kan invullen
+    hoe vaak het macro herhaald moet worden.
+
+@endnode
+
+
+@pnode "vf: Tekens omzetten"
+@{U}... met ingedrukte SHIFT-toets                             @{u}
+
+    De laatst ingestelde conversie van de ASCII-set wordt
+    hiermee omgekeerd. Het is dus mogelijk om een conversie
+    te herstellen.
+
+@endnode
+
+
+@pnode "vf: Default project"
+@{U}... met ingedrukte SHIFT-toets                             @{u}
+
+    Een aangemeld standaardproject wordt hiermee afgemeld.
+
+@endnode
+
+
+@pnode "vf: Toevoegen"
+@{U}... met ingedrukte SHIFT-toets                             @{u}
+
+    De geselecteerde @{I}bestandsnaam @{i}wordt op de cursor-
+    positie ingevoegd
+
+@endnode
+
+
+@pnode "vf: Stoppen"
+@{U}... met ingedrukte SHIFT-toets                             @{u}
+
+    De instelling van 'werkomgeving automatisch bewaren' 
+    wordt omgekeerd.
+
+@endnode
+
+
+@pnode "vf: Knippen"
+@{U}... met ingedrukte SHIFT-toets                             @{u}
+
+    Het clipbord wordt niet gewist, maar het tekstblok wordt
+    aan de aanwezige SCRAP.TXT toegevoegd.
+
+@endnode
+
+
+@node "QED en het Operating System"
+@next "protocollen"
+@prev "Verborgen functies"
+@image "logo-small.bmp" 65
+QED en ...
+@line 1 63 0 0 7
+
+@rbox 5 24 1 0
+     @{" ... commandoregel     " LINK "commandoregel"}
+
+@rbox 5 24 1 0
+     @{" ... environment      " LINK "systeemomgeving"}
+
+@rbox 5 24 1 0
+     @{" ... protocollen      " LINK "protocollen"}
+
+@rbox 5 24 1 0
+     @{" ... fileselector     " LINK "fileselector"}
+
+@endnode
+
+
+@node "systeemomgeving"
+@symbol ar "environment"
+@toc "QED en het Operating System"
+@xref "fileselector" "QED & Fileselector"
+@image "logo-small.bmp" 65
+QED en de systeemomgeving
+@line 1 63 0 0 7
+
+QED zoekt het configuratiebestand 'qed.cfg' en zijn resource qed.rsc 
+op verschillende paden.
+
+Het configuratiebestand wordt achtereenvolgens gezocht:
+   1. op het pad in de variabele $HOME
+   2. op het pad $HOME/defaults
+   3. op het pad in de variabele $QED
+   4. op het pad van waaruit QED gestart werd
+   5. op het actuele pad
+
+Naar de resource wordt als volgt gezocht:
+   1. op het actuele pad en het startpad van QED
+   2. op het pad in de variabele $QED
+
+QED gaat er daarbij van uit dat de bestanden in kleine letters zijn 
+geschreven, voor zover het filesysteem dat ondersteund.
+
+als MiNTø geãnstalleerd is draait QED in het MiNTø-domain en kan 
+overweg met bestandsnamen van max. 64 tekens en padnamen van max. 256 
+tekens, voor zover het filesysteem dat ondersteund.
+
+@endnode
+
+
+@node "fileselector"
+@toc "QED en het Operating System"
+@image "logo-small.bmp" 65
+QED en de Fileselector
+@line 1 63 0 0 7
+
+QED ondersteund de uitgebreide fileselectoren Selectricø en @{"Freedom" LINK "freedom.hyp/Main"}.
+Er kunnen met 'Bestand/Openen...' meerdere bestanden tegelijk gekozen
+worden die vervolgens allemaal geopend worden.
+Houdt echter rekening met het volgende: als er meer dan ÇÇn @{"bestand" LINK "Bestand"} ge-
+kozen wordt, dan krijgt QED ze door spaties gescheiden aangereikt. Deze
+methode heeft tot gevolg dat op FileSystemen met lange bestandsnamen
+(bijv. Minix) geen bestanden geopend kunnen worden waarvan de naam spa-
+ties bevatten. In dit geval kan slechts ÇÇn @{"bestand" LINK "Bestand"} gekozen worden!
+
+Deze wijze van afhandelen zal in de toekomst zeker nog gewijzigd gaan
+worden, maar de experts zijn het er nog niet over eens hoe.
+
+@endnode
+
+
+@node "commandoregel"
+@toc "QED en het Operating System"
+@xref "fileselector" "Fileselector"
+@image "logo-small.bmp" 65
+QED en de commandoregel
+@line 1 63 0 0 7
+
+QED ondersteund de ARGV-procedure. Daardoor kunnen bij het starten 
+meerdere bestandsnamen (ev. met de gewenste cursorpositie) opgegeven 
+worden. Werkt men met een alternatieve desktop, bijv. Thing, dan is 
+het mogelijk om QED op de desktop te leggen, in een bestandenvenster 
+een aantal bestanden te selecteren en deze vervolgens op het QED-
+ikoon te slepen. Daarmee wordt QED gestart en de betreffende 
+bestanden geladen.
+
+Op de commandoregel kunnen bovendien nog parameters opgegeven worden. 
+Omdat deze parameters betrekking hebben op ED op[f no(. d@{"e " LINK "Bestand"}, 
+an Op @{"sy aax" LINK "Syntax"}eens vervt:
+
+   @{I}qedtal best [ndore] [kolom]
+
+
+
+
+@{i}
+@endnode
+
+
+@node "*.SYN" "Bestandsformaat van het *.SYN-bestand"
+@symbol ar "Bestandsformaat van het *.SYN-bestand"
+@image "logo-small.bmp" 65
+Bestandsformaat van het *.SYN-@{"bestand" LINK "Bestand"}
+@line 1 63 0 0 7
+
+Voorbeeld:
+
+@box 5 64 80 0
+
+ 
+        ;********************************************************
+        [Pascal-brontekst]
+        ;********************************************************
+        Txttype = "pas","i"
+        Active = TRUE
+        CaseSensitive = FALSE
+        Token = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefg..yz"
+ 
+ 
+        <Comment>
+        From = "(*"
+        To = "*)"
+        (Color2)
+        Attribs = LIGHT
+        (Color16)
+        Color = 11
+        Selcolor = 3
+        (Color256)
+        Color = 11
+        Selcolor = 3
+ 
+        <Comment>
+        From = "{"
+        To = "}"
+ 
+        <Strings>
+        From = "'"
+        To = "'"
+        (Color16)
+        Color = 9
+        Selcolor = 9
+        (Color256)
+        Color = 9
+        Selcolor = 9
+ 
+        <VarTypes>
+        Keyword = "array","alfa","boolean","byte","char","integer",
+                  "long_integer"
+        Keyword = "of","packed","real","short_integer","string",
+                  "text"
+        (Color2)
+        Attribs = BOLD
+        (Color16)
+        Attribs = BOLD
+        (Color256)
+        Attribs = BOLD
+ 
+        <Keywords>
+        Keyword = "and","begin","const","case","downto","div","do",
+                  "external"
+        Keyword = "exit","else","end","function","forward","for",
+                  "goto","if","in"
+        Keyword = "label","loop","mod","not","otherwise","or",
+                  "procedure"
+        Keyword = "program","repeat","set","type","then","to",
+                  "until","var"
+        Keyword = "while","with"
+        (Color2)
+        Attribs = BOLD
+        (Color16)
+        Attribs = BOLD
+        (Color256)
+        Attribs = BOLD
+ 
+        <Hex-constanten>
+        From = "$"
+        While = "0"-"9","A"-"F","a"-"f"
+        (Color16)
+        Color = 12
+        Selcolor = 5
+        (Color256)
+        Color = 12
+        Selcolor = 5
+ 
+        <Decimaal-constanten>
+        From = "0"-"9"
+        While = ".","0"-"9"
+        (Color16)
+        Color = 12
+        Selcolor = 5
+        (Color256)
+        Color = 12
+        Selcolor = 5
+
+@endnode
+
+
+@node "qed.cfg" "Bestandsformaat van qed.cfg"
+@symbol ar "Bestandsformaat van qed.cfg"
+@image "logo-small.bmp" 65
+Bestandsformaat van QED.CFG
+@line 1 63 0 0 7
+
+In het @{"bestand" LINK "Bestand"} QED.CFG worden de standaard-instellingen opgeslagen.
+Het is een gewoon leesbaar ASCII-bestand.
+
+Voorbeeld:
+
+@box 3 60 72 0
+
+     ID=qed
+     AutoSavePrj=FALSE
+     AutoSavePrjAsk=FALSE
+     AutoSavePrjMin=0
+     AutoSaveText=FALSE
+     AutoSaveTextAsk=FALSE
+     AutoSaveTextMin=0
+     DefaultPrj=""
+     GdosDriver=0
+     GdosFile=""
+     GdosFontID=0
+     GdosFontSize=10
+     GdosMode=FALSE
+     GemdosDensity=0
+     GemdosDriver=""
+     GemdosNLQ=FALSE
+     GemdosPageHeight=65
+     GemdosPageWidth=80
+     GlobalAutosaveCfg=FALSE
+     GlobalBinLineLen=80
+     GlobalBlinkCursor=TRUE
+     GlobalCtrlBlock=FALSE
+     GlobalDial3d=TRUE
+     GlobalDialMac=FALSE
+     GlobalExtFontsel=FALSE
+     GlobalFtoDesk=FALSE
+     GlobalGEMClip=TRUE
+     GlobalOverwrite=FALSE
+     GlobalTransSize=100
+     GlobalWindCycle=FALSE
+     HelpProgram=""
+     LocalBegin="*"
+     LocalBackup=FALSE
+     LocalBackupExt="BAK"
+     LocalInsert=TRUE
+     LocalKurzel=""
+     LocalTab=TRUE
+     LocalTabSize=8
+     LocalUmbruch=FALSE
+     LocalUmbruchLineLen=70
+     LocalUmbruchIns=FALSE
+     LocalUmbruchLoad=FALSE
+     LocalUmbruchAt="-   "
+     LocalUmbruchShow=FALSE
+     LocalWordSet="A-Za-zÑîÅûéôö0-9"
+     LocalEnd="*"
+     PrintCheck=FALSE
+     PrintFormfeed=TRUE
+     PrintLineNumers=FALSE
+     PrintMargin=TRUE
+     PrintMarginLen=2
+     PrintPageNumbers=FALSE
+     ReplaceBox=0 0
+     ReplaceMode=0
+     ReplaceStr=""
+     ReplaceUmlautFrom=0
+     ReplaceUmlautTo=0
+     SearchDiskName=""
+     SearchDiskRek=FALSE
+     SearchDown=TRUE
+     SearchGlobal=TRUE
+     SearchGrkl=FALSE
+     SearchQuant=FALSE
+     SearchRound=FALSE
+     SearchWord=FALSE
+     SearchStr=""
+     SESave=FALSE
+     SESearch=FALSE
+     WinFontID=1
+     WinFontSize=10
+
+
+@endnode
+
+
+@node "protocollen"
+@symbol ar "Ondersteunde protocollen"
+@symbol ar "Drag&Drop"
+@toc "QED en het Operating System"
+@image "logo-small.bmp" 65
+Ondersteunde protocollen, cookies en environment
+@line 1 63 0 0 7
+
+QED ondersteund veschillende protocollen en berichten ten behoeve van 
+de communicatie met andere applicaties:
+
+   @{U}Messages@{u}
+   ˘ VA_START:     Als QED deze melding ontvangt, dan wordt het
+                   doorgegeven @{"bestand" LINK "Bestand"} geopend.
+                   QED zelf stuurt deze melding aan ST-Guide voor de
+                   OnLine Help-functie.
+
+   ˘ AP_TERM:      Als QED deze melding ontvangt, dan gedraagt QED
+                   zich alsof de functe 'Bewaar & Stop' werd
+                   opgeroepen.
+
+   ˘ AC_HELP:      QED stuurt dit bericht aan het Help-programma.
+
+   ˘ SC_CHANGED:   Wordt bij wijzigingen op het clipbord aan alle
+                   andere applicaties gestuurd. Echter alleen als het
+                   OS het AES-broadcast-command ondersteund (dit is
+                   het geval bij AES 4.1 en MagiC >= 4.x).
+
+   @{U}Protocollen@{u}
+   ˘ AV-protocol   QED leest de environmentvariabele $AVSERVER uit. 
+                   Wordt een AV-server(desktop) gevonden dan meldt 
+                   QED zich aan en ondersteund de volgende functies:
+                   @{I}AV_PATH_UPDATE@{i}
+                           Wordt verstuurd als QED het clipbord gewij-
+                           zigd heeft, zodat een eventueel open
+                           directory-@{"venster" LINK "Venster"} geactualiseerd kan
+                           worden.
+                     AV_SENDKEY
+                           Wordt bij vensterwisselen verstuurd, als
+                           onder 'Globale parameters' het globaal 
+                           @{"wisselen" LINK "Wisselen"} van vensters actief is.
+                     AV_DRAG_TO_WINDOW
+                           Bestanden uit @{"projecten" LINK "Projecten"} kunnen ook op de 
+                           desktop geplaatst worden.
+
+   ˘ SE-protocol   QED ondersteund het @{"SE-protocol" LINK "seproto.hyp/Main"} versie 1.0
+                   voor de communicatie tussen een programmeeromgeving
+                   en een editor.
+
+   ˘ Drag&Drop:    QED werkt als ontvanger bij Drag&Drop-operaties van
+                   MultiTOSø en MagiC3.
+
+                   @{U}QED reageert op de volgende gegevenstypen:@{u}
+                    ARGS (bijv bestanden uit een Thing-venster):
+                        @{"bestand" LINK "Bestand"} op tekst  : nieuw venster @{"openen" LINK "Openen"}
+                                met shift : bestandsnaam @{"invoegen" LINK "Invoegen"}
+                                met @{"ALT" LINK "ALT"}   : inhoud bestand invoegen
+                        pad op tekst      : zoekpad invoegen
+                        bestand op project: bestand in project zetten
+                        pad op project    : @{"zoeken" LINK "Zoeken"} in bestanden 
+                    .TXT
+                    .ASC (bijv. tekst uit een CAT-censter):
+                        Tekst wordt op de cursorpositie ingevoegd.
+
+    ˘ DHST         Als StarMeUp geãnstalleerd is, meldt QED daar alle 
+                   documenten aan, die via het menu-item 'Openen' 
+                   geladen werden.
+
+    ˘ OLGA         Is een OLGA-manager geãnstalleerd dan meldt QED 
+                   zich als OLGA-server aan.
+
+   @{U}Cookies@{u}
+   ˘ UFSL, xFSL:   Externe Fontselector
+   ˘ FSEL:         Externe Fileselector. Via het Selectric-protocol 
+                   kan QED meerdere bestanden tegelijk openen
+   ˘ MiNT:         Indien aanwezig, loopt QED in het MiNT-domain
+
+QED kan overweg met bestandsnamen tot 256 tekens lang en daarbij zijn
+alle tekens toegestaan.
+
+@endnode
+
+
+@node "Eerste hulp"
+@symbol ar "Bugs"
+@toc "QED en het Operating System"
+@image "logo-small.bmp" 65
+Eerste hulp
+@line 1 63 0 0 7
+##FIXME: translation missing
+
+In qed sind einige bekannte Fehler, die ich aber bisher nicht lîsen konnte.
+Damit nun nicht jeder mir eine Mail zu diesen Fehlern schickt, hier eine
+kurze Zusammenstellung:
+
+   ˘ Es gibt diverse proportionale GDOS-Fonts, bei dem sehr merkwÅrdige
+     Redrawfehler auftreten. Nach Meinung der Experten im MausNet soll
+     es an den Fonts liegen, wobei ich allerdings dann nicht verstehe,
+     warum andere Programme keine Probleme damit haben.
+
+   ˘ Der Flieûtext hat ein paar Fehler. Da ich diese Funktion nie
+     benutze, konnte ich mich nicht aufraffen, daran etwas zu tun ;-)
+
+
+Debug-Modus
+
+In qed sind an verschiedenen Stellen Ausgaben einbaut, die durch eine
+spezielle Option beim Start aktiviert werden kînnen.
+Diese Ausgaben sind z.B. dann sinnvoll, wenn qed aus heiterem Himmel 
+einfach abstÅrtzt. In diesem Fall sollte man versuchen, den Fehler zu 
+reproduzieren und mir dann die ggf. entstehenden Ausgaben mitteilen.
+Alle diese Ausgaben gehen direkt auf die Console!
+
+GrundsÑtzlich wird der Debug-Modus durch '--debugXX' als erste Argument
+aktiviert, wobei XX eine Zahl fÅr den Debug-Level ist. 
+Folgende Level stehen zur VerfÅgung:
+
+   1     Debug-Modus generell aktivieren.
+
+   2     Angaben zum Betriebssytem.
+ 
+   4     Ausgabe der Start-Parameter.
+
+   8     Initialisierung/Terminierung der einzelnen Module. Dieser
+         Level ist sinnvoll, wenn qed z.B. gleich beim Start abstÅrzen
+         sollte.
+
+  26     Alle Aktionen, die mit dem AV-Protokoll zu tun haben. 
+ 
+  32     Alle Aktionen, die mit dem SE-Protokoll zu tun haben.
+
+Die Level 16 und 32 sind im wesentlichen nur fÅr Programme interessant, 
+die mit qed Åber das jeweilige Protokoll kommunizieren wollen.
+ 
+Sollen verschiedene Level aktiviert werden, mÅssen die einzelnen Werte
+per ODER verknÅpft werden, um also sÑmtliche Ausgaben zu bekommen, muû qed
+mit '--debug63' gestartet werden.
+
+
+Fatale Fehler
+
+Wenn schwere Fehler auftreten, gibt es folgende Alertbox:
+
+      Interner Fehler Nr: ??
+      ...
+
+In diesem Falle bitte ich darum, zu versuchen, den Fehler eindeutig zu
+reproduzieren und mich dann Åber die UmstÑnde zu unterrichten!
+
+
+@endnode
+
+
+@node "NO_GO" "Jammer"
+@symbol ar "Jammer"
+@image "logo-small.bmp" 65
+Jammer maar helaas
+@line 1 63 0 0 7
+
+Over dit onderwerp is helaas geen tekst te vinden....
+
+@{U}Wat we wel hebben is het volgende:@{u}
+
+@rbox 5 24 1 0
+    Verborgen functies
+
+@rbox 5 24 1 0
+     @{"Terug naar af...       " LINK "Main"}
+
+@rbox 5 24 1 0
+     @{"De alfabetische index  " LINK "Index"}
+
+@rbox 5 24 1 0
+     @{"Venster sluiten        " CLOSE}
+
+@endnode
+
+
+@node "HELP" "Gebruik van deze hypertext?"
+@symbol ar "Gebruik van deze hypertext?"
+
+Deze hypertext is gemaakt voor het programma QED v@:"QEDVERSION".
+
+@{B}Door bij het aanklikken van een menu-item de CONTROL-toets ingedrukt te
+houden wordt (bij een geãnstalleerde ST-Guide) de pagina over het be-
+treffende menu-item geopend.@{b}
+
+
+De nederlandse QED.HYP is aanzienlijk groter dan de oorspronkelijke
+duitse uitvoering. Dit is een gevolg van het feit dat deze nederlandse
+versie meer een handleiding is dan de duitse. Naast een uitleg van
+@{"menufuncties" LINK "Menufuncties"} wordt ook @{"informatie" LINK "Informatie"} over andere aspecten van QED gegeven.
+Bovendien is het een geãllustreerde hypertext.
+
+Behalve als Handleiding en OnLine help voor QED, is de broncode van
+deze hypertext geschikt als voorbeeld voor eenieder die van plan is
+zelf een hypertext samen te stellen.
+
+Het is niet voor niets dat in de nederlandse release een uitgebreide
+STG.@{"KRZ" LINK "KRZ"} meegeleverd wordt.
+
+Voor het gebruik van ST-Guide verwijs ik naar @{"ST-GUIDE.HYP" LINK "st-guide.hyp/Main"}.
+
+In deze hypertekst zijn 'knoppen' op de pagina's te vinden. Is de tekst
+daarin dikgedrukt dan kan deze knop ook aangeklikt worden om verder
+door de tekst te bladeren.
+
+@rbox 5 10 1 0
+     @{"Een knop" LINK "Voorwoord"}  Deze gaat naar het begin....
+
+Voor een goede weergave van de hypertext is een monospaced font
+onontbeerlijk.
+
+Veel plezier met QED,
+De vertaler
+
+@endnode
+
+
+@node "NIEUW" "Nieuw in versie @:"QEDVERSION""
+@symbol ar "Nieuw in versie @:"QEDVERSION""
+@next "Main"
+@image "logo-small.bmp" 65
+Nieuw in versie @:"QEDVERSION"
+@line 1 63 0 0 7
+
+@rbox 44 20 1 0
+                                            @{"Oudere versies..." LINK "HISTORY"}
+
+   Versie 5.0.5 van
+ 
+   ˘ Add syntax for SCEleton (JAnE, GSExec).
+     Update syntax for the new UDO version.
+     Printer driver for Canon BJ-200. Gerhard Stoll 07/18/2010
+   ˘ gfa.syn Commited by Lonny Pursell Adam Klobukowski 02/03/2006
+     abc.syn, mpmusic.syn Submited by Martin Tarenskeen Adam Klobukowski
+   ˘ Applied patch by Stefan that makes it possible to specify line
+     number within filename strings passed via VA_START protocol, see
+     line 369 in av.c for details Odd Skancke 10/14/2005
+   ˘ ctrl+backspace goes to next line and ctrl+delete merges next line
+     when at start/end of line.
+     ctrl-backspace and ctrl-delete added and behaves according to
+     requests made by Curly, hopefully. ctrl+up/dn arrows behaves as
+     arrow window widgets when not in ctrl_block mode.
+     Odd Skancke 07/17/2005
+   ˘ Added HYP_VIEW as help viewer in addition to ST-GUIDE. Contributed
+     by David Galvez Carles. Frank Naumann 07/04/2004
+   ˘ Fixing the resolution dependent configuration file save. It did save
+     an empty file when the "Save Windows" was off. The configuration
+     problems should be gone now. Standa Opichal 05/27/2004
+   ˘ No more coredumps when calling hl_*() with invalid (NULL) RINGP
+     value. Standa Opichal 05/17/2004
+   ˘ Shortcuts fixed in find/replace dialog and several others.
+     Standa Opichal 05/10/2004
+@endnode
+
+
+@node "HISTORY" "De geschiedenis van QED"
+@symbol ar "De geschiedenis van QED"
+@next "Main"
+@image "logo-small.bmp" 65
+De geschiedenis van QED
+@line 1 63 0 0 7
+
+   v5.05
+@line 1 70 0 0 7
+
+   Versie 5.0.5 van
+ 
+   ˘ Add syntax for SCEleton (JAnE, GSExec).
+     Update syntax for the new UDO version.
+     Printer driver for Canon BJ-200. Gerhard Stoll 07/18/2010
+   ˘ gfa.syn Commited by Lonny Pursell Adam Klobukowski 02/03/2006
+     abc.syn, mpmusic.syn Submited by Martin Tarenskeen Adam Klobukowski
+   ˘ Applied patch by Stefan that makes it possible to specify line
+     number within filename strings passed via VA_START protocol, see
+     line 369 in av.c for details Odd Skancke 10/14/2005
+   ˘ ctrl+backspace goes to next line and ctrl+delete merges next line
+     when at start/end of line.
+     ctrl-backspace and ctrl-delete added and behaves according to
+     requests made by Curly, hopefully. ctrl+up/dn arrows behaves as
+     arrow window widgets when not in ctrl_block mode.
+     Odd Skancke 07/17/2005
+   ˘ Added HYP_VIEW as help viewer in addition to ST-GUIDE. Contributed
+     by David Galvez Carles. Frank Naumann 07/04/2004
+   ˘ Fixing the resolution dependent configuration file save. It did save
+     an empty file when the "Save Windows" was off. The configuration
+     problems should be gone now. Standa Opichal 05/27/2004
+   ˘ No more coredumps when calling hl_*() with invalid (NULL) RINGP
+     value. Standa Opichal 05/17/2004
+   ˘ Shortcuts fixed in find/replace dialog and several others.
+     Standa Opichal 05/10/2004
+
+   v5.02
+@line 1 70 0 0 7
+
+   Versie 5.0.2 van 19.06.02
+ 
+   ˘ Nederlandstalige resource en de ST-Guide hypertext door 
+     @{"Godfried Cobben" LINK "Godfried Cobben"} beschikbaar.
+   ˘ Laden van de @{"syntax" LINK "Syntax"}-bestanden verloopt nu duidelijk sneller; qed
+     start sneller.
+   ˘ Font ID en grootte worden nu in elk geval bij "Parameters bewaren" 
+     opgeslagen, ook als "Vensters @{"bewaren" LINK "Bewaren"}" bij "Globale parameters..."
+     is uitgeschakeld.
+   ˘ Bugfix: Niet-proportionele vectorfonts worden nu endelijk correct 
+     behandeld. Wat nog enigzins stoort, is de hoogte van de letters.
+     Ik ben er zeker van dat dit correct is; in andere editors ziet 
+     het er net zo uit.
+     Bij een volgende versie zal de regelhoogte vermoedelijk aan de 
+     eigen wensen aan te passen zijn.
+   ˘ In UDO.SYN waren een paar regels dubbel. 
+   ˘ Nieuwe HYP-bestanden van Tobias Jung: PHP.SYN en HTM.SYN (vervangt
+     huidige HTM.SYN). Het syntax-@{"bestand" LINK "Bestand"} voor UDO-bestanden is van
+     Thomas Kerkloh - vergeten te vermelden - excuus.
+   ˘ Franstalige resource van Remy Villatel en tsjechische resource van
+     Martin Musil beschikbaar.
+   ˘ Nederlandstalige resource en de ST-Guide hypertext door 
+     @{"Godfried Cobben" LINK "Godfried Cobben"} beschikbaar.
+
+   v5.01
+@line 1 70 0 0 7
+
+   Versie 5.0.1 van 10.06.02
+ 
+   ˘ Bugfix: Niet geâxpandeerde TAB's functioneren weer. In de binair-
+     modus is de weergave zoals ingesteld bij 'Lokale parameters...'.
+   ˘ Bugfix: Redrawprobleem bij het expanderen van kortzetsel.
+
+   v5.00
+@line 1 70 0 0 7
+
+   Versie 5.0 van 08.06.02
+ 
+   ˘ @{"Heiko Achilles" LINK "Heiko Achilles"} heeft de ontwikkeling van qed overgenomen
+   ˘ Syntax-gevoeligheid toegevoegd.
+   ˘ Bij papier- tekst- en blokkleur worden nu 256 kleuren ondersteund.
+   ˘ Nieuwe optie "Vensters @{"bewaren" LINK "Bewaren"}" bij de 'Globale parameters...'. Als 
+     deze uit staat, worden de vensters (positie en geopende tekst) bij 
+     'Parameters bewaren...' niet meer opgeslagen.
+   ˘ Nieuwe optie "Sluiten negeren" in de SE-parameter-dialoog. Dit
+     verhindert het uiterst lastige @{"sluiten" LINK "Sluiten"} van alle qed-vensters, als men
+     in de PC-@{"shell" LINK "Shell"} van project wisselt.
+   ˘ Bij het opslaan van bestanden, en configuraties wordt AV_PATH_UPDATE
+     gestuurd; de desktop actualiseert het betrokken bestandspad.
+   ˘ Zoekmasker voor @{"zoeken" LINK "Zoeken"} in bestanden vooraf ingesteld op '*'.
+   ˘ Default-pad voor zoeken in bestanden wordt van bovenste @{"tekstvenster" LINK "Tekstvenster"}
+     overgenomen (indien een tekst geopend is).
+   ˘ Bij zoeken in bestanden is zoek naar tekst default-invoerveld.
+   ˘ Bij zoeken in bestanden wordt nu 'zoek naar tekst' net als bij
+     Zoeken/Vervangen ingevuld met een evt. vooraf geselecteerd blok.
+   ˘ Resolutie-afhankelijke @{"informatie" LINK "Informatie"} wordt nu in afzonderlijke bestanden
+     opgeslagen: col01bit.qed voor 2, col02bit.qed voor 4, 
+     col04bit.qed voor 16 en col08bit.qed voor 256 (of meer) kleuren.
+   ˘ Volgorde bij het laden van het resource-@{"bestand" LINK "Bestand"} veranderd. Er wordt
+     nu als volgt gezocht naar QED.RSC:
+     1. het eigen zoekpad van qed.app
+     2. in $QED (omgevingsvariabele)
+     3. via shel_find 
+     Het bleek dat sommige gebruikers met de melding "Verkeerde RSC-versie"
+     werden geconfronteerd omdat ze een beta- of nieuwe versie hadden 
+     geãnstalleerd terwijl de variabele $QED nog steeds naar het 
+     oorspronkelijke pad verwees.
+   ˘ Nog een plaats waar de qed-configuratie gezocht wordt toegevoegd:
+     "$HOME/.qed/" (UNIX-typische wijze van de configuratie). Belangrijkste
+     reden was de groei het aantal van qed-config-bestanden. Deze kunnen
+     nu allemaal in dit bestandspad bewaard worden.
+   ˘ Zoeken van config-bestanden veranderd. Er wordt nu op de volgende
+     manier naar aanwezige config-bestanden gezocht: 
+     $HOME/.qed/ -> $HOME/ -> $HOME/defaults/ -> $QED/ ->
+     startpad -> actueel pad
+   ˘ TAB's worden in binair-modus niet meer geâxpandeerd, d.w.z. men kan nu 
+     ook een TAB (ASCII 0x09) invoeren (en z°en, als het kleine klokje).
+   ˘ Nieuw qed-Logo
+   ˘ Bugfix: "Zoeken" wordt niet grijs (=niet selecteerbaar), als er geen
+     geladen is. Toch kiezen opende ST-Guide :-)
+   ˘ Bugfix: Bij het opslaan van de parameters kon qed crash'en (ook bij
+     het @{"automatisch bewaren" LINK "Automatisch bewaren"})
+
+   v4.51
+@line 1 70 0 0 7
+
+   Wijzigingen ten opzichte van versie 4.50
+
+   ˘ Omzetten van karakterset herzien
+   ˘ MAGCUFSL leidt niet meer tot 'deadlock' (CF-Lib).
+   ˘ All-Iconify herzien.
+   ˘ qed controleert nu de versie van de RSC. Dus geen crashes meer als
+     het pad van $QED naar een oude RSC verwijst en men de nieuwere 
+     versie vanuit een ander pad start.
+   ˘ DHST-Name is niet meer vastgenageld op c:\system\qed\qed.app :-)
+   ˘ Bugfix bij het @{"invoegen" LINK "Invoegen"} van bestanden in een project.
+   ˘ MagiC-@{"fontselector" LINK "Fontselector"} versjteerd het systeemfont niet meer (CF-Lib). 
+     Daarnaast was er ook nog een MagiC-binding fout (GEM-Lib).
+
+   v4.50
+@line 1 70 0 0 7
+
+   Wijzigingen ten opzichte van versie 4.10
+
+   ˘ Nieuw menu-item: 'Top cursorregel'
+   ˘ MiNT-Lib PL48.
+   ˘ qed voert geen enkele omzetting (GROOT/klein) van bestandnamen meer
+     uit. Zo laten zich ook weer bestanden met 'Umlaut-namen' door het 
+     gewone TOS laden.
+   ˘ Nieuw dokumentatie-deel 'Eerste hulp'.
+   ˘ Project-elementen kunnen op de prullenbak van de AV-server gesleept
+     weoden, om ze uit het project te @{"verwijderen" LINK "Verwijderen"}.
+   ˘ Het @{"zoeken" LINK "Zoeken"} in een project loopt nu via de @{"bestanden zoeken" LINK "Bestanden zoeken"} dialoog en 
+     er kan een masker voor de in het project te doorzoeken bestanden 
+     opgegeven worden.
+   ˘ Met de MagiC-fileselector kunnen nu meerdere bestanden tegelijk 
+     geopend worden. Bovendien verschijnt de MagiC-selector in een 
+     @{"venster" LINK "Venster"}.
+   ˘ I.v.m. de dialoog-vervenstering komen ook de fontselectoren (xFSL,
+     FontServer, MagiC) in een venster.
+   ˘ De oude cookies UFSL en XUFSL worden niet meer ondersteund!
+   ˘ Printer-dialoog opgesplitst: een voor de dagelijkse afdruktaak
+     en een voor de globale configuratie (GEMDOS/GDOS). Daarbij is de
+     keuze van de GDOS-driver weggevallen (qed neemt de eerste printer 
+     tussen device 21 - 30).
+   ˘ Als WDIALOG voorhanden is, worden de printdialogen gebruikt.
+   ˘ Overgegaan van MyDials op CF-Lib. Enkele funkties zijn in deze Lib 
+     opgenomen. Dialogen deels opnieuw vorm gegeven en allemaal verschijnen
+     ze APP-modaal in een venster. Alerts ook in vensters.
+   ˘ De dialoog-functionaliteit is enigzins gewijzigd, lees a.u.b. de aan-
+     wijzingen bij deze @{"nieuwe dialogen!" LINK "... de dialogen"}
+   ˘ De venstergegevens (positie, afmetingen en font) evenals geladen 
+     bestanden worden in een extra @{"bestand" LINK "Bestand"} (xxxxyyyy.qed) bewaard, zodat voor 
+     verschillende beeldresoluties (aan)gepaste instellingen behouden blijven.
+   ˘ Programma's (*.prg, *.app, *.tos, *.ttp) worden automatisch binair 
+     geladen. Bovendien kunnen andere extensies gedefinieerd worden, zodat
+     ook deze binair geopend worden (> Globale parameters).
+   ˘ Nieuwe configuratie van de extensies bij de @{"lokale parameters" LINK "Lokale parameters"}. Naast 
+     '*' is een extra standaard-type voor 'Binair' ingevoegt. Er kunnen nu
+     in totaal 18 extensies vrij gedefinieerd worden.
+   ˘ Bugfixes: 
+     - Geen interne fout meer bij recursief @{"bestanden zoeken" LINK "Bestanden zoeken"} met zoekstring.
+     - Bij clipbord-acties blijft de regelomslag behouden.
+
+   v4.10
+@line 1 70 0 0 7
+
+ Wijzigingen ten opzichte van versie 4.00
+ 
+   ˘ SE-Protocol 1.05
+   ˘ Bugfix: Bij bladwijzers met ' ' in de naam, ging het laden van QED.CFG mis.
+   ˘ Nu heeft ook de vervangtekst een history-PopUp. Bovendien zijn de
+     'Zoeken'-dialogen en de PopUp's herzien (nieuwe look & feel).
+   ˘ qed heeft nu een hoofd-sponsor :-)
+   ˘ qed maakt gebruik van een speciale versie van de MyDials, die slechts
+     dat bevatten wat echt nodig is. Weggevallen is bijv. het eigen
+     editveld-beheer (selectie etc.)
+   ˘ 'Tussen haakjes-selectie' bij dubbelklik/^TAB op speciale tekens.
+   ˘ Bugfix: Correcties voor @{"venster" LINK "Venster"}-shading.
+   ˘ Bij het @{"wisselen" LINK "Wisselen"} van vensters (intern) werden tot nu toe alleen tekst-
+     vensters behandeld. Moeten projectvensters meedoen dan kan nu op
+     @{"SHFT" LINK "SHFT"}+@{"CTRL" LINK "CTRL"}+W gedrukt worden.
+   ˘ Bugfix: Correcties bij clipping.
+   ˘ Bij het @{"bewaren" LINK "Bewaren"} van teksten wordt niet meer naar de @{"cursor" LINK "Cursor"} gesprongen.
+   ˘ Fontselectie opgeruimd. Volgorde is nu: xFSL -> UFSL -> $FONTSELECT ->
+     MagiC. Die qed-interne fontselectie is zonder pardon geschrapt!
+   ˘ Na een VA_START stuurt qed een AV_STARTED.
+   ˘ Bugfix: Crash bij de PopUp's (Lokale par., Zoek-history) hopelijk verholpen.
+   ˘ Bugfix: Crash bij @{"kortzetsels" LINK "Kortzetsels"} langer dan 260 tekens verholpen.
+   ˘ Een paar kleine correcties aan de MyDials i.v.m. prop. systeemfonts. 
+   ˘ Bugfix: @{"Drag&Drop" LINK "protocollen"} functioneert nu ook met 'Vensters globaal wisselen'.
+     qed gebruikt hiertoe VA_DRAGACCWIND.
+   ˘ DHST nu voor bestanden via MenÅ, VA_START, D&D en config.
+   ˘ Andere toetscombinaties in de nederlandse versie:
+     Menu 'Bewerking/Alinea indelen' -> @{"ALT" LINK "ALT"}  + A
+     Menu 'Speciaal/Macro afspelen'  -> CTRL + /
+   ˘ Diverse kleine bugs gecorrigeerd en nieuwe ingebouwd :-)
+
+   v4.00
+@line 1 70 0 0 7
+
+ Wijzigingen ten opzichte van versie 3.97
+ 
+ ˘ Volledige herziening van de nederlandse ST-Guide hypertext.
+ ˘ QED emuleert de invoer van tekens met ALT-xxx (ASCII-waarde op het 
+   numerieke toetsenbord), in het geval deze mogelijkheid niet door 
+   het OS wordt geboden.
+ ˘ QED ondersteunt het DHST-protocol van StartMeUp 7.01
+ ˘ Wordt een regel te lang (>1023 tekens) dan wordt deze in het 
+   @{"venster" LINK "Venster"} weliswaar afgebroken over meerdere regels, echter bij het 
+   opslaan worden (alleen) deze regels weer tot ÇÇn lange 
+   samengevoegd. Er worden dus geen extra LineFeed's meer toegevoegd.
+ ˘ 'Ga naar regel' heet nu 'Ga naar...'; het is nu mogelijk om behalve 
+   de regel ook de kolompositie op te geven.
+ ˘ Maximale regellengte vergroot van 255 tot 1023 tekens. Hiebij is 
+   ook het beheer van de horizontale slider volledig dynamisch 
+   geworden.
+ ˘ De eerste verbeteringen aan de regel-afbreking uitgevoerd:
+   - de gedocumenteerde fout met betrekking tot 'Bewaren als...' is 
+     verwijderd.
+   - Bij het @{"toevoegen" LINK "Toevoegen"} van tekstbestanden, worden aan het eind van 
+     iedere regel 'Alinea-einde's' gezet en te lange regels afgebroken 
+     (indien nodig en als 'Formateren bij laden' actief is).
+ ˘ Regels sorteren als nieuwe mogelijkheid ingebouwd. (nog niet 
+   helemaal betrouwbaar; vert.)
+ ˘ Overgegaan op MiNT-lib pl46.
+ ˘ Binair openen als nieuwe mogelijkheid ingebouwd. Gebruik voor eigen 
+   risico!
+ ˘ Nieuwe tijdmeetroutine voor de AutoSave functie.
+ ˘ QED kan nu overweg met het 'quoten' van bestandsnamen; dit in 
+   verband met spaties en ' in bestandsnamen.
+ ˘ Nicelines in de menu's ingebouwd.
+ ˘ Volledig nieuwe vensterroutines, theoretisch zijn nu oneindig veel 
+   vensters mogelijk. Ergens anders in de source zit echter nog een 
+   beperking tot max. 30 vensters.
+ ˘ MyDials versie 2.19 geãmplementeerd.
+ ˘ QED zoekt nu ook in $HOME/defaults naar het configbestand.
+ ˘ Fout bij @{"Drag&Drop" LINK "protocollen"} van paden; Gemini verstuurt ze zonder '\' aan 
+   het eind, zodat QED niet kon vaststellen dat het om een pad ging.
+ ˘ Dialoog 'Desktop opruimen' verwijderd. Daarvoor in de plaats is er 
+   nu een menu 'Venster'.
+ ˘ Nieuwe optie toegevoegd bij de Globale parameters: 3D-dialogen en 
+   Mac-like invulregels.
+ ˘ Overgegaan op de MT_AES.LIB.
+ ˘ QED grondig opgeschoond. QED-desktop is daarbij gesneuveld (weinig 
+   zinvol in multitasking omgeving). Vele delen van de source onder 
+   handen genomen. Zonder geladen teksten gebruikt QED nu zo'n 100 kB 
+   minder werkgeheugen.
+ ˘ Nog slechts ÇÇn enkel (human-readable) configuratiebestand QED.CFG. 
+   Conversietool voor *.QED --> QED.CFG wordt meegeleverd.
+ ˘ Nul-Bytes worden bij laden in spaties omgezet, omdat anders het 
+   StringManagement in de war raakt. Vindt een dergelijk omzetting 
+   plaats dan verschijnt een Alert.
+ ˘ Diverse kleine bugs verwijderd.
+
+   v3.97
+@line 1 70 0 0 7
+
+ Wijzigingen ten opzichte van versie 3.90
+ 
+ ˘ Door Chr. Felsch worden nu nog drie releases gedaan:
+     qed-XXXd.lzh (duits)
+     qed-XXXe.lzh (engels)
+     qed-XXXs.lzh (sources)
+   Door G. Cobben wordt de nederlandse release verzorgd:
+     qedXXXnl.lzh (nederlands)
+ ˘ De bestandstypen voor de @{"lokale parameters" LINK "Lokale parameters"} worden nu onafhankelijk 
+   van de schrijfwijze behandeld. Nu moet de toewijzing ook bij VFAT 
+   en MacFS filesystemen kloppen.
+ ˘ AV-protocol
+     - AV_SENDKEY       ^W bij "globaal @{"venster" LINK "Venster"} @{"wisselen" LINK "Wisselen"}" en alle 
+                        onbezette F-toetsen.
+     - AV_PATH_UPDATE   voor het scrap-@{"bestand" LINK "Bestand"}.
+ ˘ Hypertekst uitgebreid, TeX-documentatie gestaakt.
+ ˘ Kleine wijziging in @{"Drag&Drop" LINK "protocollen"} afhandeling:
+     - Wordt nu een bestandsnaam op een @{"tekstvenster" LINK "Tekstvenster"} gesleept, dan 
+       wordt een NIEUW venster geopend;
+     - Wordt daarbij @{"ALT" LINK "ALT"} ingedrukt, dan wordt de inhoud van het 
+       bestand op de cursorpositie ingevoegd;
+     - Worden er meerdere bestanden met ingedrukte SHIFT gesleept, dan 
+     wordt voor elk bestand de naam op een nieuwe regel ingevoegd.
+ ˘ Wordt via GDOS naar een bestand afgedrukt dan kan het uitvoerpad 
+   ingesteld worden.
+ ˘ Nieuwe @{"opties" LINK "Opties"} om DOS-like blokfuncties in de stellen:
+     - Blok markeren met @{"CTRL" LINK "CTRL"}/[up/down/left/right]
+     - Blok @{"kopiâren" LINK "Kopiâren"} met CTRL-Home
+     - Blok wissen met CTRL-Delete
+     - Blok @{"invoegen" LINK "Invoegen"} met CTRL-Insert
+   Door deze wijziging moesten de volgende aanpassingen gedaan worden:
+     - Woordgewijze backspace nu met SHIFT-BS (was CTRL-BS);
+     - Woordgewijze delete nu met SHIFT-DEL (was CTRL-DEL);
+     - Functie "Wissen tot regeleinde" (was SHIFT-DEL) geschrapt.
+ ˘ De positie van navraagdialoog bij vervangen wordt nu 
+   opgeslagen in het parameterbestand
+ ˘ Bij @{"zoeken" LINK "Zoeken"} in tekst/project wordt nu dezelfde dialoog 
+   gebruikt. De dialoog is iets gewijzigd.
+ ˘ qed start nu eindelijk correct vanuit command-shells en 
+   beheerst nu als argument ook UNIX-paden (bijv. /etc/profile).
+ ˘ SE-protocol 1.03 geãmplementeerd.
+ ˘ qed test niet meer VOOR het @{"bewaren" LINK "Bewaren"}, of er voldoende ruimte 
+   is, maar TIJDENS het schrijven. Is het medium vol, dan wordt 
+   een melding gegeven en het onvolledige @{"bestand" LINK "Bestand"} wordt gewist.
+   Voordeel: er kunnen nu ook weer bestanden op U:\ bewaard 
+   worden.
+ ˘ Bij het bewaren met backup-bestand wordt eerst geprobeerd 
+   ingestelde backup-extensie volledig aan de oude bestandsneaam 
+   te @{"plakken" LINK "Plakken"} (TEST.C -> TEST.BAK)
+ ˘ Fout bij het wijzigen van het font hersteld; nu krijgen ook 
+   ge-ikonificeerde vensters het nieuwe font en bij prop. fonts 
+   blijft de venstergrootte nagenoeg constant.
+ ˘ qed verstuurt geen OLGA_BREAKLINK bericht meer.
+ ˘ De bestanden in een projectvenster kunnen nu behoorlijk 
+   ge(de)selecteerd worden.
+ ˘ @{"Drag&Drop" LINK "protocollen"}; qed gebruikt alleen nog 'ARGS' en '.TXT', omdat 
+   CAT3 bij '.ASC' geen regeleinde teruglevert.
+ ˘ qed kan weer bestanden van 0 bytes laden.
+ ˘ qed functioneert weer met Let'm Fly (nicelines).
+ ˘ Redraw-foutje met de OK-button in afdrukdialoog gerepareerd.
+ ˘ Foutje in de objectvolgorde van de bstandstype-dialoog 
+   gerepareerd (alleen NL-versie).
+
+
+   v3.90
+@line 1 70 0 0 7
+
+ Wijzigingen ten opzichte van versie 3.82
+ 
+ ˘ Foutmeldingsregels met UNIX-paden worden correct geâvalueerd.
+ ˘ HELP-toets selecteerd het woord onder de @{"cursor" LINK "Cursor"} en stuurt het naar
+   het HELP-programma.
+ ˘ Engelse hypertext, door Guido Flohr.
+ ˘ SE-protocol v1.02 wordt ondersteund.
+ ˘ De nieuwe MyDials worden nu gebruikt. QED gebruikt de 'tabbladen' en
+   de high-ascii box.
+ ˘ Voor het @{"bewaren" LINK "Bewaren"} wordt gecontroleerd of het opslagmedium vol is!
+ ˘ De resource wordt niet meer op $PATH gezocht maar op $QED.
+ ˘ Als bij het @{"zoeken" LINK "Zoeken"} in een project niets wordt gevonden, dan wordt
+   het lege project (voor de zoekresultaten) meteen weer gesloten.
+ ˘ Bij geãnstalleerde OLGA (object-linking) meldt QED zich als server aan.
+ ˘ Er verschijnen geen toevallige lege regels meer.
+ ˘ Routines voor woordgewijze DELETE/BACKSPACE gewijzigd.
+ ˘ Desktop-ikonen in kleur/animatie mogelijk!
+ ˘ Nieuw onderdeel in hypertext: de toetscommando's.
+ ˘ Als de regels worden omgeslagen tijdens het laden dan wordt dit nu
+   gemeld.
+ ˘ De zoek-history is nu "uniek", dwz dat er niet twee maal dezelfde
+   string in voorkomt.
+ ˘ @{"CTRL" LINK "CTRL"}-TAB mrkeert nu het woord onder de cursor.
+
+
+   v3.82
+@line 1 70 0 0 7
+
+ Wijzigingen ten opzichte van versie 3.70
+ 
+ ˘ Letters met accenten worden nu bij GROOT/klein omzetten ook ver-
+   anderd.
+ ˘ Wijziging in de PopUp's; de cycle-functie kan nu door een shortcut
+   (in de tekst van de PopUp) opgeroepen worden.
+ ˘ Grote schoonmaak van de sources heeft er voor gezorgd dat vele on-
+   gebruikte functies er uit verdwenen zijn.
+ ˘ Eigengemaakte inforegel van het @{"tekstvenster" LINK "Tekstvenster"} vervangen door een
+   echte.
+ ˘ Slidergrootte bij een leeg @{"bestand" LINK "Bestand"} nu correct weergegeven.
+ ˘ Er worden nu drie verschillende regeleinden herkend: TOS, UNIX en
+   Mac!
+ ˘ File I/O volledig nieuw.
+ ˘ Nieuwe MyDials (v2.14) geãmplementeerd; geen fouten meer met '[' in
+   lokale PopUp.
+ ˘ Vanaf nu is ^^ de regelscheiding voor meerregelige @{"kortzetsels" LINK "Kortzetsels"}. De
+   ENTER-toets wordt hetzelfde afgehandeld als RETURN!!!
+@{B}   NB   Omdat een enkele CR nu als regeleinde (voor Mac) behandeld wordt
+        moeten alle @{"KRZ" LINK "KRZ"}-bestanden aangepast worden.@{b}
+ ˘ Div bugfixes.
+ ˘ Indien aanwezig wordt de MagiC4-@{"fontselector" LINK "Fontselector"} voor het instellen van
+   het schermfont gebruikt.
+ ˘ Bij 'Vervangen'was het mogelijk om een eindeloze lus te creâren!
+   Tegenmaatregelen:
+      - De schakelaar 'Rouleren' wordt bij vervangen genegeerd;
+      - Controle op gelijkheid van zoek- en vervangtekst.
+ ˘ Het instellingenbestand DEFAULT.QED wordt nu ook weer op $QED ge-
+   zocht. De zoekvolgorde is nu $HOME >> $QED >> (startpad) >> de 
+   actieve folder ('cwd').
+ ˘ Achtergrond van fonts bij de Lettertekens nu zoals de box-achter-
+   grond.
+ ˘ Foutje hersteld bij de fontinstellingen.
+ ˘ Verbeterde structuur in de nederlandse hypertekst.
+ ˘ Omvang van de NL-release verminderd, gÇÇn duitse doc's en RSC meer 
+   alleen een engelse RSC voor de liefhebber.
+
+
+   v3.70
+@line 1 70 0 0 7
+
+ Wijzigingen ten opzichte van versie 3.40
+ 
+  ˘ QED geeft nu enkele meldingen niet meer in een Alert-box, maar de
+   tekst wordt nu in de infobalk van het @{"tekstvenster" LINK "Tekstvenster"} gezet; bijv. het
+   aantal vervangingen en de @{"foutmeldingen" LINK "Foutmeldingen"}.
+ ˘ @{"Drag&Drop" LINK "protocollen"}: als @{"ALT" LINK "ALT"} ingedrukt wordt, dan wordt een nieuw @{"venster" LINK "Venster"}
+   gepopend
+ ˘ Diverse kleine Bugfixes van MK@@UN.
+ ˘ De routine voor het omzetten van high-ASCII tekens is geheel nieuw.
+ ˘ Als regeleinde voor het clipbord wordt nu altijd CRLF gebruikt.
+ ˘ Parameterbestand *.QED geoptimaliseerd. Oude is niet meer 
+   bruikbaar, desondanks wordt dan geprobeerd de oude configuratie zo 
+   veel mogelijk over te nemen.
+   QED zoekt zijn parameters eerst in $HOME.
+ ˘ Dubbelklik op kortzetsel-knop wist het aangemelde @{"KRZ" LINK "KRZ"}-@{"bestand" LINK "Bestand"}.
+ ˘ Nieuw menu-item: 'Nieuw project'.
+ ˘ Beide printmodi geoptimaliseerd; QED gebruikt nu voor de afdruk via
+   GEMDOS een Wordplusø driver (.CFG), zo worden op alle printers de
+   letters met accenten goed afgedrukt.
+ ˘ Bij alle popup's een circlebutton toegevoegd.
+ ˘ Een paar nieuwe popup's.
+ ˘ Geen crash meer bij grote vensters.
+ ˘ Er is een vrij configureerbare foutmeldingsregel mogelijk. Vanaf 
+   v3.60 is de grootte van de foutregel uitgebreid.
+ ˘ Mac-toetsen PageUp/Down en End worden ondersteund tbv MagiCMac.
+   Mac-Users meldt of dat werkt!
+ ˘ Eindelijk kan ook het printerfont via een externe @{"fontselector" LINK "Fontselector"}
+   ingesteld worden (alleen met een GDOS)
+ ˘ 'Vorderingenbalkje' bij conversie van de karaktertabel.
+ ˘ Ctrl-UP/DOWN gedraagt zich als Shift-UP/DOWN. Interessant voor 
+   gebruikers van PC-toetsenborden, die PgUp/Down-toetsen hebben.
+ ˘ Automatische backdrop alleen bij All-Iconify.
+ ˘ Nieuwe schakelaar bij 'Lokale parameters': 'Regeleinde tonen'
+ ˘ Opstarten van QED gereviseerd, nieuw is hier de controle op 
+   parameters (ARGV en consorten). 
+ ˘ SE-protocol op basis van v1.01.
+ ˘ Formaten bij de omzetting van de karaktertabel uitgebreid met: 
+   LaTeX, HTML en ASCII. 
+ ˘ Als een blok geselecteerd is dan doet ^Y exact hetzelfde als ^X 
+   (Knippen).
+ ˘ QED wist nu het GEM-clipbord voordat er naar geschreven wordt en 
+   stuurt na het schrijven SH_WDRAW naar de desktop en SC_CHANGED 
+   naar alle andere applicaties (alleen als AES-broadcast beschikbaar 
+   is!)
+
+@endnode
+
+
+@node "Index"
+@next "Index"
+@autorefon
+
+    @{"A.." LINK "];A;["}    @{"B.." LINK "];B;["}    @{"C.." LINK "];C;["}    @{"D.." LINK "];D;["}    @{"E.." LINK "];E;["}    @{"F.." LINK "];F;["}
+
+    @{"G.." LINK "];G;["}    @{"H.." LINK "];H;["}    @{"I.." LINK "];I;["}    @{"J.." LINK "];J;["}    @{"K.." LINK "];K;["}    @{"L.." LINK "];L;["}
+
+    @{"M.." LINK "];M;["}    @{"N.." LINK "];N;["}    @{"O.." LINK "];O;["}    @{"P.." LINK "];P;["}    @{"Q.." LINK "];Q;["}    @{"R.." LINK "];R;["}
+
+    @{"S.." LINK "];S;["}    @{"T.." LINK "];T;["}    U..    @{"V.." LINK "];V;["}    @{"W.." LINK "];W;["}    X..
+
+    Y..    @{"Z.." LINK "];Z;["}    @{"..." LINK "];*;["}
+@endnode
+
+
+@node "];A;[" "Index: A"
+@symbol ar "Index: A"
+@toc "Index"
+    Afdrukken
+    Alinea indelen
+    Alles GROOT
+    Alles klein
+    Alles selecteren
+    @{"ALT" LINK "ALT"}
+    Automatisch bewaren
+@endnode
+
+
+@node "];B;[" "Index: B"
+@symbol ar "Index: B"
+@toc "Index"
+    Bestand
+    Bestanden zoeken
+    @{"Bestandsformaat van het *.SYN-bestand" LINK "*.SYN"}
+    @{"Bestandsformaat van qed.cfg" LINK "qed.cfg"}
+    Bewaar & Stop
+    Bewaren
+    Bewaren als
+    Bewerking
+    Binair openen
+    Bladwijzer
+    Blok selecteren
+    Blok: ...in dialogen
+    Blok: ...met de muis
+    Blok: ...met de toetsen
+    Blok: ...regel selecteren
+    Blok: ...woord selecteren
+    @{"Bugs" LINK "Eerste hulp"}
+@endnode
+
+
+@node "];C;[" "Index: C"
+@symbol ar "Index: C"
+@toc "Index"
+    @{"CFlib" LINK "CFlib"}
+    @{"Christian Felsch" LINK "Christian Felsch"}
+    commandoregel
+    @{"CTRL" LINK "CTRL"}
+    Cursor
+@endnode
+
+
+@node "];D;[" "Index: D"
+@symbol ar "Index: D"
+@toc "Index"
+    @{"De geschiedenis van QED" LINK "HISTORY"}
+    Default project
+    @{"Del" LINK "Del"}
+    Dialoog: Blok-info
+    Dialoog: Project-info
+    Dialoog: Tekst-info
+    @{"Drag&Drop" LINK "protocollen"}
+@endnode
+
+
+@node "];E;[" "Index: E"
+@symbol ar "Index: E"
+@toc "Index"
+    Eerste hulp
+    @{"eigen syntaxregels" LINK "Syntax-gevoeligheid"}
+    @{"Enter" LINK "Enter"}
+@endnode
+
+
+@node "];F;[" "Index: F"
+@symbol ar "Index: F"
+@toc "Index"
+    fileselector
+    Fontselector
+    Fout zoeken
+    Foutmeldingen
+    Functietoetsen
+@endnode
+
+
+@node "];G;[" "Index: G"
+@symbol ar "Index: G"
+@toc "Index"
+    Ga naar
+    @{"Gebruik van deze hypertext?" LINK "HELP"}
+    Globale parameters
+    @{"Godfried Cobben" LINK "Godfried Cobben"}
+    GROOT ÆØ klein
+@endnode
+
+
+@node "];H;[" "Index: H"
+@symbol ar "Index: H"
+@toc "Index"
+    @{"Heiko Achilles" LINK "Heiko Achilles"}
+    Heropenen
+    Herstellen
+    Hoofdletters
+@endnode
+
+
+@node "];I;[" "Index: I"
+@symbol ar "Index: I"
+@toc "Index"
+    in project opnemen
+    In tekst zoeken
+    Informatie
+    @{"Inhoud" LINK "Main"}
+    Installatie
+    @{"Invoegen/Overschrijven" LINK "Invoegen"}
+@endnode
+
+
+@node "];J;[" "Index: J"
+@symbol ar "Index: J"
+@toc "Index"
+    @{"Jammer" LINK "NO_GO"}
+@endnode
+
+
+@node "];K;[" "Index: K"
+@symbol ar "Index: K"
+@toc "Index"
+    Knippen
+    Kopiâren
+    Kortzetsels
+    Kortzetsels: aanmaken
+    Kortzetsels: gebruiken
+    Kortzetsels: voorbeeldbestand
+    @{"KRZ" LINK "KRZ"}
+@endnode
+
+
+@node "];L;[" "Index: L"
+@symbol ar "Index: L"
+@toc "Index"
+    @{"LEESDIT" LINK "LEESDIT"}
+    Lettertekens
+    Lokale parameters
+@endnode
+
+
+@node "];M;[" "Index: M"
+@symbol ar "Index: M"
+@toc "Index"
+    Macro afspelen
+    Macro opnemen
+    Menufuncties
+@endnode
+
+
+@node "];N;[" "Index: N"
+@symbol ar "Index: N"
+@toc "Index"
+    @{"Nieuw in versie 5.02" LINK "NIEUW"}
+    Nieuw project
+    @{"nieuwe dialogen!" LINK "... de dialogen"}
+    Nieuwe tekst
+@endnode
+
+
+@node "];O;[" "Index: O"
+@symbol ar "Index: O"
+@toc "Index"
+    @{"Ondersteunde protocollen" LINK "protocollen"}
+    Openen
+    Opties
+    over QED
+    @{"Overschrijven" LINK "Invoegen"}
+@endnode
+
+
+@node "];P;[" "Index: P"
+@symbol ar "Index: P"
+@toc "Index"
+    Parameters bewaren
+    Plakken
+    Printer instellingen
+    Projecten
+    protocollen
+@endnode
+
+
+@node "];Q;[" "Index: Q"
+@symbol ar "Index: Q"
+@toc "Index"
+    QED
+    QED en GDOS
+    QED en het Operating System
+@endnode
+
+
+@node "];R;[" "Index: R"
+@symbol ar "Index: R"
+@toc "Index"
+    Regel kopiâren
+    Regels zuiveren
+    @{"Ret" LINK "Ret"}
+@endnode
+
+
+@node "];S;[" "Index: S"
+@symbol ar "Index: S"
+@toc "Index"
+    Schuif naar links
+    Schuif naar rechts
+    SE-parameters
+    Shell
+    @{"Shell toppen" LINK "Shell toppen"}
+    @{"SHFT" LINK "SHFT"}
+    @{"Shortcut" LINK "Shortcut"}
+    Sluiten
+    Sorteren...
+    Spaties  TAB
+    Speciaal
+    Stop
+    Syntax
+    Syntax-gevoeligheid
+    systeemomgeving
+    Systeemvereisten
+@endnode
+
+
+@node "];T;[" "Index: T"
+@symbol ar "Index: T"
+@toc "Index"
+    TAB  spaties
+    Teken wisselen
+    Tekens omzetten
+    Tekstblokken
+    Tekstvenster
+    @{"TEXTWIN1" LINK "TEXTWIN1"}
+    @{"TEXTWIN2" LINK "TEXTWIN2"}
+    @{"TEXTWIN3" LINK "TEXTWIN3"}
+    @{"TEXTWIN4" LINK "TEXTWIN4"}
+    @{"TEXTWIN5" LINK "TEXTWIN5"}
+    Toetsfuncties
+    Toevoegen
+    Top cursorregel
+    Tussen haakjes...
+@endnode
+
+
+@node "];U;[" "Index: U"
+@symbol ar "Index: U"
+@toc "Index"
+@endnode
+
+
+@node "];V;[" "Index: V"
+@symbol ar "Index: V"
+@toc "Index"
+    Venster
+    Vensters ordenen
+    Verborgen functies
+    Verwijderen
+    @{"vf: Alinea indelen" LINK "vf: Alinea indelen"}
+    @{"vf: Bestand/Openen..." LINK "vf: Bestand/Openen..."}
+    @{"vf: Bladwijzer gebruiken" LINK "vf: Bladwijzer gebruiken"}
+    @{"vf: Default project" LINK "vf: Default project"}
+    @{"vf: Knippen" LINK "vf: Knippen"}
+    @{"vf: Macro afspelen" LINK "vf: Macro afspelen"}
+    @{"vf: Opnieuw zoeken" LINK "vf: Opnieuw zoeken"}
+    @{"vf: Stoppen" LINK "vf: Stoppen"}
+    @{"vf: Tekens omzetten" LINK "vf: Tekens omzetten"}
+    @{"vf: Toevoegen" LINK "vf: Toevoegen"}
+    @{"vf: Zoeken in bestand" LINK "vf: Zoeken in bestand"}
+    Voorwoord
+@endnode
+
+
+@node "];W;[" "Index: W"
+@symbol ar "Index: W"
+@toc "Index"
+    @{"WasDa?" LINK "WasDa?"}
+    Wisselen
+@endnode
+
+
+@node "];X;[" "Index: X"
+@symbol ar "Index: X"
+@toc "Index"
+@endnode
+
+
+@node "];Y;[" "Index: Y"
+@symbol ar "Index: Y"
+@toc "Index"
+@endnode
+
+
+@node "];Z;[" "Index: Z"
+@symbol ar "Index: Z"
+@toc "Index"
+    Zoeken
+    @{"Zoeken in een project" LINK "In project zoeken"}
+    Zoeken/Vervangen
+@endnode
+
+
+@node "];*;[" "Index: ..."
+@symbol ar "Index: ..."
+@toc "Index"
+    @{"" LINK ""}
+    @{"" LINK ""}
+    @{"" LINK ""}
+    @{"" LINK ""}
+    ... de dialogen
+    ... onder MiNTø
+    ...opnieuw
+@endnode
