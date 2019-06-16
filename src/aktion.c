@@ -1,8 +1,8 @@
 #include "global.h"
 #include "aktion.h"
+#include "event.h"
 #include "rsc.h"
 
-extern void handle_msg(short *msg);	/* -> event.c */
 
 short	akt_handle;
 

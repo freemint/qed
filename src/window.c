@@ -147,12 +147,14 @@ static void snap_window(WINDOWP w, GRECT *new, short mode)
 {
 	if (mode & WORK_SIZED)
 	{
-// 		short xdist = new->g_w - (new->g_w - (new->g_w % w->xfac));
+/* 		short xdist = new->g_w - (new->g_w - (new->g_w % w->xfac)); */
 		short ydist = new->g_h - (new->g_h - (new->g_h % w->yfac));
 		
-// 		if (w->work.g_x != new->g_x)
-// 			new->g_x += xdist;
-// 		new->g_w -= xdist;
+#if 0
+		if (w->work.g_x != new->g_x)
+			new->g_x += xdist;
+		new->g_w -= xdist;
+#endif
 
 		if (!(mode & WORK_MOVED) && w->work.g_y != new->g_y)
 			new->g_y += ydist;
@@ -521,6 +523,7 @@ void all_uniconify(WINDOWP w, GRECT *new)
 	GRECT		r;
 	WINDOWP	p;
 	
+	(void) w;
 	if (all_iconified)
 	{
 		p = used_list;

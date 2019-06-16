@@ -475,13 +475,16 @@ static void	send_esinit(short app)
 
 static void	send_esshlctrl(short flag)
 {
+	char **pstr;
+
 	memset(msgbuff, 0, (short)sizeof(msgbuff));
 	msgbuff[0] = ES_SHLCTRL;
 	msgbuff[1] = edit_parm.id;
+	pstr = (char **)&msgbuff[3];
 	if (global_str1[0] != EOS)
-		*(char **) &msgbuff[3] = global_str1;
+		*pstr = global_str1;
 	else
-		*(char **) &msgbuff[3] = NULL;
+		*pstr = NULL;
 	msgbuff[5] = flag;
 	send_msg(shell_parm.id);
 }
@@ -489,15 +492,18 @@ static void	send_esshlctrl(short flag)
 
 static void	send_cmd(short cmd, short bit)
 {
+	char **pstr;
+
 	if (shell_parm.editCmd & bit)
 	{
 		memset(msgbuff, 0, (short)sizeof(msgbuff));
 		msgbuff[0] = cmd;
 		msgbuff[1] = edit_parm.id;
+		pstr = (char **)&msgbuff[3];
 		if (global_str1[0] != EOS)
-			*(char **) &msgbuff[3] = global_str1;
+			*pstr = global_str1;
 		else
-			*(char **) &msgbuff[3] = NULL;
+			*pstr = NULL;
 		if (!send_msg(shell_parm.id))
 		{
 			se_activ = FALSE;

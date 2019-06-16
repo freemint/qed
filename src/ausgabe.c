@@ -218,7 +218,7 @@ short cursor_xpos(TEXTP t_ptr, short position, bool *isitalicp)
 
 static void _cursor(GRECT *r)
 {
-    short   pxy[4];
+    short pxy[4];
 
     pxy[0] = r->g_x;
     pxy[1] = r->g_y;
@@ -450,7 +450,7 @@ short out_s(short x, short y, short w, char *str)
     if (w <= 0)
         return x;
 
-	fill_area(x, y, w, font_hcell, bg_color);
+    fill_area(x, y, w, font_hcell, bg_color);
 
     v_gtext(vdi_handle, x, y, str);
     if (font_prop)
@@ -961,7 +961,7 @@ void head_out(WINDOWP window, TEXTP t_ptr)
 
             ltoa(t_ptr->ypos+1, head_str + 8, 10);
             head_str[strlen(head_str)] = ' ';
-            ltoa(bild_pos(t_ptr->xpos,t_ptr->cursor_line,tab,tab_size)+1,head_str+18,10); // STan: itoa -> ltoa
+            ltoa(bild_pos(t_ptr->xpos,t_ptr->cursor_line,tab,tab_size)+1,head_str+18,10); /* STan: itoa -> ltoa */
             head_str[strlen(head_str)] = ' ';
         }
         else

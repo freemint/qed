@@ -48,10 +48,10 @@ static SET		wort_set;
 
 /* Variablen, die ber set_suchmode gesetzt werden */
 /* !!! muessen bei match gesichet werden !!! */
-static bool		quantor, vorw, grkl, wort, modus, round, line_start;
+static bool		quantor, vorw, grkl, wort, modus, g_round, line_start;
 static short		muster_len;
-static unsigned char 	muster_txt[HIST_LEN+1];
-static unsigned char 	replace_txt[HIST_LEN+1];
+static char 	muster_txt[HIST_LEN+1];
+static char 	replace_txt[HIST_LEN+1];
 static SET		group[SETANZ];
 static short		setanz;
 static short		delta[256];
@@ -428,7 +428,7 @@ static short suchen(TEXTP t_ptr, short *such_len)
 	short	erg;
 
 	erg = suchen2(such_len);
-	if (erg==0 && round)
+	if (erg==0 && g_round)
 	{
 		short	m;
 
@@ -453,9 +453,9 @@ static void set_suchmode(char *Muster, char *Replace, bool Grkl, bool Quantor,
 
 	/* Spezial fr '@' am Editfeld-Anfang! */
 	if (Muster[0] == '\\' && Muster[1] == '@' && Quantor)
-		strcpy((char *)muster_txt, Muster+1);		/* \ berspringen */
+		strcpy(muster_txt, Muster+1);		/* \ berspringen */
 	else
-		strcpy((char *)muster_txt, Muster);
+		strcpy(muster_txt, Muster);
 
 	if (Replace[0] == '\\' && Replace[1] == '@' && Quantor)
 		strcpy(replace_txt, Replace+1);
@@ -466,10 +466,10 @@ static void set_suchmode(char *Muster, char *Replace, bool Grkl, bool Quantor,
 	quantor = Quantor;
 	vorw = Vorw;
 	wort = Wort;
-	round = Round;
+	g_round = Round;
 	setanz = 0;
 	if (!grkl) 
-		str_toupper((char *)muster_txt);
+		str_toupper(muster_txt);
 	if (quantor)
 	{
 		d = help;
@@ -535,7 +535,7 @@ static void set_suchmode(char *Muster, char *Replace, bool Grkl, bool Quantor,
 			*d++ = 0xFE;							/* Wortende */
 		}
 		*d = EOS;
-		strcpy((char *)muster_txt, help);
+		strcpy(muster_txt, help);
 		muster_len = (short) strlen(muster_txt);
 	}
 	else
@@ -547,7 +547,7 @@ static void set_suchmode(char *Muster, char *Replace, bool Grkl, bool Quantor,
 			delta[i] = muster_len;
 		j = muster_len-1;
 		for (i=0; i<j; i++) 
-			delta[muster_txt[i]] = j-i;
+			delta[(unsigned char)muster_txt[i]] = j-i;
 	}
 	if (Global)
 	{
@@ -779,11 +779,11 @@ bool filematch(char *str, char *m, short fs_typ)
 	}
 
 	old_flg[0] = (modus != M_CURSOR);
-	old_flg[1] = round;
+	old_flg[1] = g_round;
 
 	sprintf(mustertxt, "^%s$", m);
 	set_suchmode(mustertxt, "", gk, TRUE, TRUE, FALSE, FALSE, FALSE);
-	where = STRSTR2((char*)str, (short) strlen(str), muster_txt, &i);
+	where = STRSTR2(str, (short) strlen(str), muster_txt, &i);
 
 	/* 
 	 * Fr den Fall, das ein Projekt durchsucht wird, wird filematch() fr

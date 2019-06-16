@@ -30,6 +30,7 @@
 
 static void handle_term(int sig)
 {
+	(void) sig;
 	abort_prog = TRUE;
 }
 
@@ -53,7 +54,7 @@ static bool init_all(int argc, char *argv[])
 		appl_xgetinfo(97, &wopts, &d, &d, &d);
 		
 		if (gi_msgs & 0x0400) /* WM_REPOSED */
-			new_wopts |= WO0_SENDREPOS; //wind_set(-1, WF_OPTS, 1, WO0_SENDREPOS, 0, 0);
+			new_wopts |= WO0_SENDREPOS; /* wind_set(-1, WF_OPTS, 1, WO0_SENDREPOS, 0, 0); */
 		if (wopts & 0x0020) /* WCOWORK */
 		{
 			new_wopts |= 0x0020;  /* WO0_WCOWORK */
@@ -333,5 +334,6 @@ int main(int argc, char *argv[])
 		debug("term_global done.\n");
 
 	exit_app(return_code);
+	(void) d;
 	return return_code;
 }

@@ -40,8 +40,7 @@ VPATH = ..
 build: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS)
-	$(STACK) --fix 32k $@
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) -Wl,--stack,32k $(OBJS) $(LIBS)
 
 # default dependencies
 # must be included last

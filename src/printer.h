@@ -48,4 +48,10 @@ extern void		term_printer	(void);
 extern void		blk_drucken		(char *name, TEXTP t_ptr);
 extern void		txt_drucken		(char *name, TEXTP t_ptr);
 
+/*
+ * from prn_cfg.c
+*/
+bool open_printer	(void);
+void close_printer	(void);
+
 #endif

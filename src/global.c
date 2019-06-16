@@ -459,33 +459,26 @@ static bool font_is_vector(short idx)
 	short workout[57];
 	short fs_handle = open_vwork(workout);
 	short f_anz = workout[10];
-	char fontname[33];
+	char fontname[34];
 	bool ret = FALSE;
-	short *nvdicookie;
 	short di, fonttype;
 	
 	if (gl_gdos)
 	{
 		f_anz += vst_load_fonts(fs_handle, 0);
-		if (getcookie("NVDI", (long *) &nvdicookie)
-		&&  *nvdicookie > 0x300)
-			while (f_anz)
+		while (f_anz)
+		{
+			if (vqt_ext_name(fs_handle, f_anz, fontname, &fonttype, &di ) == idx)
 			{
-				if (vqt_ext_name(fs_handle, f_anz--, fontname, &fonttype, &di ) == idx)
-				{
-					ret = (fonttype & 1) ? FALSE : TRUE;
-					break;
-				}
-			}		
-		else
-			while (f_anz)
+				ret = (fonttype & 1) ? FALSE : TRUE;
+				break;
+			} else if (vqt_name(fs_handle, f_anz, fontname) == idx)
 			{
-				if (vqt_name(fs_handle, f_anz--, fontname) == idx)
-				{
-					ret = fontname[ 32 ] ? TRUE : FALSE;
-					break;
-				}
+				ret = fontname[ 32 ] ? TRUE : FALSE;
+				break;
 			}
+			f_anz--;
+		}
 		vst_unload_fonts(fs_handle, 0);
 	}
 	v_clsvwk(fs_handle);

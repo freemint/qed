@@ -346,13 +346,12 @@ static void restore_back_up(TEXTP t_ptr)
 	if (t_ptr->loc_opt->backup)
 	{
 		PATH old;
-		long err;
 
 		if (file_exists(t_ptr->filename))
 			Fdelete(t_ptr->filename);
 		strcpy(old, t_ptr->filename);
 		backup_name(old, t_ptr->loc_opt->backup_ext);
-		err = Frename(0, old, t_ptr->filename);
+		(void)Frename(0, old, t_ptr->filename);
 	}
 }
 
@@ -363,14 +362,12 @@ static void back_up(TEXTP t_ptr)
 
 	if (t_ptr->loc_opt->backup)
 	{
-		long err;
-
 		graf_mouse(HOURGLASS, NULL);
 		strcpy(new, t_ptr->filename);
 		backup_name(new, t_ptr->loc_opt->backup_ext);
 		if (file_exists(new))			/* Alte DUP-Datei lschen */
 			Fdelete(new);
-		err = Frename(0, t_ptr->filename, new);
+		(void)Frename(0, t_ptr->filename, new);
 		graf_mouse(ARROW, NULL);
 	}
 }

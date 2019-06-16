@@ -337,7 +337,7 @@ void set_makro_str(char *ptr)
 */
 bool get_makro_str(short nr, char *ptr)
 {
-	char	s[5];
+	char	s[6];
 	short	j;
 
 	if (makro_list[nr].mode == TASTEN)

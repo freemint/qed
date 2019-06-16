@@ -71,7 +71,6 @@ static bool		menu_ctrl;
 static void handle_keybd	(short kstate, short kreturn);
 static void handle_button	(short m_x, short m_y, short bstate, short kstate, short breturn);
 
-void handle_msg(short *msg);
 
 /*****************************************************************************/
 
@@ -142,7 +141,7 @@ static bool idle(void)
 	ev.which = evnt_multi(events,	0x102, 3, 0,
 									1, old_mx, old_my, 1, 1,
 									0, 0, 0, 0, 0,
-									ev.msg, 0L,
+									ev.msg, 0,
 									&ev.m_x, &ev.m_y, &ev.bstate, &ev.kstate,
 									&ev.kreturn, &ev.breturn);
 	old_mx = ev.m_x;
@@ -176,7 +175,7 @@ bool check_for_abbruch(void)
 	ev.which = evnt_multi(events,	0x102, 3, 0,
 									1, old_mx, old_my, 1, 1,
 									0, 0, 0, 0, 0,
-									ev.msg, 0L,
+									ev.msg, 0,
 									&ev.m_x, &ev.m_y, &ev.bstate, &ev.kstate,
 									&ev.kreturn, &ev.breturn);
 	old_mx = ev.m_x;

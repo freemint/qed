@@ -8,19 +8,8 @@
 #include "wp-print.h"
 
 /*
- * aus cflib
-*/
-void handle_mdial_msg(short *msg);
-
-/*
- * locale functions
- */
-bool open_printer	(void);
-void close_printer	(void);
-
-/*
  * globale Variablen
-*/
+ */
 PRN_CFG	*prn;
 
 /*
@@ -32,6 +21,8 @@ static short	fnt_anz;
 static bool	wp_config_read = FALSE;
 
 #define PCFGNAME	"pdlg.qed"			/* Name der Settings-Datei */
+
+void handle_mdial_msg (short *msg); /* from cflib */
 
 /* --------------------------------------------------------------------------- */
 bool open_printer(void)
@@ -91,6 +82,7 @@ static void get_fontname(short id, char *name)
 	}
 	else
 		strcpy(name, "???");
+	name[32] = 0;
 }
 
 
@@ -130,6 +122,7 @@ static long CDECL init_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
 	PRN_CFG	*cfg;
 	char		tmp[40];
 	
+	(void) settings;
 	cfg = (PRN_CFG *)sub_dialog->private1;
 	tree = sub_dialog->tree;
 	offset = sub_dialog->index_offset;
@@ -152,17 +145,16 @@ static long CDECL init_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
 	return 1;
 }
 
-static long CDECL
-do_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog, short exit_obj)
+static long CDECL do_qed_sub(struct PDLG_HNDL_args args)
 {
 	OBJECT	*tree;
 	short		offset;
 	PRN_CFG	*cfg;
 	
-	cfg = (PRN_CFG *)sub_dialog->private1;
-	tree = sub_dialog->tree;
-	offset = sub_dialog->index_offset;
-	switch (exit_obj - offset)
+	cfg = (PRN_CFG *)args.sub->private1;
+	tree = args.sub->tree;
+	offset = args.sub->index_offset;
+	switch (args.exit_obj - offset)
 	{
 		case PS_GFSEL :
 			if (sel_font(cfg))
@@ -175,8 +167,8 @@ do_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog, short exit_obj)
 				redraw_obj(tree, PS_GFPTS + offset);
 				redraw_obj(tree, PS_GFNAME + offset);
 			}
-			set_state(tree, exit_obj, OS_SELECTED, FALSE);
-			redraw_obj(tree, exit_obj);
+			set_state(tree, args.exit_obj, OS_SELECTED, FALSE);
+			redraw_obj(tree, args.exit_obj);
 			break;
 
 		default:
@@ -191,6 +183,7 @@ static long CDECL reset_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
 	short		offset;
 	PRN_CFG	*cfg;
 	
+	(void) settings;
 	cfg = (PRN_CFG *)sub_dialog->private1;
 	tree = sub_dialog->tree;
 	offset = sub_dialog->index_offset;
@@ -250,7 +243,7 @@ static bool pdlg_dial(PRN_CFG *cfg)
 		{
 			ev.mwhich = (short)evnt_multi(MU_KEYBD|MU_MESAG|MU_BUTTON, 2, 1, 1, 
 												0, 0, 0, 0, 0,	0, 0, 0, 0, 0,
-												(short*)ev.msg, 0, 
+												(short*)ev.msg, 0,
 												(short*)&ev.mx, (short*)&ev.my, 
 												(short*)&ev.mbutton, 
 												(short*)&ev.kstate,	(short*)&ev.key, 
@@ -264,7 +257,7 @@ static bool pdlg_dial(PRN_CFG *cfg)
 					case WM_SIZED:
 						if (ev.msg[3] != handle)	/* fr fremdes Fenster */
 						{
-							handle_mdial_msg((short *)ev.msg);
+							handle_mdial_msg(ev.msg);
 						}
 						break;
 	
@@ -360,7 +353,7 @@ static bool get_gdos_device(void)
 
 static bool qed_cfg_dial(PRN_CFG *cfg)
 {
-	char		tmp[33];
+	char		tmp[34];
 	short		i, antw = 0;
 	bool		close = FALSE;
 	PATH		str = "";
@@ -616,7 +609,6 @@ void prn_save_cfg(char *buffer)
 			fwrite(prn->pdlg, 1, sizeof(PRN_SETTINGS), fd);
 			fclose(fd);
 		}
-		free(pdlg_file);
 	}	
 
 	/* sonstige Einstellungen */

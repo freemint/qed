@@ -1384,6 +1384,7 @@ static void	wi_click (WINDOWP window, short m_x, short m_y, short bstate, short 
 		if (window == sel_window)
 			setcpy(new_obj, sel_objs);
 		num_objs = 0;
+		first.g_x = first.g_y = first.g_w = first.g_h = 0;
 		for (i = 0; i < window->w_height; i++)
 		{
 			if (setin(new_obj, i + (short)window->doc.y))
@@ -1397,6 +1398,8 @@ static void	wi_click (WINDOWP window, short m_x, short m_y, short bstate, short 
 				num_objs++;
 			}
 		}
+		if (num_objs == 0)
+			return;
 		obj = drag_box(first.g_x, first.g_y, first.g_w, font_hcell * num_objs, &m_x, &m_y, &bstate, &kstate);
 		qed_win = get_window(obj);
 		if (qed_win)												/* eigenes Fenster */
@@ -1740,6 +1743,7 @@ static void	wi_snap(WINDOWP window, GRECT *new, short mode)
 {
 	short w, ex, pxy[8];
 
+	(void) mode;
 	/* zunchst Platz fr min. 1+Filename+1 im Fenster */
 	vqt_extent(vdi_handle, "x", pxy);
 	ex = pxy[2] - pxy[0];

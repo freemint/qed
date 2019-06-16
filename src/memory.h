@@ -51,4 +51,7 @@ extern bool	ist_mem_frei	(void);
 extern void	init_memory	(void);
 extern void	kill_memory	(void);
 
+void dump_freelist(void);
+void dump_ring(RINGP r);
+
 #endif

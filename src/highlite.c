@@ -232,7 +232,7 @@ static char *str_xtrim( char *str, const char *searchstr )
 	if( *str )
 		while( strchr( searchstr, *(--endstr) ))
 			*endstr = '\0';
-	strcpy( oldstr, str );
+	memmove( oldstr, str, strlen(str) + 1 );
 	return oldstr;
 }
 
@@ -289,6 +289,7 @@ static STRINGENTRY *append_stringentry( STRINGENTRY **anchor, char *st, short li
 {
 	STRINGENTRY *new_strentry;
 	LIST_APPEND( STRINGENTRY, new_strentry, *anchor );
+	(void) linenr;
 	if( memory_error )
 		return NULL;
 	if( new_strentry )
@@ -416,7 +417,7 @@ static TXTRULE *txtrule_by_name( char *txtname )
  * string and  a pointer to the next string
  * if ended by " in str (or NULL if no next string)
  */
-static unsigned char *rreadstr( char **str )
+static char *rreadstr( char **str )
 {
 	char lastchar = '\0';
 	char *retstr = ++(*str);
@@ -554,7 +555,7 @@ static char *ruletok( char *str, int *flags, int linenr )
 static BOOLEAN parse_rule( TXTRULE *txtrule, RULE *rule, char *keywords, RULETYPE ruletype,
                         int linenr, RESTYPE curr_colidx )
 {
-	unsigned char *st;
+	char *st;
 	int flags;
 	BOOLEAN caseindiff = !(txtrule->flags & TXTRULEF_CASE);
 
@@ -623,7 +624,7 @@ static BOOLEAN parse_rule( TXTRULE *txtrule, RULE *rule, char *keywords, RULETYP
 			}
 			if( strlen( st ) > 1 )
 			{
-				if( !append_stringentry( &rule->kwstring[st[0]], st, linenr ))
+				if( !append_stringentry( &rule->kwstring[(unsigned char)st[0]], st, linenr ))
 					return FALSE;
 				/* upper stringentries for case indifferent languages are set
 				   as pointers in check_rules() lateron */
@@ -815,7 +816,7 @@ static BOOLEAN parse_line( char *linebuf, int linenr, char *filename, BOOLEAN se
 
 	if( !settingsonly && stricmp( keyword, "Txttype" ) == 0)
 	{
-		unsigned char *st = rreadstr( &value );
+		char *st = rreadstr( &value );
 
 		if( rule )
 			HL_ERROR( E_HL_SYNTAX, linenr, return TRUE; );
@@ -848,12 +849,12 @@ static BOOLEAN parse_line( char *linebuf, int linenr, char *filename, BOOLEAN se
 	}
 	else if( !settingsonly && stricmp( keyword, "Token" ) == 0)
 	{
-		unsigned char *st = rreadstr( &value );
+		char *st = rreadstr( &value );
 		if( rule || !st || *(++value) )
 			HL_ERROR( E_HL_SYNTAX, linenr, return TRUE; );
 
 		while( *st )
-			trule->token[ *(st++) ] = TRUE;
+			trule->token[ (unsigned char)*(st++) ] = TRUE;
 		return TRUE;
 	}
 	else if( stricmp( keyword, "Active" ) == 0)
@@ -923,7 +924,7 @@ static BOOLEAN parse_line( char *linebuf, int linenr, char *filename, BOOLEAN se
 		read_boolflag( &rule->flags, RULEF_FIRSTCOLUMN, value, linenr );
 	else if( !settingsonly && stricmp( keyword, "Quotechar" ) == 0)
 	{
-		unsigned char *st = rreadstr( &value );
+		char *st = rreadstr( &value );
 		if( !st || !*st || *(++value) || strlen( st ) > 1 )
 			HL_ERROR( E_HL_SYNTAX, linenr, return TRUE; );
 		rule->quotechar = st[0];
@@ -1133,7 +1134,9 @@ static void fprint_kwstring( FILE *file, char *prefix, STRINGENTRY *kwstring[256
 				fprintf( file, "%s\n", buffer );
 				strcpy( buffer, prefix );
 			}
-			sprintf( buffer, "%s\"%s\",", buffer, str_expand_quote( quotebuffer, strentry->name ));
+			strcat(buffer, "\"");
+			strcat(buffer, str_expand_quote( quotebuffer, strentry->name ));
+			strcat(buffer, "\",");
 			strentry = strentry->next;
 		}
 	}
@@ -1176,12 +1179,18 @@ static void fprint_singlechars( FILE *file, char *prefix, char kwchar[256] )
 					--charidx;
 				}
 				if( c2 )
-					sprintf( buffer, "%s\"%s\"-\"%s\",",
-					         buffer,
-					         chr_expand_quote( quotebuf1, c1),
-					         chr_expand_quote( quotebuf2, c2) );
-				else
-					sprintf( buffer, "%s\"%s\",",buffer, chr_expand_quote( quotebuf1, c1 ) );
+				{
+					strcat(buffer, "\"");
+					strcat(buffer, chr_expand_quote( quotebuf1, c1));
+					strcat(buffer, "\"-\"");
+					strcat(buffer, "\",");
+					strcat(buffer, chr_expand_quote( quotebuf2, c2));
+				} else
+				{
+					strcat(buffer, "\"");
+					strcat(buffer, chr_expand_quote( quotebuf1, c1 ) );
+					strcat(buffer, "\",");
+				}
 				c2 = '\0';
 			}
 			charidx++;
@@ -1206,9 +1215,11 @@ static void fprint_stringentry( FILE *file, char *prefix, STRINGENTRY *anchor )
 	while( strentry )
 	{
 		strcpy( buffer, prefix );
-		while( strentry && strlen( buffer ) + strlen( strentry->name ) + 4 <= 76 )
+		while( strentry && (strlen( buffer ) + strlen( strentry->name ) + 4) <= 76 )
 		{
-			sprintf( buffer, "%s\"%s\",", buffer, str_expand_quote( quotebuffer, strentry->name ));
+			strcat(buffer, "\"");
+			strcat(buffer, str_expand_quote( quotebuffer, strentry->name ));
+			strcat(buffer, "\",");
 			strentry = strentry->next;
 		}
 		str_xtrim( buffer, "," );
@@ -1467,15 +1478,15 @@ static BOOLEAN add_to_linebuffer( RULE *rule, int len )
 }
 
 /* get next token to explore */
-static char *next_token( unsigned char *st, char token[256], char search[256] )
+static char *next_token( char *st, char token[256], char search[256] )
 {
 	for(;;)
 	{
-		if( token[*st] )
-			for(;token[*st];st++);
+		if( token[(unsigned char)*st] )
+			for(;token[(unsigned char)*st];st++);
 		else
 			st++;
-		if( !*st || search[*st] )
+		if( !*st || search[(unsigned char)*st] )
 			return( st );
 	}
 }
@@ -1516,13 +1527,13 @@ static char *str_xieq( char *s1, char *s2 )
  * sets the global var memory_error to TRUE (check it after create_cachetok!)
  * and returns NULL.
  */
-static HL_LINE create_cachetok( unsigned char *st, RULE *rule, RULE **newrule, int count, int *newcount, TXTRULE *txtrule )
+static HL_LINE create_cachetok( char *st, RULE *rule, RULE **newrule, int count, int *newcount, TXTRULE *txtrule )
 {
 	HL_LINE retline;
-	unsigned char *nextst = NULL;
+	char *nextst = NULL;
 	STRINGENTRY *found;
-	unsigned char *lastst = st;
-	unsigned char *startst = st;
+	char *lastst = st;
+	char *startst = st;
 	char *(*cmpfunc)(char *s1, char *s2);
 
 	if( !(txtrule->flags & TXTRULEF_ACTIVE))
@@ -1554,15 +1565,15 @@ static HL_LINE create_cachetok( unsigned char *st, RULE *rule, RULE **newrule, i
 			switch( rule->type )
 			{
 				case RULE_TO:                       /* search for the first char or string matching */
-					if( rule->kwchar[st[0]])
+					if( rule->kwchar[(unsigned char)st[0]])
 					{
 						/* search for "from" rule when a nested rule is running */
 						if( rule->flags & RULEF_NESTED )
 						{
-							LIST_FINDTERM( found, rule->link->kwstring[st[0]],
+							LIST_FINDTERM( found, rule->link->kwstring[(unsigned char)st[0]],
 						  	                 ((nextst = cmpfunc( st, found->name )) != NULL));
 							if( found
-							||  rule->link->kwsinglechar[st[0]])
+							||  rule->link->kwsinglechar[(unsigned char)st[0]])
 							{
 								count++;
 								if( found )
@@ -1573,10 +1584,10 @@ static HL_LINE create_cachetok( unsigned char *st, RULE *rule, RULE **newrule, i
 							}
 						}
 
-						LIST_FINDTERM( found, rule->kwstring[st[0]],
+						LIST_FINDTERM( found, rule->kwstring[(unsigned char)st[0]],
 					  	                 ((nextst = cmpfunc( st, found->name )) != NULL));
 						if( found
-						||  rule->kwsinglechar[st[0]])
+						||  rule->kwsinglechar[(unsigned char)st[0]])
 						{
 							if( found )
 								st = nextst;
@@ -1603,7 +1614,7 @@ static HL_LINE create_cachetok( unsigned char *st, RULE *rule, RULE **newrule, i
 					}
 
 				case RULE_WHILE:                    /* search for the first NOT matching! */
-					if( !rule->kwchar[st[0]])
+					if( !rule->kwchar[(unsigned char)st[0]])
 					{
 						if( !add_to_linebuffer( rule, (int) (st-lastst) ))
 							HL_MEM_ERROR( return NULL; );
@@ -1611,10 +1622,10 @@ static HL_LINE create_cachetok( unsigned char *st, RULE *rule, RULE **newrule, i
 						rule = NULL;
 						goto continue_outer_loop;
 					}
-					LIST_FINDTERM( found, rule->kwstring[st[0]],
+					LIST_FINDTERM( found, rule->kwstring[(unsigned char)st[0]],
 					 	             ((nextst = cmpfunc( st, found->name )) != NULL));
 					if( found
-					||  rule->kwsinglechar[st[0]])
+					||  rule->kwsinglechar[(unsigned char)st[0]])
 					{
 						st++;
 						goto continue_outer_loop;
@@ -1630,26 +1641,26 @@ static HL_LINE create_cachetok( unsigned char *st, RULE *rule, RULE **newrule, i
 		}
 
 		/* no rule active, search for a "from" or "keyword" rule */
-		if( txtrule->kwstartchar[st[0]])
+		if( txtrule->kwstartchar[(unsigned char)st[0]])
 		{
 			RULE *search_rule;
 			for( search_rule = txtrule->rules; search_rule; search_rule = search_rule->next )
 			{
-				LIST_FINDTERM( found, search_rule->kwstring[st[0]],
+				LIST_FINDTERM( found, search_rule->kwstring[(unsigned char)st[0]],
 				  	           ((nextst = cmpfunc( st, found->name )) != NULL));
 				if( found
-				||  search_rule->kwsinglechar[st[0]])
+				||  search_rule->kwsinglechar[(unsigned char)st[0]])
 				{
 					/* if char after found string or char is valid token (e.g. a function called goto_loop(), */
 					/* get next token (only for keywords) */
 					if( search_rule->type == RULE_KEYWORD )
 					{
 						if( (   found
-						     && txtrule->token[*(nextst-1)]
-						     && txtrule->token[*nextst] )
+						     && txtrule->token[(unsigned char)*(nextst-1)]
+						     && txtrule->token[(unsigned char)*nextst] )
 						||  (   !found
-						     && txtrule->token[st[0]]
-						     && txtrule->token[st[1]]))
+						     && txtrule->token[(unsigned char)st[0]]
+						     && txtrule->token[(unsigned char)st[1]]))
 						{
 							st = next_token( st, txtrule->token, txtrule->kwstartchar );
 							goto continue_outer_loop;
@@ -1939,6 +1950,7 @@ HL_HANDLE Hl_New( char *txttype, int resvd )
 	TXTRULE *trule;
 	CACHEBASE *ca_base;
 
+	(void) resvd;
 	if( memory_error
 	||  !txttype || !txttype[0] )
 		return NULL;

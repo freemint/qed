@@ -11,14 +11,8 @@
 #include "printer.h"
 
 /*
- * aus prn_cfg.c
-*/
-bool open_printer	(void);
-void close_printer	(void);
-
-/*
- * lokales 
-*/
+ * local variables
+ */
 static short	prn_y, line_height;
 static short	channel;
 

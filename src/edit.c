@@ -850,7 +850,7 @@ static void wi_click(WINDOWP window, short m_x, short m_y, short bstate, short k
 									  1, 0x01, 0x00,
 									  TRUE, m_x, m_y, 1, 1,
 									  TRUE, s->g_x, s->g_y, s->g_w, s->g_h,
-									  NULL, 0L,
+									  NULL, 0,
 									  &m_x, &m_y, &bstate, &kstate, &kreturn, &breturn);
 
 			if (event & MU_BUTTON) 

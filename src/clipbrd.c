@@ -235,7 +235,8 @@ static short get_first_drive(void)
 	unsigned long	drives;
 	short		drive;
 
-	drives = Dsetdrv(Dgetdrv());					/* Alle Laufwerke */
+	drive = Dgetdrv();
+	drives = Dsetdrv(drive);					/* Alle Laufwerke */
 	if (drives == 0)
 		drive = -1;
 	else if (drives <= 3)

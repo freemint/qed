@@ -17,6 +17,10 @@
  */
 bool	krz_loaded;
 
+#if __GNUC_PREREQ(7, 0)
+#pragma GCC diagnostic ignored "-Wstringop-truncation"
+#endif
+
 /**************************************************************************/
 
 
@@ -152,7 +156,7 @@ void init_marken(void)
 void goto_marke(short nr)
 {
 	PATH	file;
-	char	name[12];
+	char	name[MNAME_LEN + 1];
 	long	y;
 	short	x, icon;
 

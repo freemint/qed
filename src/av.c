@@ -377,7 +377,7 @@ static long get_linenum(PATH filename)
 	long y;
 	char *tmp;
 
-	tmp = index(filename, '|');
+	tmp = strchr(filename, '|');
 	if(!tmp) return 0;
 
 	if(tmp[1] == '\0')

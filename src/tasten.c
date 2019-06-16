@@ -52,7 +52,7 @@ static void ctrl_word_delete(TEXTP t_ptr);
 static void word_bs(TEXTP t_ptr);
 static void ctrl_word_bs(TEXTP t_ptr);
 
-static char	alt_str[3];
+static char	alt_str[4];
 static short	alt_cnt = -1;
 
 static bool pos_move(TEXTP t_ptr, long delta)
@@ -522,10 +522,8 @@ static void word_bs(TEXTP t_ptr)
 	}
 	blk_delete(t_ptr);
 }
-// how (does)  this behave
-// how (does)  this behave
 
-// this is a longonly
+/* this is a longonly */
 static void ctrl_word_bs(TEXTP t_ptr)
 /* Lschen wortweise nach links */
 {
@@ -542,7 +540,7 @@ static void ctrl_word_bs(TEXTP t_ptr)
 	}
 	else
 	{
-// 		xpos--;
+/* 		xpos--; */
 		t_ptr->blk_mark_mode = FALSE;
 		t_ptr->up_down = FALSE;
 		if (xpos >= 0 && !t_ptr->block)
@@ -569,7 +567,7 @@ static void ctrl_word_bs(TEXTP t_ptr)
 	}
 }
 
-// this is a longonly
+/* this is a longonly */
 static void ctrl_word_delete(TEXTP t_ptr)
 /* Lschen wortweise nach links */
 {
@@ -754,8 +752,8 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 				case NK_DOWN :
 					if (ctrl_mark_mode)
 					{
-					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						if (!t_ptr->block)
+							cursor_visible(window, t_ptr);
 						set_block(t_ptr);
 						page_down(t_ptr);
 						blk_mark(t_ptr,1);
@@ -764,8 +762,8 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 				case NK_LEFT :
 					if (ctrl_mark_mode)
 					{
-					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						if (!t_ptr->block)
+							cursor_visible(window, t_ptr);
 						set_block(t_ptr);
 						word_left(t_ptr);
 						blk_mark(t_ptr,1);
@@ -774,8 +772,8 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 				case NK_RIGHT :
 					if (ctrl_mark_mode)
 					{
-					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						if (!t_ptr->block)
+							cursor_visible(window, t_ptr);
 						set_block(t_ptr);
 						word_right(t_ptr);
 						blk_mark(t_ptr,1);

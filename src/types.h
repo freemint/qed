@@ -7,6 +7,8 @@
 #ifndef _qed_types_h_
 #define _qed_types_h_
 
+#include <stdbool.h>
+
 #include "highlite.h"   /* highlight types */
 #define SETSIZE	32							/* Size of a set in longs */
 #define SETMAX		(SETSIZE*32 - 1)		/* Max count of elements of a set */
@@ -30,6 +32,14 @@ typedef char FILENAME[MAX_NAME_LEN];
 
 #define EOS '\0'
 
+#ifndef _WORD
+#  define _WORD short
+#endif
+#ifndef FALSE
+#  define FALSE 0
+#  define TRUE  1
+#endif
+
 /* various enums
  *************************************************/
  
@@ -40,8 +50,6 @@ typedef enum {Atari, Latin, Mac, PC, LaTeX, HTML, ASCII} UMLAUTENCODING;
 /* change tokens for text; the aquired action is submitted to subroutines with these defines */
 typedef enum {	POS_CHANGE, LINE_CHANGE, TOTAL_CHANGE, NOP_CHANGE, SCROLL_UP,
 		SCROLL_DOWN, MOVE_UP, MOVE_DOWN, BLK_CHANGE, WT_CHANGE} CHANGE;
-
-typedef enum {FALSE, TRUE} bool;
 
 /* misc
  *************************************************/
@@ -82,8 +90,8 @@ typedef struct
  */
 typedef struct _line
 {
-	struct _line	*prev; //*prev;
-	struct _line	*next; //*next;
+	struct _line	*prev;
+	struct _line	*next;
 	HL_LINEHANDLE	hl_handle;	/* Syntax-Highlighting-Cache */
 	char		info;
 	short		len;		/* Lnge in Bytes */

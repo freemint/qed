@@ -86,18 +86,16 @@ static bool new_block(void)
 	while ((--i) > 0)
 	{
 		adr2 = MEM_ADD(adr, BLOCK_SIZE);
-		*(long*)&adr->free.magic = (long)(MAGIC << 16) + BLOCK_SIZE;
-		/*	adr->free.magic = MAGIC;	*/
-		/*	adr->free.size = BLOCK_SIZE;	*/
+		adr->free.magic = MAGIC;
+		adr->free.size = BLOCK_SIZE;
 		adr->free.next = adr2;
 		adr->free.prev = pre;
 		pre = adr;
 		adr = adr2;
 	}
 	adr2 = MEM_ADD(adr, BLOCK_SIZE);
-	*(long*)&adr->free.magic = (long)(MAGIC<<16)+BLOCK_SIZE;
-	/*	adr->free.magic = MAGIC;	*/
-	/*	adr->free.size = BLOCK_SIZE;	*/
+	adr->free.magic = MAGIC;
+	adr->free.size = BLOCK_SIZE;
 	adr->free.next = NULL;
 	adr->free.prev = pre;
 
@@ -314,6 +312,7 @@ LINEP new_col(char *str, short l)
 
 void free_col(RINGP rp, LINEP col)
 {
+	(void) rp;
 	FREE(col);
 }
 
@@ -442,6 +441,7 @@ short col_offset(RINGP rp, LINEP col)
 	short	pos;
 	char c, *str;
 
+	(void) rp;
 	pos = 0;
 	str = TEXT(col);
 	c = *str++;
@@ -663,6 +663,7 @@ void init_memory(void)
 
 /* Debug-Funktionen **********************************************************/
 
+#if 0
 void dump_freelist(void)
 {
 	if (debug_level)
@@ -707,3 +708,4 @@ void dump_ring(RINGP r)
 		}
 	}
 }
+#endif
