@@ -93,6 +93,8 @@ install: all
 	$(CP) "$(top_srcdir)/doc/qed-nl.hyp" "$(installdir)/nl/doc/qed.hyp"
 	$(CP) "$(top_srcdir)/doc/qed-nl.ref" "$(installdir)/nl/doc/qed.ref"
 
+clean::
+	for i in $(qedtargets); do rm -rf .compile_$$i; done
 
 $(qedtargets):
 	$(MAKE) buildqed qed=$@
