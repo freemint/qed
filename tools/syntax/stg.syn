@@ -29,6 +29,7 @@ Keyword = "@height","@master","@label","@pnode","@width","@endif","@alias"
 Keyword = "@noref","@image","@$VER:","@index","@title","@dnode","@help"
 Keyword = "@next","@node","@prev","@else","@xref","@uses","@line","@rbox"
 Keyword = "@tree","@font","@toc","@box","@(c)","@if"
+Keyword = "@os","@charset","@lang","@inputenc"
 (Color2)
 Attribs = BOLD
 (Color16)
