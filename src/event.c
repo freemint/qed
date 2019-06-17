@@ -55,11 +55,11 @@ typedef struct
 	short	kstate;
 	short	kreturn;
 	short	breturn;
-} EVENT;
+} QEDEVENT;
 
 /****** VARIABLES ************************************************************/
 
-static EVENT	msg_queue[MAX_EVENT];
+static QEDEVENT	msg_queue[MAX_EVENT];
 static short		msg_head = 0,
 					msg_tail = 0;
 static short		old_mx = 0,
@@ -89,13 +89,13 @@ static bool full_event(void)
 	return(next == msg_tail);
 }
 
-static void add_event(EVENT *event)
+static void add_event(QEDEVENT *event)
 {
 	short next;
 
 	if (event->which == MU_KEYBD && is_event())		/* Tastatur-Repeat? */
 	{
-		EVENT	*ptr = &msg_queue[msg_tail];
+		QEDEVENT	*ptr = &msg_queue[msg_tail];
 
 		if (ptr->which == MU_KEYBD && ptr->kreturn == event->kreturn &&
 		    ptr->kstate == event->kstate)
@@ -114,7 +114,7 @@ static void add_event(EVENT *event)
 	msg_head = next;
 }
 
-static bool get_event(EVENT *event)
+static bool get_event(QEDEVENT *event)
 {
 	if (msg_head != msg_tail)
 	{
@@ -129,7 +129,7 @@ static bool get_event(EVENT *event)
 
 static bool idle(void)
 {
-	EVENT ev;
+	QEDEVENT ev;
 	short	events;
 
 	if (full_event())
@@ -161,7 +161,7 @@ static bool idle(void)
 
 bool check_for_abbruch(void)
 {
-	EVENT ev;
+	QEDEVENT ev;
 	short	events;
 
 	if (full_event())
@@ -196,7 +196,7 @@ bool check_for_abbruch(void)
 	return FALSE;
 }
 
-static void next_action(EVENT *ev)
+static void next_action(QEDEVENT *ev)
 {
 	short	events;
 
@@ -540,7 +540,7 @@ void handle_msg(short *msg)
 /*****************************************************************************/
 void main_loop(void)
 {
-	EVENT	ev;
+	QEDEVENT	ev;
 	bool	menu_chg;
 	long	as_timer = 0, t;
 	
