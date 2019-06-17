@@ -63,9 +63,8 @@ install: all
 	$(CP) -r "$(top_srcdir)/dist/kurzel" "$(installdir)"
 	$(CP) -r "$(top_srcdir)/dist/treiber" "$(installdir)"
 	$(MKDIR) -p "$(installdir)/doc"
-# TODO: generate HYP
-	$(CP) "$(top_srcdir)/doc/qed-e.hyp" "$(installdir)/doc/qed.hyp"
-	$(CP) "$(top_srcdir)/doc/qed-e.ref" "$(installdir)/doc/qed.ref"
+	$(CP) "$(top_srcdir)/doc/qed-en.hyp" "$(installdir)/doc/qed.hyp"
+	$(CP) "$(top_srcdir)/doc/qed-en.ref" "$(installdir)/doc/qed.ref"
 
 	$(MKDIR) -p "$(installdir)/de"
 	$(CP) "$(top_srcdir)/src/qed.rsc" "$(installdir)/de"
@@ -74,9 +73,8 @@ install: all
 	$(CP) "$(top_srcdir)/dist/liesmich.old" "$(installdir)/de"
 
 	$(MKDIR) -p "$(installdir)/de/doc"
-# TODO: generate HYP
-	$(CP) "$(top_srcdir)/doc/qed.hyp" "$(installdir)/de/doc"
-	$(CP) "$(top_srcdir)/doc/qed.ref" "$(installdir)/de/doc"
+	$(CP) "$(top_srcdir)/doc/qed-de.hyp" "$(installdir)/de/doc/qed.hyp"
+	$(CP) "$(top_srcdir)/doc/qed-de.ref" "$(installdir)/de/doc/qed.ref"
 
 	$(MKDIR) -p "$(installdir)/fr"
 	$(CP) "$(top_srcdir)/fr/qed_fr.rsc" "$(installdir)/fr/qed.rsc"
