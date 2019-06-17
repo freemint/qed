@@ -31,7 +31,6 @@ typedef struct _separm
 static SEPARMS	shell_parm,
 					edit_parm;
 static short		aktiv;				/* Nummer der aktiven Shell (0..SHELLANZ - 1) */
-static short		menu_len;
 static long		timer;				/* wird hochgezÑhlt */
 static bool		wait_for_answer;	/* TRUE, wenn auf SE_OK/_ACK gewartet wird */
 static char		org_menu[8][25];
@@ -60,18 +59,28 @@ static void	setup_makefile(void)
 }
 
 
-static void set_titel(char *titel)
+static void set_titel(const char *titel, bool showbar)
 {
-	char str[25] = " ";
+	size_t maxlen = strlen(menu[TSHELL].ob_spec.free_string);
+	size_t len = strlen(titel);
+	short x, y;
 
-	strcat(str, titel);
-	strcat(str, " ");
-	menu_bar(menu, 0);
-	menu[2].ob_width = menu_len + (short)strlen(str) * sys_wbox;
-	menu[TSHELL].ob_width = (short)strlen(str) * sys_wbox;
-	strcpy(menu[TSHELL].ob_spec.free_string, str);
-	menu_bar(menu, 1);
-	update_menu();
+	if (showbar)
+		menu_bar(menu, 0);
+	memset(menu[TSHELL].ob_spec.free_string, ' ', maxlen);
+	if (len >= maxlen)
+		len = maxlen - 1;
+	memcpy(menu[TSHELL].ob_spec.free_string + 1, titel, len);
+	menu[TSHELL].ob_width = (len + 2) * sys_wbox;
+	objc_offset(menu, TSHELL, &x, &y);
+	menu[TSHELL_BOX].ob_x = x;
+	if ((menu[TSHELL_BOX].ob_x + menu[TSHELL_BOX].ob_width) >= gl_desk.g_w)
+		menu[TSHELL_BOX].ob_x = gl_desk.g_w - menu[TSHELL_BOX].ob_width - 2;
+	if (showbar)
+	{
+		menu_bar(menu, 1);
+		update_menu();
+	}
 }
 
 void setup_semenu(void)
@@ -103,7 +112,7 @@ static void reset_shell_menu(void)
 {
 	short	i;
 
-	set_titel("Shell");
+	init_se_title(TRUE);
 	menu_text(menu, MSMAKEFILE, org_menu[0]);
 	for (i = MSCOMP; i <= MSSHELL; i++)
 		menu_text(menu, i, org_menu[i - MSCOMP + 1]);
@@ -122,7 +131,7 @@ void	timer_se(void)
 			if (note(2, 0, SENOANS) == 1)
 			{
 				se_activ = FALSE;
-				set_titel("Shell");
+				init_se_title(TRUE);
 			}
 		}
 	}
@@ -244,7 +253,7 @@ void handle_se(short *msg)
 				strcpy(se_shells[aktiv].name, str);
 				strcpy(se_shells[aktiv].makefile, "");
 			}
-			set_titel(se_shells[aktiv].name);
+			set_titel(se_shells[aktiv].name, TRUE);
 			break;
 		case SE_OK		:
 			reset_timer();
@@ -260,7 +269,7 @@ void handle_se(short *msg)
 			shell_parm.editCmd  = msg[5];
 			shell_parm.se_version = msg[6];
 			se_activ = TRUE;
-			set_titel(se_shells[aktiv].name);
+			set_titel(se_shells[aktiv].name, TRUE);
 			break;
 		case SE_ACK 	:
 			reset_timer();
@@ -429,7 +438,7 @@ void handle_se(short *msg)
 				
 				if (shell_parm.se_version >= 0x104)
 					if ((pmenu->progName != NULL) && (strlen(pmenu->progName) > 0))
-						set_titel(pmenu->progName);
+						set_titel(pmenu->progName, TRUE);
 
 				if (shell_parm.se_version >= 0x105)
 					if ((pmenu->shellCtrlStr != NULL) && (strlen(pmenu->shellCtrlStr) > 0))
@@ -507,7 +516,7 @@ static void	send_cmd(short cmd, short bit)
 		if (!send_msg(shell_parm.id))
 		{
 			se_activ = FALSE;
-			set_titel("Shell");
+			init_se_title(TRUE);
 			note(1, 2, SENOANS);
 			return;
 		}
@@ -598,7 +607,7 @@ static void se_options(void)
 				else
 				{
 					send_esquit();
-					set_titel("Shell");
+					init_se_title(TRUE);
 				}
 			}
 			if (!such_shell())
@@ -710,13 +719,17 @@ void handle_es(short item)
 	} /* switch */
 }
 
+void init_se_title(bool showbar)
+{
+	set_titel("Shell", showbar);
+}
+
 void	init_se(void)
 {
 	short	i;
 
 	se_activ = FALSE;
-	menu_len = menu[2].ob_width - menu[TSHELL].ob_width;
-	set_titel("Shell");
+	init_se_title(TRUE);
 
 	/* MenÅeintrÑge sichern */
 	strcpy(org_menu[0], (char *)get_obspec(menu, MSMAKEFILE));

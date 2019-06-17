@@ -39,6 +39,7 @@ extern void	timer_se			(void);
  * Wird von der globalen Event-Schleife alls 600ms aufgerufen.
 */
 
+void init_se_title(bool showbar);
 extern void	init_se			(void);
 extern void term_se			(void);
 

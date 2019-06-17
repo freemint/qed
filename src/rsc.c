@@ -1,6 +1,7 @@
 #include "global.h"
 #include "rsc.h"
 #include "version.h"
+#include "se.h"
 
 extern char	__Ident_gnulib[];
 extern char	__Ident_gem[];
@@ -88,7 +89,7 @@ bool init_resource(void)
 
 		rsrc_gaddr(R_TREE, MENUTREE,	&menu);
 		/* nur tempor„r, da sonst die XXX kurz zusehen sind. */
-		set_string(menu, TSHELL, " Shell                    ");
+		init_se_title(FALSE);
 		create_menu(menu);
 
 		rsrc_gaddr(R_TREE, ABOUT,		&about);
