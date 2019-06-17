@@ -162,7 +162,7 @@ it someplace that ST-Guide/HYPView can find it.
 @{U}History                                                                 qed@{0}
 
 @autorefoff
-@{U}Version 5.0.2 --> 5.0.5@{u}
+@{U}Version 5.0.5 (12.11.04)@{u}
 
    ù Add syntax for SCEleton (JAnE, GSExec).
      Update syntax for the new UDO version.

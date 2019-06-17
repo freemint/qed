@@ -9,7 +9,7 @@
 @author "Godfried Cobben (vert.)"
 @help "HELP"
 @options "+g +i -s +x +y +z -t4 -d24 -j40"
-@define QEDVERSION 5.02
+@define QEDVERSION 5.05
 @$VER: qed.hyp @:"QEDVERSION" (@:"__DATE__")
 @subject "Documentatie/Applicaties"
 @width 75
@@ -3779,7 +3779,7 @@ Nieuw in versie @:"QEDVERSION"
 @rbox 44 20 1 0
                                             @{"Oudere versies..." LINK "HISTORY"}
 
-   Versie 5.0.5 van
+   Versie 5.0.5 van 12.11.04
  
    ù Add syntax for SCEleton (JAnE, GSExec).
      Update syntax for the new UDO version.
@@ -3817,7 +3817,7 @@ De geschiedenis van QED
    v5.05
 @line 1 70 0 0 7
 
-   Versie 5.0.5 van
+   Versie 5.0.5 van 12.11.04
  
    ù Add syntax for SCEleton (JAnE, GSExec).
      Update syntax for the new UDO version.

@@ -1,4 +1,4 @@
-Version 5.0.2 --> 5.0.5
+Version 5.0.5                    (12.11.04)
 -------------------------------------------
    ù Add syntax for SCEleton (JAnE, GSExec).
      Update syntax for the new UDO version.
@@ -24,7 +24,7 @@ Version 5.0.2 --> 5.0.5
    ù Shortcuts fixed in find/replace dialog and several others.
      Standa Opichal 05/10/2004
 
-Version 5.0.2
+Version 5.0.2                    (19.06.02)
 -------------------------------------------
 DEUTSCH:
    ù Laden der Syntaxdateien deutlich beschleunigt; qed startet schneller.
