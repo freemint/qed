@@ -10,8 +10,9 @@ top_srcdir = ..
 subdir = src
 
 installdir = /opt/GEM
+cpu = all
 
-default: all-here
+default: help
 
 include $(srcdir)/QEDDEFS
 
@@ -27,6 +28,24 @@ all-here: all-targets
 compile_all_dirs = .compile_*
 GENFILES = $(compile_all_dirs)
 
+help:
+	@echo '#'
+	@echo '# targets:'
+	@echo '# --------'
+	@echo '# - all'
+	@echo '# - $(qedtargets)'
+	@echo '#'
+	@echo '# - install'
+	@echo '# - strip'
+	@echo '# - clean'
+	@echo '# - distclean'
+	@echo '# - help'
+	@echo '#'
+	@echo '# example for a ColdFire binary: -> make col'
+	@echo '#'
+	@echo '# To install single CPU binary: ->'
+	@echo '# make install cpu=<CPU> installdir=<DIR>'
+	@echo '#'
 
 all-targets:
 	@set fnord $(MAKEFLAGS); amf=$$2; \
@@ -42,17 +61,20 @@ strip:
 		$(STRIP) .compile_$$i/qed_new.app; \
 	done
 
-install: all
+install: $(cpu)
 	$(MKDIR) -p $(installdir)
-
+ifeq ($(cpu), all)
 	@set -x; \
 	for i in $(qedtargets); do \
-		cd .compile_$$i/; \
-		$(CP) qed_new.app $(installdir)/qed$$i.app; \
+		$(CP) .compile_$$i/qed_new.app $(installdir)/qed$$i.app; \
 		chmod 755 $(installdir)/qed$$i.app; \
 		$(STRIP) $(installdir)/qed$$i.app; \
-		cd ..; \
 	done
+else
+	$(CP) .compile_$(cpu)/qed_new.app $(installdir)/qed.app
+	chmod 755 $(installdir)/qed.app
+	$(STRIP) $(installdir)/qed.app
+endif
 
 	$(CP) "$(top_srcdir)/en/qed_en.rsc" "$(installdir)/qed.rsc"
 	$(CP) "$(top_srcdir)/en/readme.txt" "$(installdir)"

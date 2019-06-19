@@ -30,7 +30,7 @@ bakclean:: bakclean-recursive
 distclean:: clean-recursive clean
 	rm -rf .deps $(GENFILES)
 
-install: all-here install-recursive
+install: install-recursive
 
 uninstall: uninstall-recursive
 

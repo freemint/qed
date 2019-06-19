@@ -9,11 +9,26 @@ srcdir = .
 top_srcdir = .
 subdir = 
 
-default: all
+default: help
 
 include $(top_srcdir)/CONFIGVARS
 include $(top_srcdir)/RULES
 include $(top_srcdir)/PHONY
+
+help:
+	@echo '#'
+	@echo '# targets:'
+	@echo '# --------'
+	@echo '# - all'
+	@echo '#'
+	@echo '# - install'
+	@echo '# - clean'
+	@echo '# - distclean'
+	@echo '# - help'
+	@echo '#'
+	@echo '# To install single CPU binary:'
+	@echo '# make install cpu=<CPU> installdir=<DIR>'
+	@echo '#'
 
 all-here: doc/qed-en.hyp doc/qed-nl.hyp doc/qed-de.hyp
 
