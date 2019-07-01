@@ -21,7 +21,6 @@ all: all-recursive all-here
 clean:: clean-recursive
 	rm -f *.o lib*.a *.tmp
 	rm -f core report nohup.out errlog
-	rm -f foobar foo bar baz junk schrott muell
 
 bakclean:: bakclean-recursive
 	rm -f *~ *#
