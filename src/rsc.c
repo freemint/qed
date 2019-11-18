@@ -3,9 +3,9 @@
 #include "version.h"
 #include "se.h"
 
-extern char	__Ident_gnulib[];
-extern char	__Ident_gem[];
-extern char	__Ident_cflib[];
+extern char	const __Ident_gnulib[];
+extern char	const __Ident_gem[];
+extern char	const __Ident_cflib[];
 
 /*
  * exportierte Variablen
