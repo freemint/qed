@@ -1,30 +1,73 @@
 language: c
-os: linux
-dist: xenial
-sudo: required
 
-compiler:
-  - m68k-atari-mint-gcc
+addons:
+  apt:
+    sources:
+      - sourceline: 'ppa:vriviere/ppa'
+    packages:
+      - binutils-m68k-atari-mint
+      - gcc-m68k-atari-mint
+      - mintbin-m68k-atari-mint
+      # TODO: replace with snapshots
+      - mintlib-m68k-atari-mint
+      - gemlib-m68k-atari-mint
+      - cflib-m68k-atari-mint
 
+env:
+  global:
+    - PROJECT_REPO=$(echo "${TRAVIS_REPO_SLUG}" | cut -d '/' -f 1)
+    - PROJECT_NAME=$(echo "${TRAVIS_REPO_SLUG}" | cut -d '/' -f 2)
+    - PROJECT_VERSION="5.0.5"
+    - INSTALL_DIR="/tmp/${PROJECT_NAME}"
+    - DEPLOY_DIR="/tmp/${PROJECT_NAME}-deploy"
+    - BINTRAY_USER="mikrosk"
+    # BINTRAY_API_KEY is defined in Travis Settings of freemint/qed
+    - HCP="/tmp/hcp/bin/hcp"
+  matrix:
+    - CPU_TARGET=000
+    - CPU_TARGET=02060
+    - CPU_TARGET=030
+    - CPU_TARGET=040
+    - CPU_TARGET=060
+    - CPU_TARGET=col
+
+# If before_install, install or before_script return a non-zero exit code, the build is errored and stops immediately.
 before_install:
-  - export USER=$(echo "${TRAVIS_REPO_SLUG}" | cut -d '/' -f 1)
-  - export BASE_RAW_URL="https://raw.githubusercontent.com/${USER}"
+  - wget -q -O - https://github.com/freemint/travis-scripts/archive/master.tar.gz | tar xzf - --strip-components=1 -C .travis
+  - if [ -x .travis/before_install.sh ]; then ./.travis/before_install.sh; else true; fi
 
-  - wget -O .travis/download_prerequisities.sh "${BASE_RAW_URL}/travis-scripts/master/download_prerequisities.sh"
-  - sh ./.travis/download_prerequisities.sh
-  - sh ./.travis/install-cross-mint.sh cross-mint-essential cflib-m68k-atari-mint > /dev/null
-  - . ./.travis/install-udo.sh
-  
+install:
+  - if [ -x .travis/install.sh ]; then ./.travis/install.sh; else true; fi
+
 before_script:
-  - . ./.travis/setup_env.sh
-  - export SHORT_ID=$(git log -n1 --format="%H" | cut -c 1-3)
+  - if [ -x .travis/before_script.sh ]; then ./.travis/before_script.sh; else true; fi
 
+# If script returns a non-zero exit code, the build is failed, but continues to run before being marked as failed.
 script:
-  - sh ./.travis/build.sh "${PWD}/.travis/tmp" "${PWD}/.travis/out"
+  - if [ -x .travis/script.sh ]; then ./.travis/script.sh; else true; fi
+# The exit code of after_success, after_failure, after_script and subsequent stages do not affect the build result.
+# However, if one of these stages times out, the build is marked as a failure.
+after_success:
+  - if [ -x .travis/after_success.sh ]; then ./.travis/after_success.sh; else true; fi
+after_failure:
+  - if [ -x .travis/after_failure.sh ]; then ./.travis/after_failure.sh; else true; fi
+
+# A non-zero exit code in this phase will mark the build as errored.
+before_deploy:
+  - if [ -x .travis/before_deploy.sh ]; then ./.travis/before_deploy.sh; else true; fi
 
 deploy:
-  provider: script
+  provider: bintray
+  file: ".travis/bintray.desc"
+  user: "${BINTRAY_USER}"
+  key: "${BINTRAY_API_KEY}"
   skip_cleanup: true
-  script: sh ./.travis/deploy.sh "${PWD}/.travis/out" $encrypted_a8c32f314d99_key $encrypted_a8c32f314d99_iv
   on:
+    branch: master
     repo: freemint/qed
+
+after_deploy:
+  - if [ -x .travis/after_deploy.sh ]; then ./.travis/after_deploy.sh; else true; fi
+
+after_script:
+  - if [ -x .travis/after_script.sh ]; then ./.travis/after_script.sh; else true; fi
