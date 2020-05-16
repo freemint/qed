@@ -9,7 +9,6 @@
 
 
 #define	ltoa(a,b,c)	_ltoa(a,b,c)
-#define	itoa(a,b,c)	_itoa(a,b,c)
 
 /****** Defines ***************************************************************/
 
