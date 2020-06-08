@@ -25,15 +25,42 @@ static bool	wp_config_read = FALSE;
 void handle_mdial_msg (short *msg); /* from cflib */
 
 /* --------------------------------------------------------------------------- */
+
+static void check_pdlg(void)
+{
+	bool pdlg_avail;
+	short i, d;
+
+	if (!prn->use_pdlg || prn->pdlg)
+		return;
+	/* Ist WDialog installiert? */	
+	pdlg_avail = (appl_xgetinfo(7, &i, &d, &d, &d) && ((i & 0x17) == 0x17));
+	if (pdlg_avail)
+	{
+		PRN_DIALOG	*pd;
+
+		/* Settings anlegen und default'en */
+		pd = pdlg_create(0);
+		if (pd)
+		{
+			prn->pdlg = pdlg_new_settings(pd);
+			pdlg_delete(pd);
+		}
+	}
+}
+
+/* --------------------------------------------------------------------------- */
 bool open_printer(void)
 {
 	short	work_out[57];
 	short	i, p_xy[4];
 	bool	ret = FALSE;
 	
-	if (prn->use_pdlg)
+	check_pdlg();
+	if (prn->use_pdlg && prn->pdlg)
+	{
 		prn->handle = v_opnprn(gl_phys_handle, prn->pdlg, work_out);
-	else
+	} else
 	{
 		short	work_in[16];
 
@@ -545,7 +572,8 @@ void prn_cfg_dial(void)
 	new = malloc(sizeof(PRN_CFG));
 	memcpy(new, prn, sizeof(PRN_CFG));
 	
-	if (prn->use_pdlg)
+	check_pdlg();
+	if (prn->use_pdlg && prn->pdlg)
 		ok = pdlg_dial(new);
 	else
 		ok = qed_cfg_dial(new);
@@ -590,8 +618,9 @@ bool prn_start_dial(bool *block)
 
 void prn_save_cfg(char *buffer)
 {
+	check_pdlg();
 	/* pdlg-Settings */
-	if (prn->pdlg != NULL)
+	if (prn && prn->pdlg != NULL)
 	{
 		char *p;
 		FILE	*fd;
@@ -680,10 +709,6 @@ bool prn_get_cfg(char *var, char *buffer)
 			fclose(fd);
 		}
 
-		/* wenn kein WDIALOG da ist, auch nicht benutzen! */
-		if (!prn->pdlg_avail && prn->use_pdlg)
-			prn->use_pdlg = FALSE;
-
 		free(pdlg_file);
 	}
 
@@ -699,37 +724,11 @@ void init_printer(void)
 	prn = malloc(sizeof(PRN_CFG));
 	if (prn)
 	{
-		short	d, i;
-
 		memset(prn, 0, sizeof(PRN_CFG));
 		prn->wp_s_len = 65;
 		prn->wp_z_len = 80;
 		prn->font_id = 1;
 		prn->font_pts = 10;	
-
-		/* Ist WDialog installiert? */	
-		prn->pdlg_avail = (appl_xgetinfo(7, &i, &d, &d, &d) && ((i & 0x17) == 0x17));
-		if (prn->pdlg_avail)
-		{
-			PRN_DIALOG	*pd;
-	
-			/* Settings anlegen und default'en */
-			pd = pdlg_create(0);
-			if (pd)
-			{
-				prn->pdlg = pdlg_new_settings(pd);
-				pdlg_delete(pd);
-			}
-			else
-				prn->pdlg_avail = FALSE;
-		}
-
-		if (!prn->pdlg_avail)
-		{
-			/* damit die CFG erhalten bleibt! */
-			prn->pdlg = malloc(sizeof(PRN_SETTINGS));
-			memset(prn->pdlg, 0, sizeof(PRN_SETTINGS));
-		}
 	}
 }
 
@@ -737,10 +736,8 @@ void term_printer(void)
 {
 	if (prn)
 	{
-		if (prn->pdlg_avail)
+		if (prn->pdlg)
 			pdlg_free_settings(prn->pdlg);
-		else
-			free(prn->pdlg);
 		free(prn);
 		prn = NULL;
 	}

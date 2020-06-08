@@ -23,7 +23,6 @@ typedef struct
 	void	*pdlg;		/* PRN_SETTINGS */
 	
 	/* momentane Einstellungen, werden nicht gesichert! */
-	bool	pdlg_avail;
 	bool	ausdruck;	/* FALSE: normale Konfig, TRUE: vor Ausdruck */
 	bool	block;		/* Bei start=TRUE: Block oder alles */
 	short	handle;		/* VDI/GEMDOS-Handle */

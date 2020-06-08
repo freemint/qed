@@ -135,7 +135,6 @@ void set_global_options(void)
 	set_state(globalop, GOOLGA, OS_SELECTED, olga_autostart);
 	set_state(globalop, GOKLAMMER, OS_SELECTED, emu_klammer);
 
-	set_state(globalop, GOWDIAL, OS_DISABLED, !prn->pdlg_avail);
 	set_state(globalop, GOWDIAL, OS_SELECTED, prn->use_pdlg);
 
 	set_short(globalop, GOTRANS, transfer_size);
