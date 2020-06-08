@@ -88,6 +88,7 @@ bool init_resource(void)
 		}
 
 		rsrc_gaddr(R_TREE, MENUTREE,	&menu);
+		menu[ROOT].ob_width = gl_desk.g_w;
 		/* nur tempor„r, da sonst die XXX kurz zusehen sind. */
 		init_se_title(FALSE);
 		create_menu(menu);
@@ -162,13 +163,6 @@ bool init_resource(void)
 
 		rsrc_gaddr(R_TREE, STRINGS,   &strings);
 		rsrc_gaddr(R_FRSTR, NOWINDOW,	&alertmsg);		/* _erster_ Alert */
-
-		/* Men ist breiter als 640, ggf. anpassen */
-		if (gl_desk.g_w > 640)
-			menu[MSOPT - 1].ob_x += 5 * gl_wchar;
-		else
-			menu[MSOPT - 1].ob_x -= 1 * gl_wchar;
-			
 
 		/* Versionen eintragen */		
 		set_string(about, ADATUM, __DATE__);

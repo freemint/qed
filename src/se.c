@@ -73,6 +73,7 @@ static void set_titel(const char *titel, bool showbar)
 	memcpy(menu[TSHELL].ob_spec.free_string + 1, titel, len);
 	menu[TSHELL].ob_width = (len + 2) * sys_wbox;
 	objc_offset(menu, TSHELL, &x, &y);
+	menu[2].ob_width = x + menu[TSHELL].ob_width - menu[2].ob_x;
 	menu[TSHELL_BOX].ob_x = x;
 	if ((menu[TSHELL_BOX].ob_x + menu[TSHELL_BOX].ob_width) >= gl_desk.g_w)
 		menu[TSHELL_BOX].ob_x = gl_desk.g_w - menu[TSHELL_BOX].ob_width - 2;
