@@ -377,9 +377,14 @@ long file_size(char *filename)
 	struct stat	s;
 	
 	if (stat(filename, &s) == 0)
+	{
+		if (!S_ISREG(s.st_mode))
+		{
+			return -1;
+		}
 		return s.st_size;
-	else
-		return 0;
+	}
+	return 0;
 }
 
 /*****************************************************************************/

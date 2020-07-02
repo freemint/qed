@@ -273,20 +273,22 @@ short load_datei(char *name, RINGP t, bool verbose, bool *null_byte)
 	
 	/* gre der Datei ermitteln */
 	size = file_size(name);
-	if (size >= 0L)
+	if (size >= 0)
 	{
 		fd = (short) Fopen(name, 0);
 		if (fd > 0)
 		{
 			antw = load_from_fd(fd, name, t, verbose, null_byte, size);
 			Fclose(fd);
-		}
-		else
+		} else
+		{
 			antw = fd;
-	}
-	else
+		}
+	} else
+	{
 		antw = -1;
-	
+	}
+
 	return antw;
 }
 
