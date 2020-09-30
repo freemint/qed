@@ -336,14 +336,12 @@ static bool pdlg_dial(PRN_CFG *cfg)
 
 static void get_devinfo(short handle, short device, char *devname)
 {
-	if (gl_nvdi >= 0x300)
-	{
-		short	d;
-		char	s[80];
+	short	d;
+	char	s[80];
 
-		vq_devinfo(handle, device, &d, s, devname);
-	}
-	else
+	*devname = '\0';
+	vq_devinfo(handle, device, &d, s, devname);
+	if (*devname == '\0')
 		sprintf(devname, "GDOS Printer %d", device);
 }
 
@@ -351,14 +349,14 @@ static bool get_gdos_device(void)
 {
 	if (gdos_device == 0 || gdos_name[0] == EOS)
 	{
-		short	work_in[16];
+		short	work_in[20];
 		short	work_out[57];
 		short	i, handle;
 		
-		for (i=1; i < 10; i++)
+		for (i = 1; i < 10; i++)
 			work_in[i] = 1;
-		work_in[10] = 2;
-		for (i=11; i < 16; i++)
+		work_in[i++] = 2;
+		for (; i < 20; i++)
 			work_in[i] = 0;
 		for (i = 21; i < 31; i++)
 		{
@@ -374,7 +372,7 @@ static bool get_gdos_device(void)
 		}
 		gdos_name[32] = EOS;				/* mehr passt nicht in den G_STRING! */
 	}
-	return (gdos_device > 0);
+	return gdos_device > 0;
 }
 
 
