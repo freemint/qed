@@ -142,7 +142,7 @@ short cursor_xpos(TEXTP t_ptr, short position, bool *isitalicp)
 	HL_ELEM len;
 	short tabwidth;
 	short i;
-	short pxy[8];
+	_WORD pxy[8];
 	short x = 0;
 	char *line, *start_line;
 	short done_expanded = 0;
@@ -218,7 +218,7 @@ short cursor_xpos(TEXTP t_ptr, short position, bool *isitalicp)
 
 static void _cursor(GRECT *r)
 {
-    short pxy[4];
+    _WORD pxy[4];
 
     pxy[0] = r->g_x;
     pxy[1] = r->g_y;
@@ -236,7 +236,7 @@ static void _cursor_italic(GRECT *r)
 {
     /* kleine & schrge Breiten bei v_fillarea werden im XOR-Modus absolut unbrauchbar
        dargestellt, daher Zeichnen des Cursors mit v_pline :-(*/
-    short pxy[4];
+    _WORD pxy[4];
     short i;
     
     pxy[0] = r->g_x + font_right_italicoffset;
@@ -257,7 +257,7 @@ static void _cursor_italic(GRECT *r)
 
 void cursor(WINDOWP w, TEXTP t_ptr)
 {
-    short       pxy[8];
+    _WORD       pxy[8];
     char        c[2];
     GRECT       curs_rect, clip, clip_curs_rect;
     long        zeile;
@@ -380,7 +380,7 @@ static LINEP get_wline(TEXTP t_ptr, long y)
 */
 void fill_area(short x, short y, short w, short h, short color)
 {
-    short   pxy[4];
+    _WORD   pxy[4];
 
     if (w <= 0)
         return;
@@ -402,7 +402,7 @@ void fill_area(short x, short y, short w, short h, short color)
  */
 static void fill_area_italic(short x, short y, short w, short h, short color, bool isitalic)
 {
-    short   pxy[8];
+    _WORD   pxy[8];
 
     if (line_start) /* Zeilenbeginn? */
     {
@@ -442,7 +442,7 @@ static void fill_area_italic(short x, short y, short w, short h, short color, bo
 */
 short out_s(short x, short y, short w, char *str)
 {
-    short   pxy[8], len;
+    _WORD   pxy[8], len;
     
     vst_color(vdi_handle, fg_color);
 	vst_effects(vdi_handle, 0);
@@ -477,7 +477,7 @@ short out_s(short x, short y, short w, char *str)
 */
 short out_sb(short x, short y, short w, char *str)
 {
-    short   pxy[8], len;
+    _WORD   pxy[8], len;
 
     if (w <= 0)
         return x;
@@ -507,7 +507,7 @@ short out_sb(short x, short y, short w, char *str)
 */
 static void draw_cr(short x, short y, bool inv)
 {
-    short pxy[6], h, b;
+    _WORD pxy[6], h, b;
 
     if (inv)
         vsl_color (vdi_handle, fg_block_color);
@@ -554,7 +554,7 @@ static void output_text(short x, short y, short *width,
                         char *buffer,
                         short fgcolor, short bgcolor)
 {
-    short pxy[8];
+    _WORD pxy[8];
     bool isitalic = vdiattr & HL_ITALIC;
 
     if (fgcolor != -1)

@@ -2,6 +2,29 @@
 #include <signal.h>
 #include <support.h>
 
+#if defined(__PUREC__)
+#undef SIGHUP
+#undef SIGINT
+#undef SIGSYS
+#undef SIGQUIT
+#undef SIGPIPE
+#undef SIGTERM
+#define SIGHUP  1
+#define SIGINT  2
+#define SIGQUIT 3
+#define SIGSYS  12
+#define SIGPIPE 13
+#define SIGTERM 15
+#undef SIG_DFL
+#undef SIG_IGN
+#undef SIG_ERR
+#undef SIG_SYS
+#define SIG_DFL	((__mint_sighandler_t) 0L)
+#define SIG_IGN	((__mint_sighandler_t) 1L)
+#define SIG_ERR	((__mint_sighandler_t)-1L)
+#define SIG_SYS	((__mint_sighandler_t)-2L)
+#endif
+
 #include "global.h"
 #include "clipbrd.h"
 #include "comm.h"
@@ -28,7 +51,7 @@
 #include "hl.h"
 
 
-static void handle_term(int sig)
+static void __CDECL handle_term(long sig)
 {
 	(void) sig;
 	abort_prog = TRUE;
@@ -247,8 +270,7 @@ int main(int argc, char *argv[])
 #ifdef DEBUG_LOGFILE
 		debug_init("qed",Datei,DEBUG_LOGFILE );
 #else
-		extern short __mint;
-		if (__mint)		/* gl_mint wird erst vin init_app() gesetzt! */
+		if (gl_mint)		/* gl_mint wird erst vin init_app() gesetzt! */
 			debug_init("qed", Con, NULL);
 		else
 			debug_init("qed", TCon, NULL);
@@ -283,11 +305,11 @@ int main(int argc, char *argv[])
 		menu_register(gl_apid, menu_str);
 	}
 
-	signal(SIGINT, SIG_IGN);
-	signal(SIGSYS, SIG_IGN);
-	signal(SIGTERM, handle_term);
-	signal(SIGQUIT, handle_term);
-	signal(SIGHUP, handle_term);
+	Psignal(SIGINT, SIG_IGN);
+	Psignal(SIGSYS, SIG_IGN);
+	Psignal(SIGTERM, handle_term);
+	Psignal(SIGQUIT, handle_term);
+	Psignal(SIGHUP, handle_term);
 
 	if (debug_level & DBG_OS)
 	{

@@ -22,14 +22,14 @@ static bool	wp_config_read = FALSE;
 
 #define PCFGNAME	"pdlg.qed"			/* Name der Settings-Datei */
 
-void handle_mdial_msg (short *msg); /* from cflib */
+void handle_mdial_msg (_WORD *msg); /* from cflib */
 
 /* --------------------------------------------------------------------------- */
 
 static void check_pdlg(void)
 {
 	bool pdlg_avail;
-	short i, d;
+	_WORD i, d;
 
 	if (!prn->use_pdlg || prn->pdlg)
 		return;
@@ -52,8 +52,8 @@ static void check_pdlg(void)
 /* --------------------------------------------------------------------------- */
 bool open_printer(void)
 {
-	short	work_out[57];
-	short	i, p_xy[4];
+	_WORD	work_out[57];
+	_WORD	i, p_xy[4];
 	bool	ret = FALSE;
 	
 	check_pdlg();
@@ -62,7 +62,7 @@ bool open_printer(void)
 		prn->handle = v_opnprn(gl_phys_handle, prn->pdlg, work_out);
 	} else
 	{
-		short	work_in[16];
+		_WORD	work_in[16];
 
 		work_in[0] = gdos_device;
 		for (i=1; i < 10; i++)
@@ -230,7 +230,7 @@ static bool pdlg_dial(PRN_CFG *cfg)
 {
 	PRN_DIALOG	*prn_dialog;
 	PRN_SETTINGS	*new;
-	short		d, button, ret, handle;
+	_WORD		d, button, ret, handle;
 	EVNT		ev;
 	OBJECT		*tree;
 	
@@ -268,13 +268,13 @@ static bool pdlg_dial(PRN_CFG *cfg)
 			handle = pdlg_open(prn_dialog, new, "qed", 0x0000, -1, -1);
 		do
 		{
-			ev.mwhich = (short)evnt_multi(MU_KEYBD|MU_MESAG|MU_BUTTON, 2, 1, 1, 
+			ev.mwhich = (short)evnt_multi(MU_KEYBD|MU_MESAG|MU_BUTTON, 2, 1, 1,
 												0, 0, 0, 0, 0,	0, 0, 0, 0, 0,
-												(short*)ev.msg, 0,
-												(short*)&ev.mx, (short*)&ev.my, 
-												(short*)&ev.mbutton, 
-												(short*)&ev.kstate,	(short*)&ev.key, 
-												(short*)&ev.mclicks);
+												ev.msg, 0,
+												&ev.mx, &ev.my,
+												&ev.mbutton,
+												&ev.kstate,	&ev.key,
+												&ev.mclicks);
 			if (ev.mwhich & MU_MESAG)
 			{
 				switch (ev.msg[0])
@@ -336,7 +336,7 @@ static bool pdlg_dial(PRN_CFG *cfg)
 
 static void get_devinfo(short handle, short device, char *devname)
 {
-	short	d;
+	_WORD	d;
 	char	s[80];
 
 	*devname = '\0';
@@ -349,9 +349,9 @@ static bool get_gdos_device(void)
 {
 	if (gdos_device == 0 || gdos_name[0] == EOS)
 	{
-		short	work_in[20];
-		short	work_out[57];
-		short	i, handle;
+		_WORD	work_in[20];
+		_WORD	work_out[57];
+		_WORD	i, handle;
 		
 		for (i = 1; i < 10; i++)
 			work_in[i] = 1;
@@ -514,6 +514,7 @@ static bool qed_start_dial(PRN_CFG *cfg)
 	short	antw;
 	bool	start = FALSE;
 	
+	(void)cfg;
 	if (!wp_config_read && prn->wp_treiber[0] != EOS)
 		wp_config_read = wp_load_cfgfile(prn->wp_treiber);
 
@@ -592,7 +593,8 @@ bool prn_start_dial(bool *block)
 	else
 		prn->block = FALSE;
 
-	if (prn->use_pdlg)
+	check_pdlg();
+	if (prn->use_pdlg && prn->pdlg)
 	{
 		PRN_CFG	*new;
 		

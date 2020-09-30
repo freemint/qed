@@ -6,6 +6,6 @@ extern bool		abort_prog;
 extern bool		check_for_abbruch	(void);
 extern void		main_loop			(void);
 
-void handle_msg(short *msg);
+void handle_msg(_WORD *msg);
 
 #endif

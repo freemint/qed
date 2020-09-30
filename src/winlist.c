@@ -22,6 +22,10 @@
 #include "qed.h"
 #include "winlist.h"
 
+#undef UNUSED
+#define UNUSED	-1					/* Handle eines freien Fensters */
+
+
 WINDOWP	used_list;
 
 static WINDOWP	free_list;

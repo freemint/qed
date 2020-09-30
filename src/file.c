@@ -611,9 +611,9 @@ short save(TEXTP t_ptr)
 	/* Attribute wieder herstellen */
 	if (!not_exists)
 	{
-		chmod(t_ptr->filename, (st.st_mode & 0x0000FFFF));
-		if (getuid() == 0)						/* nur root darf Owner ndern */
-			chown(t_ptr->filename, st.st_uid, st.st_gid);
+		Fchmod(t_ptr->filename, (st.st_mode & 0x0000FFFF));
+		if (Pgetuid() == 0)						/* nur root darf Owner ndern */
+			Fchown(t_ptr->filename, st.st_uid, st.st_gid);
 	}
 
 	return antw;

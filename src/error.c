@@ -149,11 +149,14 @@ static bool	readin_name(char *zeile, short *position)
 		tmp[i - *position] = EOS;
 		*position = i;
 
+#ifdef __MINT__
 		if (strchr(tmp, '/') != NULL)				/* UNIX-Pfad -> nach TOS wandeln */
 		{
 			unx2dos(tmp, dateiname);
 		}
-		else if (tmp[1] != ':')						/* Kein Laufwerk -> Name ohne Pfad! */
+		else
+#endif
+		if (tmp[1] != ':')						/* Kein Laufwerk -> Name ohne Pfad! */
 		{
 
 			split_filename(error_name, dateiname, NULL);

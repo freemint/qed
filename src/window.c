@@ -12,6 +12,10 @@
 #include "winlist.h"
 #include "window.h"
 
+#undef UNUSED
+#define UNUSED	-1					/* Handle eines freien Fensters */
+
+
 #ifndef WM_SHADED
 #define WM_SHADED				0x5758
 #define WM_UNSHADED			0x5759

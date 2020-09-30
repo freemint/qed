@@ -8,7 +8,9 @@
 #include "types.h"
 
 
+#ifdef __MINT__
 #define	ltoa(a,b,c)	_ltoa(a,b,c)
+#endif
 
 /****** Defines ***************************************************************/
 
@@ -43,7 +45,7 @@ extern bool		done;					/* Ende gewhlt ? */
 extern short		desire_x, return_code;
 extern long		desire_y, undo_y;
 
-extern short		font_id, font_pts, 
+extern _WORD		font_id, font_pts,
 					font_wcell, font_hcell,
 					min_ascii, max_ascii;
 					

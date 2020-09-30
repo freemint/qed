@@ -354,7 +354,7 @@ static bool str_to_key(char *str, short *kstate, short *kreturn)
 	return erg;
 }
 
-void handle_msg(short *msg)
+void handle_msg(_WORD *msg)
 {
 	WINDOWP	window;
 

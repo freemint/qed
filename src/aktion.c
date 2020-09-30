@@ -45,7 +45,7 @@ static void move(short x, short y)
 
 void start_aktion(char *str, bool inter, long max)
 {
-	short	d;
+	_WORD d;
 	GRECT	r1, r2;
 
 	if (aktion == NULL)
@@ -81,7 +81,8 @@ void start_aktion(char *str, bool inter, long max)
 
 bool do_aktion(char *str, long value)
 {
-	short	msg[8], kreturn, d, event;
+	_WORD msg[8], kreturn, event;
+	_WORD d;
 	long 	max_len, help;
 	GRECT	r;
 	bool	ret = TRUE;
@@ -158,7 +159,7 @@ void end_aktion (void)
 {
 	if (akt_handle > 0)
 	{
-		short	msg[8], d, event = 0;
+		_WORD msg[8], d, event = 0;
 
 		wind_close(akt_handle);
 		wind_delete(akt_handle);

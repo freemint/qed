@@ -74,7 +74,7 @@ bool init_resource(void)
 
 	if (rsc_init)
 	{
-		char	str[25];
+		char	str[40];
 		OBJECT	*tmp;
 		
 		/* Stimmt die RSC-Version? */
@@ -169,9 +169,21 @@ bool init_resource(void)
 		strcpy( t, QED_VERSION );
 		strcat( t, QED_REVISION );
 		set_string(about, AVERSION, t);
+#if defined(__GNUC__) || defined(_MINTLIB_SOURCE)
 		get_patchlev(__Ident_gnulib, str);
+#elif defined(__PUREC__)
+		strcpy(str, "PCSTDLIB");
+#else
+		strcpy(str, "unknown");
+#endif
 		set_string(about2, AMINT, str);
+#if defined(__GEMLIB__)
 		get_patchlev(__Ident_gem, str);
+#elif defined(__PUREC__)
+		strcpy(str, "PCGEMLIB");
+#else
+		strcpy(str, "unknown");
+#endif
 		set_string(about2, AGEM, str);
 		get_patchlev(__Ident_cflib, str);
 		set_string(about2, ACF, str);

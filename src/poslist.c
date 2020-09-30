@@ -19,9 +19,11 @@ void insert_poslist(POSENTRY **list, char *n1, short x, long y)
 	POSENTRY	*new, *p;
 	PATH		name;
 	
+#ifdef __MINT__
 	if (strchr(n1, '/') != NULL)				/* UNIX-Pfad -> nach TOS wandeln */
 		unx2dos(n1, name);
 	else
+#endif
 		strcpy(name, n1);
 
 	p = find_poslist(*list, name, NULL, NULL);

@@ -1,12 +1,11 @@
 /*
  * Dieses Modul basiert auf einem Modula2-Quelltext von Uwe Mindrup @ LB
 */
+#include "global.h"
+#include "wp-print.h"
 #include <string.h>
 #include <osbind.h>
 #include <time.h>
-
-#include "global.h"
-#include "wp-print.h"
 
 
 #define MAX_SEQUENCE		0x4F

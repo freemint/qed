@@ -139,7 +139,7 @@ static void drucken(char *name, RINGP t, TEXTP t_ptr)
 
 	if (prn->use_gdos)
 	{
-		short	p_xy[8], d, eff[3];
+		_WORD	p_xy[8], d, eff[3];
 
 		if (!open_printer())
 			return;

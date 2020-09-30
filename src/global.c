@@ -29,7 +29,7 @@ bool		done;					/* Ende gewhlt ? */
 short		desire_x, return_code;
 long		desire_y, undo_y;
 
-short		font_id, font_pts, 
+_WORD		font_id, font_pts,
 			font_wcell, font_hcell,
 			min_ascii, max_ascii;
 
@@ -85,8 +85,8 @@ void print_headline(char *str)
 			menu_bar(menu, 1);
 		else
 		{
-			short 	d;
-			short	pxy[8];
+			_WORD 	d;
+			_WORD	pxy[8];
 			
 			get_clip(&c);
 			set_clip(FALSE, NULL);
@@ -106,7 +106,7 @@ void print_headline(char *str)
 /*****************************************************************************/
 bool shift_pressed(void)
 {
-	short	d, kstate;
+	_WORD	d, kstate;
 
 	if (makro_play)
 		kstate = makro_shift;
@@ -130,7 +130,7 @@ bool get_clip (GRECT *size)
 
 void set_clip (bool clipflag, GRECT *size)
 {
-	short	xy[4];
+	_WORD	xy[4];
 
 	if (!clip_flag && !clipflag) 
 		return;										/* Es ist aus und bleibt aus */
@@ -397,8 +397,12 @@ bool file_readonly (char *filename)
 	{
 		short	uid, gid;
 
-		uid = getuid();
-		gid = getgid();
+		uid = Pgetuid();
+		if (uid == -32)
+			uid = 0;
+		gid = Pgetgid();
+		if (gid == -32)
+			gid = 0;
 		if (((uid == s.st_uid) && ((s.st_mode & S_IWUSR) != 0)) ||	
 				/* Besitzer hat Schreibrecht */
 		   
@@ -466,7 +470,7 @@ static bool font_is_vector(short idx)
 	short f_anz = workout[10];
 	char fontname[34];
 	bool ret = FALSE;
-	short di, fonttype;
+	_WORD di, fonttype;
 	
 	if (gl_gdos)
 	{
@@ -492,7 +496,7 @@ static bool font_is_vector(short idx)
 
 void font_change(void)
 {
-	short ret, w1, w2, d, d1[5], effects[3];
+	_WORD ret, w1, w2, d, d1[5], effects[3];
 
 	vst_effects(vdi_handle, 0);
 	/* *_cell werden NUR hier verndert */
@@ -514,7 +518,7 @@ void font_change(void)
 
 	if ( font_vector )
 	{	
-		short extent[8];
+		_WORD extent[8];
 		vqt_extent(vdi_handle, "a", extent); /* no matter if prop font - font_wcell isn't used at all in that case */
 		font_wcell = extent[2] - extent[0];
 		font_hcell = extent[5] - extent[1];
@@ -551,7 +555,7 @@ void select_font(void)
 void init_global (void)
 {
 	short	work_out[57];
-	short	ret, f_anz;
+	_WORD	ret, f_anz;
 
 	done = FALSE;
 	clip_flag = TRUE;

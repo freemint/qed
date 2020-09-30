@@ -487,6 +487,7 @@ HL_LINE hl_get_zeile(LINEP z)
  */
 void hl_change_text_type(TEXTP t_ptr, char *extension)
 {
+	(void) extension;
 	if (!syntax_active)
 		return;
 		

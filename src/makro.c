@@ -21,6 +21,7 @@ bool	makro_shift;
 #define MAKRO_PLAY_LEN 100				/* Makrolen expanded */
 #define MAKRO_DEF_LEN  100				/* einzelne MakrolÑnge */
 
+#undef UNUSED
 #define UNUSED	0							/* Werte fÅr mode */
 #define TASTEN	1
 #define BLOCK	2

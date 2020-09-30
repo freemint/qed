@@ -25,7 +25,7 @@ typedef struct
 	/* momentane Einstellungen, werden nicht gesichert! */
 	bool	ausdruck;	/* FALSE: normale Konfig, TRUE: vor Ausdruck */
 	bool	block;		/* Bei start=TRUE: Block oder alles */
-	short	handle;		/* VDI/GEMDOS-Handle */
+	_WORD	handle;		/* VDI/GEMDOS-Handle */
 	short	height;		/* H”he der Druckseite */
 } PRN_CFG;
 

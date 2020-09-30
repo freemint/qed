@@ -1,8 +1,6 @@
 #ifndef _qed_winlist_h_
 #define _qed_winlist_h_
 
-#define UNUSED	-1					/* Handle eines freien Fensters */
-
 extern WINDOWP	used_list;
 
 extern void		move_to_top		(WINDOWP w);
