@@ -829,13 +829,13 @@ static bool find_files(char *pfad, bool rekursiv, char *df_muster, short icon, s
 			strcpy(ptr, entry->d_name);
 			if (stat(pfad, &st) == 0)
 			{
-				if ((rekursiv) && (st.st_mode & S_IFDIR) && strcmp(entry->d_name, ".") && strcmp(entry->d_name, ".."))
+				if ((rekursiv) && (S_ISDIR(st.st_mode)) && strcmp(entry->d_name, ".") && strcmp(entry->d_name, ".."))
 				{
 					strcat(ptr, "\\");
 					raus = find_files(pfad, rekursiv, df_muster, icon, tmp_icon + 1);
 				}
 
-				if (!(st.st_mode & S_IFDIR) && filematch(entry->d_name, df_muster, -1))
+				if (!S_ISDIR(st.st_mode) && filematch(entry->d_name, df_muster, -1))
 				{
 					if (s_str[0] != EOS)
 					{
@@ -1743,6 +1743,7 @@ static void	wi_snap(WINDOWP window, GRECT *new, short mode)
 {
 	short w, ex, pxy[8];
 
+	(void) window;
 	(void) mode;
 	/* zunchst Platz fr min. 1+Filename+1 im Fenster */
 	vqt_extent(vdi_handle, "x", pxy);
