@@ -2,44 +2,44 @@
 #define _qed_dd_h_
 
 /*
- * Kommunikation Åber Drag&Drop.
-*/
-/* 
- * Die folgenden Konstanten werden benutzt, wenn von Auûen etwas auf
- * ein Fenster von qed gezogen wird und werden bei Icon_drag als 
- * src_icon Åbergeben.
+ * communication via drag&drop.
  */
-#define DRAGDROP_FILE	0xD01		/* Ein Dateiname in drag_filename */
-#define DRAGDROP_PATH	0xD02		/* Ein Pfad in drag_filename */
-#define DRAGDROP_DATA	0xD03		/* Daten in drag_data */
+
+/*
+ * The following constants are used, when something wa dragged
+ * to a window of qed, and passed as src_icon in icon_drag()
+ */
+#define DRAGDROP_FILE	0xD01		/* a filename in drag_filename */
+#define DRAGDROP_PATH	0xD02		/* a path in drag_filename */
+#define DRAGDROP_DATA	0xD03		/* some data in drag_data */
 
 /* 
- * wenn drag_data_size diesen Wert hat, zeigt drag_data auf ein RING,
- * der per D&D geladen wurde!
+ * magic value of drag_data_size: drag_data points to a RING,
+ * which was loaded via D&D
 */
 #define DDS_RINGP			-42
 
 /*
- * Variablen fÅr Drag-Operationen
+ * Variables for drag operations
 */
 extern PATH	drag_filename;
 extern char	*drag_data;
 extern long	drag_data_size;
 
 
-extern void	handle_dd	(short *msg);
 /*
- * Wickelt Empfang ab.
-*/
+ * Handle requests.
+ */
+void	handle_dd	(short *msg);
 
-extern void	handle_avdd(short win_handle, short kstate, char *arg);
 /*
- * Wickelt D&D ab, wenn glob. Fensterwechsel (VA_DRAGACCWIND) aktiv.
+ * Handle D&D for global window cycling (VA_DRAGACCWIND).
 */
+void	handle_avdd(short win_handle, short kstate, char *arg);
 
-extern void send_dd(short win_id, short m_x, short m_y, short kstate, RINGP t);
 /*
- * Verschickt den Text in <t> an das Fenster <win_id>.
-*/
+ * Send the text in <t> to the window <win_id>.
+ */
+void send_dd(short win_id, short m_x, short m_y, short kstate, RINGP t);
 
 #endif

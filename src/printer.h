@@ -22,35 +22,32 @@ typedef struct
 
 	void	*pdlg;		/* PRN_SETTINGS */
 	
-	/* momentane Einstellungen, werden nicht gesichert! */
-	bool	ausdruck;	/* FALSE: normale Konfig, TRUE: vor Ausdruck */
-	bool	block;		/* Bei start=TRUE: Block oder alles */
-	_WORD	handle;		/* VDI/GEMDOS-Handle */
-	short	height;		/* H”he der Druckseite */
+	/* current settings; these are not saved! */
+	bool	ausdruck;	/* FALSE: normal config, TRUE: before printout */
+	bool	block;		/* at start=TRUE: Block or everything */
+	_WORD	handle;		/* VDI/GEMDOS-handle */
+	short	height;		/* height of print page */
 } PRN_CFG;
 
 
-/* Konfiguration: prn_cfg.c */
+/* from prn_cfg.c */
 extern PRN_CFG	*prn;
 
-extern void		prn_cfg_dial	(void);
-extern bool		prn_start_dial	(bool *block);
+void		prn_cfg_dial	(void);
+bool		prn_start_dial	(bool *block);
 
-extern void		prn_save_cfg	(char	*cfg_file);
-extern bool		prn_get_cfg		(char *var, char *buffer);
+void		prn_save_cfg	(char	*cfg_file);
+bool		prn_get_cfg		(char *var, char *buffer);
 
-extern void		init_printer	(void);
-extern void		term_printer	(void);
+void		init_printer	(void);
+void		term_printer	(void);
 
-
-/* Ausgabe: prn_out.c */
-extern void		blk_drucken		(char *name, TEXTP t_ptr);
-extern void		txt_drucken		(char *name, TEXTP t_ptr);
-
-/*
- * from prn_cfg.c
-*/
 bool open_printer	(void);
 void close_printer	(void);
+
+
+/* from prn_out.c */
+void		blk_drucken		(char *name, TEXTP t_ptr);
+void		txt_drucken		(char *name, TEXTP t_ptr);
 
 #endif

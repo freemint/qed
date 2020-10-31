@@ -15,7 +15,7 @@ extern void	blk_cut			(TEXTP t_ptr);
 extern void	blk_copy			(TEXTP t_ptr);
 extern void	blk_paste		(TEXTP t_ptr, RINGP t);
 
-extern void	block_copy		(TEXTP t_ptr, RINGP t);	/* fÅr blk_print */
+extern void	block_copy		(TEXTP t_ptr, RINGP t);	/* for blk_print */
 
 extern void	line_copy		(TEXTP t_ptr);
 
