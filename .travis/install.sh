@@ -9,3 +9,6 @@ HCP_VERSION="1.0.3"
 cd /tmp
 wget -q -O - "http://tho-otto.de/download/hcp-${HCP_VERSION}-linux.tar.bz2" | tar xjf -
 mv "hcp-${HCP_VERSION}" hcp
+cd -
+
+./.travis/install_bintray.sh mintlib gemlib cflib
