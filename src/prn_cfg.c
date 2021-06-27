@@ -70,17 +70,18 @@ bool open_printer(void)
 		work_in[10] = 2;
 		for (i=11; i < 16; i++)
 			work_in[i] = 0;
+		prn->handle = 0;
 		v_opnwk(work_in, &prn->handle, work_out);
 	}
 	if (prn->handle)
 	{
 		fnt_anz = work_out[10] + vst_load_fonts(prn->handle, 0);
 	
-		prn->height = work_out[1];
+		prn->height = work_out[1] + 1;
 		p_xy[0] = 0;
 		p_xy[1] = 0;
-		p_xy[2] = work_out[0] - 1;
-		p_xy[3] = work_out[1] + 1;
+		p_xy[2] = work_out[0];
+		p_xy[3] = work_out[1];
 		vs_clip(prn->handle, TRUE, p_xy);
 		vswr_mode(prn->handle, MD_TRANS);
 		ret = TRUE;
@@ -518,7 +519,7 @@ static bool qed_start_dial(PRN_CFG *cfg)
 	if (!wp_config_read && prn->wp_treiber[0] != EOS)
 		wp_config_read = wp_load_cfgfile(prn->wp_treiber);
 
-	if (gl_gdos && (gdos_device == 0))
+	if (gl_gdos && gdos_device == 0)
 		get_gdos_device();
 
 	/* Allgemeine Parameter */
@@ -531,16 +532,13 @@ static bool qed_start_dial(PRN_CFG *cfg)
 	set_state(print, DBLOCK, OS_SELECTED, prn->block);
 	set_short(print, DRANDLEN, prn->rand_len);
 
-	set_state(print, DGEMDOS, OS_SELECTED, !prn->use_gdos);
-	set_state(print, DGDOS, OS_SELECTED, prn->use_gdos);
-
-	set_state(print, DGDOS, OS_DISABLED, (gdos_device == 0));
-	set_state(print, DGDOS, OS_SELECTED, ((gdos_device != 0) && (prn->use_gdos || !wp_config_read)));
+	set_state(print, DGDOS, OS_DISABLED, gdos_device == 0 || !gl_gdos);
+	set_state(print, DGDOS, OS_SELECTED, gdos_device != 0 && gl_gdos && (prn->use_gdos || !wp_config_read));
 
 	set_state(print, DGEMDOS, OS_DISABLED, !wp_config_read);
-	set_state(print, DGEMDOS, OS_SELECTED, (wp_config_read && !prn->use_gdos));
+	set_state(print, DGEMDOS, OS_SELECTED, wp_config_read && (!prn->use_gdos || !gl_gdos));
 
-	set_state(print, DPRINT, OS_DISABLED, (!wp_config_read && (gdos_device == 0)));
+	set_state(print, DPRINT, OS_DISABLED, !wp_config_read && gdos_device == 0);
 	
 	antw = simple_mdial(print, DRANDLEN) & 0x7fff;
 	if ((antw == DOK1) || (antw == DPRINT))
@@ -553,7 +551,7 @@ static bool qed_start_dial(PRN_CFG *cfg)
 		prn->pruef_prn = get_state(print, DCHECK, OS_SELECTED);
 		prn->rand_len = get_short(print, DRANDLEN);
 
-		start = (antw == DPRINT);
+		start = antw == DPRINT;
 	}
 	return start;
 }

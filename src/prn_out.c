@@ -56,7 +56,7 @@ static bool prn_check (short wait_time)
 
 static void plot_ff(void)
 {
-	if (prn->use_gdos)
+	if (prn->use_gdos && gl_gdos)
 	{
 		prn_y = 0;
 		v_updwk(prn->handle);
@@ -68,7 +68,7 @@ static void plot_ff(void)
 
 static void plot_nl(void)
 {
-	if (prn->use_gdos)
+	if (prn->use_gdos && gl_gdos)
 		prn_y += line_height;
 	else
 		wp_write_ln();
@@ -78,7 +78,7 @@ static void plot_line(char *s)		/* Zeile mit Vorschub */
 {
 	short	l;
 	
-	if (prn->use_gdos)
+	if (prn->use_gdos && gl_gdos)
 	{
 		v_gtext(prn->handle, 0, prn_y, s);
 		prn_y += line_height;
@@ -137,7 +137,7 @@ static void drucken(char *name, RINGP t, TEXTP t_ptr)
 	/* Schnittstelle ermitteln */
 	channel = ((Setprt(-1) & 16) != 0);
 
-	if (prn->use_gdos)
+	if (prn->use_gdos && gl_gdos)
 	{
 		_WORD	p_xy[8], d, eff[3];
 
@@ -266,7 +266,7 @@ static void drucken(char *name, RINGP t, TEXTP t_ptr)
 		if (IS_TAIL(line)) 
 			break;
 	}
-	if (prn->use_gdos)
+	if (prn->use_gdos && gl_gdos)
 	{
 		v_updwk(prn->handle);
 		if (!prn->use_pdlg && prn->vorschub)
