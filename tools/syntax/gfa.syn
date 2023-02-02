@@ -1,82 +1,41 @@
 
-
 ;********************************************************
-
 [GFA Basic LST file]
-
 ;********************************************************
-
 Txttype = "lst"
-
 Active = TRUE
-
 CaseSensitive = TRUE
-
 Token = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
 
-
-
 <Kommentar>
-
 From = "REM"
-
 To = EOL
-
 (Color2)
-
 Attribs = LIGHT
-
 (Color16)
-
 Color = 11
-
 Selcolor = 3
-
 (Color256)
-
 Color = 11
-
 Selcolor = 3
-
-
 
 <Schlsselworte>
-
 Keyword = "IF","ELSE","ENDIF","SELECT","CASE","ENDSELECT","FOR","TO","NEXT"
-
 Keyword = "AND","OR"
-
 Keyword = "PROCEDURE","RETURN","FUNCTION"
-
 (Color2)
-
 Attribs = BOLD
-
 (Color16)
-
 Attribs = BOLD
-
 (Color256)
-
 Attribs = BOLD
-
-
 
 <Hex-Konstanten>
-
 From = "&H"
-
 While = "0"-"9","A"-"F","a"-"f"
-
 (Color16)
-
 Color = 12
-
 Selcolor = 5
-
 (Color256)
-
 Color = 12
-
 Selcolor = 5
-
