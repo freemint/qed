@@ -245,14 +245,14 @@ static bool init_all(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-	short	i, d;
+	short	i;
 	char	menu_str[20];
 
 #ifdef PREDEF_DEBUG_LEVEL
 	debug_level = PREDEF_DEBUG_LEVEL;
 #endif
 
-	d = Pdomain(1);
+	(void) Pdomain(1);
 	if ((argc > 1) && (strncmp(argv[1], "--debug", 7) == 0))
 	{
 		debug_level = DBG_GEN;
@@ -356,6 +356,5 @@ int main(int argc, char *argv[])
 		debug("term_global done.\n");
 
 	exit_app(return_code);
-	(void) d;
 	return return_code;
 }
