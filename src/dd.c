@@ -296,7 +296,7 @@ void	handle_avdd(short win_handle, short kstate, char *arg)
 	
 	if (w_dest != NULL)
 	{
-		cmdline = (char *) malloc(strlen(arg));
+		cmdline = (char *) malloc(strlen(arg) + 1);
 		strcpy(cmdline, arg);
 		parse(cmdline, w_dest, kstate);
 		free(cmdline);
