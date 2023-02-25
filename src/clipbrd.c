@@ -286,7 +286,6 @@ void init_clipbrd(void)
 		else
 		{
 			strcpy (s, clip_dir);
-			s[strlen(s)-1] = EOS;					/* Backslash lschen */
 			if (Dcreate(s) != 0)
 			{
 				note(1, 0, NOSCRAP);
@@ -302,6 +301,8 @@ void init_clipbrd(void)
 	else
 	{
 		strcpy(clip_name, clip_dir);
+                if (clip_name[strlen(clip_name)-1] != '\\')
+                        strcat(clip_name, "\\");
 		strcat(clip_name, "scrap.txt");
 	}
 
