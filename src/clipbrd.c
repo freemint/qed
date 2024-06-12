@@ -27,7 +27,7 @@ static short	undo_anz;
 static RING	undo_text;
 static short	undo_ptr;
 
-static char	save_col[MAX_LINE_LEN];		/* Gerettete Zeile fr Undo */
+static char	save_col[MAX_LINE_LEN];		/* Gerettete Zeile fuer Undo */
 static short	save_len;
 static short	save_xpos;
 
@@ -286,6 +286,7 @@ void init_clipbrd(void)
 		else
 		{
 			strcpy (s, clip_dir);
+			s[strlen(s)-1] = EOS;					/* Backslash loeschen */
 			if (Dcreate(s) != 0)
 			{
 				note(1, 0, NOSCRAP);
@@ -301,8 +302,6 @@ void init_clipbrd(void)
 	else
 	{
 		strcpy(clip_name, clip_dir);
-                if (clip_name[strlen(clip_name)-1] != '\\')
-                        strcat(clip_name, "\\");
 		strcat(clip_name, "scrap.txt");
 	}
 

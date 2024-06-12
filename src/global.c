@@ -433,11 +433,6 @@ bool path_from_env(char *env, char *path)
 	{
 		strcpy(path, p);
 		ret = make_normalpath(path);
-/*
-		i = (short)strlen(path);
-		if (p[i-1] != '\\')
-			strcat(path, "\\");
-*/
 	}
 	return ret;
 }
