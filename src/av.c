@@ -366,6 +366,34 @@ static void send_avstarted(short id, short m3, short m4)
 	send_msg(id);
 }
 
+/* Special function for extracting a line number in a VA_START-Arg
+ * Line numbers are attached to filenames, and recognized by the
+ * '|' character. For example, "c:\text.txt|20" will make
+ * Qed load text.txt and place cursor at line 20.
+ */
+
+static long get_linenum(PATH filename)
+{
+	long y;
+	char *tmp;
+
+	tmp = strchr(filename, '|');
+	if(!tmp) return 0;
+
+	if(tmp[1] == '\0')
+	{
+		tmp[0] = '\0';
+		return 0;
+	}
+
+	y = atol(tmp+1)-1;
+	if(y < 0) y = 0;
+  
+	tmp[0]='\0';
+  
+	return y;
+}
+
 /*
  * Zerlegt VA_START-Arg in einzelne Dateinamen.
  * Quoting wird korrekt ausgewertet ('arg 1', 'arg''s')
@@ -373,6 +401,7 @@ static void send_avstarted(short id, short m3, short m4)
 static bool parse_vaarg(POSENTRY **list, char *arg)
 {
 	short		i, j, len;
+	long		y;
 	PATH		filename;
 	bool	in_quote = FALSE;
 	
@@ -405,7 +434,8 @@ static bool parse_vaarg(POSENTRY **list, char *arg)
 			else
 			{
 				filename[j++] = '\0';
-				insert_poslist(list, filename, 0, 0);
+				y = get_linenum(filename);
+				insert_poslist(list, filename, 0, y);
 				j = 0;
 				i++; 
 			}
@@ -413,7 +443,8 @@ static bool parse_vaarg(POSENTRY **list, char *arg)
 		if (j > 0)
 		{
 			filename[j++] = '\0';
-			insert_poslist(list, filename, 0, 0);
+			y = get_linenum(filename);
+			insert_poslist(list, filename, 0, y);
 		}
 		return TRUE;
 	}
