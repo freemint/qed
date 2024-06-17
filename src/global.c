@@ -17,6 +17,8 @@
 /*
  * exportierte Variablen
  */
+short		wcmode;				/* Window Coordinate Mode */
+
 short		fill_color;			/* aktuell eingestellte FÅllfarbe */
 
 bool		quick_close;		/* Sichern der Texte ohne Nachfrage */
@@ -564,7 +566,7 @@ void init_global (void)
 	vst_alignment(vdi_handle, TA_LEFT, TA_TOP, &ret, &ret);
 
 	if (!getcookie("_IDT", &_idt))				/* Format fÅr Datum und Zeit */
-		_idt = 0x0000112E;							/* DD.MM.YYYY HH:MM:SS */
+		_idt = 0x0000112E;				/* DD.MM.YYYY HH:MM:SS */
 }
 
 /************************************************************************/

@@ -60,10 +60,49 @@ static void __CDECL handle_term(long sig)
 static bool init_all(int argc, char *argv[])
 {
 	POSENTRY	*arglist = NULL;
+	short gi_wind, gi_msgs, d;
 
 	init_global();
 	if (debug_level & DBG_INIT)
 		debug("init_global done.\n");
+
+	appl_xgetinfo(11, &gi_wind, &d, &d, &d);
+	appl_xgetinfo(12, &gi_msgs, &d, &d, &d);
+
+	wcmode = 0;	
+	if (gi_wind & 0x0800)	/* WF_OPTS */
+	{
+		short wopts, new_wopts = 0;
+
+		appl_xgetinfo(97, &wopts, &d, &d, &d);
+		
+		if (gi_msgs & 0x0400) /* WM_REPOSED */
+			new_wopts |= WO0_SENDREPOS; /* wind_set(-1, WF_OPTS, 1, WO0_SENDREPOS, 0, 0); */
+		if (wopts & 0x0020) /* WCOWORK */
+		{
+			new_wopts |= 0x0020;  /* WO0_WCOWORK */
+			wcmode = 1;
+		}
+	
+		wind_set(-1, WF_OPTS, 1, new_wopts, 0, 0);
+#if 0	
+		{
+			char db[256];
+			
+			sprintf(db, "new_wopts %x\r\n", new_wopts);
+			Cconws(db);
+		}
+#endif
+	}
+#ifdef ONLY_XAAES
+	if (!wcmode)
+	{
+		do_alert(1, 0, "[3][This version of Qed needs WCOWORK,|only provided by XaAES atm!][Exit]");
+		return FALSE;
+	}
+#endif	
+	if (gi_msgs & 0x0008) /* AP_TERM */
+		shel_write(9, 1, 1, 0L, 0L);
 
 	if (!init_resource())
 		return FALSE;
@@ -269,9 +308,6 @@ int main(int argc, char *argv[])
 	Psignal(SIGTERM, handle_term);
 	Psignal(SIGQUIT, handle_term);
 	Psignal(SIGHUP, handle_term);
-
-	if (appl_xgetinfo(12, &i, &d, &d, &d) && (i&8)==8)	/* gibts AP_TERM */
-		shel_write(9, 1, 1, 0L, 0L);		/* wir k”nnen es! */
 
 	if (debug_level & DBG_OS)
 	{

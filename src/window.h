@@ -16,6 +16,7 @@
 #define WI_FULLED			0x0040	/* Fenster auf voller Gr”že */
 #define WI_CHANGED		0x0080	/* Fenster wurde ver„ndert '*' */
 #define WI_SHADED			0x0100	/* Fenster wurde ge'shaded (MagiC, WINX) */
+#define WI_WCOWORK		0x0200
 
 /* Aktionen auf Icons */
 #define DO_UNDO			0
@@ -82,18 +83,19 @@ extern WINDOWP get_window			(short handle);
 extern void 	do_all_window		(short class, WIN_DOFUNC func);
 extern WINDOWP winlist_top			(void);
 extern WINDOWP winlist_classtop	(short class);
-extern void 	get_realtop			(void);
-extern WINDOWP real_top				(void);
-extern bool 	rc_first				(short wh, GRECT *b, GRECT *r);
-extern bool 	rc_next				(short wh, GRECT *r);
-extern void 	clr_area 			(GRECT *area);
+extern void 	get_realtop		(void);
+extern WINDOWP real_top			(void);
+extern bool 	rc_first		(short wh, GRECT *b, GRECT *r);
+extern bool 	rc_next			(short wh, GRECT *r);
+extern void 	clr_area 		(GRECT *area);
 extern bool 	free_for_draw		(WINDOWP w);
 extern void 	redraw_window		(WINDOWP w, GRECT *area);
-extern void 	size_window			(WINDOWP w, GRECT *new, bool border);
-extern void 	full_window			(WINDOWP w);
+extern void 	size_window		(WINDOWP w, GRECT *new, bool border);
+extern void	repos_window		(WINDOWP w, GRECT *new);
+extern void 	full_window		(WINDOWP w);
 extern void 	iconify_window		(WINDOWP w, GRECT *new);
 extern void 	uniconify_window	(WINDOWP w, GRECT *new);
-extern void		all_iconify			(WINDOWP w, GRECT *new);
+extern void	all_iconify		(WINDOWP w, GRECT *new);
 extern void 	all_uniconify		(WINDOWP w, GRECT *new);
 extern void 	move_window			(WINDOWP w, GRECT *new);
 extern void 	ontop_window		(WINDOWP w);

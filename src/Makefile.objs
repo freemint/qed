@@ -23,6 +23,7 @@ all-here: build
 #INCLUDES += -I/usr/GEM/include
 CFLAGS += -funsigned-char $(INCLUDES) $(GENERAL)
 CFLAGS += $(OPTS) $(WARN) $(MODEL)
+CFLAGS += #-m68020-60 #-DONLY_XAAES
 #CFLAGS += -ggdb -O0 -DDEBUG_LOGFILE=\"i:\\\\qed.log\" -DPREDEF_DEBUG_LEVEL=255 $(WARN)
 
 # default definitions

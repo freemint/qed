@@ -931,6 +931,7 @@ static void wi_draw(WINDOWP window, GRECT *d)
 	TEXTP t_ptr = get_text(window->handle);
 
 	set_clip(TRUE, d);
+#if 0
 	if (d->g_x == window->work.g_x && d->g_w == window->work.g_w)
 	{
 		if (d->g_y == window->work.g_y + window->work.g_h - window->yfac &&
@@ -948,6 +949,7 @@ static void wi_draw(WINDOWP window, GRECT *d)
 			bild_out(window, t_ptr);
 	}
 	else
+#endif
 		bild_out(window,t_ptr);
 }
 

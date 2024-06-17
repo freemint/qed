@@ -34,7 +34,7 @@
 
 
 /****** global Variablen ******************************************************/
-
+extern short		wcmode;
 extern short		fill_color;			/* aktuell eingestellte FÅllfarbe */
 
 extern bool		quick_close;		/* Sichern der Texte ohne Nachfrage */

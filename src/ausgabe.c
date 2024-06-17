@@ -704,7 +704,7 @@ static void str_out( short x, short y, short w, short offset, ZEILEP zp, short b
             if (tab && *curr_line == '\t') /* TABs werden inline expandiert */
             {
                 short i;
-                for (i= ((short)(curr_text-text)+chars_done) % tab_size; i<tab_size; i++)
+                for (i = ((short)(curr_text - text) + chars_done) % tab_size; i < tab_size; i++)
                 {
                     *(curr_text++) = ' ';
                     width += font_wcell;
@@ -824,8 +824,8 @@ void bild_out(WINDOWP window, TEXTP t_ptr)
         head_out(window, t_ptr);
 
     min_col = 0;
-    max_col = (short) min(window->w_height - 1, t_ptr->text.lines - window->doc.y-1);
-    max_y   = y + window->work.g_h-1;
+    max_col = (short) min(window->w_height - 1, t_ptr->text.lines - window->doc.y - 1);
+    max_y   = y + window->work.g_h - 1;
     if (get_clip(&c))                   /* nicht alles malen */
     {
         short y2 = c.g_y - y;
@@ -845,8 +845,8 @@ void bild_out(WINDOWP window, TEXTP t_ptr)
         {
             long    y_r;
 
-            y_r = window->doc.y+min_col;
-            for (i=min_col ; i<=max_col; y_r++,y+=font_hcell,NEXT(lauf),i++)
+            y_r = window->doc.y + min_col;
+            for (i = min_col ; i <= max_col; y_r++, y += font_hcell, NEXT(lauf), i++)
             {
                 /* Block nicht sichtbar */
                 if (y_r < t_ptr->z1 || y_r > t_ptr->z2)

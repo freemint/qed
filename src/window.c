@@ -151,8 +151,18 @@ static void snap_window(WINDOWP w, GRECT *new, short mode)
 {
 	if (mode & WORK_SIZED)
 	{
-		new->g_w = new->g_w - (new->g_w % w->xfac);
-		new->g_h = new->g_h - (new->g_h % w->yfac);
+/* 		short xdist = new->g_w - (new->g_w - (new->g_w % w->xfac)); */
+		short ydist = new->g_h - (new->g_h - (new->g_h % w->yfac));
+		
+#if 0
+		if (w->work.g_x != new->g_x)
+			new->g_x += xdist;
+		new->g_w -= xdist;
+#endif
+
+		if (w->work.g_y != new->g_y)
+			new->g_y += ydist;
+		new->g_h -= ydist;
 	}
 
 	if (w->snap != NULL)
@@ -172,7 +182,10 @@ static void get_work(WINDOWP w, GRECT *new, short mode)
 			new->g_h = MIN_HEIGHT;
 	}
 
-	wind_calc_grect(WC_WORK, w->kind, new, new);
+#ifndef ONLY_XAAES
+	if (!wcmode)
+		wind_calc_grect(WC_WORK, w->kind, new, new);
+#endif
 	snap_window(w, new, mode);
 
 	/* work und w_* (und doc) anpassen */
@@ -201,8 +214,17 @@ static void get_work(WINDOWP w, GRECT *new, short mode)
 
 	if (w->flags & WI_OPEN)
 	{
-		wind_calc_grect(WC_BORDER, w->kind,	new, new);
-		wind_set_grect(w->handle, WF_CURRXYWH, new);
+#ifdef ONLY_XAAES
+		wind_set_grect(w->handle, WF_WORKXYWH, new);
+#else
+		if (wcmode)
+			wind_set_grect(w->handle, WF_WORKXYWH, new);
+		else
+		{
+			wind_calc_grect(WC_BORDER, w->kind,	new, new);
+			wind_set_grect(w->handle, WF_CURRXYWH, new);
+		}
+#endif
 	}
 
 	if (mode & WORK_SIZED)
@@ -322,19 +344,47 @@ void size_window(WINDOWP w, GRECT *new, bool outer)
 
 	if (w != NULL)
 	{
-		if (!outer)
+
+#ifdef ONLY_XAAES
+		r = *new;
+#else
+		if (!outer && !wcmode)
+		{
 			wind_calc_grect(WC_BORDER, w->kind, (GRECT*)new, &r);
+		}
 		else
 			r = *new;
+#endif
 		if (w->kind & SIZER)
 		{
 			get_work(w, &r, WORK_SIZED);
 			w->flags &= ~WI_FULLED;
-			if (w->flags & WI_REDRAW)
-				redraw_window(w, &w->work);
+			
+			/*
+			 * Under XaAES, resizing window will reliably send
+			 * WM_REDRAWs
+			 */
+#ifndef ONLY_XAAES
+			if (!wcmode)
+			{
+ 				if (w->flags & WI_REDRAW)
+ 					redraw_window(w, &w->work);
+			}
+#endif
 		}
 		else
 			move_window(w, &r);
+	}
+}
+void
+repos_window(WINDOWP w, GRECT *new)
+{
+	GRECT r;
+	if (w)
+	{
+		r = *new;
+		get_work(w, &r, WORK_SIZED);
+		w->flags &= ~WI_FULLED;
 	}
 }
 
@@ -405,7 +455,11 @@ void uniconify_window(WINDOWP w, GRECT *new)
 		if (w->uniconify != NULL)
 			(*w->uniconify)(w);
 
+#ifdef N_ONLY_XAAES
+		wind_xget_grect(w->handle, WF_CALCW2F, &w->work, &r);
+#else
 		wind_calc_grect(WC_BORDER, w->kind, &w->work, &r);
+#endif
 
 		/* Wurde Font gewechselt w„hrend Fenster iconifiziert? */
 		if (w->old_size.g_w != r.g_w)
@@ -467,7 +521,11 @@ void all_uniconify(WINDOWP w, GRECT *new)
 				uniconify_window(p, new);
 			else
 			{
+#ifdef ONLY_XAAES
+				wind_xget_grect(p->handle, WF_CALCW2F, &p->work, &r);
+#else
 				wind_calc_grect(WC_BORDER, p->kind, &p->work, &r);
+#endif
 				wind_open_grect(p->handle, &r);
 			}
 			p = p->next;
@@ -1006,7 +1064,12 @@ bool open_window(WINDOWP w)
 		w->flags |= WI_OPEN;
 		w->flags &= ~WI_FULLED;					/* Fenster hat nicht volle Gr”že */
 
-		wind_calc_grect(WC_BORDER, w->kind, &w->work, &r);
+#ifndef ONLY_XAAES
+		if (!wcmode)
+			wind_calc_grect(WC_BORDER, w->kind, &w->work, &r);
+		else
+#endif
+			r = w->work;
 
 		if (w->kind & NAME)						/* Name setzen */
 			wind_set_str(w->handle, WF_NAME, w->title);

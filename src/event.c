@@ -406,6 +406,9 @@ void handle_msg(_WORD *msg)
 		case WM_MOVED	 :
 			move_window (window, (GRECT*)(msg+4));
 			break;
+		case WM_REPOSED:
+			repos_window(window, (GRECT *)(msg+4));
+			break;
 		case WM_NEWTOP	 : /* Fenster von qed ist irgendwie nach oben gekommen */
 		case WM_ONTOP	 :
 			ontop_window(window);
