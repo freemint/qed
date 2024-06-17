@@ -12,7 +12,7 @@
 
 /* lokale Prototypen *******************************************************/
 static void	block_demark	(TEXTP t_ptr);
-static bool	tab_ok			(ZEILEP a, bool tab, short tabsize);
+static bool	tab_ok			(LINEP a, bool tab, short tabsize);
 static void	block_setzen	(TEXTP t_ptr);
 static bool	block_delete	(TEXTP t_ptr, RINGP t);
 static bool	block_einsetzen(TEXTP t_ptr, RINGP t);
@@ -37,15 +37,15 @@ static void trash_takes_text(RINGP r)
 
 	kill_textring(&trash_text);
 	trash_text = *r;
-	FIRST(r)->vorg = &trash_text.head;
-	LAST(r)->nachf = &trash_text.tail;
+	FIRST(r)->prev = &trash_text.head;
+	LAST(r)->next = &trash_text.tail;
 }
 
 /***************************************************************************/
 
 void blk_mark_all(TEXTP t_ptr)
 {
-	ZEILEP col;
+	LINEP col;
 
 	if (t_ptr->block)
 		block_demark(t_ptr);
@@ -100,12 +100,12 @@ void blk_mark_word(TEXTP t_ptr)		/* Wort unter dem Cursor markieren */
 
 static void search_forw(TEXTP t_ptr, char b_1, char b_2)	/* Klammersuche vorw„rts */
 {
-	ZEILEP	lauf;
+	LINEP	line;
 	short		x, level = 0, i;
 	long		y;
 	bool	found = FALSE;
 	
-	lauf = t_ptr->cursor_line;
+	line = t_ptr->cursor_line;
 	x = t_ptr->xpos;
 	y = t_ptr->ypos;
 
@@ -117,11 +117,11 @@ static void search_forw(TEXTP t_ptr, char b_1, char b_2)	/* Klammersuche vorw„rt
 	}
 	do
 	{
-		for (i = x; i < lauf->len; i++)
+		for (i = x; i < line->len; i++)
 		{
-			if (TEXT(lauf)[i] == b_1)
+			if (TEXT(line)[i] == b_1)
 				level++;
-			else if (TEXT(lauf)[i] == b_2)
+			else if (TEXT(line)[i] == b_2)
 				level--;
 			if (level == 0)
 			{
@@ -132,15 +132,15 @@ static void search_forw(TEXTP t_ptr, char b_1, char b_2)	/* Klammersuche vorw„rt
 		}
 		if (!found)
 		{
-			NEXT(lauf);
+			NEXT(line);
 			y++;
 			x = 0;
 		}
 	}
-	while (!found && !IS_TAIL(lauf));
+	while (!found && !IS_TAIL(line));
 	if (found)
 	{
-		t_ptr->cursor_line = lauf;
+		t_ptr->cursor_line = line;
 		t_ptr->xpos = x;
 		t_ptr->ypos = y;
 	}
@@ -150,21 +150,21 @@ static void search_forw(TEXTP t_ptr, char b_1, char b_2)	/* Klammersuche vorw„rt
 
 static void search_backw(TEXTP t_ptr, char b_1, char b_2)	/* Klammersuche rckw. */
 {
-	ZEILEP	lauf;
+	LINEP	line;
 	short		x, level = 0, i;
 	long		y;
 	bool	found = FALSE;
 	
-	lauf = t_ptr->cursor_line;
+	line = t_ptr->cursor_line;
 	x = t_ptr->xpos;
 	y = t_ptr->ypos;
 	do
 	{
 		for (i = x; i >= 0; i--)		
 		{
-			if (TEXT(lauf)[i] == b_1)
+			if (TEXT(line)[i] == b_1)
 				level++;
-			else if (TEXT(lauf)[i] == b_2)
+			else if (TEXT(line)[i] == b_2)
 				level--;
 			if (level == 0)
 			{
@@ -175,15 +175,15 @@ static void search_backw(TEXTP t_ptr, char b_1, char b_2)	/* Klammersuche rckw.
 		}
 		if (!found)
 		{
-			VORG(lauf);
+			PREV(line);
 			y--;
-			x = lauf->len-1;
+			x = line->len-1;
 		}
 	}
-	while (!found && !IS_HEAD(lauf));
+	while (!found && !IS_HEAD(line));
 	if (found)
 	{
-		t_ptr->cursor_line = lauf;
+		t_ptr->cursor_line = line;
 		t_ptr->xpos = x;
 		t_ptr->ypos = y;
 	}
@@ -278,7 +278,7 @@ void blk_mark(TEXTP t_ptr, short marke)
 		}
 		else
 		{
-			if (t_ptr->p2==t_ptr->cursor_line && t_ptr->x2==t_ptr->xpos)
+			if (t_ptr->p2 == t_ptr->cursor_line && t_ptr->x2 == t_ptr->xpos)
 				return;								/* Keine Žnderung */
 			if (t_ptr->block)
 			{
@@ -332,7 +332,7 @@ void blk_copy(TEXTP t_ptr)
 void line_copy(TEXTP t_ptr)
 /* Kopiert aktuelle Zeile auf das Clipboard */
 {
-	ZEILEP	col = t_ptr->cursor_line;
+	LINEP	col = t_ptr->cursor_line;
 	short	old_x;
 
 	old_x = t_ptr->xpos;
@@ -349,7 +349,7 @@ void line_copy(TEXTP t_ptr)
 		NEXT(col);
 		t_ptr->cursor_line = col;
 		blk_mark(t_ptr,1);
-		VORG(col);
+		PREV(col);
 		t_ptr->cursor_line = col;
 		t_ptr->xpos = old_x;
 	}
@@ -458,13 +458,13 @@ void blk_undo(TEXTP t_ptr, short undo)
 
 void blk_right(TEXTP t_ptr)
 {
-	ZEILEP 	lauf;
+	LINEP 	line;
 	long		y, ende;
 	bool	t = t_ptr->loc_opt->tab;
 
 	if (!t_ptr->block)
 		return;
-	lauf = t_ptr->p1;
+	line = t_ptr->p1;
 	y = t_ptr->z1;
 	ende = t_ptr->z2;
 	if (y < ende)
@@ -495,23 +495,23 @@ void blk_right(TEXTP t_ptr)
 		if (t_ptr->x1>0) t_ptr->x1 += anz;
 		while (y<ende || t_ptr->x2>0)
 		{
-			if (lauf->len+anz>MAX_LINE_LEN)
+			if (line->len+anz>MAX_LINE_LEN)
 			{
 				inote(1, 0, TOOLONG, MAX_LINE_LEN);
 				break;
 			}
-			str = REALLOC(&lauf,0,anz);
+			str = REALLOC(&line,0,anz);
 			for (i=anz; (--i)>=0; )
 				*str++ = c;
 			if (y==t_ptr->z1)
-				t_ptr->p1 = lauf;
-			hl_update_zeile( &t_ptr->text, lauf );
+				t_ptr->p1 = line;
+			hl_update_zeile( &t_ptr->text, line );
 			if (y==ende)
 			{
-				t_ptr->p2 = lauf;
+				t_ptr->p2 = line;
 				break;
 			}
-			NEXT(lauf);
+			NEXT(line);
 			y++;
 		}
 		if (t_ptr->x2>0) t_ptr->x2 += anz;
@@ -522,14 +522,14 @@ void blk_right(TEXTP t_ptr)
 
 void blk_left(TEXTP t_ptr)
 {
-	ZEILEP 	lauf;
+	LINEP 	line;
 	long		y, ende;
 	bool	t = t_ptr->loc_opt->tab;
 	short		ts = t_ptr->loc_opt->tabsize;
 
 	if (!t_ptr->block)
 		return;
-	lauf = t_ptr->p1;
+	line = t_ptr->p1;
 	y = t_ptr->z1;
 	ende = t_ptr->z2;
 	if (y < ende)
@@ -550,7 +550,7 @@ void blk_left(TEXTP t_ptr)
 		}		
 		t_ptr->moved++;
 		clr_undo();
-		if (tab_ok(lauf,t,ts))
+		if (tab_ok(line,t,ts))
 		{
 			if (t_ptr->x1 <= anz)
 				t_ptr->x1 = 0;
@@ -559,21 +559,21 @@ void blk_left(TEXTP t_ptr)
 		}
 		while (y < ende || t_ptr->x2 > 0)
 		{
-			if (tab_ok(lauf,t,ts))
+			if (tab_ok(line,t,ts))
 			{
-				REALLOC(&lauf, 0, -anz);
+				REALLOC(&line, 0, -anz);
 				if (y == t_ptr->z1)
-					t_ptr->p1 = lauf;
+					t_ptr->p1 = line;
 				if (y == ende)
-					t_ptr->p2 = lauf;
+					t_ptr->p2 = line;
 			}
-			hl_update_zeile( &t_ptr->text, lauf );
+			hl_update_zeile( &t_ptr->text, line );
 			if (y == ende)
 				break;
-			NEXT(lauf);
+			NEXT(line);
 			y++;
 		}
-		if (tab_ok(lauf,t,ts))
+		if (tab_ok(line,t,ts))
 		{
 			if (t_ptr->x2 <= anz)
 				t_ptr->x2 = 0;
@@ -639,13 +639,13 @@ static void strcap (char *line, SET wort_set)
 
 void blk_upplow(TEXTP t_ptr, short type)
 {
-	ZEILEP	lauf;
+	LINEP	line;
 	long	y, ende;
 
 	if (!t_ptr->block)
 		return;
 
-	lauf = t_ptr->p1;
+	line = t_ptr->p1;
 	y = t_ptr->z1;
 	ende = t_ptr->z2;
 	if (y <= ende)
@@ -657,13 +657,13 @@ void blk_upplow(TEXTP t_ptr, short type)
 		while (y < ende || t_ptr->x2 > 0)
 		{
 			if (y == t_ptr->z1)
-				Tline = TEXT(lauf)+t_ptr->x1;
+				Tline = TEXT(line)+t_ptr->x1;
 			else
-				Tline = TEXT(lauf);
+				Tline = TEXT(line);
 			if (y == ende)
 			{
-				c = *(TEXT(lauf)+t_ptr->x2);
-				*(TEXT(lauf)+t_ptr->x2) = EOS; /* Zeile unterbrechen */
+				c = *(TEXT(line)+t_ptr->x2);
+				*(TEXT(line)+t_ptr->x2) = EOS; /* Zeile unterbrechen */
 			}
 			switch (type)
 			{
@@ -683,10 +683,10 @@ void blk_upplow(TEXTP t_ptr, short type)
 			}
 			if (y == ende)
 			{
-				*(TEXT(lauf)+t_ptr->x2) = c; /* Zeile restaurieren */
+				*(TEXT(line)+t_ptr->x2) = c; /* Zeile restaurieren */
 				break;
 			}
-			NEXT(lauf);
+			NEXT(line);
 			y++;
 		}
 		t_ptr->moved++;
@@ -704,7 +704,7 @@ static void block_demark(TEXTP t_ptr)
 	t_ptr->cursor = TRUE;
 }
 
-static bool tab_ok(ZEILEP a, bool tab, short tabsize)
+static bool tab_ok(LINEP a, bool tab, short tabsize)
 {
 	short 	anz;
 	char *str;
@@ -735,7 +735,7 @@ static void block_setzen(TEXTP t_ptr)
 
 	if (t_ptr->z1 > t_ptr->z2)			/* Richtung falsch => tauschen */
 	{
-		ZEILEP col;
+		LINEP col;
 		long	l;
 		short	i;
 
@@ -765,7 +765,7 @@ static void block_setzen(TEXTP t_ptr)
 
 static bool block_delete(TEXTP t_ptr, RINGP t)
 {
-	ZEILEP	b_anf_col, b_end_col;
+	LINEP	b_anf_col, b_end_col;
 	long	lines;
 
 	b_anf_col = t_ptr->p1;
@@ -788,7 +788,7 @@ static bool block_delete(TEXTP t_ptr, RINGP t)
 	if (lines==1)					/* ganz ohne Zeilenumbruch */
 	{
 		short len = t_ptr->x2-t_ptr->x1;
-		ZEILEP	b;
+		LINEP	b;
 
 		init_textring(t);
 		b = FIRST(t);
@@ -803,19 +803,19 @@ static bool block_delete(TEXTP t_ptr, RINGP t)
 		NEXT(b_end_col);
 		col_split(&t_ptr->text, &b_anf_col,t_ptr->x1);
 
-		hl_remove_block( &t_ptr->text, b_anf_col->nachf, b_end_col->vorg );
+		hl_remove_block( &t_ptr->text, b_anf_col->next, b_end_col->prev );
 
 
 		/* Block ausschneiden */
-		FIRST(t) = b_anf_col->nachf;
-		b_anf_col->nachf->vorg = &t->head;
-		LAST(t) = b_end_col->vorg;
-		b_end_col->vorg->nachf = &t->tail;
+		FIRST(t) = b_anf_col->next;
+		b_anf_col->next->prev = &t->head;
+		LAST(t) = b_end_col->prev;
+		b_end_col->prev->next = &t->tail;
 		t->lines = lines;
 
 		/* Kette wieder schliežen */
-		b_anf_col->nachf = b_end_col;
-		b_end_col->vorg = b_anf_col;
+		b_anf_col->next = b_end_col;
+		b_end_col->prev = b_anf_col;
 		col_concate(&t_ptr->text,&b_anf_col);
 		t_ptr->cursor_line = b_anf_col;
 	}
@@ -846,49 +846,49 @@ Problem: Wenn ein Block markiert war, muž eventuell gescrollt werden
 	t->ending = t_ptr->text.ending;
 	t->max_line_len = t_ptr->text.max_line_len;
 	t_ptr->max_line = NULL;
-	if( t_ptr->cursor_line->vorg && t_ptr->cursor_line->vorg->hl_handle )
-	hl_update_zeile( &t_ptr->text, t_ptr->cursor_line->vorg );
+	if( t_ptr->cursor_line->prev && t_ptr->cursor_line->prev->hl_handle )
+	hl_update_zeile( &t_ptr->text, t_ptr->cursor_line->prev );
 	hl_update( t_ptr );
 	return TRUE;
 }
 
 void block_copy(TEXTP t_ptr, RINGP t)
 {
-	ZEILEP a, lauf;
+	LINEP a, line;
 
 	init_textring(t);
 	a = FIRST(t);					/* erste Zeile */
-	lauf = t_ptr->p1;				/* Blockstart */
-	if (lauf == t_ptr->p2)				/* nur eine Zeile */
+	line = t_ptr->p1;				/* Blockstart */
+	if (line == t_ptr->p2)				/* nur eine Zeile */
 	{
-		INSERT(&a, 0, t_ptr->x2-t_ptr->x1, TEXT(lauf)+t_ptr->x1);
+		INSERT(&a, 0, t_ptr->x2-t_ptr->x1, TEXT(line)+t_ptr->x1);
 		a->info |= ABSATZ;
 	}
 	else
 	{
-		ZEILEP new, ende;
+		LINEP new, ende;
 
 		/* erste Zeile teilweise */
-		INSERT(&a, 0, lauf->len-t_ptr->x1, TEXT(lauf)+t_ptr->x1);
-		if (IS_ABSATZ(lauf)) 
+		INSERT(&a, 0, line->len-t_ptr->x1, TEXT(line)+t_ptr->x1);
+		if (IS_ABSATZ(line)) 
 			a->info |= ABSATZ;
 		else 
 			a->info &= (~ABSATZ);
 		ende = t_ptr->p2;
-		NEXT(lauf);
+		NEXT(line);
 		NEXT(a);				/* TAIL im neuen Text */
-		while (lauf != ende)
+		while (line != ende)
 		{
-			new = new_col(TEXT(lauf), lauf->len);
-			if (IS_ABSATZ(lauf)) 
+			new = new_col(TEXT(line), line->len);
+			if (IS_ABSATZ(line)) 
 				new->info |= ABSATZ;
-			col_insert(NULL,a->vorg,new);
+			col_insert(NULL,a->prev, new);
 			t->lines++;
-			NEXT(lauf);
+			NEXT(line);
 		}
-		new = new_col(TEXT(lauf),t_ptr->x2);	/* letzte Zeile teilweise */
+		new = new_col(TEXT(line),t_ptr->x2);	/* letzte Zeile teilweise */
 		new->info |= ABSATZ;
-		col_insert(NULL,a->vorg,new);
+		col_insert(NULL,a->prev, new);
 		t->lines++;
 	}
 	t->ending = t_ptr->text.ending;
@@ -899,7 +899,7 @@ void block_copy(TEXTP t_ptr, RINGP t)
 static bool block_einsetzen(TEXTP t_ptr, RINGP in)
 {
 	RING	t;
-	ZEILEP	a,b,
+	LINEP	a,b,
 			col = t_ptr->cursor_line;
 	long	len;
 
@@ -958,12 +958,12 @@ Problem: Wenn ein Block markiert war, muž eventuell gescrollt werden
 		hl_remove(&t_ptr->text,col);
 		col_split(NULL,&col,t_ptr->xpos);	/* Textzeile splitten   */
 
-		col->nachf->vorg = b;				/* Block einfgen unten */
-		b->nachf = col->nachf;
+		col->next->prev = b;				/* Block einfgen unten */
+		b->next = col->next;
 		col_concate(NULL,&b);			/* Untere letzte Zeile	*/
 
-		col->nachf = a;					/* Block einfgen oben */
-		a->vorg = col;
+		col->next = a;					/* Block einfgen oben */
+		a->prev = col;
 		col_concate(NULL, &col);
 		hl_insert_block( &t_ptr->text, col, b );
 		t_ptr->cursor_line = get_line(&t_ptr->text,undo_end_y);

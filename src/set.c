@@ -93,7 +93,7 @@ void setclr (SET set)
 	short i;
 
 	i = SETSIZE/2;
-	while ((--i)>=0)
+	while ((--i) >= 0)
 	{
 		*set++ = 0L;
 		*set++ = 0L;
@@ -160,8 +160,8 @@ void setxor (SET set1, SET set2)
 
 void setincl (SET set, short elt)
 {
-	if (elt>=0 && elt<=SETMAX)
-		*((char*)set+(elt>>3)) |= bits[elt&7];
+	if (elt >= 0 && elt <= SETMAX)
+		*((char*)set + (elt >> 3)) |= bits[elt & 7];
 }
 
 /*****************************************************************************/
@@ -184,8 +184,8 @@ void setchg (SET set, short elt)
 
 bool setin (SET set, short elt)
 {
-	if (elt>=0 && elt<=SETMAX)
-		return ((*((char*)set+(elt>>3)) & bits[elt&7]) ? TRUE : FALSE);
+	if (elt >= 0 && elt <= SETMAX)
+		return ((*((char *)set + (elt >> 3)) & bits[elt & 7]) ? TRUE : FALSE);
 	else
 		return (FALSE);
 }
@@ -226,12 +226,12 @@ void str2set (char *str, SET set)
 	i = 0;
 	while(str[i])
 	{
-		if (str[i]=='-' && i>0)
+		if (str[i]=='-' && i > 0)
 		{
 			char c;
 
 			i++;
-			for (c=str[i-2]; c<str[i]; c++)
+			for (c = str[i - 2]; c < str[i]; c++)
 				setincl(set,c);
 		}
 		else

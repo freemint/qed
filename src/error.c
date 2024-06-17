@@ -278,15 +278,15 @@ void	handle_error(TEXTP t_ptr)
 
 	if (last_errtext != NULL && t_ptr != last_errtext)
 	{
-		ZEILEP lauf = t_ptr->cursor_line;
+		LINEP line = t_ptr->cursor_line;
 	
 		t_ptr = last_errtext;
-		lauf = t_ptr->cursor_line;
+		line = t_ptr->cursor_line;
 		/* n„chste Zeile setzen */		
 		if (!IS_LAST(t_ptr->cursor_line))
 		{
-			NEXT(lauf);
-			t_ptr->cursor_line = lauf;
+			NEXT(line);
+			t_ptr->cursor_line = line;
 			t_ptr->xpos = 0;
 			t_ptr->ypos++;
 			make_chg(t_ptr->link, POS_CHANGE, 0);

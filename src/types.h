@@ -85,23 +85,25 @@ typedef struct
 	bool		show_end;
 } LOCOPT, *LOCOPTP;
 
-
-typedef struct _zeile
+/*
+ * This structure heads all text-lines.
+ */
+typedef struct _line
 {
-	struct _zeile	*vorg;
-	struct _zeile	*nachf;
+	struct _line	*prev;
+	struct _line	*next;
 	HL_LINEHANDLE	hl_handle;	/* Syntax-Highlighting-Cache */
 	char		info;
 	short		len;		/* LÑnge in Bytes */
 	bool		is_longest;
 	short		exp_len;	/* expandierte LÑnge */
-} ZEILE, *ZEILEP;
+} LINE, *LINEP;
 
 
 typedef struct
 {
-	ZEILE		head;
-	ZEILE		tail;
+	LINE		head;
+	LINE		tail;
 	long		lines;
 	LINEENDING	ending;		/* Zeilenende */
 	unsigned short	max_line_len;	/* Maximale ZeilenlÑnge */
@@ -116,11 +118,11 @@ typedef struct _text
 	short		link;			/* Fensterhandle */
 	RING		text;			/* Der Text */
 	long		file_date_time;		/* Datei-Datum und Zeit */
-	ZEILEP		cursor_line;		/* zeigt auf aktuellen Textzeile */
+	LINEP		cursor_line;		/* zeigt auf aktuellen Textzeile */
 	short		xpos;			/* x-Position des Cursors im Text */
 	long		ypos;			/* y-Position des Cursors im Text */
 	long		moved;			/* Text wurde seit letztem Sichern verÑndert */
-	ZEILEP		p1,p2;			/* Zeiger fÅr Block */
+	LINEP		p1,p2;			/* Zeiger fÅr Block */
 	long		z1,z2;			/* ZeilenNr. fÅr p1 und p2 */
 	short		x1,x2;			/* X-Pos fÅr Block-Anfang und Ende */
 	bool		cursor;			/* Cursor anzeigen */
@@ -137,7 +139,7 @@ typedef struct _text
 	bool		namenlos;		/* Datei hat noch keinen Name */
 	LOCOPTP		loc_opt;		/* Zeiger auf lokalen Optionen */
 	long		asave;			/* letzter Autosave (min) */
-	ZEILEP		max_line;		/* lÑngeste Zeile */
+	LINEP		max_line;		/* lÑngeste Zeile */
 } TEXT, *TEXTP;
 
 typedef void (*TEXT_DOFUNC)(TEXTP t_ptr);

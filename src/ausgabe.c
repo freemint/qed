@@ -70,7 +70,7 @@ static void adjust_text(TEXTP t_ptr)
 
 
 /* Liefert die interne Position */
-short inter_pos(short x, ZEILEP a, bool tabflag, short tabsize)
+short inter_pos(short x, LINEP a, bool tabflag, short tabsize)
 {
     short   len  = 0,
             tabH = tabsize,
@@ -100,12 +100,12 @@ short inter_pos(short x, ZEILEP a, bool tabflag, short tabsize)
     return i;
 }
 
-short bild_len(ZEILEP a, bool tabflag, short tabsize)
+short bild_len(LINEP a, bool tabflag, short tabsize)
 {
     return bild_pos(a->len,a,tabflag,tabsize);
 }
 
-short bild_pos(short x, ZEILEP a, bool tabflag, short tabsize)
+short bild_pos(short x, LINEP a, bool tabflag, short tabsize)
 {
     short   len  = 0,
             tabH = tabsize;
@@ -336,21 +336,21 @@ void cursor(WINDOWP w, TEXTP t_ptr)
     wind_update(END_UPDATE);
 }
 
-static ZEILEP get_wline(TEXTP t_ptr, long y)
+static LINEP get_wline(TEXTP t_ptr, long y)
 {
-    ZEILEP  lauf;
+    LINEP  line;
     long        i;
 
     if (y < 0 || y >= t_ptr->text.lines)
         return NULL;
     i = t_ptr->ypos;
-    lauf = t_ptr->cursor_line;
+    line = t_ptr->cursor_line;
     if (i > y)
     {
         i -= y;
         while (TRUE)
         {
-            VORG(lauf);
+            PREV(line);
             if ((--i)==0)
                 break;
         }
@@ -360,12 +360,12 @@ static ZEILEP get_wline(TEXTP t_ptr, long y)
         y -= i;
         while (TRUE)
         {
-            NEXT(lauf);
+            NEXT(line);
             if ((--y)==0)
                 break;
         }
     }
-    return (lauf);
+    return (line);
 }
 
 /*-----------------------------------------------------------------------------
@@ -632,7 +632,7 @@ static void output_text(short x, short y, short *width,
  * block_end == -1: kein Block oder Block bis Zeilenende (je nach block_start), sonst: Blockende
  */
    
-static void str_out( short x, short y, short w, short offset, ZEILEP zp, short block_start, short block_end )
+static void str_out( short x, short y, short w, short offset, LINEP zp, short block_start, short block_end )
 {
     char *curr_text;   /* derzeitige Zeichenposition im globalen Puffer text (fr kopieren/tab-Expansion) */
     char *curr_line;   /* aktuelle Zeichenposition in der nicht expandierten Zeile */
@@ -776,7 +776,7 @@ outer_loop:;
 void line_out(WINDOWP window, TEXTP t_ptr, short wy)
 {
     short       y;
-    ZEILEP  col;
+    LINEP  col;
 
     adjust_text(t_ptr);                 /* Zeilenpuffer an exp_len anpassen */
     tab = t_ptr->loc_opt->tab;
@@ -807,7 +807,7 @@ void line_out(WINDOWP window, TEXTP t_ptr, short wy)
 void bild_out(WINDOWP window, TEXTP t_ptr)
 {
     short       x, y, w;
-    ZEILEP  lauf;
+    LINEP  line;
     short       min_col, max_col, max_y;
     GRECT       c;
 
@@ -835,8 +835,8 @@ void bild_out(WINDOWP window, TEXTP t_ptr)
         max_y = min(max_y, c.g_y + c.g_h - 1);
     }
     y += (min_col * font_hcell);
-    lauf = get_wline(t_ptr, window->doc.y + min_col);
-    if (lauf != NULL)
+    line = get_wline(t_ptr, window->doc.y + min_col);
+    if (line != NULL)
     {
         short   xoffset, i;
 
@@ -845,22 +845,22 @@ void bild_out(WINDOWP window, TEXTP t_ptr)
         {
             long    y_r;
 
-            y_r = window->doc.y+min_col;
-            for (i=min_col ; i<=max_col; y_r++,y+=font_hcell,NEXT(lauf),i++)
+            y_r = window->doc.y + min_col;
+            for (i = min_col ; i <= max_col; y_r++, y += font_hcell, NEXT(line), i++)
             {
                 /* Block nicht sichtbar */
                 if (y_r < t_ptr->z1 || y_r > t_ptr->z2)
-                    str_out(x, y, w, xoffset, lauf, -1, -1);
+                    str_out(x, y, w, xoffset, line, -1, -1);
                 else
-                    str_out(x, y, w, xoffset, lauf,
+                    str_out(x, y, w, xoffset, line,
                             (y_r == t_ptr->z1) ? t_ptr->x1 : 0,
                             (y_r == t_ptr->z2) ? t_ptr->x2 : -1);
             }
         }
         else
         {
-            for (i=min_col ; i<=max_col; y+=font_hcell,NEXT(lauf),i++)
-                str_out(x,y,w,xoffset,lauf, -1, -1);
+            for (i=min_col ; i<=max_col; y+=font_hcell,NEXT(line),i++)
+                str_out(x,y,w,xoffset,line, -1, -1);
         }
     }
 
@@ -873,7 +873,7 @@ void bild_blkout(WINDOWP window, TEXTP t_ptr, long z1, long z2)
 /* Alle Textzeilen zwischen z1 und z2 werden neu ausgegeben */
 {
     short       i, x, y, w, xoffset;
-    ZEILEP  lauf;
+    LINEP  line;
     short       max_col;
     long        lines, y_r;
 
@@ -894,7 +894,7 @@ void bild_blkout(WINDOWP window, TEXTP t_ptr, long z1, long z2)
     xoffset = (short) window->doc.x;
     max_col = (short) min(window->w_height-1, t_ptr->text.lines-window->doc.y-1);
     y_r   = window->doc.y;
-    lauf = get_wline(t_ptr, y_r);
+    line = get_wline(t_ptr, y_r);
 
     if (t_ptr->block)
         for (i=0; i<=max_col; i++,y+=font_hcell,y_r++)
@@ -902,20 +902,20 @@ void bild_blkout(WINDOWP window, TEXTP t_ptr, long z1, long z2)
             if (y_r>=z1 && y_r<=z2)
             {
                 if (y_r<t_ptr->z1 || y_r>t_ptr->z2)
-                    str_out(x,y,w,xoffset,lauf, -1, -1);
+                    str_out(x,y,w,xoffset,line, -1, -1);
                 else
-                    str_out(x, y, w, xoffset, lauf,
+                    str_out(x, y, w, xoffset, line,
                             (y_r == t_ptr->z1) ? t_ptr->x1 : 0,
                             (y_r == t_ptr->z2) ? t_ptr->x2 : -1);
             }
-            NEXT(lauf);
+            NEXT(line);
         }
     else
         for (i=0; i<=max_col; i++,y+=font_hcell,y_r++)
         {
             if (y_r>=z1 && y_r<=z2)
-                str_out(x,y,w,xoffset,lauf, -1, -1);
-            NEXT(lauf);
+                str_out(x,y,w,xoffset,line, -1, -1);
+            NEXT(line);
         }
 }
 

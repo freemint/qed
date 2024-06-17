@@ -132,7 +132,7 @@ static void drucken(char *name, RINGP t, TEXTP t_ptr)
 	short		seite, lzeile, zeilen_pro_seite, update;
 	char		datum[11], *buffer = NULL, str[80];
 	long		zeile, buf_len;
-	ZEILEP	lauf;
+	LINEP	line;
 
 	/* Schnittstelle ermitteln */
 	channel = ((Setprt(-1) & 16) != 0);
@@ -211,7 +211,7 @@ static void drucken(char *name, RINGP t, TEXTP t_ptr)
 	}
 	
 	graf_mouse(HOURGLASS, NULL);
-	lauf = FIRST(t);
+	line = FIRST(t);
 	while (TRUE)
 	{
 		if (!prn_check(5))
@@ -259,11 +259,11 @@ static void drucken(char *name, RINGP t, TEXTP t_ptr)
 			strcat(buffer, str);
 		}
 		
-		expand_line(buffer, TEXT(lauf), t_ptr->loc_opt->tab, t_ptr->loc_opt->tabsize);
+		expand_line(buffer, TEXT(line), t_ptr->loc_opt->tab, t_ptr->loc_opt->tabsize);
 		plot_line(buffer);
 
-		NEXT(lauf);
-		if (IS_TAIL(lauf)) 
+		NEXT(line);
+		if (IS_TAIL(line)) 
 			break;
 	}
 	if (prn->use_gdos && gl_gdos)

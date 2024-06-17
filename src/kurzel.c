@@ -55,7 +55,7 @@ static PATH		krz_name;	/* Name der aktuellen Krzeldatei, oder leer */
 
 static short  load_kurzel	(void);
 static void clr_kurzel	(void);
-static short  add_kurzel	(RINGP rp, ZEILEP col);
+static short  add_kurzel	(RINGP rp, LINEP col);
 
 /***************************************************************************/
 
@@ -226,7 +226,7 @@ void do_kurzel(TEXTP t_ptr, bool online)
 	bool		set_pos, save_insert;
 	short		xw, i, len;
 	char		*str, buffer[KRZ_MAX_LEN+1];
-	ZEILEP	col;
+	LINEP	col;
 	RINGP		k;
 
 	if (online)
@@ -320,11 +320,11 @@ void do_kurzel(TEXTP t_ptr, bool online)
 
 /* return 1 : kein Speicher mehr => abbruch */
 /*        0 : alles ok                      */
-short add_kurzel(RINGP rp, ZEILEP col)
+short add_kurzel(RINGP rp, LINEP col)
 {
 	short		len, i;
 	char		*str, buffer[MAX_LINE_LEN+1], *start;
-	ZEILEP	c;
+	LINEP	c;
 	bool		online;
 
 	krz_loaded = TRUE;
@@ -378,7 +378,7 @@ short add_kurzel(RINGP rp, ZEILEP col)
 	{
 		while (!IS_TAIL(c) && strcmp(KRZ_TXT(c),buffer+1)>0)
 			NEXT(c);
-		col_insert(rp, c->vorg,new_col(buffer,len));
+		col_insert(rp, c->prev, new_col(buffer,len));
 		kurz.lines++;
 	}
 	if (online)
@@ -390,7 +390,7 @@ short add_kurzel(RINGP rp, ZEILEP col)
 		{
 			while (!IS_TAIL(c) && strcmp(KRZ_TXT(c),buffer+1)>0)
 				NEXT(c);
-			col_insert(rp, c->vorg,new_col(buffer,len));
+			col_insert(rp, c->prev, new_col(buffer,len));
 			auto_kurz.lines++;
 		}
 	}
@@ -401,7 +401,7 @@ short load_kurzel(void)
 {
 	long		anz;
 	RING		t;
-	ZEILEP	lauf;
+	LINEP	line;
 	short		erg;
 
 	if (krz_name[0] == EOS)
@@ -412,15 +412,15 @@ short load_kurzel(void)
 	if (load_datei(krz_name, &t, FALSE, NULL) == 0)
 	{
 		anz = t.lines;
-		lauf = FIRST(&t);
+		line = FIRST(&t);
 		if (anz)
 		{
 			clr_kurzel();							/* alte Krzel l”schen */
 			while ((--anz)>=0)
 			{
-				if (add_kurzel(&t, lauf)) 
+				if (add_kurzel(&t, line)) 
 					break;
-				NEXT(lauf);
+				NEXT(line);
 			}
 		}
 		erg = 0;

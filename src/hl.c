@@ -74,7 +74,7 @@ void hl_update(TEXTP t_ptr)
  */
 void hl_update_text(TEXTP t_ptr)
 {
-	ZEILEP curr_zeile = t_ptr->text.head.nachf;
+	LINEP curr_zeile = t_ptr->text.head.next;
 	
 	if (!syntax_active)
 		return;
@@ -84,7 +84,7 @@ void hl_update_text(TEXTP t_ptr)
 		Hl_Update(t_ptr->text.hl_anchor,
 	                  curr_zeile->hl_handle,
 	                  TEXT(curr_zeile), FALSE);
-	  curr_zeile = curr_zeile->nachf;
+	  curr_zeile = curr_zeile->next;
 		
 	}
 	
@@ -135,7 +135,7 @@ void hl_enable(void)
 
 /* Highlight-Cache fÅr eine Zeile updaten
  */
-void hl_update_zeile(RINGP r_ptr, ZEILEP z_ptr)
+void hl_update_zeile(RINGP r_ptr, LINEP z_ptr)
 {
 	if (!syntax_active)
 		return;
@@ -150,9 +150,9 @@ void hl_update_zeile(RINGP r_ptr, ZEILEP z_ptr)
 
 /* Highlight-Cache fÅr einen Block updaten
  */
-void hl_update_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
+void hl_update_block(RINGP r_ptr, LINEP first, LINEP last)
 {
-	ZEILEP curr = first;
+	LINEP curr = first;
 	if (!syntax_active)
 		return;
 
@@ -166,13 +166,13 @@ void hl_update_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
 	                  TEXT(curr), FALSE);
 		if (curr == last)
 		{
-			if (curr->nachf && curr->nachf->hl_handle)
+			if (curr->next && curr->next->hl_handle)
 		  	Hl_Update(r_ptr->hl_anchor,
-			                  curr->nachf->hl_handle,
-			                  TEXT(curr->nachf), TRUE);
+			                  curr->next->hl_handle,
+			                  TEXT(curr->next), TRUE);
 			return;
 		}
-		curr = curr->nachf;
+		curr = curr->next;
 	}
 }
 
@@ -182,7 +182,7 @@ void hl_update_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
  * Oder natÅrlich die anderen Funktionen (s.u.), um Syntax-Cache zu
  * entfernen.
  */
-void hl_remove(RINGP r_ptr, ZEILEP z_ptr)
+void hl_remove(RINGP r_ptr, LINEP z_ptr)
 {
 	if (!syntax_active)
 		return;
@@ -190,9 +190,9 @@ void hl_remove(RINGP r_ptr, ZEILEP z_ptr)
 	assert(r_ptr);
 	assert(z_ptr);
 		
-	if (z_ptr->vorg)
+	if (z_ptr->prev)
 		Hl_RemoveLine(r_ptr->hl_anchor,
-	  	                  z_ptr->vorg->hl_handle, 
+	  	                  z_ptr->prev->hl_handle, 
 	  	                  &z_ptr->hl_handle,
 	  	                  TRUE);
 	else
@@ -204,7 +204,7 @@ void hl_remove(RINGP r_ptr, ZEILEP z_ptr)
 
 /* Highlight-Cache fÅr eine Zeile einfÅgen
  */
-void hl_insert(RINGP r_ptr, ZEILEP z_ptr)
+void hl_insert(RINGP r_ptr, LINEP z_ptr)
 {
 	if (!syntax_active)
 		return;
@@ -215,9 +215,9 @@ void hl_insert(RINGP r_ptr, ZEILEP z_ptr)
 	if (z_ptr->hl_handle)
 		hl_remove(r_ptr, z_ptr);
 		
-	if (z_ptr->vorg)
+	if (z_ptr->prev)
 		Hl_InsertLine(r_ptr->hl_anchor,
-	  	                  z_ptr->vorg->hl_handle,
+	  	                  z_ptr->prev->hl_handle,
 	    	                TEXT(z_ptr),
 		                    &z_ptr->hl_handle,
 		                    TRUE);
@@ -233,13 +233,13 @@ void hl_insert(RINGP r_ptr, ZEILEP z_ptr)
 /* wie hl_remove(), nur daû kein Update der nachfolgenden
  * Zeilen durchgefÅhrt wird (fÅr Block einfÅgen/lîschen)
  */
-static void hl_remove_noupdate(RINGP r_ptr, ZEILEP z_ptr)
+static void hl_remove_noupdate(RINGP r_ptr, LINEP z_ptr)
 {
 	assert(z_ptr);
 
-	if (z_ptr->vorg)
+	if (z_ptr->prev)
 		Hl_RemoveLine(r_ptr->hl_anchor,
-	  	                  z_ptr->vorg->hl_handle, 
+	  	                  z_ptr->prev->hl_handle, 
 	  	                  &z_ptr->hl_handle,
 	  	                  TRUE);
 	else
@@ -252,14 +252,14 @@ static void hl_remove_noupdate(RINGP r_ptr, ZEILEP z_ptr)
 /* wie hl_insert(), nur daû kein Update der nachfolgenden
  * Zeilen durchgefÅhrt wird (fÅr Block einfÅgen/lîschen)
  */
-static void hl_insert_noupdate(RINGP r_ptr, ZEILEP z_ptr)
+static void hl_insert_noupdate(RINGP r_ptr, LINEP z_ptr)
 {
 	if (z_ptr->hl_handle)
 		hl_remove_noupdate(r_ptr, z_ptr);
 		
-	if (z_ptr->vorg)
+	if (z_ptr->prev)
 		Hl_InsertLine(r_ptr->hl_anchor,
-	  	                  z_ptr->vorg->hl_handle,
+	  	                  z_ptr->prev->hl_handle,
 	    	                TEXT(z_ptr),
 		                    &z_ptr->hl_handle,
 		                    FALSE);
@@ -274,9 +274,9 @@ static void hl_insert_noupdate(RINGP r_ptr, ZEILEP z_ptr)
 
 /* Syntax-Highlighting fÅr Block einfÅgen
  */
-void hl_insert_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
+void hl_insert_block(RINGP r_ptr, LINEP first, LINEP last)
 {
-	ZEILEP curr = first;
+	LINEP curr = first;
 
 	if (!syntax_active)
 		return;
@@ -289,21 +289,21 @@ void hl_insert_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
 		hl_insert_noupdate(r_ptr, curr);
 		if (curr == last)
 		{
-			if (curr->nachf && curr->nachf->hl_handle)
+			if (curr->next && curr->next->hl_handle)
 		  	Hl_Update(r_ptr->hl_anchor,
-			                  curr->nachf->hl_handle,
-			                  TEXT(curr->nachf), TRUE);
+			                  curr->next->hl_handle,
+			                  TEXT(curr->next), TRUE);
 			return;
 		}
-		curr = curr->nachf;
+		curr = curr->next;
 	}
 }
 
 /* Syntax-Highlighting fÅr Block entfernen
  */
-void hl_remove_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
+void hl_remove_block(RINGP r_ptr, LINEP first, LINEP last)
 {
-	ZEILEP curr = first;
+	LINEP curr = first;
 	bool updateit = FALSE;
 
 	if (!syntax_active)
@@ -315,9 +315,9 @@ void hl_remove_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
 	{
 		if (curr == last)
 			updateit = TRUE;
-		if (first->vorg)
+		if (first->prev)
 			Hl_RemoveLine(r_ptr->hl_anchor,
-		  	                  first->vorg->hl_handle, 
+		  	                  first->prev->hl_handle, 
 		  	                  &curr->hl_handle, updateit);
 		else
 			Hl_RemoveLine(r_ptr->hl_anchor,
@@ -325,7 +325,7 @@ void hl_remove_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
 		  	                  &curr->hl_handle, updateit);
 		if (curr == last)
 			return;
-		curr = curr->nachf;
+		curr = curr->next;
 	}
 }
 
@@ -333,7 +333,7 @@ void hl_remove_block(RINGP r_ptr, ZEILEP first, ZEILEP last)
 void hl_init_text(TEXTP t_ptr)
 {
 	PATH tfilename, ext;
-	ZEILEP curr_zeile = t_ptr->text.head.nachf;
+	LINEP curr_zeile = t_ptr->text.head.next;
 
 	if (!syntax_active)
 	{
@@ -352,11 +352,11 @@ void hl_init_text(TEXTP t_ptr)
 	while (curr_zeile != &t_ptr->text.tail)
 	{
 		Hl_InsertLine(t_ptr->text.hl_anchor,
-		               curr_zeile->vorg->hl_handle,
+		               curr_zeile->prev->hl_handle,
 		               TEXT(curr_zeile),
 		               &curr_zeile->hl_handle,
 		               TRUE);
-		curr_zeile = curr_zeile->nachf;
+		curr_zeile = curr_zeile->next;
 	}
 }
 
@@ -366,7 +366,7 @@ void hl_free(TEXTP t_ptr)
 	if (!syntax_active)
 		return;
 		
-	hl_remove_block(&t_ptr->text, t_ptr->text.head.nachf, t_ptr->text.tail.vorg);
+	hl_remove_block(&t_ptr->text, t_ptr->text.head.next, t_ptr->text.tail.prev);
 	Hl_Free(t_ptr->text.hl_anchor);
 }
 
@@ -459,7 +459,7 @@ bool hl_write_syn(void)
  * NULL zurÅck, wenn es fÅr diesen Texttyp kein Syntax-Highlighting
  * gibt, sondern eine Syntax-Cache-Zeile ohne Farb/Attributinformationen.
  */
-HL_LINE hl_get_zeile(ZEILEP z)
+HL_LINE hl_get_zeile(LINEP z)
 {
 	HL_LINE ret;
 	static HL_ELEM linefake[ 4 * (MAX_LINE_LEN / 255 + 2) ];

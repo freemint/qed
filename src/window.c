@@ -422,7 +422,7 @@ void uniconify_window(WINDOWP w, GRECT *new)
 	}
 }
 
-void	all_iconify(WINDOWP w, GRECT *new)
+void all_iconify(WINDOWP w, GRECT *new)
 {
 	WINDOWP	p;
 
@@ -1062,15 +1062,19 @@ void do_font_change(WINDOWP w)
 
 	if (w->flags & WI_FONTSIZE)
 	{
+		short cw = w->work.g_w / w->xfac;
+		
 		w->xfac = font_wcell;
 		w->yfac = font_hcell;
 
 		r.g_x = w->work.g_x;
 		r.g_y = w->work.g_y;
-		r.g_w = w->work.g_w;
+		r.g_w = cw * w->xfac;
 		r.g_h = font_hcell * w->w_height;
 		if ((r.g_h + r.g_y) > gl_desk.g_h)
 			r.g_h = gl_desk.g_h - r.g_y;
+		if ((r.g_w + r.g_x) > gl_desk.g_w)
+			r.g_w = gl_desk.g_w - r.g_x;
 		size_window(w, &r, FALSE);
 		redraw_window(w, &w->work);
 	}
