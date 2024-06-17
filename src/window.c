@@ -802,9 +802,9 @@ void arrow_window (WINDOWP w, short arrow, long amount)
 		}
 
 		if (newpos > max_slide)
-			newpos = max_slide;							/* Jenseits des Randes */
+			newpos = max_slide;			/* Jenseits des Randes */
 		if (newpos < 0)
-			newpos = 0;					 					/* Jenseits des Randes */
+			newpos = 0;				/* Jenseits des Randes */
 		do_arrow(w, dir, newpos-oldpos);
 	}
 }
@@ -821,12 +821,12 @@ void h_slider(WINDOWP w, short new_value)
 		max_slide = w->doc.w - w->w_width;		/* Maximale Position */
 		oldpos = w->doc.x;
 		newpos = (long)new_value * max_slide;
-		newpos = (newpos+500) / 1000;				/* Teilen + Runden */
+		newpos = (newpos+500) / 1000;			/* Teilen + Runden */
 
 		if (newpos > max_slide)
-			newpos = max_slide;						/* Jenseits des Randes */
+			newpos = max_slide;			/* Jenseits des Randes */
 		if (newpos < 0)
-			newpos = 0;									/* Jenseits des Randes */
+			newpos = 0;				/* Jenseits des Randes */
 		do_arrow(w, HORIZONTAL, newpos-oldpos);
 	}
 }
@@ -843,12 +843,12 @@ void v_slider(WINDOWP w, short new_value)
 		max_slide = w->doc.h - w->w_height;		/* Maximale Position */
 		oldpos = w->doc.y;
 		newpos = (long)new_value * max_slide;
-		newpos = (newpos+500) / 1000;				/* Teilen + Runden */
+		newpos = (newpos+500) / 1000;			/* Teilen + Runden */
 
 		if (newpos > max_slide)
-			newpos = max_slide;						/* Jenseits des Randes */
+			newpos = max_slide;			/* Jenseits des Randes */
 		if (newpos < 0)
-			newpos = 0;									/* Jenseits des Randes */
+			newpos = 0;				/* Jenseits des Randes */
 		do_arrow(w, VERTICAL, newpos-oldpos);
 	}
 }
@@ -968,7 +968,8 @@ void change_window(WINDOWP w, char *filename, bool changed)
 /*
  * Neues Fenster anfordern.
 */
-WINDOWP create_window(short kind, short class, WIN_CRTFUNC crt)
+WINDOWP
+create_window(short kind, short class, WIN_CRTFUNC crt)
 {
 	WINDOWP	w;
 	short		wh;
