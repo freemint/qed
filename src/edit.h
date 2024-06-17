@@ -6,7 +6,7 @@ extern short		edit_type;
 
 extern void		absatz_edit		(void);
 extern void		font_edit		(void);
-extern void		cursor_visible			(WINDOWP window, TEXTP t_ptr);
+extern void		pos_korr			(WINDOWP window, TEXTP t_ptr);
 extern void		blink_edit		(void);
 extern void		offblink_edit	(void);
 extern void		onblink_edit	(void);

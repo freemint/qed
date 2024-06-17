@@ -17,63 +17,63 @@ static bool	tab;
 static short		tab_size, lineal_len;
 static SET		umbruch_set;
 
-static bool Absatz		(LINEP col);
-static bool too_int	(TEXTP t_ptr, LINEP col, long y);
-static bool too_long 	(TEXTP t_ptr, LINEP col, long y);
+static bool Absatz		(ZEILEP col);
+static bool too_int	(TEXTP t_ptr, ZEILEP col, long y);
+static bool too_long 	(TEXTP t_ptr, ZEILEP col, long y);
 
 void save_absatz(TEXTP t_ptr)
-/* Es werden LZ und TABs am Absatzende gelscht */
-/* und im Absatz hinzugefgt							*/
+/* Es werden LZ und TABs am Absatzende gel”scht */
+/* und im Absatz hinzugefgt							*/
 {
 	bool		action = FALSE;
 	short		i;
 	char		c;
-	LINEP	line;
+	ZEILEP	lauf;
 
-	setcpy(umbruch_set,t_ptr->loc_opt->umbruch_set);/* !! Mu gesetzt werden !! */
+	setcpy(umbruch_set,t_ptr->loc_opt->umbruch_set);/* !! Muž gesetzt werden !! */
 	setincl(umbruch_set,' ');								/* wenigstens das */
-	line = FIRST(&t_ptr->text);
-	while (!IS_TAIL(line))
+	lauf = FIRST(&t_ptr->text);
+	while (!IS_TAIL(lauf))
 	{
-		if (IS_ABSATZ(line))					/* Absatz => LZ und TAB lschen */
+		if (IS_ABSATZ(lauf))					/* Absatz => LZ und TAB l”schen */
 		{
-			for (i=line->len; (--i)>=0 ; )
+			for (i=lauf->len; (--i)>=0 ; )
 			{
-				c = TEXT(line)[i];
+				c = TEXT(lauf)[i];
 				if (c!=' ' && c!='\t') break;
 			}
 			i++;
-			if (i<line->len)		/* Zeile verkrzen */
+			if (i<lauf->len)		/* Zeile verkrzen */
 			{
-				REALLOC(&line,i,i-line->len);
+				REALLOC(&lauf,i,i-lauf->len);
 				action = TRUE;
 			}
 		}
-		else								/* Nicht Absatz => LZ anhngen */
+		else								/* Nicht Absatz => LZ anh„ngen */
 		{
-			c = TEXT(line)[line->len-1];
-			if (!setin(umbruch_set,c) && line->len < MAX_LINE_LEN)
+			c = TEXT(lauf)[lauf->len-1];
+			if (!setin(umbruch_set,c) && lauf->len < MAX_LINE_LEN)
 			{
-				*REALLOC(&line,line->len,1) = ' ';
+				*REALLOC(&lauf,lauf->len,1) = ' ';
 				action = TRUE;
 			}
 		}
-		NEXT(line);
+		NEXT(lauf);
 	}
-	if (action)		/* Es wurde etwas verndert */
+	if (action)		/* Es wurde etwas ver„ndert */
 	{
 		make_chg(t_ptr->link,TOTAL_CHANGE,0);
 		t_ptr->moved++;
-		line = t_ptr->cursor_line = get_line(&t_ptr->text,t_ptr->ypos);
-		if (t_ptr->xpos>line->len)
+		lauf = t_ptr->cursor_line = get_line(&t_ptr->text,t_ptr->ypos);
+		if (t_ptr->xpos>lauf->len)
 		{
-			t_ptr->xpos = line->len;
+			t_ptr->xpos = lauf->len;
 			make_chg(t_ptr->link,POS_CHANGE,0);
 		}
 	}
 }
 
-static bool Absatz(LINEP col)
+static bool Absatz(ZEILEP col)
 /* TRUE : Die Zeile ist die letzte Zeile eines Absatz */
 /* FALSE : sonst													*/
 {
@@ -84,31 +84,31 @@ static bool Absatz(LINEP col)
 }
 
 void make_absatz(TEXTP t_ptr)
-/* Absatzmarkierungen anbringen oder lschen */
+/* Absatzmarkierungen anbringen oder l”schen */
 {
-	LINEP line;
+	ZEILEP lauf;
 
-	setcpy(umbruch_set,t_ptr->loc_opt->umbruch_set);/* !! Mu gesetzt werden !! */
+	setcpy(umbruch_set,t_ptr->loc_opt->umbruch_set);/* !! Muž gesetzt werden !! */
 	setincl(umbruch_set,' ');								/* wenigstens das */
-	line = FIRST(&t_ptr->text);
+	lauf = FIRST(&t_ptr->text);
 	if (t_ptr->loc_opt->umbrechen)
-		while (!IS_TAIL(line))
+		while (!IS_TAIL(lauf))
 		{
-			if (Absatz(line))
-				line->info |= ABSATZ;
+			if (Absatz(lauf))
+				lauf->info |= ABSATZ;
 			else
-				line->info &= (~ABSATZ);		/* z.B. CR setzt immer Bit */
-			NEXT(line);
+				lauf->info &= (~ABSATZ);		/* z.B. CR setzt immer Bit */
+			NEXT(lauf);
 		}
 	else
-		while (!IS_TAIL(line))
+		while (!IS_TAIL(lauf))
 		{
-			line->info &= (~ABSATZ);
-			NEXT(line);
+			lauf->info &= (~ABSATZ);
+			NEXT(lauf);
 		}
 }
 
-static short long_brk(RINGP rp, LINEP col)
+static short long_brk(RINGP rp, ZEILEP col)
 /* Zeile ist zu lang. Wo soll sie abgebrochen werden (mind. ein Wort) */
 {
 	short	off, pos;
@@ -158,7 +158,7 @@ static short long_brk(RINGP rp, LINEP col)
 	return pos;
 }
 
-static short short_brk(RINGP rp, LINEP col, short len)
+static short short_brk(RINGP rp, ZEILEP col, short len)
 /* Einer Zeile fehlen Zeichen, sie ist jetzt im Bild len lang */
 /* Wo soll der Nachfolger (col) hochgezogen werden (mind. ein Wort) */
 {
@@ -211,8 +211,8 @@ static short short_brk(RINGP rp, LINEP col, short len)
 	return(pos);
 }
 
-/* !!! cursor_line mu hinterher entsprechend ypos gesetzt werden !!! */
-static bool too_long(TEXTP t_ptr, LINEP col, long y)
+/* !!! cursor_line muž hinterher entsprechend ypos gesetzt werden !!! */
+static bool too_long(TEXTP t_ptr, ZEILEP col, long y)
 {
 	short	i, len, off;
 	bool	absatz, weiter, changed;
@@ -229,14 +229,14 @@ static bool too_long(TEXTP t_ptr, LINEP col, long y)
 		}
 		absatz = IS_ABSATZ(col);
 		len = col->len-i;											/* soviel abschneiden */
-		if (absatz || col->next->len + len >= MAX_LINE_LEN)	/* col_split */
+		if (absatz || col->nachf->len + len >= MAX_LINE_LEN)	/* col_split */
 		{
-			LINEP help;
+			ZEILEP help;
 
 			col_split(&t_ptr->text,&col,i);
 			t_ptr->text.lines++;
 			if (t_ptr->ypos>y) t_ptr->ypos++;
-			help = col->next;
+			help = col->nachf;
 			off = col_einrucken(&t_ptr->text, &help);
 			hl_update_zeile( &t_ptr->text, help );
 			if (t_ptr->ypos==y && t_ptr->xpos>i)			/* Cursor umbrechen */
@@ -248,11 +248,11 @@ static bool too_long(TEXTP t_ptr, LINEP col, long y)
 		}
 		else															/* Text rumschieben */
 		{
-			LINEP help = col->next;
+			ZEILEP help = col->nachf;
 
 			off = col_offset(&t_ptr->text,help);
-			INSERT(&help,off,len,TEXT(col)+i);				/* Next verlngern */
-			REALLOC(&col,i,-len);								/* Zeile krzen */
+			INSERT(&help,off,len,TEXT(col)+i);				/* Next verl„ngern */
+			REALLOC(&col,i,-len);								/* Zeile krzen */
 			hl_update_zeile( &t_ptr->text, col );
 			hl_update_zeile( &t_ptr->text, help );
 			if (t_ptr->ypos==y+1 && t_ptr->xpos>off)		/* Cursor verschieben */
@@ -266,27 +266,27 @@ static bool too_long(TEXTP t_ptr, LINEP col, long y)
 			}
 			weiter = FALSE;
 		}
-		NEXT(col);													/* nchste Zeile zu lang? */
+		NEXT(col);													/* n„chste Zeile zu lang? */
 		y++;
 		changed = TRUE;
 	}
-	if (weiter) too_int(t_ptr,col,y);						/* nchste Zeile zu kurz? */
+	if (weiter) too_int(t_ptr,col,y);						/* n„chste Zeile zu kurz? */
 	return (changed);
 }
 
-/* !!! cursor_line mu hinterher entsprechend ypos gesetzt werden !!! */
-static bool too_int(TEXTP t_ptr, LINEP col, long y)
+/* !!! cursor_line muž hinterher entsprechend ypos gesetzt werden !!! */
+static bool too_int(TEXTP t_ptr, ZEILEP col, long y)
 {
 	short	len, off;
-	LINEP	next_col;
+	ZEILEP	next_col;
 	bool	changed;
 
 	changed = FALSE;
 	tab = t_ptr->loc_opt->tab;
 	tab_size = t_ptr->loc_opt->tabsize;
-	while (bild_len(col,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize)<lineal_len && !(IS_ABSATZ(col)) && col->next->len > 0)
+	while (bild_len(col,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize)<lineal_len && !(IS_ABSATZ(col)) && col->nachf->len > 0)
 	{
-		next_col = col->next;
+		next_col = col->nachf;
 		len = short_brk(&t_ptr->text,next_col,bild_len(col,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize));
 		if (len==0) break;										/* nichts zu machen */
 		off = col_offset(&t_ptr->text,next_col);
@@ -315,11 +315,11 @@ static bool too_int(TEXTP t_ptr, LINEP col, long y)
 				else
 					t_ptr->xpos -= len;
 			}
-			INSERT(&col,col->len,len,TEXT(next_col)+off);/* Zeile verlngern */
-			REALLOC(&next_col,off,-len);						/* Zeile verkrzen */
+			INSERT(&col,col->len,len,TEXT(next_col)+off);/* Zeile verl„ngern */
+			REALLOC(&next_col,off,-len);						/* Zeile verkrzen */
 			hl_update_zeile( &t_ptr->text, col );
 			hl_update_zeile( &t_ptr->text, next_col );
-			col = next_col;										/* nchste Zeile weiter */
+			col = next_col;										/* n„chste Zeile weiter */
 			y++;
 		}
 		changed = TRUE;
@@ -331,7 +331,7 @@ void umbruch(TEXTP t_ptr)
 {
 	long y = t_ptr->ypos;
 
-	setcpy(umbruch_set,t_ptr->loc_opt->umbruch_set);/* !! Mu gesetzt werden !! */
+	setcpy(umbruch_set,t_ptr->loc_opt->umbruch_set);/* !! Muž gesetzt werden !! */
 	setincl(umbruch_set,' ');								/* wenigstens das */
 	tab = t_ptr->loc_opt->tab;
 	tab_size = t_ptr->loc_opt->tabsize;
@@ -356,49 +356,49 @@ void umbruch(TEXTP t_ptr)
 
 void format(TEXTP t_ptr)
 {
-	LINEP	line;
+	ZEILEP	lauf;
 	long	y, start_y;
 	bool	change;
 
-	setcpy(umbruch_set,t_ptr->loc_opt->umbruch_set);/* !! Mu gesetzt werden !! */
+	setcpy(umbruch_set,t_ptr->loc_opt->umbruch_set);/* !! Muž gesetzt werden !! */
 	setincl(umbruch_set,' ');								/* wenigstens das */
 	tab = t_ptr->loc_opt->tab;
 	tab_size = t_ptr->loc_opt->tabsize;
 	lineal_len = t_ptr->loc_opt->lineal_len;
 	change = FALSE;
-	line = t_ptr->cursor_line;
+	lauf = t_ptr->cursor_line;
 	y = t_ptr->ypos;
 	if (y)
 	{
 		y--;
-		PREV(line);
-		while ((y > 0) && !(IS_ABSATZ(line)))
+		VORG(lauf);
+		while ((y > 0) && !(IS_ABSATZ(lauf)))
 		{
 			y--;
-			PREV(line);
+			VORG(lauf);
 		}
 		if (y)
 		{
 			y++;
-			NEXT(line);
+			NEXT(lauf);
 		}
 	}
-	/* line zeigt jetzt auf die erste Zeile des Absatz */
+	/* lauf zeigt jetzt auf die erste Zeile des Absatz */
 	start_y = y;
-	line = line->prev;	/* Einen davor, weil akt. Zeile gendert wird */
+	lauf = lauf->vorg;	/* Einen davor, weil akt. Zeile ge„ndert wird */
 	while(TRUE)
 	{
-		if (!too_long(t_ptr, line->next,y))
+		if (!too_long(t_ptr, lauf->nachf,y))
 		{
-			if (too_int(t_ptr, line->next,y))
+			if (too_int(t_ptr, lauf->nachf,y))
 				change = TRUE;
 		}
 		else
 			change = TRUE;
 
 		y++;
-		NEXT(line);
-		if (IS_ABSATZ(line))
+		NEXT(lauf);
+		if (IS_ABSATZ(lauf))
 			break;
 	}
 	if (change)
@@ -413,38 +413,38 @@ void format(TEXTP t_ptr)
 
 void total_format(TEXTP t_ptr)
 {
-	LINEP	line;
+	ZEILEP	lauf;
 	long	y;
 	bool	change;
 
-	setcpy(umbruch_set,t_ptr->loc_opt->umbruch_set);/* !! Mu gesetzt werden !! */
+	setcpy(umbruch_set,t_ptr->loc_opt->umbruch_set);/* !! Muž gesetzt werden !! */
 	setincl(umbruch_set,' ');								/* wenigstens das */
 	tab = t_ptr->loc_opt->tab;
 	tab_size = t_ptr->loc_opt->tabsize;
 	lineal_len = t_ptr->loc_opt->lineal_len;
 	change = FALSE;
 	graf_mouse(HOURGLASS, NULL);
-	line = FIRST(&t_ptr->text);
+	lauf = FIRST(&t_ptr->text);
 	y = 0;
-	while (!IS_TAIL(line))
+	while (!IS_TAIL(lauf))
 	{
-		/* line zeigt jetzt auf die erste Zeile des Absatz */
-		line = line->prev;	/* Einen davor, weil akt. Zeile gendert wird */
+		/* lauf zeigt jetzt auf die erste Zeile des Absatz */
+		lauf = lauf->vorg;	/* Einen davor, weil akt. Zeile ge„ndert wird */
 		while(TRUE)
 		{
-			if (!too_long(t_ptr, line->next,y))
+			if (!too_long(t_ptr, lauf->nachf,y))
 			{
-				if (too_int(t_ptr, line->next,y))
+				if (too_int(t_ptr, lauf->nachf,y))
 					change = TRUE;
 			}
 			else
 				change = TRUE;
 			y++;
-			NEXT(line);
-			if (IS_ABSATZ(line))
+			NEXT(lauf);
+			if (IS_ABSATZ(lauf))
 				break;
 		}
-		NEXT(line);
+		NEXT(lauf);
 	}
 	if (change)
 	{

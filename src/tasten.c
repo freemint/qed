@@ -18,7 +18,7 @@
 /* Heiko */
 #include "hl.h"
 
-/* Modi fr deselect_block() */
+/* Modi fr deselect_block() */
 #define UP		1
 #define DOWN	2
 #define LEFT	3
@@ -48,21 +48,19 @@ static void ctrl_y(TEXTP t_ptr);
 static void char_delete(TEXTP t_ptr);
 
 static void word_delete(TEXTP t_ptr);
-static void ctrl_word_delete(TEXTP t_ptr);
 static void word_bs(TEXTP t_ptr);
-static void ctrl_word_bs(TEXTP t_ptr);
 
 static char	alt_str[4];
 static short	alt_cnt = -1;
 
 static bool pos_move(TEXTP t_ptr, long delta)
 {
-	LINEP l_ptr;
+	ZEILEP lauf;
 
-	l_ptr = t_ptr->cursor_line;
+	lauf = t_ptr->cursor_line;
 	if (!t_ptr->up_down)
 	{
-		t_ptr->desire_x = bild_pos(t_ptr->xpos,l_ptr,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize);
+		t_ptr->desire_x = bild_pos(t_ptr->xpos,lauf,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize);
 		t_ptr->up_down = TRUE;
 	}
 	if (delta < 0) /* rauf */
@@ -72,9 +70,9 @@ static bool pos_move(TEXTP t_ptr, long delta)
 		if (delta > t_ptr->ypos)
 			delta = t_ptr->ypos;
 		t_ptr->ypos -= delta;
-		while (--delta>=0) PREV(l_ptr);
-		t_ptr->cursor_line = l_ptr;
-		t_ptr->xpos = inter_pos(t_ptr->desire_x,l_ptr,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize);
+		while (--delta>=0) VORG(lauf);
+		t_ptr->cursor_line = lauf;
+		t_ptr->xpos = inter_pos(t_ptr->desire_x,lauf,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize);
 		return TRUE;
 	}
 	else if (delta>0) /* runter */
@@ -84,9 +82,9 @@ static bool pos_move(TEXTP t_ptr, long delta)
 		if (rest==0) return FALSE;
 		if (delta>rest) delta = (short)rest;
 		t_ptr->ypos += delta;
-		while (--delta>=0)	NEXT(l_ptr);
-		t_ptr->cursor_line = l_ptr;
-		t_ptr->xpos = inter_pos(t_ptr->desire_x,l_ptr,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize);
+		while (--delta>=0)	NEXT(lauf);
+		t_ptr->cursor_line = lauf;
+		t_ptr->xpos = inter_pos(t_ptr->desire_x,lauf,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize);
 		return TRUE;
 	}
 	return FALSE;
@@ -129,17 +127,17 @@ static void page_up(TEXTP t_ptr)
 
 static void line_up(TEXTP t_ptr)
 {
-	LINEP l_ptr = t_ptr->cursor_line;
+	ZEILEP lauf = t_ptr->cursor_line;
 	if (!t_ptr->up_down)
 	{
-		t_ptr->desire_x = bild_pos(t_ptr->xpos,l_ptr,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize);
+		t_ptr->desire_x = bild_pos(t_ptr->xpos,lauf,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize);
 		t_ptr->up_down = TRUE;
 	}
 	if (t_ptr->ypos)
 	{
-		PREV(l_ptr);
-		t_ptr->cursor_line = l_ptr;
-		t_ptr->xpos = inter_pos(t_ptr->desire_x,l_ptr,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize);
+		VORG(lauf);
+		t_ptr->cursor_line = lauf;
+		t_ptr->xpos = inter_pos(t_ptr->desire_x,lauf,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize);
 		t_ptr->ypos--;
 		make_chg(t_ptr->link,POS_CHANGE,0);
 	}
@@ -162,18 +160,18 @@ static void page_down(TEXTP t_ptr)
 
 static void line_down(TEXTP t_ptr)
 {
-	LINEP l_ptr = t_ptr->cursor_line;
+	ZEILEP lauf = t_ptr->cursor_line;
 
 	if (!t_ptr->up_down)
 	{
-		t_ptr->desire_x = bild_pos(t_ptr->xpos,l_ptr,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize);
+		t_ptr->desire_x = bild_pos(t_ptr->xpos,lauf,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize);
 		t_ptr->up_down = TRUE;
 	}
 	if (!IS_LAST(t_ptr->cursor_line))
 	{
-		NEXT(l_ptr);
-		t_ptr->cursor_line = l_ptr;
-		t_ptr->xpos = inter_pos(t_ptr->desire_x,l_ptr,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize);
+		NEXT(lauf);
+		t_ptr->cursor_line = lauf;
+		t_ptr->xpos = inter_pos(t_ptr->desire_x,lauf,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize);
 		t_ptr->ypos++;
 		make_chg(t_ptr->link,POS_CHANGE,0);
 	}
@@ -200,36 +198,35 @@ static void word_left(TEXTP t_ptr)
 	short	xw;
 	long	yw;
 	char *str;
-	LINEP l_ptr;
+	ZEILEP lauf;
 
 	t_ptr->up_down = FALSE;
-	l_ptr = t_ptr->cursor_line;
+	lauf = t_ptr->cursor_line;
 	xw = t_ptr->xpos;
 	yw = t_ptr->ypos;
-	str = TEXT(l_ptr) + xw;
+	str = TEXT(lauf)+xw;
 	do 									/* Ersten Buchstaben finden */
 	{
-		while (xw == 0)
+		while(xw==0)
 		{
-			if (yw == 0) return;
-			PREV(l_ptr);
-			yw--;
-			xw = l_ptr->len;
-			str = TEXT(l_ptr) + xw;
+			if (yw==0) return;
+			VORG(lauf);
+			yw --;
+			xw = lauf->len;
+			str = TEXT(lauf)+xw;
 		}
 		xw--;
-	}while (!setin(t_ptr->loc_opt->wort_set, *(--str)));
-
-	while (xw > 0) 						/* Ersten NICHT-Buchstaben suchen */
+	}while (!setin(t_ptr->loc_opt->wort_set,*(--str)));
+	while(xw>0) 						/* Ersten NICHT-Buchstaben suchen */
 	{
 		xw--;
-		if (!setin(t_ptr->loc_opt->wort_set, *(--str)))
+		if (!setin(t_ptr->loc_opt->wort_set,*(--str)))
 		{
 			xw++;
 			break;
 		}
 	}
-	t_ptr->cursor_line = l_ptr;
+	t_ptr->cursor_line = lauf;
 	t_ptr->xpos = xw;
 	t_ptr->ypos = yw;
 	make_chg(t_ptr->link,POS_CHANGE,0);
@@ -240,36 +237,36 @@ static void word_right(TEXTP t_ptr)
 	short	xw;
 	long	yw;
 	char *str;
-	LINEP l_ptr;
+	ZEILEP lauf;
 
 	t_ptr->up_down = FALSE;
-	l_ptr = t_ptr->cursor_line;
+	lauf = t_ptr->cursor_line;
 	xw = t_ptr->xpos;
 	yw = t_ptr->ypos;
-	str = TEXT(l_ptr)+xw;
+	str = TEXT(lauf)+xw;
 	while (TRUE)						/* erster nicht-wort-Buchstabe */
 	{
-		if (xw==l_ptr->len || !setin(t_ptr->loc_opt->wort_set,*str))
+		if (xw==lauf->len || !setin(t_ptr->loc_opt->wort_set,*str))
 			break;
 		str++; xw++;
 	}
 	while (TRUE)						/* erster wort-Buchstabe */
 	{
-		while (xw==l_ptr->len)
+		while (xw==lauf->len)
 		{
-			if (IS_LAST(l_ptr))
+			if (IS_LAST(lauf))
 				goto ende;
-			NEXT(l_ptr);
+			NEXT(lauf);
 			yw++;
 			xw = 0;
-			str = TEXT(l_ptr);
+			str = TEXT(lauf);
 		}
 		if (setin(t_ptr->loc_opt->wort_set,*str))
 			break;
 		str++; xw++;
 	}
 ende:
-	t_ptr->cursor_line = l_ptr;
+	t_ptr->cursor_line = lauf;
 	t_ptr->xpos = xw;
 	t_ptr->ypos = yw;
 	make_chg(t_ptr->link,POS_CHANGE,0);
@@ -284,11 +281,11 @@ void char_left(TEXTP t_ptr)				/* -> kurzel.c */
 	}
 	else if (t_ptr->ypos)
 	{
-		LINEP l_ptr = t_ptr->cursor_line;
+		ZEILEP lauf = t_ptr->cursor_line;
 
-		PREV(l_ptr);
-		t_ptr->cursor_line = l_ptr;
-		t_ptr->xpos = l_ptr->len;
+		VORG(lauf);
+		t_ptr->cursor_line = lauf;
+		t_ptr->xpos = lauf->len;
 		t_ptr->ypos--;
 		make_chg(t_ptr->link,POS_CHANGE,0);
 	}
@@ -298,17 +295,17 @@ void char_left(TEXTP t_ptr)				/* -> kurzel.c */
 
 static void char_right(TEXTP t_ptr)
 {
-	LINEP l_ptr = t_ptr->cursor_line;
+	ZEILEP lauf = t_ptr->cursor_line;
 
-	if (t_ptr->xpos<l_ptr->len)
+	if (t_ptr->xpos<lauf->len)
 	{
 		t_ptr->xpos++;
 		make_chg(t_ptr->link,POS_CHANGE,0);
 	}
-	else if (!IS_LAST(l_ptr))
+	else if (!IS_LAST(lauf))
 	{
-		NEXT(l_ptr);
-		t_ptr->cursor_line = l_ptr;
+		NEXT(lauf);
+		t_ptr->cursor_line = lauf;
 		t_ptr->xpos = 0;
 		t_ptr->ypos++;
 		make_chg(t_ptr->link,POS_CHANGE,0);
@@ -319,7 +316,7 @@ static void char_right(TEXTP t_ptr)
 
 
 /*
- * Text hinzufgen
+ * Text hinzufgen
 */
 void char_cr(TEXTP t_ptr) 				/* -> kurzel.c */
 {
@@ -343,7 +340,7 @@ void char_cr(TEXTP t_ptr) 				/* -> kurzel.c */
 		t_ptr->xpos = 0;
 
 /*
-Problem: Wenn ein Block markiert war, mu eventuell gescrollt werden
+Problem: Wenn ein Block markiert war, muž eventuell gescrollt werden
          und es kommt zu Redraw-Fehlern, da doch mehr Zeilen betroffen sind!
 
 	make_chg(t_ptr->link,SCROLL_DOWN,t_ptr->ypos);
@@ -361,7 +358,7 @@ void char_insert(TEXTP t_ptr, char c)
 {
 	t_ptr->up_down = FALSE;
 
-	/* Null nur in Binr erlaubt! */
+	/* Null nur in Bin„r erlaubt! */
 	if (c == 0 && t_ptr->text.ending != lns_binmode)
 	{
 		Bconout(2, 7);
@@ -450,7 +447,7 @@ static void expand_kurzel(TEXTP t_ptr)
 */
 void char_bs(TEXTP t_ptr) 			/* -> kurzel.c */
 {
-	if (IS_FIRST(t_ptr->cursor_line) && t_ptr->xpos == 0)
+	if (IS_FIRST(t_ptr->cursor_line) && t_ptr->xpos==0)
 	{
 		end_play(); 			/* Makro beenden */
 	}
@@ -463,7 +460,7 @@ void char_bs(TEXTP t_ptr) 			/* -> kurzel.c */
 
 static void char_delete(TEXTP t_ptr)
 {
-	LINEP col = t_ptr->cursor_line;
+	ZEILEP col = t_ptr->cursor_line;
 
 	if (t_ptr->xpos < col->len)
 	{
@@ -475,30 +472,29 @@ static void char_delete(TEXTP t_ptr)
 	}
 	else if (!IS_LAST(col))
 	{
-		if (col->len + col->next->len > MAX_LINE_LEN)
+		if (col->len + col->nachf->len > MAX_LINE_LEN)
 		{
 			inote(1, 0, TOOLONG, MAX_LINE_LEN);
 			return;
 		}
 		clr_undo();
 		t_ptr->moved++;
-		col_concate(&t_ptr->text, &t_ptr->cursor_line);
+		col_concate(&t_ptr->text,&t_ptr->cursor_line);
 		t_ptr->text.lines--;
-		make_chg(t_ptr->link, SCROLL_UP, t_ptr->ypos + 1);
-		make_chg(t_ptr->link, LINE_CHANGE, t_ptr->ypos);
-		make_chg(t_ptr->link, POS_CHANGE, 0);
+		make_chg(t_ptr->link,SCROLL_UP,t_ptr->ypos+1);
+		make_chg(t_ptr->link,LINE_CHANGE,t_ptr->ypos);
+		make_chg(t_ptr->link,POS_CHANGE,0);
 	}
 	else
 		end_play(); 			/* Makro beenden */
-	
 	if (t_ptr->loc_opt->umbrechen)
 		umbruch(t_ptr);
 }
 
 static void word_bs(TEXTP t_ptr)
-/* Lschen wortweise nach links */
+/* L”schen wortweise nach links */
 {
-	short	xpos = t_ptr->xpos - 1;
+	short		xpos = t_ptr->xpos - 1;
 	bool	in_word = FALSE;
 
 	t_ptr->blk_mark_mode = FALSE;
@@ -506,13 +502,15 @@ static void word_bs(TEXTP t_ptr)
 	if (!t_ptr->block)
 	{
 		blk_mark(t_ptr,0);
-		while (setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]) && xpos > 0)
+		while (setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos])
+					&& xpos > 0)
 		{
 			xpos--;
 			in_word = TRUE;
 		}
 		if (!in_word)
-			while (!setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]) && xpos > 0)
+			while (!setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos])
+						&& xpos > 0)
 				xpos--;
 		if (xpos == 0 && t_ptr->xpos == 1)		/* erstes Zeichen */
 			t_ptr->xpos = 0;
@@ -523,93 +521,8 @@ static void word_bs(TEXTP t_ptr)
 	blk_delete(t_ptr);
 }
 
-/* this is a longonly */
-static void ctrl_word_bs(TEXTP t_ptr)
-/* Lschen wortweise nach links */
-{
-	short	xpos = t_ptr->xpos;
-	bool in_word = FALSE;
-
-	if (!xpos)
-	{
-		if (t_ptr->ypos)
-		{
-			char_left(t_ptr);
-			char_delete(t_ptr);
-		}
-	}
-	else
-	{
-/* 		xpos--; */
-		t_ptr->blk_mark_mode = FALSE;
-		t_ptr->up_down = FALSE;
-		if (xpos >= 0 && !t_ptr->block)
-		{
-			if (xpos) xpos--;
-
-			blk_mark(t_ptr, 0);
-
-			while (!setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]) && xpos > 0)
-				xpos--;
-
-			while (setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]) && xpos > 0)
-			{
-				xpos--;
-				in_word = TRUE;
-			}
-			
-			if (in_word && !setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]))
- 				xpos++;
-			t_ptr->xpos = xpos;
-			blk_mark(t_ptr,1);
-		}
-		blk_delete(t_ptr);
-	}
-}
-
-/* this is a longonly */
-static void ctrl_word_delete(TEXTP t_ptr)
-/* Lschen wortweise nach links */
-{
-	short	xpos = t_ptr->xpos;
-	bool	in_whites = FALSE;
-
-	if (xpos == t_ptr->cursor_line->len)
-	{
-		if (!IS_LAST(t_ptr->cursor_line))
-		{
-			char_delete(t_ptr);
-		}
-	}
-	else
-	{
-		t_ptr->blk_mark_mode = FALSE;
-		t_ptr->up_down = FALSE;
-		if (xpos >= 0 && !t_ptr->block)
-		{
-			blk_mark(t_ptr,0);
-
-			while (!setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]) && t_ptr->cursor_line->len > xpos)
-			{
-				xpos++;
-				in_whites = TRUE;
-			}
-			if (!in_whites)
-			{
-				while (setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]) && t_ptr->cursor_line->len > xpos)
-					xpos++;
-				while (!setin(t_ptr->loc_opt->wort_set, TEXT(t_ptr->cursor_line)[xpos]) && t_ptr->cursor_line->len > xpos)
-					xpos++;
-			}
-			t_ptr->xpos = xpos;
-			blk_mark(t_ptr,1);
-		}
-		blk_delete(t_ptr);
-	}
-}
-
 static void word_delete(TEXTP t_ptr)
-/* Lschen bis zum nchsten Wortanfang */
+/* L”schen bis zum n„chsten Wortanfang */
 {
 	short xpos = t_ptr->xpos;
 	bool	in_word = FALSE;
@@ -637,13 +550,13 @@ static void word_delete(TEXTP t_ptr)
 
 static void ctrl_y(TEXTP t_ptr)
 {
-	LINEP col = t_ptr->cursor_line;
+	ZEILEP col = t_ptr->cursor_line;
 
 	if (!t_ptr->block)
 	{
 		t_ptr->xpos = 0;
 		blk_mark(t_ptr, 0);
-		if (IS_LAST(col))					/* letzte Zeile im Text nur krzen */
+		if (IS_LAST(col))					/* letzte Zeile im Text nur krzen */
 		{
 			t_ptr->xpos = col->len;
 			blk_mark(t_ptr,1);
@@ -658,6 +571,8 @@ static void ctrl_y(TEXTP t_ptr)
 	}
 	blk_cut(t_ptr);
 }
+
+
 
 static void set_block(TEXTP t_ptr)
 {
@@ -719,10 +634,10 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 	ctrl = (kstate & K_CTRL) != 0;
 	alt = (kstate & K_ALT) != 0;
 
-	/* Sonderbehandlung fr ^Y */
+	/* Sonderbehandlung fr ^Y */
 	if (ascii_code == 'Y' && ctrl)
 	{
-		cursor_visible(window, t_ptr);
+		pos_korr(window, t_ptr);
 		t_ptr->blk_mark_mode = FALSE;
 		ctrl_y(t_ptr);
 		t_ptr->up_down = FALSE;
@@ -743,7 +658,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					if (ctrl_mark_mode)
 					{
 						if (!t_ptr->block)
-							cursor_visible(window, t_ptr);
+							pos_korr(window, t_ptr);
 						set_block(t_ptr);
 						page_up(t_ptr);
 						blk_mark(t_ptr,1);
@@ -753,7 +668,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					if (ctrl_mark_mode)
 					{
 						if (!t_ptr->block)
-							cursor_visible(window, t_ptr);
+							pos_korr(window, t_ptr);
 						set_block(t_ptr);
 						page_down(t_ptr);
 						blk_mark(t_ptr,1);
@@ -763,7 +678,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					if (ctrl_mark_mode)
 					{
 						if (!t_ptr->block)
-							cursor_visible(window, t_ptr);
+							pos_korr(window, t_ptr);
 						set_block(t_ptr);
 						word_left(t_ptr);
 						blk_mark(t_ptr,1);
@@ -773,7 +688,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					if (ctrl_mark_mode)
 					{
 						if (!t_ptr->block)
-							cursor_visible(window, t_ptr);
+							pos_korr(window, t_ptr);
 						set_block(t_ptr);
 						word_right(t_ptr);
 						blk_mark(t_ptr,1);
@@ -789,7 +704,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 			{
 				case NK_CLRHOME:
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					if (ctrl_mark_mode)
 						unset_block(t_ptr);
 					else if (!t_ptr->blk_mark_mode)
@@ -800,7 +715,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					break;
 				case NK_UP:
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					if (ctrl_mark_mode)
 						unset_block(t_ptr);
 					else if (!t_ptr->blk_mark_mode)
@@ -811,7 +726,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					break;
 				case NK_DOWN:
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					if (ctrl_mark_mode)
 						unset_block(t_ptr);
 					else if (!t_ptr->blk_mark_mode)
@@ -822,7 +737,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					break;
 				case NK_LEFT:
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					if (ctrl_mark_mode)
 						unset_block(t_ptr);
 					else if (!t_ptr->blk_mark_mode && t_ptr->block)
@@ -833,7 +748,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					break;
 				case NK_RIGHT:
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					if (ctrl_mark_mode)
 						unset_block(t_ptr);
 					else if (!t_ptr->blk_mark_mode && t_ptr->block)
@@ -844,17 +759,17 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					break;
 				case NK_BS:
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					word_bs(t_ptr);
 					break;
 				case NK_DEL:
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					word_delete(t_ptr);
 					break;
 				case NK_RET :
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					word_left(t_ptr);
 					char_cr(t_ptr);
 					break;
@@ -867,20 +782,16 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 			switch (nkey)
 			{
 				case NK_UP:
+					if (!t_ptr->block)
+						pos_korr(window, t_ptr);
 					if (ctrl_mark_mode)
 					{
-						if (!t_ptr->block)
-							cursor_visible(window, t_ptr);
 						set_block(t_ptr);
 						line_up(t_ptr);
 						blk_mark(t_ptr,1);
 					}
-					else 	/* seitenweise Blttern, fr PC-Tastaturen PgUp/Down */
+					else 	/* seitenweise Bl„ttern, fr PC-Tastaturen PgUp/Down */
 					{
-						arrow_window(window, WA_UPLINE, 1);
-					#if 0
-						if (!t_ptr->block)
-							cursor_visible(window, t_ptr);
 						if (!t_ptr->blk_mark_mode && t_ptr->block)
 							deselect_block(t_ptr, UP);
 						else
@@ -889,24 +800,19 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 							if (t_ptr->blk_mark_mode)
 								blk_mark(t_ptr,1);
 						}
-					#endif
 					}
 					break;
 				case NK_DOWN:
+					if (!t_ptr->block)
+						pos_korr(window, t_ptr);
 					if (ctrl_mark_mode)
 					{
-						if (!t_ptr->block)
-							cursor_visible(window, t_ptr);
 						set_block(t_ptr);
 						line_down(t_ptr);
 						blk_mark(t_ptr,1);
 					}
 					else
 					{
-						arrow_window(window, WA_DNLINE, 1);
-					#if 0
-						if (!t_ptr->block)
-							cursor_visible(window, t_ptr);
 						if (!t_ptr->blk_mark_mode && t_ptr->block)
 							deselect_block(t_ptr, DOWN);
 						else
@@ -915,14 +821,13 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 							if (t_ptr->blk_mark_mode)
 								blk_mark(t_ptr,1);
 						}
-					#endif
 					}
 					break;
 				case NK_LEFT:
+					if (!t_ptr->block)
+						pos_korr(window, t_ptr);
 					if (ctrl_mark_mode)
 					{
-						if (!t_ptr->block)
-							cursor_visible(window, t_ptr);
 						set_block(t_ptr);
 						t_ptr->up_down = FALSE;
 						char_left(t_ptr);
@@ -930,11 +835,6 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					}
 					else
 					{
-					#if 0
-						arrow_window(window, WA_LFLINE, 1);
-					#else
-						if (!t_ptr->block)
-							cursor_visible(window, t_ptr);
 						if (!t_ptr->blk_mark_mode && t_ptr->block)
 							deselect_block(t_ptr, LEFT);
 						else
@@ -943,14 +843,13 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 							if (t_ptr->blk_mark_mode)
 								blk_mark(t_ptr,1);
 						}
-					#endif
 					}
 					break;
 				case NK_RIGHT:
+					if (!t_ptr->block)
+						pos_korr(window, t_ptr);
 					if (ctrl_mark_mode)
 					{
-						if (!t_ptr->block)
-							cursor_visible(window, t_ptr);
 						set_block(t_ptr);
 						t_ptr->up_down = FALSE;
 						char_right(t_ptr);
@@ -958,11 +857,6 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					}
 					else
 					{
-					#if 0
-						arrow_window(window, WA_RTLINE, 1);
-					#else
-						if (!t_ptr->block)
-							cursor_visible(window, t_ptr);
 						if (!t_ptr->blk_mark_mode && t_ptr->block)
 							deselect_block(t_ptr, RIGHT);
 						else
@@ -971,12 +865,11 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 							if (t_ptr->blk_mark_mode)
 								blk_mark(t_ptr,1);
 						}
-					#endif
 					}
 					break;
 				case NK_TAB:
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					if (!ctrl_mark_mode)
 						t_ptr->blk_mark_mode = FALSE;
 					t_ptr->up_down = FALSE;
@@ -986,19 +879,17 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					break;
 				case NK_DEL :
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					if (ctrl_mark_mode)
 					{
 						t_ptr->up_down = FALSE;
 						do_icon(t_ptr->link, DO_CUT);
 					}
-					else
-						ctrl_word_delete(t_ptr);
 					hl_update( t_ptr );
 					break;
 				case NK_INS:
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					if (ctrl_mark_mode)
 					{
 						t_ptr->up_down = FALSE;
@@ -1008,7 +899,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					break;
 				case NK_CLRHOME:
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					if (ctrl_mark_mode)
 					{
 						t_ptr->up_down = FALSE;
@@ -1018,13 +909,6 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 							do_icon(t_ptr->link, DO_LINECOPY);
 					}
 					break;
-				case NK_BS:
-					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
-					ctrl_word_bs(t_ptr);
-					hl_update(t_ptr);
-					break;
-
 				default:
 					return FALSE;
 			}
@@ -1038,7 +922,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 			if ((nkey & NKF_NUM) && c >= '0' && c <= '9')
 			{
 				if (!t_ptr->block)
-					cursor_visible(window, t_ptr);
+					pos_korr(window, t_ptr);
 				if (alt_cnt < 2)
 				{
 					alt_cnt++;
@@ -1063,24 +947,24 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 			{
 				case NK_ESC :
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					expand_kurzel(t_ptr);
 					break;
 				case NK_TAB:
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					tabulator(t_ptr);
 					hl_update( t_ptr );
 					break;
 				case NK_RET:
 				case (NK_ENTER|NKF_NUM) :
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					char_cr(t_ptr);
 					break;
 				case NK_CLRHOME:
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					if (ctrl_mark_mode)
 						unset_block(t_ptr);
 					else if (!t_ptr->blk_mark_mode)
@@ -1091,12 +975,12 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					break;
 				case NK_UNDO:
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					icon_edit(t_ptr->link, DO_UNDO);
 					break;
 				case NK_UP:
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					if ((ctrl_mark_mode || !t_ptr->blk_mark_mode) && t_ptr->block)
 					{
 						deselect_block(t_ptr, UP);
@@ -1108,7 +992,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					break;
 				case NK_DOWN:
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					if ((ctrl_mark_mode || !t_ptr->blk_mark_mode) && t_ptr->block)
 					{
 						deselect_block(t_ptr, DOWN);
@@ -1120,7 +1004,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					break;
 				case NK_LEFT:
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					t_ptr->up_down = FALSE;
 					if ((ctrl_mark_mode || !t_ptr->blk_mark_mode) && t_ptr->block)
 					{
@@ -1133,7 +1017,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					break;
 				case NK_RIGHT:
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					t_ptr->up_down = FALSE;
 					if ((ctrl_mark_mode || !t_ptr->blk_mark_mode) && t_ptr->block)
 					{
@@ -1146,7 +1030,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					break;
 				case NK_BS:
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					t_ptr->blk_mark_mode = FALSE;
 					t_ptr->up_down = FALSE;
 					if (t_ptr->block)
@@ -1157,7 +1041,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					break;
 				case NK_DEL:
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					t_ptr->blk_mark_mode = FALSE;
 					t_ptr->up_down = FALSE;
 					if (t_ptr->block)
@@ -1168,7 +1052,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					break;
 				case NK_M_PGUP:				/* Mac: page up -> shift-up */
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					if (ctrl_mark_mode)
 						unset_block(t_ptr);
 					else if (!t_ptr->blk_mark_mode)
@@ -1179,7 +1063,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					break;
 				case NK_M_PGDOWN: 			/* Mac: page down -> shift-down */
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					if (ctrl_mark_mode)
 						unset_block(t_ptr);
 					else if (!t_ptr->blk_mark_mode)
@@ -1190,7 +1074,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 					break;
 				case NK_M_END: 				/* Mac: end -> shift-home */
 					if (!t_ptr->block)
-						cursor_visible(window, t_ptr);
+						pos_korr(window, t_ptr);
 					if (ctrl_mark_mode)
 						unset_block(t_ptr);
 					else if (!t_ptr->blk_mark_mode)
@@ -1207,7 +1091,7 @@ bool edit_key(TEXTP t_ptr, WINDOWP window, short kstate, short kreturn)
 	else													/* keine Funktionstaste */
 	{
 		if (!t_ptr->block)
-			cursor_visible(window, t_ptr);
+			pos_korr(window, t_ptr);
 		if (ascii_code)
 		{
 			t_ptr->blk_mark_mode = FALSE;

@@ -23,7 +23,7 @@ char *av_buf; /* AV-Puffer */
 
 /*
  * Generiert aus einem Pfadnamen den GEM-Namen (max. acht Zeichen, ggf.
- * mit ' ' aufgefllt) und berprft ihn auf ST-GUIDE.
+ * mit ' ' aufgefÅllt) und ÅberprÅft ihn auf ST-GUIDE.
 */
 static bool make_name(char *longname, char *shortname, bool must_stg)
 {
@@ -57,8 +57,8 @@ static bool make_name(char *longname, char *shortname, bool must_stg)
 
 
 /*
- * Liefert die app_id des bergebenen Programmes zurck. Falls es noch
- * nicht luft, wird es mit arg gestartet.
+ * Liefert die app_id des Åbergebenen Programmes zurÅck. Falls es noch
+ * nicht lÑuft, wird es mit arg gestartet.
 */
 static short get_id(char* name, char *path, char *arg, bool *started)
 {
@@ -366,34 +366,6 @@ static void send_avstarted(short id, short m3, short m4)
 	send_msg(id);
 }
 
-/* Special function for extracting a line number in a VA_START-Arg
- * Line numbers are attached to filenames, and recognized by the
- * '|' character. For example, "c:\text.txt|20" will make
- * Qed load text.txt and place cursor at line 20.
- */
-
-static long get_linenum(PATH filename)
-{
-	long y;
-	char *tmp;
-
-	tmp = strchr(filename, '|');
-	if(!tmp) return 0;
-
-	if(tmp[1] == '\0')
-	{
-		tmp[0] = '\0';
-		return 0;
-	}
-
-	y = atol(tmp+1)-1;
-	if(y < 0) y = 0;
-  
-	tmp[0]='\0';
-  
-	return y;
-}
-
 /*
  * Zerlegt VA_START-Arg in einzelne Dateinamen.
  * Quoting wird korrekt ausgewertet ('arg 1', 'arg''s')
@@ -401,7 +373,6 @@ static long get_linenum(PATH filename)
 static bool parse_vaarg(POSENTRY **list, char *arg)
 {
 	short		i, j, len;
-	long            y;
 	PATH		filename;
 	bool	in_quote = FALSE;
 	
@@ -434,8 +405,7 @@ static bool parse_vaarg(POSENTRY **list, char *arg)
 			else
 			{
 				filename[j++] = '\0';
-				y = get_linenum(filename);
-				insert_poslist(list, filename, 0, y);
+				insert_poslist(list, filename, 0, 0);
 				j = 0;
 				i++; 
 			}
@@ -443,8 +413,7 @@ static bool parse_vaarg(POSENTRY **list, char *arg)
 		if (j > 0)
 		{
 			filename[j++] = '\0';
-			y = get_linenum(filename);
-			insert_poslist(list, filename, 0, y);
+			insert_poslist(list, filename, 0, 0);
 		}
 		return TRUE;
 	}

@@ -15,7 +15,7 @@
 /* lokale Variablen ********************************************************/
 static char *text = NULL;
 static short    text_len = 0;
-#define MIN_TEXT_LEN    ((MAX_LINE_LEN+1) / 4)  /* Startlnge: 256 Bytes */
+#define MIN_TEXT_LEN    ((MAX_LINE_LEN+1) / 4)  /* StartlÑnge: 256 Bytes */
 #define INSERT_CURSOR_WIDTH 3
 
 /*!! Muessen am Anfang jeder Routine gesetzt werden !!*/
@@ -25,7 +25,7 @@ static bool 	umbrechen;
 static bool 	show_end;
 static short    draw_mode;
 
-/* Statische Variablen fr str_out(); werden am Anfang von str_out()
+/* Statische Variablen fÅr str_out(); werden am Anfang von str_out()
  * initialisiert und dann von den Unterfunktionen aktualisiert
  */
 static bool last_italic;  /* letzte Ausgabe war kursiv, initialisieren mit FALSE */
@@ -49,8 +49,8 @@ static void set_fill_color(short new)
 }
 
 /*
- * Dynamischer Zeilenpuffer fr die expandierte Zeile. MAX_LINE_LEN reicht
- * nicht aus, wenn eine Zeile echte TABs enthlt!
+ * Dynamischer Zeilenpuffer fÅr die expandierte Zeile. MAX_LINE_LEN reicht
+ * nicht aus, wenn eine Zeile echte TABs enthÑlt!
  * Der angeforderte Puffer wird von line_to_str() benutzt.
 */
 static void adjust_text(TEXTP t_ptr)
@@ -70,7 +70,7 @@ static void adjust_text(TEXTP t_ptr)
 
 
 /* Liefert die interne Position */
-short inter_pos(short x, LINEP a, bool tabflag, short tabsize)
+short inter_pos(short x, ZEILEP a, bool tabflag, short tabsize)
 {
     short   len  = 0,
             tabH = tabsize,
@@ -100,12 +100,12 @@ short inter_pos(short x, LINEP a, bool tabflag, short tabsize)
     return i;
 }
 
-short bild_len(LINEP a, bool tabflag, short tabsize)
+short bild_len(ZEILEP a, bool tabflag, short tabsize)
 {
     return bild_pos(a->len,a,tabflag,tabsize);
 }
 
-short bild_pos(short x, LINEP a, bool tabflag, short tabsize)
+short bild_pos(short x, ZEILEP a, bool tabflag, short tabsize)
 {
     short   len  = 0,
             tabH = tabsize;
@@ -163,7 +163,7 @@ short cursor_xpos(TEXTP t_ptr, short position, bool *isitalicp)
             cacheline = hl_get_zeile(t_ptr->cursor_line);
             while (!(*cacheline & HL_CACHEEND))
             {
-                flags = *(cacheline++);    /* Hole Lnge und Attribute aus dem Syntax-Cache */
+                flags = *(cacheline++);    /* Hole LÑnge und Attribute aus dem Syntax-Cache */
                 len = *(cacheline++);
                 if (flags & HL_COLOR)     /* Farbinformationen sind irrelevant */
                     cacheline++;
@@ -182,36 +182,33 @@ short cursor_xpos(TEXTP t_ptr, short position, bool *isitalicp)
     start_line = line = TEXT(t_ptr->cursor_line);
     tabwidth = t_ptr->loc_opt->tab ? t_ptr->loc_opt->tabsize : 1;
 
-	while (!(*cacheline & HL_CACHEEND) && (short)(line - start_line) < position)
-	{
-		flags = *(cacheline++);    /* Hole Lnge und Attribute aus dem Syntax-Cache */
-		len = *(cacheline++);
-		if (flags & HL_COLOR)     /* Farbinformationen sind irrelevant */
-			cacheline++;
-		if (flags & HL_SELCOLOR)
-			cacheline++;
-	
-		for (textptr = text; len && (short)(line - start_line) < position; line++, len--)
-		{
-			if (*line == '\t') /* Tabs werden innerhalb der Kopierschleife expandiert */
-			{
-				for (i = ((short)(textptr - text) + done_expanded) % tabwidth; i < tabwidth; i++)
-					*(textptr++) = ' ';
-			}
-			else
-				*(textptr++) = *line;
-		}
-		done_expanded += (short)(textptr-text);
-		*textptr = EOS;
-		vst_effects(vdi_handle, flags & (HL_BOLD | HL_LIGHT));
-		vqt_extent(vdi_handle, text, pxy);
-		x += pxy[2] - pxy[0];
-	}
+    while (!(*cacheline & HL_CACHEEND) && (short)(line-start_line) < position)
+    {
+        flags = *(cacheline++);    /* Hole LÑnge und Attribute aus dem Syntax-Cache */
+        len = *(cacheline++);
+        if (flags & HL_COLOR)     /* Farbinformationen sind irrelevant */
+            cacheline++;
+        if (flags & HL_SELCOLOR)
+            cacheline++;
+        for (textptr = text; len && (short)(line-start_line) < position; line++, len--)
+        {
+            if (*line == '\t') /* Tabs werden innerhalb der Kopierschleife expandiert */
+                for (i= ((short)(textptr-text)+done_expanded) % tabwidth; i<tabwidth; i++)
+                    *(textptr++) = ' ';
+            else
+                *(textptr++) = *line;
+        }
+        done_expanded += (short)(textptr-text);
+        *textptr = EOS;
+        vst_effects(vdi_handle, flags & (HL_BOLD | HL_LIGHT));
+        vqt_extent(vdi_handle, text, pxy);
+        x += pxy[2] - pxy[0];
+    }
 
-	if (isitalicp)
-		*isitalicp = flags & HL_ITALIC;
+    if (isitalicp)
+        *isitalicp = flags & HL_ITALIC;
 
-	return x;
+    return x;
 
 }
 
@@ -230,11 +227,11 @@ static void _cursor(GRECT *r)
     vswr_mode(vdi_handle, draw_mode);
 }
 
-/* schrger Cursor; in r werden die normalen Cursormae wie in _cursor()
-   bergeben, die von _cursor_italic() dann schrg gesetzt werden */
+/* schrÑger Cursor; in r werden die normalen Cursormaûe wie in _cursor()
+   Åbergeben, die von _cursor_italic() dann schrÑg gesetzt werden */
 static void _cursor_italic(GRECT *r)
 {
-    /* kleine & schrge Breiten bei v_fillarea werden im XOR-Modus absolut unbrauchbar
+    /* kleine & schrÑge Breiten bei v_fillarea werden im XOR-Modus absolut unbrauchbar
        dargestellt, daher Zeichnen des Cursors mit v_pline :-(*/
     _WORD pxy[4];
     short i;
@@ -270,13 +267,13 @@ void cursor(WINDOWP w, TEXTP t_ptr)
     zeile = t_ptr->ypos - w->doc.y;
     curs_rect.g_y = (short) zeile * font_hcell + w->work.g_y;
 
-    /* Cursor berhaupt sichtbar? */
+    /* Cursor Åberhaupt sichtbar? */
     if (curs_rect.g_x < w->work.g_x || curs_rect.g_x > (w->work.g_x + w->work.g_w - 1) ||
          curs_rect.g_y < w->work.g_y || curs_rect.g_y > (w->work.g_y + w->work.g_h - 1) ||
          (w->flags & WI_ICONIFIED))
         return;
 
-    /* Breite und Hhe ermitteln */
+    /* Breite und Hîhe ermitteln */
     if (overwrite)
     {
         if (font_prop)
@@ -302,7 +299,7 @@ void cursor(WINDOWP w, TEXTP t_ptr)
     }
 
     /*
-     * Am Rand (oben/unten) darf der Cursor nicht berstehen, ansonsten
+     * Am Rand (oben/unten) darf der Cursor nicht Åberstehen, ansonsten
      * 2 Pixel oben/unten.
      */
     if (zeile > 0)
@@ -339,21 +336,21 @@ void cursor(WINDOWP w, TEXTP t_ptr)
     wind_update(END_UPDATE);
 }
 
-static LINEP get_wline(TEXTP t_ptr, long y)
+static ZEILEP get_wline(TEXTP t_ptr, long y)
 {
-    LINEP  line;
+    ZEILEP  lauf;
     long        i;
 
     if (y < 0 || y >= t_ptr->text.lines)
         return NULL;
     i = t_ptr->ypos;
-    line = t_ptr->cursor_line;
+    lauf = t_ptr->cursor_line;
     if (i > y)
     {
         i -= y;
         while (TRUE)
         {
-            PREV(line);
+            VORG(lauf);
             if ((--i)==0)
                 break;
         }
@@ -363,16 +360,16 @@ static LINEP get_wline(TEXTP t_ptr, long y)
         y -= i;
         while (TRUE)
         {
-            NEXT(line);
+            NEXT(lauf);
             if ((--y)==0)
                 break;
         }
     }
-    return (line);
+    return (lauf);
 }
 
 /*-----------------------------------------------------------------------------
- * Flche fllen.
+ * FlÑche fÅllen.
  *
  * x ist Pixel-Koordinate
  * y ist Pixel-Koordinate
@@ -394,9 +391,9 @@ void fill_area(short x, short y, short w, short h, short color)
     vswr_mode(vdi_handle, draw_mode);
 }
 
-/* Flche fllen mit Bercksichtigung kursiver Schrift;
+/* FlÑche fÅllen mit BerÅcksichtigung kursiver Schrift;
  * mit isitalic wird festgelegt,
- * ob die Flche links im Duktus
+ * ob die FlÑche links im Duktus
  * der Schrift nach rechts geneigt sein soll. Rechts wird immer eine gerade
  * Kante gezeichnet.
  */
@@ -482,7 +479,7 @@ short out_sb(short x, short y, short w, char *str)
     if (w <= 0)
         return x;
 
-    /* Hintergrund mit fg_block_color fllen und Text mit fg_block_color drbermalen */
+    /* Hintergrund mit fg_block_color fÅllen und Text mit fg_block_color drÅbermalen */
     fill_area(x, y, w, font_hcell, bg_block_color);
 
     vst_color(vdi_handle, fg_block_color);
@@ -524,11 +521,11 @@ static void draw_cr(short x, short y, bool inv)
     pxy[5] = y;
     v_pline (vdi_handle, 3, pxy);
     h = h >> 1;
-    pxy[0] = x + h;             /* schrg oben */
+    pxy[0] = x + h;             /* schrÑg oben */
     pxy[1] = y - h;
     pxy[2] = x;                     /* mitte links */
     pxy[3] = y;
-    pxy[4] = x + h;             /* schrg unten */
+    pxy[4] = x + h;             /* schrÑg unten */
     pxy[5] = y + h;
     v_pline (vdi_handle, 3, pxy);
     if (inv)
@@ -539,12 +536,12 @@ static void draw_cr(short x, short y, bool inv)
 
 /* Ausgabe von Text mit und ohne Effekte, Aufruf von str_out()
  * Aufgrund von starken Darstellungsungenauigkeiten bzw. verschiedener
- * Behandlung verschiedener Fonttypen im VDI mssen teilweise
+ * Behandlung verschiedener Fonttypen im VDI mÅssen teilweise
  * die Fonttypen (proportional/nichtproportional, Bitmap/Vektor) und
- * Effekte (insbes. fett und kursiv) umstndlich und teilweise sehr
+ * Effekte (insbes. fett und kursiv) umstÑndlich und teilweise sehr
  * zeitaufwendig getrennt behandelt werden.
  * In der statischen Var. last_italic wird jeweils der Wert gehalten, ob die letzte Ausgabe kursiv war; vor
- * dem ersten Aufruf von output_text in einer Zeile mu der Wert auf false gesetzt werden.
+ * dem ersten Aufruf von output_text in einer Zeile muû der Wert auf false gesetzt werden.
  * Vorder-und Hintergrundfarbe werden gesetzt, wenn sie jeweils != -1 sind; kursive
  * Blockmarkierungen werden bearbeitet.
  */
@@ -587,11 +584,11 @@ static void output_text(short x, short y, short *width,
         return;
     }
 
-    /* Fett , nichtproportional, Vektorfont: hier mu sehr umstndlich
-       und zeitaufwendig Zeichen fr Zeichen ausgegeben werden,
-       da sonst die Abstnde (auch mit v_justified()) nicht stimmen
+    /* Fett , nichtproportional, Vektorfont: hier muû sehr umstÑndlich
+       und zeitaufwendig Zeichen fÅr Zeichen ausgegeben werden,
+       da sonst die AbstÑnde (auch mit v_justified()) nicht stimmen
        und die Schrift "schwabbelt". Dummerweise wird dieser Schrifttyp sehr
-       hufig in QED benutzt werden. */
+       hÑufig in QED benutzt werden. */
     if ( (vdiattr & HL_BOLD) && font_vector  )
     {
         char cbuf[2];
@@ -627,7 +624,7 @@ static void output_text(short x, short y, short *width,
     last_italic = FALSE;
 }
 
-/* Ausgabe eines nicht expandierten Strings; Ersatz fr die alten Funktionen
+/* Ausgabe eines nicht expandierten Strings; Ersatz fÅr die alten Funktionen
  * str_out() und str_out_b(). String wird inline expandiert.
  * x,y,w legen Koordinaten fest, offset ist Zeichenoffset (nicht expandiert),
  * zp die auszugebende Zeile, block_start und block_end legen die Blockmarkierungen fest:
@@ -635,13 +632,13 @@ static void output_text(short x, short y, short *width,
  * block_end == -1: kein Block oder Block bis Zeilenende (je nach block_start), sonst: Blockende
  */
    
-static void str_out( short x, short y, short w, short offset, LINEP zp, short block_start, short block_end )
+static void str_out( short x, short y, short w, short offset, ZEILEP zp, short block_start, short block_end )
 {
-    char *curr_text;   /* derzeitige Zeichenposition im globalen Puffer text (fr kopieren/tab-Expansion) */
+    char *curr_text;   /* derzeitige Zeichenposition im globalen Puffer text (fÅr kopieren/tab-Expansion) */
     char *curr_line;   /* aktuelle Zeichenposition in der nicht expandierten Zeile */
     HL_LINE cacheline; /* aktuelle Syntax-Cache-Zeile */
     HL_ELEM flags;     /* aktuelle Syntax-Cache-Flags */
-    HL_ELEM len;       /* aktuelle Textlnge aus Syntax-Cache */
+    HL_ELEM len;       /* aktuelle TextlÑnge aus Syntax-Cache */
 
     short fgcolor;       /* aktuelle Vordergrund-(Text-)Farbe */
     short bgcolor;       /* aktuelle Hintergrundfarbe */
@@ -649,7 +646,7 @@ static void str_out( short x, short y, short w, short offset, LINEP zp, short bl
     short hlselcolor;    /* selektierte Vordergrund-Farbe aus Syntax-Cache */
     short vdiattr;       /* VDI-Attribute */
     short width;         /* aktuelle Breite des expandierten Strings in Pixeln */
-    short chars_done = 0;/* bereits bearbeitete expandierte Zeichen (fr Offset-Berechnung) */
+    short chars_done = 0;/* bereits bearbeitete expandierte Zeichen (fÅr Offset-Berechnung) */
     bool isblock = block_start >= 0 || block_end > 0;    /* Ist ein Block in dieser Zeile? */
     bool blockmode = block_start == 0 && block_end != 0; /* Blockmodus ein? */
     
@@ -672,7 +669,7 @@ static void str_out( short x, short y, short w, short offset, LINEP zp, short bl
             bgcolor = bg_color;
         else
         {
-            /* wenn kein Block in dieser Zeile, Hintergrund komplett durchfrben */
+            /* wenn kein Block in dieser Zeile, Hintergrund komplett durchfÑrben */
             fill_area(x, y, w, font_hcell, bg_color);
             bgcolor = -1;
         }
@@ -703,11 +700,11 @@ static void str_out( short x, short y, short w, short offset, LINEP zp, short bl
 
         while (len)
         {
-            /* Zeichen in text-Puffer bertragen */
+            /* Zeichen in text-Puffer Åbertragen */
             if (tab && *curr_line == '\t') /* TABs werden inline expandiert */
             {
                 short i;
-                for (i = ((short)(curr_text - text) + chars_done) % tab_size; i < tab_size; i++)
+                for (i= ((short)(curr_text-text)+chars_done) % tab_size; i<tab_size; i++)
                 {
                     *(curr_text++) = ' ';
                     width += font_wcell;
@@ -765,7 +762,7 @@ outer_loop:;
         x += width;
     }
     
-    /* Rest der Zeile frben und Umbruchmarke */
+    /* Rest der Zeile fÑrben und Umbruchmarke */
     if (isblock)
         fill_area_italic(x, y, w, font_hcell, bgcolor, last_italic);
     if (IS_OVERLEN(zp) || (umbrechen && IS_ABSATZ(zp) && show_end))
@@ -779,7 +776,7 @@ outer_loop:;
 void line_out(WINDOWP window, TEXTP t_ptr, short wy)
 {
     short       y;
-    LINEP  col;
+    ZEILEP  col;
 
     adjust_text(t_ptr);                 /* Zeilenpuffer an exp_len anpassen */
     tab = t_ptr->loc_opt->tab;
@@ -810,7 +807,7 @@ void line_out(WINDOWP window, TEXTP t_ptr, short wy)
 void bild_out(WINDOWP window, TEXTP t_ptr)
 {
     short       x, y, w;
-    LINEP  line;
+    ZEILEP  lauf;
     short       min_col, max_col, max_y;
     GRECT       c;
 
@@ -827,8 +824,8 @@ void bild_out(WINDOWP window, TEXTP t_ptr)
         head_out(window, t_ptr);
 
     min_col = 0;
-    max_col = (short) min(window->w_height - 1, t_ptr->text.lines - window->doc.y - 1);
-    max_y   = y + window->work.g_h - 1;
+    max_col = (short) min(window->w_height - 1, t_ptr->text.lines - window->doc.y-1);
+    max_y   = y + window->work.g_h-1;
     if (get_clip(&c))                   /* nicht alles malen */
     {
         short y2 = c.g_y - y;
@@ -838,8 +835,8 @@ void bild_out(WINDOWP window, TEXTP t_ptr)
         max_y = min(max_y, c.g_y + c.g_h - 1);
     }
     y += (min_col * font_hcell);
-    line = get_wline(t_ptr, window->doc.y + min_col);
-    if (line != NULL)
+    lauf = get_wline(t_ptr, window->doc.y + min_col);
+    if (lauf != NULL)
     {
         short   xoffset, i;
 
@@ -848,26 +845,26 @@ void bild_out(WINDOWP window, TEXTP t_ptr)
         {
             long    y_r;
 
-            y_r = window->doc.y + min_col;
-            for (i = min_col ; i <= max_col; y_r++, y += font_hcell, NEXT(line), i++)
+            y_r = window->doc.y+min_col;
+            for (i=min_col ; i<=max_col; y_r++,y+=font_hcell,NEXT(lauf),i++)
             {
                 /* Block nicht sichtbar */
                 if (y_r < t_ptr->z1 || y_r > t_ptr->z2)
-                    str_out(x, y, w, xoffset, line, -1, -1);
+                    str_out(x, y, w, xoffset, lauf, -1, -1);
                 else
-                    str_out(x, y, w, xoffset, line,
+                    str_out(x, y, w, xoffset, lauf,
                             (y_r == t_ptr->z1) ? t_ptr->x1 : 0,
                             (y_r == t_ptr->z2) ? t_ptr->x2 : -1);
             }
         }
         else
         {
-            for (i=min_col ; i<=max_col; y+=font_hcell,NEXT(line),i++)
-                str_out(x,y,w,xoffset,line, -1, -1);
+            for (i=min_col ; i<=max_col; y+=font_hcell,NEXT(lauf),i++)
+                str_out(x,y,w,xoffset,lauf, -1, -1);
         }
     }
 
-    /* Fenster hher als Text lang ist -> Rest lschen */
+    /* Fenster hîher als Text lang ist -> Rest lîschen */
     if (y < max_y)
         fill_area(x, y, w, (max_y - y + 1), bg_color);
 }
@@ -876,7 +873,7 @@ void bild_blkout(WINDOWP window, TEXTP t_ptr, long z1, long z2)
 /* Alle Textzeilen zwischen z1 und z2 werden neu ausgegeben */
 {
     short       i, x, y, w, xoffset;
-    LINEP  line;
+    ZEILEP  lauf;
     short       max_col;
     long        lines, y_r;
 
@@ -897,7 +894,7 @@ void bild_blkout(WINDOWP window, TEXTP t_ptr, long z1, long z2)
     xoffset = (short) window->doc.x;
     max_col = (short) min(window->w_height-1, t_ptr->text.lines-window->doc.y-1);
     y_r   = window->doc.y;
-    line = get_wline(t_ptr, y_r);
+    lauf = get_wline(t_ptr, y_r);
 
     if (t_ptr->block)
         for (i=0; i<=max_col; i++,y+=font_hcell,y_r++)
@@ -905,20 +902,20 @@ void bild_blkout(WINDOWP window, TEXTP t_ptr, long z1, long z2)
             if (y_r>=z1 && y_r<=z2)
             {
                 if (y_r<t_ptr->z1 || y_r>t_ptr->z2)
-                    str_out(x,y,w,xoffset,line, -1, -1);
+                    str_out(x,y,w,xoffset,lauf, -1, -1);
                 else
-                    str_out(x, y, w, xoffset, line,
+                    str_out(x, y, w, xoffset, lauf,
                             (y_r == t_ptr->z1) ? t_ptr->x1 : 0,
                             (y_r == t_ptr->z2) ? t_ptr->x2 : -1);
             }
-            NEXT(line);
+            NEXT(lauf);
         }
     else
         for (i=0; i<=max_col; i++,y+=font_hcell,y_r++)
         {
             if (y_r>=z1 && y_r<=z2)
-                str_out(x,y,w,xoffset,line, -1, -1);
-            NEXT(line);
+                str_out(x,y,w,xoffset,lauf, -1, -1);
+            NEXT(lauf);
         }
 }
 

@@ -62,7 +62,7 @@ TEXTP new_text(short link)
 			text_list = new;
 		else
 		{
-			/* Text am Ende der Liste anhngen */
+			/* Text am Ende der Liste anh„ngen */
 			p = text_list;
 			while (p->next != NULL)
 				p = p->next;
@@ -89,12 +89,12 @@ void destruct_text(TEXTP t_ptr)
 		text_list = text_list->next;
 	else
 	{
-		/* PREVnger suchen */
+		/* Vorg„nger suchen */
 		p = text_list;
 		while (p->next != t_ptr)
 			p = p->next;
 
-		/* und Aushngen */	
+		/* und Aush„ngen */	
 		p->next = t_ptr->next;
 	}
 	kill_textring(&t_ptr->text);
@@ -198,75 +198,75 @@ void update_loc_opt(void)
 }
 
 /*
- * Leerzeichen/TABs am Zeilenden lschen.
+ * Leerzeichen/TABs am Zeilenden l”schen.
 */
 bool strip_endings(TEXTP t_ptr)
 {
-	LINEP	line;
+	ZEILEP	lauf;
 	short		i;
 	char		c;
 
-	line = FIRST(&t_ptr->text);
-	while (!IS_TAIL(line))
+	lauf = FIRST(&t_ptr->text);
+	while (!IS_TAIL(lauf))
 	{
-		for (i=line->len; (--i) >= 0; )
+		for (i=lauf->len; (--i) >= 0; )
 		{
-			c = TEXT(line)[i];
+			c = TEXT(lauf)[i];
 			if (c != ' ' && c != '\t')
 				break;
 		}
 		i++;
-		if (i < line->len)								/* Zeile verkrzen */
+		if (i < lauf->len)								/* Zeile verkrzen */
 		{
-			REALLOC(&line,i,i-line->len);
+			REALLOC(&lauf,i,i-lauf->len);
 			t_ptr->moved++;
 		}
-		NEXT(line);
+		NEXT(lauf);
 	}
 	return (t_ptr->moved != 0);
 }
 
 /*
- * Lngste Zeile suchen
+ * L„ngste Zeile suchen
 */
 short get_longestline(TEXTP t_ptr)
 {
-	LINEP	line;
+	ZEILEP	lauf;
 	short		len;
 	
 	if (t_ptr->max_line != NULL)
 	{
-		line = t_ptr->cursor_line;
-		line->exp_len = bild_pos(line->len, line, t_ptr->loc_opt->tab, t_ptr->loc_opt->tabsize) + 1;
+		lauf = t_ptr->cursor_line;
+		lauf->exp_len = bild_pos(lauf->len, lauf, t_ptr->loc_opt->tab, t_ptr->loc_opt->tabsize) + 1;
 	
-		if (line->exp_len >= t_ptr->max_line->exp_len)	/* lnger als die Lngste */
+		if (lauf->exp_len >= t_ptr->max_line->exp_len)	/* l„nger als die L„ngste */
 		{
 			t_ptr->max_line->is_longest = FALSE;	/* alte ist nicht mehr */
-			t_ptr->max_line = line;
-			line->is_longest = TRUE;
+			t_ptr->max_line = lauf;
+			lauf->is_longest = TRUE;
 		}
 		else									
 		{
-			if (line->is_longest)			/* wurde die Lngste krzer */
-				t_ptr->max_line = NULL;		/*	-> neue lngeste suchen */
+			if (lauf->is_longest)			/* wurde die L„ngste krzer */
+				t_ptr->max_line = NULL;		/*	-> neue l„ngeste suchen */
 		}
 	}
 		
 	if (t_ptr->max_line == NULL)			/* neu suche */
 	{
 		len = 0;
-		line = FIRST(&t_ptr->text);
-		while (!IS_TAIL(line))
+		lauf = FIRST(&t_ptr->text);
+		while (!IS_TAIL(lauf))
 		{
-			if (line->exp_len == -1)		/* Lnge hat sich gendert */
-				line->exp_len = bild_pos(line->len, line, t_ptr->loc_opt->tab, t_ptr->loc_opt->tabsize) + 1;
-			if (line->exp_len > len)
+			if (lauf->exp_len == -1)		/* L„nge hat sich ge„ndert */
+				lauf->exp_len = bild_pos(lauf->len, lauf, t_ptr->loc_opt->tab, t_ptr->loc_opt->tabsize) + 1;
+			if (lauf->exp_len > len)
 			{
-				t_ptr->max_line = line;
-				len = line->exp_len;
+				t_ptr->max_line = lauf;
+				len = lauf->exp_len;
 			}
-			line->is_longest = FALSE;		/* berall lschen */
-			NEXT(line);
+			lauf->is_longest = FALSE;		/* berall l”schen */
+			NEXT(lauf);
 		}
 		t_ptr->max_line->is_longest = TRUE;
 	}

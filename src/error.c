@@ -25,7 +25,7 @@ TEXTP	last_errtext = NULL;
 typedef enum {nil, read_text, read_name, read_zeile, read_spalte, read_fehler} TOKEN;
 
 #define MAX_TOKEN		10				/* Anzahl der Token */
-#define MAX_ERRLEN	120			/* Lnge der Fehlerzeile */
+#define MAX_ERRLEN	120			/* LÑnge der Fehlerzeile */
 
 typedef struct
 {
@@ -134,10 +134,10 @@ static bool	readin_name(char *zeile, short *position)
 	PATH	tmp;
 	short	i;
 
-	strcpy(tmp,"-+._~\\/A-Za-z0-9");				/* Zulssige Zeichen fr Dateinamen */
+	strcpy(tmp,"-+._~\\/A-Za-z0-9");				/* ZulÑssige Zeichen fÅr Dateinamen */
 	str2set(tmp, valid_char);
 	i = *position;
-	while ( 	(i < (short)strlen(zeile)) && 	/* Sonderbehandlung fr ':', nur im Pfad erlaubt! */
+	while ( 	(i < (short)strlen(zeile)) && 	/* Sonderbehandlung fÅr ':', nur im Pfad erlaubt! */
 				((setin(valid_char, zeile[i])) ||
 				 (zeile[i] == ':' && ((zeile[i+1] == '\\') || zeile[i+1] == '/'))))
 	{
@@ -278,15 +278,15 @@ void	handle_error(TEXTP t_ptr)
 
 	if (last_errtext != NULL && t_ptr != last_errtext)
 	{
-		LINEP line = t_ptr->cursor_line;
+		ZEILEP lauf = t_ptr->cursor_line;
 	
 		t_ptr = last_errtext;
-		line = t_ptr->cursor_line;
-		/* nchste Zeile setzen */		
+		lauf = t_ptr->cursor_line;
+		/* nÑchste Zeile setzen */		
 		if (!IS_LAST(t_ptr->cursor_line))
 		{
-			NEXT(line);
-			t_ptr->cursor_line = line;
+			NEXT(lauf);
+			t_ptr->cursor_line = lauf;
 			t_ptr->xpos = 0;
 			t_ptr->ypos++;
 			make_chg(t_ptr->link, POS_CHANGE, 0);
@@ -300,7 +300,7 @@ void	handle_error(TEXTP t_ptr)
 		{
 			last_errtext = t_ptr;
 
-			icon = load_edit(dateiname, FALSE);			/* Laden als Text und ffnen */
+			icon = load_edit(dateiname, FALSE);			/* Laden als Text und îffnen */
 			if (icon > 0)
 			{
 				if (fehlerspalte > 0)
@@ -329,7 +329,7 @@ void	handle_error(TEXTP t_ptr)
 }
 
 /*
- * Die Dialogbox fr die Fehlerzeile
+ * Die Dialogbox fÅr die Fehlerzeile
  */
 void	fehler_box(void)
 {

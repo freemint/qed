@@ -5,13 +5,13 @@
 #include "hl.h"
 
 #undef MAGIC
-#define MAGIC		0xFED1
-#define MAX_ANZ		262 /*261*/ /* 132 */	/* 67 */ 	
-#define BLOCK_SIZE	(MAX_ANZ * 4)
-#define BLOCKANZ	50 /* 100 */  /* 200 */		/* Fr einen malloc */
-#define MEMSIZE		((long)BLOCK_SIZE * BLOCKANZ)	/* fr einen malloc */
+#define MAGIC			0xFED1
+#define MAX_ANZ		 262 /*261*/ /* 132 */	/* 67 */ 	
+#define BLOCK_SIZE	(MAX_ANZ*4)
+#define BLOCKANZ		50 /* 100 */  /* 200 */			/* FÅr einen malloc */
+#define MEMSIZE		((long)BLOCK_SIZE*BLOCKANZ)	/* fÅr einen malloc */
 
-#define MEM_SIZE(x)	(((x)+2+3)&(~3))						/* 2 Bytes drauf fr den Kopf und auf long glattmachen */
+#define MEM_SIZE(x)	(((x)+2+3)&(~3))						/* 2 Bytes drauf fÅr den Kopf und auf long glattmachen */
 #define MEM_ADD(x,d)	(BLOCK*)((char*)(x)+(d))
 #define MEM_SUB(x,d)	(BLOCK*)((char*)(x)-(d))
 
@@ -23,18 +23,17 @@ typedef union tblock
 		unsigned short size;		/* 2 Bytes */
 		union tblock *next;		/* 4 Bytes */
 		union tblock *prev;		/* 4 Bytes => 12 Bytes */
-	} free;
+	} FREI;
 	struct
 	{
 		unsigned short size;		/* 2 Bytes */
-	} used;
+	} USED;
 } BLOCK;
 
 static bool	mem_need_BS,			/* BS hat keinen Speicher mehr */
 		mem_need_TQ;			/* TQ hat keinen Speicher mehr */
-
-static BLOCK *	free_list[MAX_ANZ+1+1];		/* ein Dummy am Ende */
-static void *	block_list;
+static BLOCK*	free_list[MAX_ANZ+1+1];		/* ein Dummy am Ende */
+static void*	block_list;
 
 
 static bool new_block(void)
@@ -51,10 +50,8 @@ static bool new_block(void)
 	}
 	else
 		ptr = NULL;
-
 	if (anz < MEMSIZE + 20000L)
 		mem_need_BS = TRUE;
-
 	if (ptr == NULL)
 	{
 		if (anz >= 4 + BLOCK_SIZE + 4)
@@ -77,35 +74,34 @@ static bool new_block(void)
 		mem_need_TQ = FALSE;
 	}
 
-	*(void **)ptr = block_list;			/* In Liste einhngen */
+	*(void**)ptr = block_list;			/* In Liste einhÑngen */
 	block_list = ptr;
 
 	adr = MEM_ADD(ptr,4);
 	free_list[MAX_ANZ] = adr;
 	pre = NULL;
-	while ((--i) > 0)
+	while ((--i)>0)
 	{
 		adr2 = MEM_ADD(adr, BLOCK_SIZE);
-		adr->free.magic = MAGIC;
-		adr->free.size = BLOCK_SIZE;
-		adr->free.next = adr2;
-		adr->free.prev = pre;
+		adr->FREI.magic = MAGIC;
+		adr->FREI.size = BLOCK_SIZE;
+		adr->FREI.next = adr2;
+		adr->FREI.prev = pre;
 		pre = adr;
 		adr = adr2;
 	}
 	adr2 = MEM_ADD(adr, BLOCK_SIZE);
-	adr->free.magic = MAGIC;
-	adr->free.size = BLOCK_SIZE;
-	adr->free.next = NULL;
-	adr->free.prev = pre;
+	adr->FREI.magic = MAGIC;
+	adr->FREI.size = BLOCK_SIZE;
+	adr->FREI.next = NULL;
+	adr->FREI.prev = pre;
 
 	*(long*)adr2 = 0L;			/* damit bei FREE da kein MAGIC steht */
 
 	return TRUE;
 }
 
-static void *
-MALLOC(unsigned short size)
+static void *MALLOC(unsigned short size)
 {
 	BLOCK *adr, **feld;
 
@@ -117,69 +113,64 @@ MALLOC(unsigned short size)
 		return NULL;
 	}
 
-	feld = (BLOCK**)((char*)free_list + size);
-	if (*feld == NULL)						/* kein passender */
+	feld = (BLOCK**)((char*)free_list+size);
+	if (*feld == NULL)											/* kein passender */
 	{
-		if (size + 16 <= BLOCK_SIZE)				/* greren Block suchen und teilen */
+		if (size+16<=BLOCK_SIZE)								/* grîûeren Block suchen und teilen */
 		{
 			BLOCK *adr2;
 			short	i;
 
-			i = size + 16; feld += 4;			/* 16 Bytes kleinster Block zum Abspalten */
-			while (TRUE)					/* greren Block suchen */
+			i = size+16; feld += 4;								/* 16 Bytes kleinster Block zum Abspalten */
+			while (TRUE)											/* grîûeren Block suchen */
 			{
-				if (*feld++ != NULL) 
-					break;
-				i += 4;
+				if (*feld++!=NULL) 
+					break; i+=4;
 			}
 			feld--;
-			if (i == (BLOCK_SIZE + 4))			/* kein Block vorhanden */
+			if (i==(BLOCK_SIZE+4))								/* kein Block vorhanden */
 			{
 				if (!new_block())
 					return NULL;
-				feld--;
-				i -= 4;
+				feld--; i-=4;
 			}
-			adr = *feld;					/* Zeiger auf Block */
-			*feld = adr->free.next;				/* Aushngen */
-			if (*feld != NULL)
-				(*feld)->free.prev = NULL;
-			adr->used.size = size;
+			adr = *feld;											/* Zeiger auf Block */
+			*feld = adr->FREI.next;								/* AushÑngen */
+			if (*feld!=NULL) (*feld)->FREI.prev = NULL;
+			adr->USED.size = size;
 
-			/* Rest in die free_list einhngen */
+			/* Rest in die free_list einhÑngen */
 			adr2 = MEM_ADD(adr,size);			/* Zeiger auf Restblock */
 			feld = (BLOCK**)((char*)feld - size);
-			i -= size;					/* Restgre */
-			adr2->free.magic = MAGIC;			/* Einhngen */
-			adr2->free.size = i;
-			adr2->free.next = *feld;
-			adr2->free.prev = NULL;
-			if (*feld != NULL) (*feld)->free.prev = adr2;
+			i -= size;					/* Restgrîûe */
+			adr2->FREI.magic = MAGIC;			/* EinhÑngen */
+			adr2->FREI.size = i;
+			adr2->FREI.next = *feld;
+			adr2->FREI.prev = NULL;
+			if (*feld != NULL) (*feld)->FREI.prev = adr2;
 			*feld = adr2;
 		}
-		else							/* grten Block nehmen */
+		else															/* grîûten Block nehmen */
 		{
 			feld = (BLOCK**)(&free_list[MAX_ANZ]);
-			if (*feld == NULL)				/* kein Block vorhanden */
+			if (*feld==NULL)										/* kein Block vorhanden */
 				if (!new_block())
 					return NULL;
-			adr = *feld;					/* Zeiger auf Block */
-			*feld = adr->free.next;				/* Aushngen */
-			if (*feld!=NULL) (*feld)->free.prev = NULL;
-			adr->used.size = BLOCK_SIZE;
+			adr = *feld;											/* Zeiger auf Block */
+			*feld = adr->FREI.next;								/* AushÑngen */
+			if (*feld!=NULL) (*feld)->FREI.prev = NULL;
+			adr->USED.size = BLOCK_SIZE;
 		}
 	}
-	else								/* passend vorhanden */
+	else																/* passend vorhanden */
 	{
-		adr = *feld;						/* Zeiger auf Block */
-		*feld = adr->free.next;					/* Aushngen */
-		if (*feld != NULL) (*feld)->free.prev = NULL;
-		adr->used.size = size;
+		adr = *feld;												/* Zeiger auf Block */
+		*feld = adr->FREI.next;									/* AushÑngen */
+		if (*feld!=NULL) (*feld)->FREI.prev = NULL;
+		adr->USED.size = size;
 	}
-	
 	if (free_list[MAX_ANZ]==NULL)
 		mem_need_TQ = TRUE;
-	
 	return(MEM_ADD(adr,2));
 }
 
@@ -188,30 +179,30 @@ static void FREE(void *adr)
 	short	size1, size2;
 	BLOCK *adr1, *adr2, **feld;
 
-	adr1 = MEM_SUB(adr,2);						/* adr1 auf ersten Block */
-	size1 = adr1->used.size;
-	adr2 = MEM_ADD(adr1,size1);					/* adr2 auf Nachfolger */
-	size2 = adr2->free.size;
-	if (adr2->free.magic==MAGIC && (size1+size2<=BLOCK_SIZE))
-	/* freier Block dahinter => Zusammenfgen */
+	adr1 = MEM_SUB(adr,2);										/* adr1 auf ersten Block */
+	size1 = adr1->USED.size;
+	adr2 = MEM_ADD(adr1,size1);								/* adr2 auf Nachfolger */
+	size2 = adr2->FREI.size;
+	if (adr2->FREI.magic==MAGIC && (size1+size2<=BLOCK_SIZE))
+	/* freier Block dahinter => ZusammenfÅgen */
 	{
 		BLOCK	*pre;
 
-		pre = adr2->free.prev;						/* Aushngen */
-		if (pre==NULL)							/* erster in der Liste */
-			*(BLOCK**)((char*)free_list+size2) = adr2->free.next;
+		pre = adr2->FREI.prev;									/* AushÑngen */
+		if (pre==NULL)												/* erster in der Liste */
+			*(BLOCK**)((char*)free_list+size2) = adr2->FREI.next;
 		else
-			pre->free.next = adr2->free.next;
-		if (adr2->free.next!=NULL)					/* es gibt Nachfolger */
-			adr2->free.next->free.prev = pre;
+			pre->FREI.next = adr2->FREI.next;
+		if (adr2->FREI.next!=NULL)								/* es gibt Nachfolger */
+			adr2->FREI.next->FREI.prev = pre;
 		size1 += size2;
 	}
-	feld = (BLOCK**)((char*)free_list+size1);				/* Einhngen */
-	adr1->free.magic = MAGIC;
-	adr1->free.size = size1;
-	adr1->free.next = *feld;
-	adr1->free.prev = NULL;
-	if (*feld!=NULL) (*feld)->free.prev = adr1;
+	feld = (BLOCK**)((char*)free_list+size1);				/* EinhÑngen */
+	adr1->FREI.magic = MAGIC;
+	adr1->FREI.size = size1;
+	adr1->FREI.next = *feld;
+	adr1->FREI.prev = NULL;
+	if (*feld!=NULL) (*feld)->FREI.prev = adr1;
 	*feld = adr1;
 
 	if (size1 == BLOCK_SIZE)
@@ -220,7 +211,7 @@ static void FREE(void *adr)
 
 /* =========================================================== */
 
-void INSERT(LINEP *a, short pos, short delta, char *str)
+void INSERT(ZEILEP *a, short pos, short delta, char *str)
 {
 	char	*ptr;
 	
@@ -230,33 +221,32 @@ void INSERT(LINEP *a, short pos, short delta, char *str)
 
 /* =========================================================== */
 
-char *
-REALLOC(LINEP *a, short pos, short delta)
+char *REALLOC(ZEILEP *a, short pos, short delta)
 {
-	LINEP	col;
+	ZEILEP	col;
 	short		new_len;
 	BLOCK 	*adr;
 
 	col = *a;
 	if (delta == 0) 
-		return (TEXT(col) + pos);
+		return(TEXT(col) + pos);
 
-	new_len = col->len + delta;
+	new_len = col->len+delta;
 	if (new_len < 0 || new_len > MAX_LINE_LEN)
 	{
 		debug("\aREALLOC: new_len= %d (> %d)\n", new_len, MAX_LINE_LEN);
 		note(1, 0, FATALMEM);
 		return NULL;
 	}
-	adr = MEM_SUB(col, 2);
-	if (MEM_SIZE((unsigned short)sizeof(LINE)+new_len+1) != adr->used.size)
+	adr = MEM_SUB(col,2);
+	if (MEM_SIZE((unsigned short)sizeof(ZEILE)+new_len+1) != adr->USED.size)
 	{
-		LINEP	new;
+		ZEILEP	new;
 
-		new = MALLOC( (short) sizeof(LINE) + new_len + 1);
+		new = MALLOC( (short) sizeof(ZEILE) + new_len + 1);
 		if (new == NULL)
 			return NULL;
-		memcpy(new, col, sizeof(LINE)+pos);
+		memcpy(new, col, sizeof(ZEILE)+pos);
 		if (delta<0)
 		{
 			new->len = new_len;
@@ -269,8 +259,8 @@ REALLOC(LINEP *a, short pos, short delta)
 		}
 		new->is_longest = col->is_longest;
 		FREE(col);
-		new->prev->next = new;
-		new->next->prev = new;
+		new->vorg->nachf = new;
+		new->nachf->vorg = new;
 		*a = new;
 		new->exp_len = -1;
 		return(TEXT(new)+pos);
@@ -292,11 +282,11 @@ REALLOC(LINEP *a, short pos, short delta)
 	}
 }
 
-LINEP new_col(char *str, short l)
+ZEILEP new_col(char *str, short l)
 {
-	LINEP 	a;
+	ZEILEP 	a;
 	
-	a = (LINEP)MALLOC( (short)sizeof(LINE)+l+1);
+	a = (ZEILEP)MALLOC( (short) sizeof(ZEILE)+l+1);
 	if (a != NULL)
 	{
 		a->info = 0;
@@ -310,63 +300,63 @@ LINEP new_col(char *str, short l)
 	return(a);
 }
 
-void free_col(RINGP rp, LINEP col)
+void free_col(RINGP rp, ZEILEP col)
 {
 	(void) rp;
 	FREE(col);
 }
 
-/* Zeile nach WO einfgen	  */
-LINEP col_insert(RINGP rp, LINEP wo, LINEP was)
+/* Zeile nach WO einfÅgen	  */
+ZEILEP col_insert(RINGP rp, ZEILEP wo, ZEILEP was)
 {
-	LINEP help;
+	ZEILEP help;
 
-	help = wo->next;
-	help->prev = was;
-	was->next = help;
-	was->prev = wo;
-	wo->next = was;
+	help = wo->nachf;
+	help->vorg = was;
+	was->nachf = help;
+	was->vorg = wo;
+	wo->nachf = was;
 	if (rp)
 		hl_insert( rp, was );
 	return was;
 }
 
-/* Zeile am Ende anhngen */
-void col_append(RINGP rp, LINEP was)
+/* Zeile am Ende anhÑngen */
+void col_append(RINGP rp, ZEILEP was)
 {
-	LINEP help;
+	ZEILEP help;
 
 	help = LAST(rp);
-	was->prev = help;
-	was->next = help->next;
-	help->next = was;
-	rp->tail.prev = was;
+	was->vorg = help;
+	was->nachf = help->nachf;
+	help->nachf = was;
+	rp->tail.vorg = was;
 	rp->lines++;
 	hl_insert( rp, was );
 }
 
-void col_delete(RINGP rp, LINEP was)
+void col_delete(RINGP rp, ZEILEP was)
 {
 	hl_remove( rp, was );
-	was->prev->next = was->next;
-	was->next->prev = was->prev;
+	was->vorg->nachf = was->nachf;
+	was->nachf->vorg = was->vorg;
 	FREE(was);
 	rp->lines--;
 }
 
-void col_concate(RINGP rp, LINEP *wo)
+void col_concate(RINGP rp, ZEILEP *wo)
 {
-	LINEP	help, col;
+	ZEILEP	help, col;
 	bool	absatz;
 
 	col = *wo;
-	help = col->next;
+	help = col->nachf;
 	if (col->len)
 	{
 		absatz = help->info&ABSATZ;
 		INSERT(&col, col->len, help->len, TEXT(help));
-		help->next->prev = col;
-		col->next = help->next;
+		help->nachf->vorg = col;
+		col->nachf = help->nachf;
 		if (rp) {
 			hl_remove( rp, help );
 			hl_update_zeile( rp, col );
@@ -380,8 +370,8 @@ void col_concate(RINGP rp, LINEP *wo)
 	}
 	else
 	{
-		col->prev->next = help;
-		help->prev = col->prev;
+		col->vorg->nachf = help;
+		help->vorg = col->vorg;
 		if (rp)
 			hl_remove( rp, col );
 		FREE(col);
@@ -389,9 +379,9 @@ void col_concate(RINGP rp, LINEP *wo)
 	}
 }
 
-void col_split(RINGP rp, LINEP *col,short pos)
+void col_split(RINGP rp, ZEILEP *col,short pos)
 {
-	LINEP	new,help;
+	ZEILEP	new,help;
 	short	anz;
 	bool	absatz, overlen;
 
@@ -403,7 +393,7 @@ void col_split(RINGP rp, LINEP *col,short pos)
 	if (pos==0)
 	{
 		new = new_col("",0);
-		col_insert(rp, help->prev, new);
+		col_insert(rp, help->vorg,new);
 		*col = new;
 	}
 	else if (pos<help->len)
@@ -426,17 +416,17 @@ void col_split(RINGP rp, LINEP *col,short pos)
 		col_insert(rp, help,new);
 	}
 	if (absatz) 
-		(*col)->next->info |= ABSATZ;
+		(*col)->nachf->info |= ABSATZ;
 	else 
-		(*col)->next->info &= ~ABSATZ;
+		(*col)->nachf->info &= ~ABSATZ;
 	if (overlen) 
-		(*col)->next->info |= OVERLEN;
+		(*col)->nachf->info |= OVERLEN;
 }
 
 /* 
  * Wieviel WhiteSpace-Zeichen stehen am Anfang der Zeile?
 */
-short col_offset(RINGP rp, LINEP col)
+short col_offset(RINGP rp, ZEILEP col)
 {
 	short	pos;
 	char c, *str;
@@ -453,12 +443,12 @@ short col_offset(RINGP rp, LINEP col)
 	return pos;
 }
 
-short col_einrucken(RINGP rp, LINEP *col)
+short col_einrucken(RINGP rp, ZEILEP *col)
 {
-	LINEP	vor_col;
-	short	length;
+	ZEILEP	vor_col;
+	short		length;
 
-	vor_col = (*col)->prev;
+	vor_col = (*col)->vorg;
 	if (!IS_HEAD(vor_col))
 	{
 		length = col_offset(rp, vor_col);
@@ -474,23 +464,23 @@ short col_einrucken(RINGP rp, LINEP *col)
 	return(length);
 }
 
-LINEP get_line(RINGP r, long y)
+ZEILEP get_line(RINGP r, long y)
 {
-	LINEP	line;
+	ZEILEP	lauf;
 
-	if (y < 0 || y >= r->lines) return NULL;
-	if (y < (r->lines >> 1))
+	if (y<0 || y>=r->lines) return NULL;
+	if (y<(r->lines>>1))
 	{
-		line = FIRST(r);
-		while ((--y) >=0) NEXT(line);
+		lauf = FIRST(r);
+		while ((--y)>=0) NEXT(lauf);
 	}
 	else
 	{
-		line = LAST(r);
+		lauf = LAST(r);
 		y = r->lines-y;
-		while ((--y) >0) PREV(line);
+		while ((--y)>0) VORG(lauf);
 	}
-	return line;
+	return lauf;
 }
 
 /*=========================================================================*/
@@ -503,17 +493,17 @@ LINEP get_line(RINGP r, long y)
 
 void init_textring(RINGP r)
 {
-	LINEP	a;
+	ZEILEP	a;
 
 	r->head.info = HEAD;
 	r->tail.info = TAIL;
 	a = new_col("",0);
-	a->next = &r->tail;
-	a->prev = &r->head;
+	a->nachf = &r->tail;
+	a->vorg = &r->head;
 	LAST(r) = a;
-	r->tail.next = NULL;
+	r->tail.nachf = NULL;
 	FIRST(r) = a;
-	r->head.prev = NULL;
+	r->head.vorg = NULL;
 	r->lines = 1;
 	r->ending = lns_tos;
 	r->max_line_len = MAX_LINE_LEN;
@@ -522,26 +512,26 @@ void init_textring(RINGP r)
 
 long textring_bytes(RINGP r)
 {
-	LINEP	line, ende;
+	ZEILEP	lauf, ende;
 	long		bytes, overlen = 0;
 
-	line = FIRST(r);
+	lauf = FIRST(r);
 	ende = LAST(r);
-	bytes = line->len;
-	while(line!=ende)
+	bytes = lauf->len;
+	while(lauf!=ende)
 	{
-		NEXT(line);
-		bytes += line->len;
-		if (IS_OVERLEN(line))
+		NEXT(lauf);
+		bytes += lauf->len;
+		if (IS_OVERLEN(lauf))
 			overlen++;
 	}
 
 	if (r->ending != lns_binmode)
 	{
-		/* plus Zeilenenden: 1 Zeichen fr alle */
+		/* plus Zeilenenden: 1 Zeichen fÅr alle */
 		bytes += r->lines - 1 - overlen;
 		if (r->ending == lns_tos)
-			/* fr TOS noch ein Zeichen */
+			/* fÅr TOS noch ein Zeichen */
 			bytes += r->lines - 1 - overlen;
 	}
 	return bytes;
@@ -549,19 +539,19 @@ long textring_bytes(RINGP r)
 
 void free_textring(RINGP r)
 {
-	LINEP line, frei, ende;
+	ZEILEP lauf, frei, ende;
 
 	frei = LAST(r);				/* letzte Zeile */
-	line = frei->prev;			/* vorletzte Zeile */
+	lauf = frei->vorg;			/* vorletzte Zeile */
 	ende = FIRST(r);				/* erste Zeile */
 	while (frei!=ende)
 	{
 		FREE(frei);
-		frei = line;
-		PREV(line);
+		frei = lauf;
+		VORG(lauf);
 	}
 	LAST(r) = frei;
-	frei->next = &r->tail;
+	frei->nachf = &r->tail;
 	REALLOC(&frei,0,-(frei->len));
 	frei->info = 0;
 	r->lines = 1;
@@ -578,27 +568,27 @@ void kill_textring(RINGP r)
 
 bool doppeln(RINGP old, RINGP new)
 {
-	LINEP	line, neu, a;
+	ZEILEP	lauf, neu, a;
 	long	lines, anz;
 	bool	erg;
 
 	erg = TRUE;
 	free_textring(new);
 	a	= FIRST(new);
-	line	= FIRST(old);
+	lauf	= FIRST(old);
 	anz	= old->lines;
 
-	INSERT(&a, 0, line->len, TEXT(line));
-	a->info = line->info;
-	NEXT(line);
+	INSERT(&a, 0, lauf->len, TEXT(lauf));
+	a->info = lauf->info;
+	NEXT(lauf);
 	NEXT(a);
 	lines = 1L;
 	while (lines<anz)
 	{
-		neu = new_col(TEXT(line),line->len);
-		neu->info = line->info;			/* ABSATZ mit kopieren */
-		col_insert(NULL,a->prev, neu);
-		NEXT(line);
+		neu = new_col(TEXT(lauf),lauf->len);
+		neu->info = lauf->info;			/* ABSATZ mit kopieren */
+		col_insert(NULL,a->vorg,neu);
+		NEXT(lauf);
 		lines++;
 		if (!ist_mem_frei())
 		{
@@ -621,16 +611,16 @@ bool ist_leer(RINGP r)
 
 void kill_memory(void)
 {
-	short	i;
-	BLOCK	**ptr;
-	void	*help;
+	short			i;
+	BLOCK			**ptr;
+	void			*help;
 	
 	for (i = MAX_ANZ + 1, ptr = free_list; (--i) >= 0; )
 		*ptr++ = NULL;
 
 	while (block_list != NULL)
 	{
-		help = *(void **)block_list;	/* nchster Block */
+		help = *(void**)block_list;		/* nÑchster Block */
 		Mfree(block_list);
 		block_list = help;
 	}
@@ -654,9 +644,9 @@ void init_memory(void)
 	BLOCK **ptr;
 
 	mem_need_TQ = mem_need_BS = FALSE;
-	for (i = MAX_ANZ + 1, ptr = free_list; (--i) >= 0; )
+	for (i=MAX_ANZ+1,ptr=free_list; (--i)>=0; )
 		*ptr++ = NULL;
-	*ptr = (void *)-1L;	/* fr schleifenende */
+	*ptr = (void*)-1L;	/* fÅr schleifenende */
 	block_list = NULL;
 }
 
@@ -673,7 +663,7 @@ void dump_freelist(void)
 		debug("dump_freelist...\n");
 		for (i = 0; i < MAX_ANZ + 1; i++)
 		{
-			if ((free_list[i] != NULL) && (free_list[i]->free.magic == MAGIC))
+			if ((free_list[i] != NULL) && (free_list[i]->FREI.magic == MAGIC))
 			{
 				BLOCK	*p;
 				short	d;
@@ -683,9 +673,9 @@ void dump_freelist(void)
 				while (p)
 				{
 					d++;
-					p = p->free.next;
+					p = p->FREI.next;
 				}
-				debug(" [%d].size: %d, Anzahl: %d\n", i, free_list[i]->free.size, d);
+				debug(" [%d].size: %d, Anzahl: %d\n", i, free_list[i]->FREI.size, d);
 			}
 		}
 	}
@@ -696,15 +686,15 @@ void dump_ring(RINGP r)
 {
 	if (debug_level)
 	{
-		LINEP	line;
+		ZEILEP	lauf;
 		char		*txt;
 			
-		line = FIRST(r);
-		while (!IS_TAIL(line))
+		lauf = FIRST(r);
+		while (!IS_TAIL(lauf))
 		{
-			txt = TEXT(line);
+			txt = TEXT(lauf);
 			debug("%s\n", txt);
-			NEXT(line);
+			NEXT(lauf);
 		}
 	}
 }

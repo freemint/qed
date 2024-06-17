@@ -141,7 +141,7 @@ static bool sel_font(PRN_CFG *cfg)
 */
 
 /*
- * Callbacks fr Sub-Dialog
+ * Callbacks fÅr Sub-Dialog
 */
 static long CDECL init_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
 {
@@ -245,7 +245,7 @@ static bool pdlg_dial(PRN_CFG *cfg)
 
 		disable_menu();
 
-		/* Unterdialog einhngen */
+		/* Unterdialog einhÑngen */
 		sub = malloc(sizeof(PDLG_SUB));
 		if (sub)
 		{
@@ -256,7 +256,7 @@ static bool pdlg_dial(PRN_CFG *cfg)
 			sub->sub_tree = printer_sub;			/* Zeiger auf den Unterdialog */
 			sub->init_dlg = init_qed_sub;			/* Initialisierungsfunktion */
 			sub->do_dlg = do_qed_sub;				/* Behandlungsfunktion */
-			sub->reset_dlg = reset_qed_sub;		/* Zurcksetzfunktion */
+			sub->reset_dlg = reset_qed_sub;		/* ZurÅcksetzfunktion */
 
 			sub->private1 = (long)cfg;
 
@@ -283,7 +283,7 @@ static bool pdlg_dial(PRN_CFG *cfg)
 					case WM_REDRAW :
 					case WM_MOVED :
 					case WM_SIZED:
-						if (ev.msg[3] != handle)	/* fr fremdes Fenster */
+						if (ev.msg[3] != handle)	/* fÅr fremdes Fenster */
 						{
 							handle_mdial_msg(ev.msg);
 						}
@@ -558,7 +558,7 @@ static bool qed_start_dial(PRN_CFG *cfg)
 
 /* --------------------------------------------------------------------------- */
 /*
- * Schnittstelle nach drauen
+ * Schnittstelle nach drauûen
 */
 void prn_cfg_dial(void)
 {

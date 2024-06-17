@@ -2,13 +2,13 @@
 #define _qed_ausgabe_h_
 
 /* Liefert die interne Position */
-extern short		inter_pos		(short x, LINEP a, bool tab, short tab_size);
+extern short		inter_pos		(short x, ZEILEP a, bool tab, short tab_size);
 
-/* Liefert die Lnge auf dem Bild */
-extern short		bild_len			(LINEP a, bool tab, short tab_size);
+/* Liefert die L„nge auf dem Bild */
+extern short		bild_len			(ZEILEP a, bool tab, short tab_size);
 
 /* Liefert die Position auf dem Bild */
-extern short		bild_pos			(short x, LINEP a, bool tab, short tab_size);
+extern short		bild_pos			(short x, ZEILEP a, bool tab, short tab_size);
 
 extern void		fill_area		(short x, short y, short w, short h, short color);
 extern short		out_s				(short x, short y, short w, char *str);

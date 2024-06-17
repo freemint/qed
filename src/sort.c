@@ -14,9 +14,9 @@
 static short		last_cmd = CMD_NONE,
 					start_x = 0, end_x = 0;		/* Kriterium */
 static long		start_z = 0, end_z = 0;		/* Bereich */
-static LINEP	p1, p2;
+static ZEILEP	p1, p2;
 static bool		sort_down = FALSE;			/* FLASE: a..z  TRUE: z..a */
-static bool		sort_grkl = FALSE;			/* Gro vor Klein */
+static bool		sort_grkl = FALSE;			/* Groû vor Klein */
 
 /*
  * Die nationalen Sonderzeichen werden auf die entsprechenden Vokale umgemappt
@@ -82,7 +82,7 @@ static short qed_strncmp(char *s1, char *s2, short n, bool grkl)
 }
 
 
-static short laufcmp(LINEP l1, LINEP l2)
+static short laufcmp(ZEILEP l1, ZEILEP l2)
 {
 	short	n;
 	
@@ -92,11 +92,11 @@ static short laufcmp(LINEP l1, LINEP l2)
 	}
 	else												/* nur teilweise vergleichen */
 	{
-		/* Zeile krzer als Kriterium-Start? */
+		/* Zeile kÅrzer als Kriterium-Start? */
 		if (l2->len < start_x)
 			return 1;
 
-		/* Zeile krzer als Kriterium-Lnge? */
+		/* Zeile kÅrzer als Kriterium-LÑnge? */
 		if (l2->len < end_x)
 			n = l2->len - start_x + 1;
 		else
@@ -108,44 +108,44 @@ static short laufcmp(LINEP l1, LINEP l2)
 
 
 /*
- * Langsam, aber dafr optimal simpel: Insertion Sort.
+ * Langsam, aber dafÅr optimal simpel: Insertion Sort.
 */
-static void insert_sort(RINGP r, LINEP ins)
+static void insert_sort(RINGP r, ZEILEP ins)
 {
-	LINEP	col, line;
+	ZEILEP	col, lauf;
 
-	line = LAST(r);
+	lauf = LAST(r);
 	if (sort_down)
-		while (!IS_FIRST(line) && (laufcmp(line, ins) < 0))
-			PREV(line);
+		while (!IS_FIRST(lauf) && (laufcmp(lauf, ins) < 0))
+			VORG(lauf);
 	else
-		while (!IS_FIRST(line) && (laufcmp(line, ins) > 0))
-			PREV(line);
+		while (!IS_FIRST(lauf) && (laufcmp(lauf, ins) > 0))
+			VORG(lauf);
 	
 	col = new_col(TEXT(ins), ins->len);
-	col_insert(r,line, col);
+	col_insert(r,lauf, col);
 	r->lines++;
 }
 
 static void do_sort(TEXTP t_ptr, RINGP r)
 {
-	LINEP	start, ende, line;
+	ZEILEP	start, ende, lauf;
 
 	start = get_line(&t_ptr->text, start_z);
 	ende = get_line(&t_ptr->text, end_z);
 	init_textring(r);
-	line = start;
-	while (line != ende)
+	lauf = start;
+	while (lauf != ende)
 	{
-		insert_sort(r, line);
-		NEXT(line);
+		insert_sort(r, lauf);
+		NEXT(lauf);
 	}
 	/* erste, leere Zeile entfernen */
 	col_delete(r, FIRST(r));
 
-	/* leere Zeile am Ende anhngen */
-	line = new_col("", 0);
-	col_append(r, line);
+	/* leere Zeile am Ende anhÑngen */
+	lauf = new_col("", 0);
+	col_append(r, lauf);
 }
 
 static void clear_sort(void)
@@ -159,11 +159,11 @@ static void clear_sort(void)
 
 void sort_block(TEXTP t_ptr)
 {
-	/* halbe Zeile markiert -> aufrunden zur nchsten */
+	/* halbe Zeile markiert -> aufrunden zur nÑchsten */
 	if (!(last_cmd == CMD_KRIT) && (t_ptr->x2 > 0) && !(IS_LAST(t_ptr->p2)))
 	{
 		t_ptr->z2++;
-		t_ptr->p2 = t_ptr->p2->next;
+		t_ptr->p2 = t_ptr->p2->nachf;
 	}
 
 	if ((t_ptr->z2 > t_ptr->z1 + 1) || (last_cmd == CMD_KRIT))
@@ -222,7 +222,7 @@ void sort_block(TEXTP t_ptr)
 
 			do_sort(t_ptr, &r);
 			
-			/* ursprnglichen Block wieder herstellen und ersetzen */
+			/* ursprÅnglichen Block wieder herstellen und ersetzen */
 			t_ptr->z1 = start_z;
 			t_ptr->z2 = end_z;
 			t_ptr->x1 = 0;
@@ -301,7 +301,7 @@ void compare(TEXTP t1, TEXTP t2)
 {
 	if (t1 && t2)
 	{
-		LINEP	lauf1, lauf2;
+		ZEILEP	lauf1, lauf2;
 		bool		quit = FALSE;
 		short		l, z1, z2;
 
@@ -323,8 +323,8 @@ void compare(TEXTP t1, TEXTP t2)
 				mark_diff(t1, z1, l);
 				t2->cursor_line = lauf2;
 				mark_diff(t2, z2, l);
-				cursor_visible(get_window(t1->link), t1);
-				cursor_visible(get_window(t2->link), t2);
+				pos_korr(get_window(t1->link), t1);
+				pos_korr(get_window(t2->link), t2);
 quit = (do_walert(1, 2, "[1][Unterschied gefunden!][Weiter|Ende]", " qed ") == 2);
 			}
 			NEXT(lauf1);

@@ -253,7 +253,7 @@ static void handle_keybd(short kstate, short kreturn)
 {
 	WINDOWP window;
 
-	/* fr PC-Tastaturen wird Shift-Ctrl-8/9 nach KP-(/) gemappt */
+	/* fÅr PC-Tastaturen wird Shift-Ctrl-8/9 nach KP-(/) gemappt */
 	if (emu_klammer && kstate == 6)
 	{
 		if (kreturn == 0x908)		/* S-C-( */
@@ -359,7 +359,7 @@ void handle_msg(_WORD *msg)
 	WINDOWP	window;
 
 	wake_mouse();
-	window= get_window(msg[3]);			/* Zugehriges Fenster */
+	window= get_window(msg[3]);			/* Zugehîriges Fenster */
 
 	switch ((unsigned short)msg[0])							/* Art der Nachricht */
 	{
@@ -392,14 +392,8 @@ void handle_msg(_WORD *msg)
 			full_window (window);
 			break;
 		case WM_ARROWED :
-		{
-			long amount = msg[4] >> 8;
-			if (!amount)
-				amount++;
-			
-			arrow_window (window, msg[4] & 0x0007, amount);
+			arrow_window (window, msg[4], 1);
 			break;
-		}
 		case WM_HSLID	 :
 			h_slider (window, msg[4]);
 			break;
@@ -411,9 +405,6 @@ void handle_msg(_WORD *msg)
 			break;
 		case WM_MOVED	 :
 			move_window (window, (GRECT*)(msg+4));
-			break;
-		case WM_REPOSED:
-			repos_window(window, (GRECT *)(msg+4));
 			break;
 		case WM_NEWTOP	 : /* Fenster von qed ist irgendwie nach oben gekommen */
 		case WM_ONTOP	 :
@@ -497,7 +488,7 @@ void handle_msg(_WORD *msg)
 			handle_olga(msg);
 			break;
 
-		case SH_WDRAW:				/* schickt Freedom stndig */
+		case SH_WDRAW:				/* schickt Freedom stÑndig */
 		case DHST_ACK:				/* SMU antwortet */
 			/* ignore */
 			break;
@@ -544,7 +535,7 @@ void main_loop(void)
 	bool	menu_chg;
 	long	as_timer = 0, t;
 	
-	/* Message-Handler fr Fenster-Dialoge und -Alerts */
+	/* Message-Handler fÅr Fenster-Dialoge und -Alerts */
 	set_mdial_wincb(handle_msg);
 	
 	update_menu();
@@ -585,7 +576,7 @@ void main_loop(void)
 			handle_keybd(ev.kstate, ev.kreturn);
 			menu_chg = TRUE;
 			onblink_edit();
-			while (idle()) 							/*	Auch fr Makro-Play-Abbruch */
+			while (idle()) 							/*	Auch fÅr Makro-Play-Abbruch */
 				;
 		}
 		if (ev.which & MU_BUTTON)					/* Mausknopf */
@@ -609,7 +600,7 @@ void main_loop(void)
 
 		if (menu_chg && !is_event())				/* Wenn Zeit */
 		{
-			update_menu();								/* Eine Aktion kann Mens verndern */
+			update_menu();								/* Eine Aktion kann MenÅs verÑndern */
 			menu_chg = FALSE;
 		}
 		end_undo_seq();
