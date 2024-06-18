@@ -17,9 +17,9 @@ static bool	tab;
 static short		tab_size, lineal_len;
 static SET		umbruch_set;
 
-static bool Absatz		(ZEILEP col);
-static bool too_int	(TEXTP t_ptr, ZEILEP col, long y);
-static bool too_long 	(TEXTP t_ptr, ZEILEP col, long y);
+static bool Absatz		(LINEP col);
+static bool too_int	(TEXTP t_ptr, LINEP col, long y);
+static bool too_long 	(TEXTP t_ptr, LINEP col, long y);
 
 void save_absatz(TEXTP t_ptr)
 /* Es werden LZ und TABs am Absatzende gelîscht */
@@ -28,52 +28,52 @@ void save_absatz(TEXTP t_ptr)
 	bool		action = FALSE;
 	short		i;
 	char		c;
-	ZEILEP	lauf;
+	LINEP	line;
 
 	setcpy(umbruch_set,t_ptr->loc_opt->umbruch_set);/* !! Muû gesetzt werden !! */
 	setincl(umbruch_set,' ');								/* wenigstens das */
-	lauf = FIRST(&t_ptr->text);
-	while (!IS_TAIL(lauf))
+	line = FIRST(&t_ptr->text);
+	while (!IS_TAIL(line))
 	{
-		if (IS_ABSATZ(lauf))					/* Absatz => LZ und TAB lîschen */
+		if (IS_ABSATZ(line))					/* Absatz => LZ und TAB lîschen */
 		{
-			for (i=lauf->len; (--i)>=0 ; )
+			for (i=line->len; (--i)>=0 ; )
 			{
-				c = TEXT(lauf)[i];
+				c = TEXT(line)[i];
 				if (c!=' ' && c!='\t') break;
 			}
 			i++;
-			if (i<lauf->len)		/* Zeile verkÅrzen */
+			if (i<line->len)		/* Zeile verkÅrzen */
 			{
-				REALLOC(&lauf,i,i-lauf->len);
+				REALLOC(&line,i,i-line->len);
 				action = TRUE;
 			}
 		}
 		else								/* Nicht Absatz => LZ anhÑngen */
 		{
-			c = TEXT(lauf)[lauf->len-1];
-			if (!setin(umbruch_set,c) && lauf->len < MAX_LINE_LEN)
+			c = TEXT(line)[line->len-1];
+			if (!setin(umbruch_set,c) && line->len < MAX_LINE_LEN)
 			{
-				*REALLOC(&lauf,lauf->len,1) = ' ';
+				*REALLOC(&line,line->len,1) = ' ';
 				action = TRUE;
 			}
 		}
-		NEXT(lauf);
+		NEXT(line);
 	}
 	if (action)		/* Es wurde etwas verÑndert */
 	{
 		make_chg(t_ptr->link,TOTAL_CHANGE,0);
 		t_ptr->moved++;
-		lauf = t_ptr->cursor_line = get_line(&t_ptr->text,t_ptr->ypos);
-		if (t_ptr->xpos>lauf->len)
+		line = t_ptr->cursor_line = get_line(&t_ptr->text,t_ptr->ypos);
+		if (t_ptr->xpos>line->len)
 		{
-			t_ptr->xpos = lauf->len;
+			t_ptr->xpos = line->len;
 			make_chg(t_ptr->link,POS_CHANGE,0);
 		}
 	}
 }
 
-static bool Absatz(ZEILEP col)
+static bool Absatz(LINEP col)
 /* TRUE : Die Zeile ist die letzte Zeile eines Absatz */
 /* FALSE : sonst													*/
 {
@@ -86,29 +86,29 @@ static bool Absatz(ZEILEP col)
 void make_absatz(TEXTP t_ptr)
 /* Absatzmarkierungen anbringen oder lîschen */
 {
-	ZEILEP lauf;
+	LINEP line;
 
 	setcpy(umbruch_set,t_ptr->loc_opt->umbruch_set);/* !! Muû gesetzt werden !! */
 	setincl(umbruch_set,' ');								/* wenigstens das */
-	lauf = FIRST(&t_ptr->text);
+	line = FIRST(&t_ptr->text);
 	if (t_ptr->loc_opt->umbrechen)
-		while (!IS_TAIL(lauf))
+		while (!IS_TAIL(line))
 		{
-			if (Absatz(lauf))
-				lauf->info |= ABSATZ;
+			if (Absatz(line))
+				line->info |= ABSATZ;
 			else
-				lauf->info &= (~ABSATZ);		/* z.B. CR setzt immer Bit */
-			NEXT(lauf);
+				line->info &= (~ABSATZ);		/* z.B. CR setzt immer Bit */
+			NEXT(line);
 		}
 	else
-		while (!IS_TAIL(lauf))
+		while (!IS_TAIL(line))
 		{
-			lauf->info &= (~ABSATZ);
-			NEXT(lauf);
+			line->info &= (~ABSATZ);
+			NEXT(line);
 		}
 }
 
-static short long_brk(RINGP rp, ZEILEP col)
+static short long_brk(RINGP rp, LINEP col)
 /* Zeile ist zu lang. Wo soll sie abgebrochen werden (mind. ein Wort) */
 {
 	short	off, pos;
@@ -158,7 +158,7 @@ static short long_brk(RINGP rp, ZEILEP col)
 	return pos;
 }
 
-static short short_brk(RINGP rp, ZEILEP col, short len)
+static short short_brk(RINGP rp, LINEP col, short len)
 /* Einer Zeile fehlen Zeichen, sie ist jetzt im Bild len lang */
 /* Wo soll der Nachfolger (col) hochgezogen werden (mind. ein Wort) */
 {
@@ -212,7 +212,7 @@ static short short_brk(RINGP rp, ZEILEP col, short len)
 }
 
 /* !!! cursor_line muû hinterher entsprechend ypos gesetzt werden !!! */
-static bool too_long(TEXTP t_ptr, ZEILEP col, long y)
+static bool too_long(TEXTP t_ptr, LINEP col, long y)
 {
 	short	i, len, off;
 	bool	absatz, weiter, changed;
@@ -229,14 +229,14 @@ static bool too_long(TEXTP t_ptr, ZEILEP col, long y)
 		}
 		absatz = IS_ABSATZ(col);
 		len = col->len-i;											/* soviel abschneiden */
-		if (absatz || col->nachf->len + len >= MAX_LINE_LEN)	/* col_split */
+		if (absatz || col->next->len + len >= MAX_LINE_LEN)	/* col_split */
 		{
-			ZEILEP help;
+			LINEP help;
 
 			col_split(&t_ptr->text,&col,i);
 			t_ptr->text.lines++;
 			if (t_ptr->ypos>y) t_ptr->ypos++;
-			help = col->nachf;
+			help = col->next;
 			off = col_einrucken(&t_ptr->text, &help);
 			hl_update_zeile( &t_ptr->text, help );
 			if (t_ptr->ypos==y && t_ptr->xpos>i)			/* Cursor umbrechen */
@@ -248,7 +248,7 @@ static bool too_long(TEXTP t_ptr, ZEILEP col, long y)
 		}
 		else															/* Text rumschieben */
 		{
-			ZEILEP help = col->nachf;
+			LINEP help = col->next;
 
 			off = col_offset(&t_ptr->text,help);
 			INSERT(&help,off,len,TEXT(col)+i);				/* Next verlÑngern */
@@ -275,18 +275,18 @@ static bool too_long(TEXTP t_ptr, ZEILEP col, long y)
 }
 
 /* !!! cursor_line muû hinterher entsprechend ypos gesetzt werden !!! */
-static bool too_int(TEXTP t_ptr, ZEILEP col, long y)
+static bool too_int(TEXTP t_ptr, LINEP col, long y)
 {
 	short	len, off;
-	ZEILEP	next_col;
+	LINEP	next_col;
 	bool	changed;
 
 	changed = FALSE;
 	tab = t_ptr->loc_opt->tab;
 	tab_size = t_ptr->loc_opt->tabsize;
-	while (bild_len(col,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize)<lineal_len && !(IS_ABSATZ(col)) && col->nachf->len > 0)
+	while (bild_len(col,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize)<lineal_len && !(IS_ABSATZ(col)) && col->next->len > 0)
 	{
-		next_col = col->nachf;
+		next_col = col->next;
 		len = short_brk(&t_ptr->text,next_col,bild_len(col,t_ptr->loc_opt->tab,t_ptr->loc_opt->tabsize));
 		if (len==0) break;										/* nichts zu machen */
 		off = col_offset(&t_ptr->text,next_col);
@@ -356,7 +356,7 @@ void umbruch(TEXTP t_ptr)
 
 void format(TEXTP t_ptr)
 {
-	ZEILEP	lauf;
+	LINEP	line;
 	long	y, start_y;
 	bool	change;
 
@@ -366,39 +366,39 @@ void format(TEXTP t_ptr)
 	tab_size = t_ptr->loc_opt->tabsize;
 	lineal_len = t_ptr->loc_opt->lineal_len;
 	change = FALSE;
-	lauf = t_ptr->cursor_line;
+	line = t_ptr->cursor_line;
 	y = t_ptr->ypos;
 	if (y)
 	{
 		y--;
-		VORG(lauf);
-		while ((y > 0) && !(IS_ABSATZ(lauf)))
+		PREV(line);
+		while ((y > 0) && !(IS_ABSATZ(line)))
 		{
 			y--;
-			VORG(lauf);
+			PREV(line);
 		}
 		if (y)
 		{
 			y++;
-			NEXT(lauf);
+			NEXT(line);
 		}
 	}
 	/* lauf zeigt jetzt auf die erste Zeile des Absatz */
 	start_y = y;
-	lauf = lauf->vorg;	/* Einen davor, weil akt. Zeile geÑndert wird */
+	line = line->prev;	/* Einen davor, weil akt. Zeile geÑndert wird */
 	while(TRUE)
 	{
-		if (!too_long(t_ptr, lauf->nachf,y))
+		if (!too_long(t_ptr, line->next,y))
 		{
-			if (too_int(t_ptr, lauf->nachf,y))
+			if (too_int(t_ptr, line->next,y))
 				change = TRUE;
 		}
 		else
 			change = TRUE;
 
 		y++;
-		NEXT(lauf);
-		if (IS_ABSATZ(lauf))
+		NEXT(line);
+		if (IS_ABSATZ(line))
 			break;
 	}
 	if (change)
@@ -413,7 +413,7 @@ void format(TEXTP t_ptr)
 
 void total_format(TEXTP t_ptr)
 {
-	ZEILEP	lauf;
+	LINEP	line;
 	long	y;
 	bool	change;
 
@@ -424,27 +424,27 @@ void total_format(TEXTP t_ptr)
 	lineal_len = t_ptr->loc_opt->lineal_len;
 	change = FALSE;
 	graf_mouse(HOURGLASS, NULL);
-	lauf = FIRST(&t_ptr->text);
+	line = FIRST(&t_ptr->text);
 	y = 0;
-	while (!IS_TAIL(lauf))
+	while (!IS_TAIL(line))
 	{
-		/* lauf zeigt jetzt auf die erste Zeile des Absatz */
-		lauf = lauf->vorg;	/* Einen davor, weil akt. Zeile geÑndert wird */
+		/* line zeigt jetzt auf die erste Zeile des Absatz */
+		line = line->prev;	/* Einen davor, weil akt. Zeile geÑndert wird */
 		while(TRUE)
 		{
-			if (!too_long(t_ptr, lauf->nachf,y))
+			if (!too_long(t_ptr, line->next,y))
 			{
-				if (too_int(t_ptr, lauf->nachf,y))
+				if (too_int(t_ptr, line->next,y))
 					change = TRUE;
 			}
 			else
 				change = TRUE;
 			y++;
-			NEXT(lauf);
-			if (IS_ABSATZ(lauf))
+			NEXT(line);
+			if (IS_ABSATZ(line))
 				break;
 		}
-		NEXT(lauf);
+		NEXT(line);
 	}
 	if (change)
 	{

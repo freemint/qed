@@ -85,6 +85,8 @@ static bool init_all(int argc, char *argv[])
 		}
 	
 		wind_set(-1, WF_OPTS, 1, new_wopts, 0, 0);
+		wind_set(-1, WF_WHEEL, 1, 1, 0, 0);
+		
 #if 0	
 		{
 			char db[256];

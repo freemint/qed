@@ -83,7 +83,7 @@ static void	select_def_prj 		(void);
 static void do_for_prj(short icon, SET s, short (*do_it)(short,short), bool verbose)
 {
 	TEXTP 	t_ptr, t_ptr2;
-	ZEILEP 	lauf;
+	LINEP 	line;
 	short		min, i, anz, soll, erg;
 	PATH		name, prj;
 	FILENAME file;
@@ -114,21 +114,21 @@ static void do_for_prj(short icon, SET s, short (*do_it)(short,short), bool verb
 	{
 		if (setin(s,i))
 		{
-			lauf = get_line(&t_ptr->text,i);
-			lauf->info |= MARKED;
+			line = get_line(&t_ptr->text,i);
+			line->info |= MARKED;
 		}
 	}
 	soll = setcard(s);
 	anz = i = 0;
 	while (TRUE)
 	{
-		lauf = get_line(&t_ptr->text,i);
-		if (lauf == NULL) 
+		line = get_line(&t_ptr->text,i);
+		if (line == NULL) 
 			break;
-		if (IS_MARKED(lauf))
+		if (IS_MARKED(line))
 		{
 			anz++;
-			lauf->info &= (~MARKED);	/* sonst Endlosschleife */
+			line->info &= (~MARKED);	/* sonst Endlosschleife */
 			if (verbose)
 			{
 				get_prj_line(icon,i,name);
@@ -151,11 +151,11 @@ static void do_for_prj(short icon, SET s, short (*do_it)(short,short), bool verb
 		else
 			i++;
 	}
-	lauf = FIRST(&t_ptr->text);
-	while (!IS_TAIL(lauf))
+	line = FIRST(&t_ptr->text);
+	while (!IS_TAIL(line))
 	{
-		lauf->info &= (~MARKED);
-		NEXT(lauf);
+		line->info &= (~MARKED);
+		NEXT(line);
 	}
 	if (verbose) 
 		end_aktion();
@@ -878,11 +878,11 @@ static bool find_files(char *pfad, bool rekursiv, char *df_muster, short icon, s
 static void get_prj_line(short link, short line, char *str)
 {
 	TEXTP 	t_ptr = get_text(link);
-	ZEILEP	lauf;
+	LINEP	line_p;
 
-	lauf = get_line(&t_ptr->text,line);
-	if (lauf != NULL)
-		strcpy(str, TEXT(lauf));
+	line_p = get_line(&t_ptr->text, line);
+	if (line_p != NULL)
+		strcpy(str, TEXT(line_p));
 	else
 		str[0] = EOS;
 }
@@ -891,27 +891,27 @@ static void get_prj_line(short link, short line, char *str)
 
 static short del_from_projekt (short link, short line)
 {
-	TEXTP 	t_ptr = get_text(link);
-	ZEILEP	lauf;
-	FILENAME	name;
+	TEXTP t_ptr = get_text(link);
+	LINEP line_ptr;
+	FILENAME name;
 	
-	lauf = get_line(&t_ptr->text,line);
-	if (lauf!=NULL)
+	line_ptr = get_line(&t_ptr->text, line);
+	if (line_ptr != NULL)
 	{
 		WINDOWP window = get_window(link);
 
 		unclick_window();
-		if (t_ptr->text.lines>1)
+		if (t_ptr->text.lines > 1)
 		{
-			col_delete(&t_ptr->text, lauf);
+			col_delete(&t_ptr->text, line_ptr);
 			window->doc.h--;
-			set_sliders(window, VERTICAL, SLPOS+SLSIZE);
-			redraw_window(window,&window->work);
+			set_sliders(window, VERTICAL, SLPOS + SLSIZE);
+			redraw_window(window, &window->work);
 		}
 		else
 		{
-			REALLOC(&lauf,0,-lauf->len);
-			redraw_window(window,&window->work);
+			REALLOC(&line_ptr, 0, -line_ptr->len);
+			redraw_window(window, &window->work);
 		}
 		t_ptr->moved++;
 		if (t_ptr->namenlos)
@@ -925,9 +925,9 @@ static short del_from_projekt (short link, short line)
 
 bool add_to_projekt (short link, char *name, bool draw)
 {
-	short		erg, i;
+	short	erg, i;
 	TEXTP 	t_ptr = get_text(link);
-	PATH		file;
+	PATH	file;
 
 /*
 	if (fs_case_sens(name) == NO_CASE)
@@ -959,14 +959,14 @@ bool add_to_projekt (short link, char *name, bool draw)
 		}
 		else
 		{
-			ZEILEP new, lauf;
+			LINEP new, line;
 
 			if (i==0)
-				lauf = &t_ptr->text.head;
+				line = &t_ptr->text.head;
 			else
-				lauf= get_line(&t_ptr->text,i-1);
+				line= get_line(&t_ptr->text,i-1);
 			new = new_col(name,(short)strlen(name));
-			col_insert(&t_ptr->text, lauf,new);
+			col_insert(&t_ptr->text, line,new);
 			t_ptr->text.lines++;
 			window->doc.h++;
 			if (draw)
@@ -995,7 +995,7 @@ short load_projekt(char *name)
 	FILENAME datei;
 	PATH		path;
 	TEXTP 	t_ptr;
-	ZEILEP	lauf;
+	LINEP	line;
 
 	store_path(name);
 
@@ -1046,17 +1046,17 @@ short load_projekt(char *name)
 		strip_endings(t_ptr);
 	
 		/* Leerzeilen entfernen */
-		lauf = FIRST(&t_ptr->text);
-		while (!IS_TAIL(lauf))
+		line = FIRST(&t_ptr->text);
+		while (!IS_TAIL(line))
 		{
-			ZEILEP	l = lauf->nachf;
+			LINEP	l = line->next;
 	
-			if (lauf->len == 0)
+			if (line->len == 0)
 			{
-				col_delete(&t_ptr->text, lauf);
+				col_delete(&t_ptr->text, line);
 				t_ptr->moved++;
 			}
-			lauf = l;
+			line = l;
 		}
 	
 		if (t_ptr->moved)
@@ -1239,12 +1239,12 @@ static void draw_line (WINDOWP window, short line)
 
 static void wi_draw (WINDOWP window, GRECT *d)
 {
-	ZEILEP lauf;
+	LINEP line_ptr;
 	TEXTP t_ptr;
 	short	line, y, x, i, link;
 	PATH	name, str;
 
-	set_clip(TRUE,d);
+	set_clip(TRUE, d);
 	line = (short)window->doc.y;
 	y = window->work.g_y;
 	x = window->work.g_x;
@@ -1267,10 +1267,10 @@ static void wi_draw (WINDOWP window, GRECT *d)
 	}
 	link = window->handle;
 	t_ptr = get_text(link);
-	lauf = get_line(&t_ptr->text,line);
-	if (lauf!=NULL)
+	line_ptr = get_line(&t_ptr->text, line);
+	if (line_ptr != NULL)
 	{
-		while ((--i)>=0)
+		while ( (--i) >= 0)
 		{
 			get_prj_line(link, line, str);
 			if (str[0] == EOS)
@@ -1284,7 +1284,7 @@ static void wi_draw (WINDOWP window, GRECT *d)
 			else 
 				name[0] = ' ';
 			make_shortpath(str, name + 1, window->w_width - 1);
-			if (window == sel_window && setin(sel_objs,line))
+			if (window == sel_window && setin(sel_objs, line))
 				out_sb(x, y, window->work.g_w, name);
 			else
 				out_s(x, y, window->work.g_w, name);

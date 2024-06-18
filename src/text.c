@@ -202,26 +202,26 @@ void update_loc_opt(void)
 */
 bool strip_endings(TEXTP t_ptr)
 {
-	ZEILEP	lauf;
+	LINEP	line;
 	short		i;
 	char		c;
 
-	lauf = FIRST(&t_ptr->text);
-	while (!IS_TAIL(lauf))
+	line = FIRST(&t_ptr->text);
+	while (!IS_TAIL(line))
 	{
-		for (i=lauf->len; (--i) >= 0; )
+		for (i=line->len; (--i) >= 0; )
 		{
-			c = TEXT(lauf)[i];
+			c = TEXT(line)[i];
 			if (c != ' ' && c != '\t')
 				break;
 		}
 		i++;
-		if (i < lauf->len)								/* Zeile verkÅrzen */
+		if (i < line->len)								/* Zeile verkÅrzen */
 		{
-			REALLOC(&lauf,i,i-lauf->len);
+			REALLOC(&line,i,i-line->len);
 			t_ptr->moved++;
 		}
-		NEXT(lauf);
+		NEXT(line);
 	}
 	return (t_ptr->moved != 0);
 }
@@ -231,23 +231,23 @@ bool strip_endings(TEXTP t_ptr)
 */
 short get_longestline(TEXTP t_ptr)
 {
-	ZEILEP	lauf;
+	LINEP	line;
 	short		len;
 	
 	if (t_ptr->max_line != NULL)
 	{
-		lauf = t_ptr->cursor_line;
-		lauf->exp_len = bild_pos(lauf->len, lauf, t_ptr->loc_opt->tab, t_ptr->loc_opt->tabsize) + 1;
+		line = t_ptr->cursor_line;
+		line->exp_len = bild_pos(line->len, line, t_ptr->loc_opt->tab, t_ptr->loc_opt->tabsize) + 1;
 	
-		if (lauf->exp_len >= t_ptr->max_line->exp_len)	/* lÑnger als die LÑngste */
+		if (line->exp_len >= t_ptr->max_line->exp_len)	/* lÑnger als die LÑngste */
 		{
 			t_ptr->max_line->is_longest = FALSE;	/* alte ist nicht mehr */
-			t_ptr->max_line = lauf;
-			lauf->is_longest = TRUE;
+			t_ptr->max_line = line;
+			line->is_longest = TRUE;
 		}
 		else									
 		{
-			if (lauf->is_longest)			/* wurde die LÑngste kÅrzer */
+			if (line->is_longest)			/* wurde die LÑngste kÅrzer */
 				t_ptr->max_line = NULL;		/*	-> neue lÑngeste suchen */
 		}
 	}
@@ -255,18 +255,18 @@ short get_longestline(TEXTP t_ptr)
 	if (t_ptr->max_line == NULL)			/* neu suche */
 	{
 		len = 0;
-		lauf = FIRST(&t_ptr->text);
-		while (!IS_TAIL(lauf))
+		line = FIRST(&t_ptr->text);
+		while (!IS_TAIL(line))
 		{
-			if (lauf->exp_len == -1)		/* LÑnge hat sich geÑndert */
-				lauf->exp_len = bild_pos(lauf->len, lauf, t_ptr->loc_opt->tab, t_ptr->loc_opt->tabsize) + 1;
-			if (lauf->exp_len > len)
+			if (line->exp_len == -1)		/* LÑnge hat sich geÑndert */
+				line->exp_len = bild_pos(line->len, line, t_ptr->loc_opt->tab, t_ptr->loc_opt->tabsize) + 1;
+			if (line->exp_len > len)
 			{
-				t_ptr->max_line = lauf;
-				len = lauf->exp_len;
+				t_ptr->max_line = line;
+				len = line->exp_len;
 			}
-			lauf->is_longest = FALSE;		/* Åberall lîschen */
-			NEXT(lauf);
+			line->is_longest = FALSE;		/* Åberall lîschen */
+			NEXT(line);
 		}
 		t_ptr->max_line->is_longest = TRUE;
 	}

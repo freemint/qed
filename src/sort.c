@@ -14,7 +14,7 @@
 static short		last_cmd = CMD_NONE,
 					start_x = 0, end_x = 0;		/* Kriterium */
 static long		start_z = 0, end_z = 0;		/* Bereich */
-static ZEILEP	p1, p2;
+static LINEP	p1, p2;
 static bool		sort_down = FALSE;			/* FLASE: a..z  TRUE: z..a */
 static bool		sort_grkl = FALSE;			/* Groû vor Klein */
 
@@ -82,7 +82,7 @@ static short qed_strncmp(char *s1, char *s2, short n, bool grkl)
 }
 
 
-static short laufcmp(ZEILEP l1, ZEILEP l2)
+static short laufcmp(LINEP l1, LINEP l2)
 {
 	short	n;
 	
@@ -110,42 +110,42 @@ static short laufcmp(ZEILEP l1, ZEILEP l2)
 /*
  * Langsam, aber dafÅr optimal simpel: Insertion Sort.
 */
-static void insert_sort(RINGP r, ZEILEP ins)
+static void insert_sort(RINGP r, LINEP ins)
 {
-	ZEILEP	col, lauf;
+	LINEP	col, line;
 
-	lauf = LAST(r);
+	line = LAST(r);
 	if (sort_down)
-		while (!IS_FIRST(lauf) && (laufcmp(lauf, ins) < 0))
-			VORG(lauf);
+		while (!IS_FIRST(line) && (laufcmp(line, ins) < 0))
+			PREV(line);
 	else
-		while (!IS_FIRST(lauf) && (laufcmp(lauf, ins) > 0))
-			VORG(lauf);
+		while (!IS_FIRST(line) && (laufcmp(line, ins) > 0))
+			PREV(line);
 	
 	col = new_col(TEXT(ins), ins->len);
-	col_insert(r,lauf, col);
+	col_insert(r,line, col);
 	r->lines++;
 }
 
 static void do_sort(TEXTP t_ptr, RINGP r)
 {
-	ZEILEP	start, ende, lauf;
+	LINEP	start, ende, line;
 
 	start = get_line(&t_ptr->text, start_z);
 	ende = get_line(&t_ptr->text, end_z);
 	init_textring(r);
-	lauf = start;
-	while (lauf != ende)
+	line = start;
+	while (line != ende)
 	{
-		insert_sort(r, lauf);
-		NEXT(lauf);
+		insert_sort(r, line);
+		NEXT(line);
 	}
 	/* erste, leere Zeile entfernen */
 	col_delete(r, FIRST(r));
 
 	/* leere Zeile am Ende anhÑngen */
-	lauf = new_col("", 0);
-	col_append(r, lauf);
+	line = new_col("", 0);
+	col_append(r, line);
 }
 
 static void clear_sort(void)
@@ -163,7 +163,7 @@ void sort_block(TEXTP t_ptr)
 	if (!(last_cmd == CMD_KRIT) && (t_ptr->x2 > 0) && !(IS_LAST(t_ptr->p2)))
 	{
 		t_ptr->z2++;
-		t_ptr->p2 = t_ptr->p2->nachf;
+		t_ptr->p2 = t_ptr->p2->next;
 	}
 
 	if ((t_ptr->z2 > t_ptr->z1 + 1) || (last_cmd == CMD_KRIT))
@@ -301,7 +301,7 @@ void compare(TEXTP t1, TEXTP t2)
 {
 	if (t1 && t2)
 	{
-		ZEILEP	lauf1, lauf2;
+		LINEP	lauf1, lauf2;
 		bool		quit = FALSE;
 		short		l, z1, z2;
 
@@ -323,8 +323,8 @@ void compare(TEXTP t1, TEXTP t2)
 				mark_diff(t1, z1, l);
 				t2->cursor_line = lauf2;
 				mark_diff(t2, z2, l);
-				pos_korr(get_window(t1->link), t1);
-				pos_korr(get_window(t2->link), t2);
+				cursor_visible(get_window(t1->link), t1);
+				cursor_visible(get_window(t2->link), t2);
 quit = (do_walert(1, 2, "[1][Unterschied gefunden!][Weiter|Ende]", " qed ") == 2);
 			}
 			NEXT(lauf1);

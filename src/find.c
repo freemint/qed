@@ -40,7 +40,7 @@ UMLAUTENCODING 	umlaut_from, umlaut_to;
 #define M_TSTART		1
 #define M_TENDE		2
 
-static ZEILEP 	start;
+static LINEP 	start;
 static short		text_len, text_x,
 					last_op = -1;
 static long		text_y;
@@ -104,7 +104,7 @@ static void init_suche(TEXTP t_ptr, short mode)
 			}
 			else if (!IS_FIRST(start))
 			{
-				VORG(start);
+				PREV(start);
 				text_y--;
 				text_len = start->len;
 			}
@@ -127,7 +127,7 @@ static void init_suche(TEXTP t_ptr, short mode)
 	setcpy(wort_set,t_ptr->loc_opt->wort_set);
 }
 
-static short suche1(ZEILEP col, short x, short str_len, short *such_len,
+static short suche1(LINEP col, short x, short str_len, short *such_len,
 						char*(*call)(char*,short,char*,short*))
 /* vorw */
 {
@@ -160,7 +160,7 @@ static short suche1(ZEILEP col, short x, short str_len, short *such_len,
 	return (short)(str2 - ptr);
 }
 
-static short suche2(ZEILEP col, short x, short str_len, short *such_len,
+static short suche2(LINEP col, short x, short str_len, short *such_len,
 						char*(*call)(char*,short,char*,short*))
 /* rauf */
 {
@@ -356,12 +356,12 @@ static short suchen2(short *such_len)
 {
 	char*	(*call)	(char*,short,char*,short*);
 	long	y;
-	ZEILEP lauf;
+	LINEP line;
 	short	step, x;
 
 	x = text_x;
 	y = text_y;
-	lauf = start;
+	line = start;
 	if (muster_len==0) return 0;
 	step = 70;
 	if (quantor)
@@ -374,14 +374,14 @@ static short suchen2(short *such_len)
 	{
 		while (TRUE)
 		{
-			if ((text_x=suche1(lauf,x,text_len,such_len,call))>=0)
+			if ((text_x=suche1(line,x,text_len,such_len,call))>=0)
 			{
 				text_y = y;
-				start = lauf;
+				start = line;
 				return 1;
 			}
-			NEXT(lauf); y++; x = 0; text_len = lauf->len;
-			if (IS_TAIL(lauf)) return 0;
+			NEXT(line); y++; x = 0; text_len = line->len;
+			if (IS_TAIL(line)) return 0;
 			if ((--step)==0)
 			{
 /*
@@ -396,17 +396,17 @@ static short suchen2(short *such_len)
 	{
 		while (TRUE)
 		{
-			if ((text_x=suche2(lauf,x,text_len,such_len,call))>=0)
+			if ((text_x=suche2(line,x,text_len,such_len,call))>=0)
 			{
 				text_y = y;
-				start = lauf;
+				start = line;
 				return 1;
 			}
-			VORG(lauf);
-			if (IS_HEAD(lauf)) return 0;
+			PREV(line);
+			if (IS_HEAD(line)) return 0;
 			y--;
 			x = 0;
-			text_len = lauf->len;
+			text_len = line->len;
 			if ((--step)==0)
 			{
 /*
@@ -1141,14 +1141,14 @@ static char umlaute[8][7] =
 
 void change_umlaute(TEXTP t_ptr)
 {
-	ZEILEP	lauf;
+	LINEP	line;
 	short		x, update;
 	long		l;
 	bool		cont = TRUE;
 	bool		changed = FALSE;
 	
-	lauf = FIRST(&t_ptr->text);
-	if (lauf != NULL)
+	line = FIRST(&t_ptr->text);
+	if (line != NULL)
 	{
 		x = bild_pos(t_ptr->xpos, t_ptr->cursor_line, TRUE, t_ptr->loc_opt->tabsize);
 		start_aktion(rsc_string(UMLAUTSTR), TRUE, t_ptr->text.lines);
@@ -1160,17 +1160,17 @@ void change_umlaute(TEXTP t_ptr)
 
 		graf_mouse(HOURGLASS, NULL);
 
-		while (cont && !IS_TAIL(lauf))
+		while (cont && !IS_TAIL(line))
 		{
-			if (lauf->len > 0)
+			if (line->len > 0)
 			{
 				short	u, xpos, len;
 				char	c;
 					
 				xpos = 0;
-				while (xpos < lauf->len)
+				while (xpos < line->len)
 				{
-					c = TEXT(lauf)[xpos];
+					c = TEXT(line)[xpos];
 					if (((unsigned char)c) > 127)
 					{
 						for (u = 0; u <= 7; u++)
@@ -1182,25 +1182,25 @@ void change_umlaute(TEXTP t_ptr)
 							changed = TRUE;
 							if (umlaut_to == LaTeX)
 							{
-								if (lauf->len + 1 <= MAX_LINE_LEN)
+								if (line->len + 1 <= MAX_LINE_LEN)
 								{
-									TEXT(lauf)[xpos] = '"';
+									TEXT(line)[xpos] = '"';
 									xpos++;
-									*(REALLOC(&lauf, xpos, 1)) = umlaute[umlaut_to][u];
+									*(REALLOC(&line, xpos, 1)) = umlaute[umlaut_to][u];
 								}
 								else
 									inote(1, 0, TOOLONG, MAX_LINE_LEN);
 							}
 							else if (umlaut_to == ASCII)
 							{
-								if (lauf->len + 1 <= MAX_LINE_LEN)
+								if (line->len + 1 <= MAX_LINE_LEN)
 								{
-									TEXT(lauf)[xpos] = umlaute[umlaut_to][u];
+									TEXT(line)[xpos] = umlaute[umlaut_to][u];
 									xpos++;
 									if (u == 6)
-										*(REALLOC(&lauf, xpos, 1)) = 's';
+										*(REALLOC(&line, xpos, 1)) = 's';
 									else
-										*(REALLOC(&lauf, xpos, 1)) = 'e';
+										*(REALLOC(&line, xpos, 1)) = 'e';
 								}
 								else
 									inote(1, 0, TOOLONG, MAX_LINE_LEN);
@@ -1215,24 +1215,24 @@ void change_umlaute(TEXTP t_ptr)
 								else
 									new[0] = umlaute[umlaut_to][u];
 								len = (short)strlen(new);
-								if (lauf->len + len <= MAX_LINE_LEN)
+								if (line->len + len <= MAX_LINE_LEN)
 								{
-									TEXT(lauf)[xpos] = '&';
+									TEXT(line)[xpos] = '&';
 									xpos++;
-									INSERT(&lauf, xpos, len, new);
+									INSERT(&line, xpos, len, new);
 									xpos += len-1;
 								}
 								else
 									inote(1, 0, TOOLONG, MAX_LINE_LEN);
 							}
 							else
-								TEXT(lauf)[xpos] = umlaute[umlaut_to][u];
+								TEXT(line)[xpos] = umlaute[umlaut_to][u];
 						}
 					}
 					xpos++;
 				} /* while xpos */
-			} /* while lauf */
-			NEXT(lauf);
+			} /* while line */
+			NEXT(line);
 
 			l++;
 			if (l % update == 0)

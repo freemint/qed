@@ -114,8 +114,8 @@ void undo_takes_text(RINGP r)
 {
 	kill_textring(&undo_text);
 	undo_text = *r;
-	FIRST(r)->vorg = &undo_text.head;
-	LAST(r)->nachf = &undo_text.tail;
+	FIRST(r)->prev = &undo_text.head;
+	LAST(r)->next = &undo_text.tail;
 }
 
 RINGP get_undo_text(void)
@@ -140,7 +140,7 @@ void get_undo_col(TEXTP t_ptr)
 
 void do_undo_col(TEXTP t_ptr, short undo_type)
 {
-	ZEILEP	undo_col;
+	LINEP	undo_col;
 	char		help[MAX_LINE_LEN];
 	char	 	*str;
 	short		length;
@@ -210,19 +210,19 @@ void clip_takes_text(RINGP r)
 	kill_textring(&clip_text);
 	clip_text = *r;
 	last_was_bin = (r->ending == lns_binmode);
-	FIRST(r)->vorg = &clip_text.head;
-	LAST(r)->nachf = &clip_text.tail;
+	FIRST(r)->prev = &clip_text.head;
+	LAST(r)->next = &clip_text.tail;
 	clip_dirty = TRUE;
 }
 
 void clip_add_text(RINGP r)
 {
-	ZEILEP	col;
+	LINEP	col;
 
 	col = LAST(&clip_text);			/* letzte Zeile */
-	col->nachf = FIRST(r);
-	FIRST(r)->vorg = col;
-	LAST(r)->nachf = &clip_text.tail;
+	col->next = FIRST(r);
+	FIRST(r)->prev = col;
+	LAST(r)->next = &clip_text.tail;
 	LAST(&clip_text) = LAST(r);
 	clip_text.lines += r->lines;
 	col_concate(r, &col);

@@ -511,7 +511,7 @@ void font_change(void)
 
 	font_vector = font_is_vector(font_id);
 
-	if( font_vector )
+	if ( font_vector )
 	{	
 		_WORD extent[8];
 		vqt_extent(vdi_handle, "a", extent); /* no matter if prop font - font_wcell isn't used at all in that case */
@@ -521,8 +521,6 @@ void font_change(void)
 
 	font_right_italicoffset = effects[ 2 ];
 	font_left_italicoffset = effects[ 1 ];
-	
-	
 
 	/* Alle Fenster updaten */
 	do_all_window(CLASS_ALL, do_font_change);
