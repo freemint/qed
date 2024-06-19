@@ -170,6 +170,15 @@ static void get_work(WINDOWP w, GRECT *new, short mode)
 			new->g_w = MIN_WIDTH;
 		if (new->g_h < MIN_HEIGHT)
 			new->g_h = MIN_HEIGHT;
+
+        if (new->g_x < gl_desk.g_x)
+            new->g_x = gl_desk.g_x;
+        if (new->g_y < gl_desk.g_y)
+            new->g_y = gl_desk.g_y;
+        if (new->g_w > gl_desk.g_w)
+            new->g_w = gl_desk.g_w;
+        if (new->g_h > gl_desk.g_h)
+            new->g_h = gl_desk.g_h;
 	}
 
 	wind_calc_grect(WC_WORK, w->kind, new, new);
