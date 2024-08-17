@@ -51,6 +51,7 @@ debug("insert_poslist: %s, x= %d, y= %ld: update\n", p->filename, p->spalte, p->
 		new->next = NULL;
 		strcpy(new->filename, name);
 		make_normalpath(new->filename);
+		new->filename[strlen(new->filename) - 1] = '\0';
 		new->spalte = x;
 		new->zeile = y;
 /*

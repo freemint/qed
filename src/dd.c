@@ -93,20 +93,24 @@ static short rel_path(char *path, bool cs, char *sub_path)
 static void insert(WINDOWP w, short mode, bool shift, char *filename)
 {
 	short	icon;
+	int path_len = strlen(filename);
+	int is_path = filename[path_len - 1] == '\\' || filename[path_len - 1] == '/';
 
 	make_normalpath(filename);
+	if (!is_path)
+		filename[strlen(filename) - 1] = '\0';
 
 	if (w->class == CLASS_PROJEKT)
 	{
 		strcpy(drag_filename, filename);
-		if (filename[strlen(filename) - 1] == '\\')			/* Pfad */
+		if (is_path)			/* Pfad */
 			icon_drag(w->handle, DRAGDROP_PATH);				/*  -> Datei suchen */
 		else																/* Datei */
 			icon_drag(w->handle, DRAGDROP_FILE);				/*  -> einfÅgen */
 	}
 	else
 	{
-		if (filename[strlen(filename) - 1] == '\\')			/* Pfad */
+		if (is_path)			/* Pfad */
 			mode = DRAG_PATHNAME;
 
 		if (mode == DRAGDROP_PATH)
