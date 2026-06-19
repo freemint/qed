@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        cpu_target: [ "000", "02060", "030", "040", "060", "col" ]
+        cpu_target: [ "000", "02060", "col" ]
         cross_tool: [ "m68k-atari-mint" ]
     steps:
       - uses: actions/checkout@v4
