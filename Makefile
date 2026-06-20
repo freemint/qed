@@ -33,19 +33,16 @@ help:
 
 all-here install-here: doc
 
+HCP ?= hcp
+
 doc: doc/qed-en.hyp doc/qed-nl.hyp doc/qed-de.hyp
 
-doc/qed-en.hyp: doc/qed-en.stg
-	if test "$(HCP)" = ""; then echo "hcp not available" >&2; else \
-	$(HCP) -o $@ $<; fi
-
-doc/qed-de.hyp: doc/qed-de.stg
-	if test "$(HCP)" = ""; then echo "hcp not available" >&2; else \
-	$(HCP) -o $@ $<; fi
-
-doc/qed-nl.hyp: doc/qed-nl.stg
-	if test "$(HCP)" = ""; then echo "hcp not available" >&2; else \
-	$(HCP) -o $@ $<; fi
+%.hyp: %.stg
+	@if command -v $(HCP) >/dev/null 2>&1 && test -f $<; then \
+		$(HCP) -o $@ $<; \
+	else \
+		echo "HCP not found, help file not compiled" >&2; \
+	fi
 
 install:
 	$(CP) "$(top_srcdir)/en/qed_en.rsc" "$(installdir)/qed.rsc"

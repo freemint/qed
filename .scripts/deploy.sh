@@ -74,3 +74,10 @@ link_file() {
 upload_file "$ARCHIVE_PATH" "${UPLOAD_DIR}/${PROJECT_DIR}/${ARCHIVE_NAME}"
 link_file "$ARCHIVE_NAME" "${LATEST_NAME}"
 
+if [ "$CPU_TARGET" = "000" ]
+then
+	upload_file "${INSTALL_DIR}/doc/qed.hyp" "${UPLOAD_DIR}/guides/qed.hyp"
+	upload_file "${INSTALL_DIR}/de/doc/qed.hyp" "${UPLOAD_DIR}/guides/qed_de.hyp"
+	upload_file "${INSTALL_DIR}/nl/doc/qed.hyp" "${UPLOAD_DIR}/guides/qed_nl.hyp"
+fi
+
